@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
+import { useEffect } from "react";
+import {
+  useFonts,
+  SpaceMono_700Bold,
+  SpaceMono_400Regular,
+} from "@expo-google-fonts/space-mono";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import AppWrapper from "./AppWrapper";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+let customFonts = {
+  "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),
+  "Calibre-Semibold": require("./assets/font/Calibre-Semibold.ttf"),
+};
+
+async function _loadFontsAsync(setFontsLoaded: (fontsLoaded: boolean) => void) {
+  await Font.loadAsync(customFonts);
+  setFontsLoaded(true);
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
+  let [fontLoaded] = useFonts({
+    SpaceMono_700Bold,
+    SpaceMono_400Regular,
+  });
+
+  useEffect(() => {
+    _loadFontsAsync(setFontsLoaded);
+  }, []);
+
+  if (fontsLoaded) {
+    return (
+      <SafeAreaProvider>
+        <AppWrapper />
+      </SafeAreaProvider>
+    );
+  }
+
+  return <AppLoading />;
+}
