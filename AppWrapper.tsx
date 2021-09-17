@@ -3,13 +3,13 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import colors from "./src/constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-// @ts-ignore
 import { useWalletConnect } from "react-native-walletconnect";
 
 function AppWrapper() {
   const insets = useSafeAreaInsets();
   const { createSession, killSession, session, signTransaction } =
     useWalletConnect();
+  const hasWallet = !!session.length;
 
   return (
     <View
@@ -33,11 +33,19 @@ function AppWrapper() {
       <Text style={{ fontFamily: "Calibre-Medium", fontSize: 75 }}>
         get made
       </Text>
-      <TouchableOpacity onPress={createSession}>
-        <View>
-          <Text>Connect wallet</Text>
-        </View>
-      </TouchableOpacity>
+      {hasWallet ? (
+        <TouchableOpacity onPress={killSession}>
+          <View>
+            <Text>Disconnect wallet</Text>
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={createSession}>
+          <View>
+            <Text>Connect wallet</Text>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
