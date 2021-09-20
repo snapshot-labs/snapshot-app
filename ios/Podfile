@@ -18,4 +18,6 @@ target 'snapshotapp' do
   #     flipper_post_install(installer)
   #   end
   # end
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+
 end
