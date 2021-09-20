@@ -1,15 +1,44 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
 import colors from "./src/constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useWalletConnect } from "react-native-walletconnect";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+import WalletConnect from "@walletconnect/client";
+
+async function getWallets() {
+  const options = {
+    method: "get",
+  };
+  const url = "https://registry.walletconnect.org/data/wallets.json";
+  const result = await fetch(url, options);
+  const responseJson = await result.json();
+  const keys = Object.keys(responseJson);
+  for (let i = 0; i < keys.length; i++) {
+    const currentWallet = responseJson[keys[i]];
+
+    if (currentWallet.mobile.native !== "") {
+      const canOpenUrl = await Linking.canOpenURL(
+        `${currentWallet.mobile.native}`
+      );
+      console.log(currentWallet.name, canOpenUrl);
+    }
+  }
+}
 
 function AppWrapper() {
   const insets = useSafeAreaInsets();
-  const { createSession, killSession, session, signTransaction } =
-    useWalletConnect();
-  const hasWallet = !!session.length;
+  const hasWallet = false;
+
+  useEffect(() => {
+    getWallets();
+  }, []);
 
   return (
     <View
@@ -34,13 +63,24 @@ function AppWrapper() {
         get made
       </Text>
       {hasWallet ? (
-        <TouchableOpacity onPress={killSession}>
+        <TouchableOpacity onPress={() => {}}>
           <View>
             <Text>Disconnect wallet</Text>
           </View>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity onPress={createSession}>
+        <TouchableOpacity
+          onPress={() => {
+            // bridge url
+            const bridge = "https://bridge.walletconnect.org";
+
+            // create new connector
+            const connector = new WalletConnect({
+              bridge,
+              qrcodeModal: QRCodeModal,
+            });
+          }}
+        >
           <View>
             <Text>Connect wallet</Text>
           </View>

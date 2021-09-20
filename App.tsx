@@ -9,9 +9,7 @@ import {
 } from "@expo-google-fonts/space-mono";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AppWrapper from "./AppWrapper";
-import WalletConnectProvider from "react-native-walletconnect";
 import * as Linking from "expo-linking";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),
@@ -38,18 +36,10 @@ export default function App() {
     _loadFontsAsync(setFontsLoaded);
   }, []);
 
-
   if (fontsLoaded && fontLoaded) {
     return (
       <SafeAreaProvider>
-        <WalletConnectProvider
-          redirectUrl={getInitialUrl()}
-          storageOptions={{
-            asyncStorage: AsyncStorage,
-          }}
-        >
-          <AppWrapper />
-        </WalletConnectProvider>
+        <AppWrapper />
       </SafeAreaProvider>
     );
   }
