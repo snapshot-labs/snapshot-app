@@ -1,13 +1,10 @@
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import { Text, View, TouchableOpacity } from "react-native";
-import { HOME_SCREEN } from "../constants/navigation";
-import colors from "../constants/colors";
+import { Text, View } from "react-native";
+import LoginButton from "../components/LoginButton";
 
 function LandingScreen() {
-  const navigation = useNavigation();
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16 }}>
+    <View style={{ flex: 1, paddingHorizontal: 16, zIndex: 100 }}>
       <Text style={{ fontFamily: "SpaceMono_700Bold", fontSize: 20 }}>
         snapshot
       </Text>
@@ -22,23 +19,7 @@ function LandingScreen() {
       <Text style={{ fontFamily: "SpaceMono_700Bold", fontSize: 60 }}>
         get made
       </Text>
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(HOME_SCREEN);
-        }}
-      >
-        <View
-          style={{
-            padding: 16,
-            backgroundColor: colors.black,
-            borderRadius: 24,
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ color: colors.white }}>Log in</Text>
-        </View>
-      </TouchableOpacity>
+      <LoginButton />
     </View>
   );
 }
