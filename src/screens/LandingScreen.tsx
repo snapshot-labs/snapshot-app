@@ -4,7 +4,7 @@ import LoginButton from "../components/LoginButton";
 
 function LandingScreen() {
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16, zIndex: 100 }}>
+    <View style={{ flex: 1, paddingHorizontal: 16 }}>
       <Text style={{ fontFamily: "SpaceMono_700Bold", fontSize: 20 }}>
         snapshot
       </Text>

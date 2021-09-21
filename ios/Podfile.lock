@@ -332,7 +332,7 @@ PODS:
   - RNScreens (3.7.2):
     - React-Core
     - React-RCTImage
-  - RNSVG (12.1.1):
+  - RNSVG (9.6.4):
     - React
   - RNVectorIcons (8.1.0):
     - React-Core
@@ -398,7 +398,7 @@ DEPENDENCIES:
   - RNOS (from `../node_modules/react-native-os`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNSVG (from `../node_modules/react-native-svg`)
+  - RNSVG (from `../node_modules/react-native-svg/RNSVG.podspec`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - TcpSockets (from `../node_modules/react-native-tcp`)
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
@@ -507,7 +507,7 @@ EXTERNAL SOURCES:
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSVG:
-    :path: "../node_modules/react-native-svg"
+    :path: "../node_modules/react-native-svg/RNSVG.podspec"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   TcpSockets:
@@ -572,7 +572,7 @@ SPEC CHECKSUMS:
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNReanimated: 6ec2460b9c6c8f3b1403bd0eaa12d359a98650e3
   RNScreens: 0591543e343c7444ea1756b6265d81a4295922c9
-  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNSVG: a53a5de0d90ec96a6502cc3a4534dfcc0c130622
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   UMAppLoader: 21af63390e55c82e037fb9752d93114a80ecf16e
@@ -581,6 +581,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: 2be431101b73604e64fbfffcf759336f9d8fccbb
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 9fa8ecfa7d2bc71f1a61ea6bbe9c5859e2a49684
+PODFILE CHECKSUM: df94d89acb60b47e2b4baa9c7042d008671f4fe2
 
 COCOAPODS: 1.11.0

@@ -9,7 +9,6 @@ import {
 } from "@expo-google-fonts/space-mono";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AppWrapper from "./AppWrapper";
-import * as Linking from "expo-linking";
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),
@@ -19,10 +18,6 @@ let customFonts = {
 async function _loadFontsAsync(setFontsLoaded: (fontsLoaded: boolean) => void) {
   await Font.loadAsync(customFonts);
   setFontsLoaded(true);
-}
-
-function getInitialUrl() {
-  return Linking.createURL("/login");
 }
 
 export default function App() {
