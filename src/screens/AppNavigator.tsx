@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import * as navigationConstants from "../constants/navigation";
 import FeedScreen from "./FeedScreen";
@@ -11,11 +11,11 @@ import MoreScreen from "./MoreScreen";
 
 const Stack = createStackNavigator();
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 function TabNavigator() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator tabBarPosition="bottom">
       <Tab.Screen
         name="Home"
         component={HomeScreen}
