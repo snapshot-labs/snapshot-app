@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import * as navigationConstants from "../constants/navigation";
 import FeedScreen from "./FeedScreen";
 import LandingScreen from "./LandingScreen";
@@ -61,6 +62,7 @@ function TabNavigator() {
 }
 
 export default function () {
+  const connector = useWalletConnect();
   return (
     <Stack.Navigator
       initialRouteName={navigationConstants.LANDING_SCREEN}
@@ -68,16 +70,19 @@ export default function () {
         headerTitleContainerStyle: { alignItems: "center" },
       }}
     >
-      <Stack.Screen
-        name={navigationConstants.LANDING_SCREEN}
-        component={LandingScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={navigationConstants.HOME_SCREEN}
-        component={TabNavigator}
-        options={{ headerShown: false }}
-      />
+      {connector.connected ? (
+        <Stack.Screen
+          name={navigationConstants.HOME_SCREEN}
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
+      ) : (
+        <Stack.Screen
+          name={navigationConstants.LANDING_SCREEN}
+          component={LandingScreen}
+          options={{ headerShown: false }}
+        />
+      )}
     </Stack.Navigator>
   );
 }
