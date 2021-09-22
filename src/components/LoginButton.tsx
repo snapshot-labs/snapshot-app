@@ -13,9 +13,6 @@ function LoginButton() {
     <TouchableOpacity
       onPress={async () => {
         await connector.connect();
-        if (connector.connected) {
-          navigation.navigate(HOME_SCREEN);
-        }
       }}
       style={{ zIndex: 100 }}
     >
