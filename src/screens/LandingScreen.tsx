@@ -21,7 +21,17 @@ function LandingScreen() {
       <Text style={{ fontFamily: "SpaceMono_700Bold", fontSize: 60 }}>
         get made
       </Text>
-      <LoginButton />
+      <View
+        style={{
+          position: "absolute",
+          bottom: 30,
+          width: "100%",
+          paddingHorizontal: 16,
+          justifyContent: "center",
+        }}
+      >
+        <LoginButton />
+      </View>
     </View>
   );
 }
