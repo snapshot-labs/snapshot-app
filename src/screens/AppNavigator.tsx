@@ -9,6 +9,7 @@ import LandingScreen from "./LandingScreen";
 import ExploreScreen from "./ExploreScreen";
 import HomeScreen from "./HomeScreen";
 import MoreScreen from "./MoreScreen";
+import WalletConnectScreen from "./WalletConnectScreen";
 
 const Stack = createStackNavigator();
 
@@ -83,6 +84,11 @@ export default function () {
           options={{ headerShown: false }}
         />
       )}
+        <Stack.Screen
+            name={navigationConstants.WALLET_CONNECT_SCREEN}
+            component={WalletConnectScreen}
+            options={{ headerShown: false }}
+        />
     </Stack.Navigator>
   );
 }

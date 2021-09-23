@@ -2,14 +2,15 @@ import React from "react";
 import { Text, View } from "react-native";
 import colors from "../constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { WALLET_CONNECT_SCREEN } from "../constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 function LoginButton() {
-  const connector = useWalletConnect();
+  const navigation = useNavigation();
   return (
     <TouchableOpacity
-      onPress={async () => {
-        await connector.connect();
+      onPress={() => {
+        navigation.navigate(WALLET_CONNECT_SCREEN);
       }}
     >
       <View
