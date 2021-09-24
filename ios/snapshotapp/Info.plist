@@ -83,5 +83,11 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>rainbow</string>
+		<string>trust</string>
+		<string>metamask</string>
+	</array>
 </dict>
 </plist>

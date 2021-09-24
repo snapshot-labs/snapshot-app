@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "../constants/colors";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
 const defaultHeaders = {
   accept: "application/json; charset=utf-8",
@@ -33,11 +34,16 @@ async function fetchWallets(setWallets: (wallets: any[]) => void) {
     const currentWalletKey = walletKeys[i];
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
-      const isAppInstalled = await Linking.canOpenURL(
-        currentWallet.mobile.native
-      );
-      if (isAppInstalled) {
+      if (Platform.OS === "ios") {
         wallets.push(currentWallet);
+      } else {
+        const isAppInstalled = await Linking.canOpenURL(
+          currentWallet.mobile.native
+        );
+
+        if (isAppInstalled) {
+          wallets.push(currentWallet);
+        }
       }
     }
   }
@@ -48,6 +54,8 @@ async function fetchWallets(setWallets: (wallets: any[]) => void) {
 function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
+  const connector = useWalletConnect();
+
   useEffect(() => {
     fetchWallets(setWallets);
   }, []);
@@ -68,8 +76,16 @@ function WalletConnectScreen() {
       {wallets.map((wallet) => (
         <TouchableOpacity
           key={wallet.id}
-          onPress={() => {
-            const url = `${wallet.mobile.native}/wc`;
+          onPress={async () => {
+            const bridge = encodeURIComponent(
+              "https://snapshot.bridge.walletconnect.org"
+            );
+            const uri = `wc?uri=wc:98c9b967-9369-4d17-a2e8-5ca1821cbca0@1&bridge=${bridge}&key=fe5098fe4fb3fa7ae8dbc306860868a4a326cfbe65c59428192edd80ee320349`;
+            const redirectUrl = "org.snapshot-app://";
+            const url = `${wallet.mobile.native}//${uri}&redirectUrl=${redirectUrl}`;
+            const androidUrl = "wc:bfa370d0-02c0-4040-8a1e-3c039bfdeefa@1?bridge=https%3A%2F%2Fj.bridge.walletconnect.org&key=9d8bdd603f85fecd0ec435ef241b509bddda4c5454dd47646e294f47ba68b0cb"
+            // console.log({ url });
+            // await connector.connect();
             Linking.openURL(url);
           }}
         >
