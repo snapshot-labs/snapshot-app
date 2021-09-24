@@ -14,6 +14,14 @@ function AppWrapper() {
 
 export default withWalletConnect(AppWrapper, {
   redirectUrl: "org.snapshot",
+  clientMeta: {
+    description: "Snapshot Mobile App",
+    url: "https://snapshot.org",
+    icons: [
+      "https://raw.githubusercontent.com/snapshot-labs/brand/master/avatar/avatar.png",
+    ],
+    name: "snapshot",
+  },
   storageOptions: {
     asyncStorage: AsyncStorage,
   },
