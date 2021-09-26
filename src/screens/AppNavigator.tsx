@@ -73,7 +73,11 @@ export default function () {
   const connector = useWalletConnect();
   return (
     <Stack.Navigator
-      initialRouteName={navigationConstants.LANDING_SCREEN}
+      initialRouteName={
+        connector.connected
+          ? navigationConstants.HOME_SCREEN
+          : navigationConstants.LANDING_SCREEN
+      }
       screenOptions={{
         headerTitleContainerStyle: { alignItems: "center" },
       }}
