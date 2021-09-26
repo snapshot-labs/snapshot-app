@@ -13,6 +13,7 @@ import {
   useAuthState,
 } from "../context/authContext";
 import get from "lodash/get";
+import common from "../styles/common";
 
 const LOAD_BY = 6;
 
@@ -85,7 +86,7 @@ function FeedScreen() {
   }, [followedSpaces]);
 
   return (
-    <View style={{ flex: 1, paddingTop: insets.top }}>
+    <View style={[common.screen, { paddingTop: insets.top }]}>
       <FlatList
         data={proposals}
         renderItem={(data) => {

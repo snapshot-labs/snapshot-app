@@ -19,8 +19,9 @@ import {
 import common from "../styles/common";
 import SpacePreview from "../components/SpacePreview";
 import i18n from "i18n-js";
+import { ContextDispatch } from "../types/context";
 
-async function getFollows(accountId, authDispatch) {
+async function getFollows(accountId: string, authDispatch: ContextDispatch) {
   const query = {
     query: FOLLOWS_QUERY,
     variables: {
@@ -35,7 +36,7 @@ async function getFollows(accountId, authDispatch) {
   });
 }
 
-async function getExplore(exploreDispatch) {
+async function getExplore(exploreDispatch: ContextDispatch) {
   const options: { [key: string]: any } = {
     method: "get",
     headers: {
