@@ -1,10 +1,6 @@
 import React, { useEffect } from "react";
 import { View } from "react-native";
-
-const defaultHeaders = {
-  accept: "application/json; charset=utf-8",
-  "content-type": "application/json; charset=utf-8",
-};
+import { defaultHeaders } from "../util/apiUtils";
 
 async function fetchExplore() {
   const options: { [key: string]: any } = {
@@ -15,7 +11,6 @@ async function fetchExplore() {
   };
   const response = await fetch("https://hub.snapshot.org/api/explore");
   const explore = await response.json();
-  console.log({ explore });
 }
 
 function ExploreScreen() {
