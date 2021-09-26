@@ -3,6 +3,8 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import colors from "../constants/colors";
 import { Proposal } from "../types/proposal";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
+import { shorten } from "../util/miscUtils";
+import StateBadge from "./StateBadge";
 
 const styles = StyleSheet.create({
   proposalPreviewContainer: {
@@ -13,6 +15,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     marginBottom: 8,
+    alignItems: "center",
   },
   avatar: {
     width: 28,
@@ -23,14 +26,22 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontSize: 18,
     marginLeft: 8,
+    fontFamily: "Calibre-Medium",
+    lineHeight: 28,
+    marginRight: 10,
   },
   statusContainer: {
-    height: 28,
-    borderRadius: 14,
     marginLeft: "auto",
   },
   title: {
     color: colors.headingColor,
+    fontFamily: "Calibre-Semibold",
+    fontSize: 24,
+  },
+  body: {
+    color: colors.darkGray,
+    fontFamily: "Calibre-Medium",
+    fontSize: 20,
   },
 });
 
@@ -47,14 +58,15 @@ function ProposalPreview({ proposal }: ProposalPreviewProps) {
           style={styles.avatar}
         />
         <Text style={styles.headerAuthor}>
-          {proposal.space.name} by {proposal.author}
+          {proposal.space.name} by {shorten(proposal.author)}
         </Text>
         <View style={styles.statusContainer}>
-          <Text>{proposal.state}</Text>
+          <StateBadge state={proposal.state} />
         </View>
       </View>
       <View>
-        <Text style={styles.title}>{proposal.title}</Text>
+        <Text style={styles.title}>{shorten(proposal.title, 124)}</Text>
+        <Text style={styles.body}>{shorten(proposal.body, 140)}</Text>
       </View>
     </View>
   );
