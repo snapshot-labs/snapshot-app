@@ -13,11 +13,10 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { convertArrayBufferToHex, generateKey, uuid } from "../util/miscUtils";
 import { useNavigation } from "@react-navigation/native";
 import { HOME_SCREEN } from "../constants/navigation";
+import { MetaMask } from "../constants/wallets";
+import { defaultHeaders } from "../util/apiUtils";
 
-const defaultHeaders = {
-  accept: "application/json; charset=utf-8",
-  "content-type": "application/json; charset=utf-8",
-};
+const defaultWallets = [MetaMask];
 
 async function fetchWallets(setWallets: (wallets: any[]) => void) {
   const options: { [key: string]: any } = {
@@ -135,6 +134,31 @@ function WalletConnectScreen() {
           </View>
         </TouchableOpacity>
       ))}
+      {wallets.length === 0 &&
+        defaultWallets.map((wallet) => (
+          <TouchableOpacity
+            key={wallet.id}
+            onPress={() => {
+              Linking.openURL(wallet.mobile.universal);
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 16,
+              }}
+            >
+              <Image
+                source={{
+                  uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
+                }}
+                style={{ marginRight: 16, width: 50, height: 50 }}
+              />
+              <Text>Get {wallet.name}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
     </View>
   );
 }
