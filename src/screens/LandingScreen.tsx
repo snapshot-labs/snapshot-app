@@ -33,8 +33,8 @@ function LandingScreen() {
         style={{
           position: "absolute",
           bottom: 30,
+          left: 16,
           width: "100%",
-          paddingHorizontal: 16,
           justifyContent: "center",
         }}
       >
