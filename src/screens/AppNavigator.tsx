@@ -17,7 +17,14 @@ const Tab = createMaterialTopTabNavigator();
 
 function TabNavigator() {
   return (
-    <Tab.Navigator tabBarPosition="bottom">
+    <Tab.Navigator
+      tabBarPosition="bottom"
+      screenOptions={{
+        tabBarLabelStyle: {
+          textTransform: "capitalize",
+        },
+      }}
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
