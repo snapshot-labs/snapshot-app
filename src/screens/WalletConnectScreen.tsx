@@ -8,17 +8,23 @@ import {
   Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import colors from "../constants/colors";
+import i18n from "i18n-js";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { convertArrayBufferToHex, generateKey, uuid } from "../util/miscUtils";
 import { useNavigation } from "@react-navigation/native";
+import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
+import colors from "../constants/colors";
+import { convertArrayBufferToHex, generateKey, uuid } from "../util/miscUtils";
 import { HOME_SCREEN } from "../constants/navigation";
 import { MetaMask } from "../constants/wallets";
 import { defaultHeaders } from "../util/apiUtils";
+import common from "../styles/common";
 
 const defaultWallets = [MetaMask];
 
-async function fetchWallets(setWallets: (wallets: any[]) => void) {
+async function fetchWallets(
+  setWallets: (wallets: any[]) => void,
+  setLoading: (loading: boolean) => void
+) {
   const options: { [key: string]: any } = {
     method: "get",
     headers: {
@@ -49,6 +55,7 @@ async function fetchWallets(setWallets: (wallets: any[]) => void) {
   }
 
   setWallets(wallets);
+  setLoading(false);
 }
 
 function WalletConnectScreen() {
@@ -56,10 +63,11 @@ function WalletConnectScreen() {
   const [wallets, setWallets] = useState<any[]>([]);
   const connector = useWalletConnect();
   const [connected, setConnected] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetchWallets(setWallets);
+    fetchWallets(setWallets, setLoading);
     setConnected(connector.connected);
   }, []);
 
@@ -78,87 +86,107 @@ function WalletConnectScreen() {
         paddingHorizontal: 16,
       }}
     >
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>Log in</Text>
-      <Text style={{ fontSize: 20, marginTop: 16, color: colors.darkGray }}>
-        Connect Wallet
+      <Text style={common.headerTitle}>{i18n.t("logIn")}</Text>
+      <Text style={[common.subTitle, { marginTop: 16 }]}>
+        {i18n.t("connectWallet")}
       </Text>
-      {wallets.map((wallet) => (
-        <TouchableOpacity
-          key={wallet.id}
-          onPress={async () => {
-            const newConnector = await connector.connect();
-            const bridge = encodeURIComponent(newConnector.bridge);
-            const arrayBufferKey = await generateKey();
-            const key = convertArrayBufferToHex(arrayBufferKey, true);
-            const handshakeTopic = uuid();
-            const createdUri = `wc:${handshakeTopic}@1`;
-            const redirectUrl = "org.snapshot";
-            newConnector._key = arrayBufferKey;
-            const request = newConnector._formatRequest({
-              method: "wc_sessionRequest",
-              params: [
-                {
-                  peerId: newConnector.clientId,
-                  peerMeta: newConnector.clientMeta,
-                  chainId: null,
-                },
-              ],
-            });
-            newConnector.handshakeId = request.id;
-            newConnector.handshakeTopic = handshakeTopic;
-            newConnector._sendSessionRequest(
-              request,
-              "Session update rejected",
-              {
-                topic: handshakeTopic,
-              }
-            );
-            const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
-            connector.connectToWalletService(wallet, formattedUri);
-          }}
+      {loading ? (
+        <Placeholder
+          Left={(props) => (
+            <PlaceholderMedia isRound={true} style={props.style} size={50} />
+          )}
+          style={{ alignItems: "center" }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 16,
-            }}
-          >
-            <Image
-              source={{
-                uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
-              }}
-              style={{ marginRight: 16, width: 50, height: 50 }}
-            />
-            <Text>{wallet.name}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-      {wallets.length === 0 &&
-        defaultWallets.map((wallet) => (
-          <TouchableOpacity
-            key={wallet.id}
-            onPress={() => {
-              Linking.openURL(wallet.mobile.universal);
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 16,
+          <PlaceholderLine width={80} />
+        </Placeholder>
+      ) : (
+        <>
+          {wallets.map((wallet) => (
+            <TouchableOpacity
+              key={wallet.id}
+              onPress={async () => {
+                const newConnector = await connector.connect();
+                const bridge = encodeURIComponent(newConnector.bridge);
+                const arrayBufferKey = await generateKey();
+                const key = convertArrayBufferToHex(arrayBufferKey, true);
+                const handshakeTopic = uuid();
+                const createdUri = `wc:${handshakeTopic}@1`;
+                const redirectUrl = "org.snapshot";
+                newConnector._key = arrayBufferKey;
+                const request = newConnector._formatRequest({
+                  method: "wc_sessionRequest",
+                  params: [
+                    {
+                      peerId: newConnector.clientId,
+                      peerMeta: newConnector.clientMeta,
+                      chainId: null,
+                    },
+                  ],
+                });
+                newConnector.handshakeId = request.id;
+                newConnector.handshakeTopic = handshakeTopic;
+                newConnector._sendSessionRequest(
+                  request,
+                  "Session update rejected",
+                  {
+                    topic: handshakeTopic,
+                  }
+                );
+                const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
+
+                connector.connectToWalletService(wallet, formattedUri);
               }}
             >
-              <Image
-                source={{
-                  uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 16,
                 }}
-                style={{ marginRight: 16, width: 50, height: 50 }}
-              />
-              <Text>Get {wallet.name}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+              >
+                <Image
+                  source={{
+                    uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
+                  }}
+                  style={{ marginRight: 16, width: 50, height: 50 }}
+                />
+                <Text>{wallet.name}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          {wallets.length === 0 &&
+            defaultWallets.map((wallet) => (
+              <TouchableOpacity
+                key={wallet.id}
+                onPress={() => {
+                  Linking.openURL(wallet.mobile.universal);
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 16,
+                  }}
+                >
+                  <Image
+                    source={{
+                      uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
+                    }}
+                    style={{
+                      marginRight: 16,
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                    }}
+                    resizeMode="contain"
+                  />
+                  <Text>Get {wallet.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+        </>
+      )}
     </View>
   );
 }
