@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import get from "lodash/get";
+import i18n from "i18n-js";
 import { Space } from "../types/explore";
 import Token from "./Token";
 import colors from "../constants/colors";
@@ -38,7 +39,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
       <View style={styles.spacePreviewTitleContainer}>
         <Text style={styles.spacePreviewTitle}>{get(space, "name")}</Text>
         <Text style={styles.spacePreviewFollowerCount}>
-          {get(space, "followers")} members
+          {get(space, "followers")} {i18n.t("members")}
         </Text>
       </View>
     </View>

@@ -2,6 +2,10 @@ import { StyleSheet } from "react-native";
 import colors from "../constants/colors";
 
 const common = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
   headerTitle: {
     color: colors.headingColor,
     fontSize: 30,
