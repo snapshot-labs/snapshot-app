@@ -18,6 +18,7 @@ import {
 } from "../context/exploreContext";
 import common from "../styles/common";
 import SpacePreview from "../components/SpacePreview";
+import i18n from "i18n-js";
 
 async function getFollows(accountId, authDispatch) {
   const query = {
@@ -63,13 +64,15 @@ function HomeScreen() {
   }, []);
 
   return (
-    <View style={{ flex: 1, paddingTop: insets.top }}>
+    <View style={[common.screen, { paddingTop: insets.top }]}>
       <FlatList
         data={followedSpaces}
         ListHeaderComponent={
           <View style={{ paddingHorizontal: 16, paddingTop: 30 }}>
-            <Text style={common.headerTitle}>Dashboard</Text>
-            <Text style={[common.subTitle, { marginTop: 16 }]}>My Spaces</Text>
+            <Text style={common.headerTitle}>{i18n.t("dashboard")}</Text>
+            <Text style={[common.subTitle, { marginTop: 16 }]}>
+              {i18n.t("mySpaces")}
+            </Text>
           </View>
         }
         renderItem={(data) => {
@@ -78,9 +81,6 @@ function HomeScreen() {
             get(spaces, currentSpace, {}),
             data.item.space
           );
-
-          console.log({ spaceData });
-
           return <SpacePreview space={spaceData} />;
         }}
         onEndReachedThreshold={0.45}

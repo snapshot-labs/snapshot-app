@@ -9,6 +9,7 @@ import {
 } from "@expo-google-fonts/space-mono";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AppWrapper from "./AppWrapper";
+import "./src/i18n";
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),

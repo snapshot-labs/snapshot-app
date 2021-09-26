@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "../types/context";
 
 type AuthState = {
-  followedSpaces: string[];
+  followedSpaces: { space: { id: string } }[];
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
