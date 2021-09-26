@@ -10,6 +10,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "../constants/colors";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import {
+  convertArrayBufferToHex,
+  generateKey,
+  uuid,
+} from "../util/miscUtils";
+import { useNavigation } from "@react-navigation/native";
+import { HOME_SCREEN } from "../constants/navigation";
 
 const defaultHeaders = {
   accept: "application/json; charset=utf-8",
@@ -55,10 +62,19 @@ function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
   const connector = useWalletConnect();
+  const [connected, setConnected] = useState<boolean>(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchWallets(setWallets);
+    setConnected(connector.connected);
   }, []);
+
+  useEffect(() => {
+    if (connector.connected && connected !== connector.connect) {
+      navigation.navigate(HOME_SCREEN);
+    }
+  }, [connector.connected]);
 
   return (
     <View
@@ -77,16 +93,35 @@ function WalletConnectScreen() {
         <TouchableOpacity
           key={wallet.id}
           onPress={async () => {
-            const bridge = encodeURIComponent(
-              "https://snapshot.bridge.walletconnect.org"
+            const newConnector = await connector.connect();
+            const bridge = encodeURIComponent(newConnector.bridge);
+            const arrayBufferKey = await generateKey();
+            const key = convertArrayBufferToHex(arrayBufferKey, true);
+            const handshakeTopic = uuid();
+            const createdUri = `wc:${handshakeTopic}@1`;
+            const redirectUrl = "org.snapshot";
+            newConnector._key = arrayBufferKey;
+            const request = newConnector._formatRequest({
+              method: "wc_sessionRequest",
+              params: [
+                {
+                  peerId: newConnector.clientId,
+                  peerMeta: newConnector.clientMeta,
+                  chainId: null,
+                },
+              ],
+            });
+            newConnector.handshakeId = request.id;
+            newConnector.handshakeTopic = handshakeTopic;
+            newConnector._sendSessionRequest(
+              request,
+              "Session update rejected",
+              {
+                topic: handshakeTopic,
+              }
             );
-            const uri = `wc?uri=wc:98c9b967-9369-4d17-a2e8-5ca1821cbca0@1&bridge=${bridge}&key=fe5098fe4fb3fa7ae8dbc306860868a4a326cfbe65c59428192edd80ee320349`;
-            const redirectUrl = "org.snapshot-app://";
-            const url = `${wallet.mobile.native}//${uri}&redirectUrl=${redirectUrl}`;
-            const androidUrl = "wc:bfa370d0-02c0-4040-8a1e-3c039bfdeefa@1?bridge=https%3A%2F%2Fj.bridge.walletconnect.org&key=9d8bdd603f85fecd0ec435ef241b509bddda4c5454dd47646e294f47ba68b0cb"
-            // console.log({ url });
-            // await connector.connect();
-            Linking.openURL(url);
+            const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
+            connector.connectToWalletService(wallet, formattedUri);
           }}
         >
           <View

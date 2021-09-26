@@ -71,24 +71,23 @@ export default function () {
         headerTitleContainerStyle: { alignItems: "center" },
       }}
     >
-      {connector.connected ? (
+      {connector.connected && (
         <Stack.Screen
           name={navigationConstants.HOME_SCREEN}
           component={TabNavigator}
           options={{ headerShown: false }}
         />
-      ) : (
-        <Stack.Screen
-          name={navigationConstants.LANDING_SCREEN}
-          component={LandingScreen}
-          options={{ headerShown: false }}
-        />
       )}
-        <Stack.Screen
-            name={navigationConstants.WALLET_CONNECT_SCREEN}
-            component={WalletConnectScreen}
-            options={{ headerShown: false }}
-        />
+      <Stack.Screen
+        name={navigationConstants.LANDING_SCREEN}
+        component={LandingScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.WALLET_CONNECT_SCREEN}
+        component={WalletConnectScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
