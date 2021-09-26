@@ -3,12 +3,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/screens/AppNavigator";
 import { withWalletConnect } from "@walletconnect/react-native-dapp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthProvider } from "./src/context/authContext";
+import { ExploreProvider } from "./src/context/exploreContext";
 
 function AppWrapper() {
   return (
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
+    <ExploreProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+    </ExploreProvider>
   );
 }
 
