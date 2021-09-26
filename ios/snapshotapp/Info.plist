@@ -85,9 +85,56 @@
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>argent</string>
+		<string>metamask</string>
+		<string>gnosissafe</string>
+		<string>cryptowallet</string>
+		<string>pillarwallet</string>
+		<string>imtokenv2</string>
+		<string>ontoprovider</string>
+		<string>tpoutside</string>
+		<string>mathwallet</string>
+		<string>bitpay</string>
+		<string>ledgerlive</string>
+		<string>dharma</string>
+		<string>1inch</string>
+		<string>huobiwallet</string>
+		<string>eidoo</string>
+		<string>mykeywalletconnect</string>
+		<string>coin98</string>
+		<string>dcent</string>
+		<string>zel</string>
+		<string>nash</string>
+		<string>cybavowallet</string>
+		<string>safepalwallet</string>
+		<string>easypocket</string>
+		<string>sparkpoint</string>
+		<string>bitkeep</string>
+		<string>peakdefiwallet</string>
+		<string>moneyunstoppable</string>
+		<string>halodefiwallet</string>
+		<string>ellipal</string>
+		<string>keyring</string>
+		<string>aktionariat</string>
+		<string>talken-wallet</string>
+		<string>flare</string>
+		<string>kyberswap</string>
+		<string>atoken</string>
+		<string>tongue</string>
+		<string>rwallet</string>
+		<string>plasmapay</string>
+		<string>o3wallet</string>
+		<string>hashme</string>
+		<string>defiantapp</string>
+		<string>celo</string>
+		<string>celowallet</string>
+		<string>essentials</string>
+		<string>fuse.cash</string>
+		<string>bitpie</string>
+		<string>stasis</string>
+		<string>julwallet</string>
 		<string>rainbow</string>
 		<string>trust</string>
-		<string>metamask</string>
 	</array>
 </dict>
 </plist>

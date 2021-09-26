@@ -10,11 +10,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "../constants/colors";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import {
-  convertArrayBufferToHex,
-  generateKey,
-  uuid,
-} from "../util/miscUtils";
+import { convertArrayBufferToHex, generateKey, uuid } from "../util/miscUtils";
 import { useNavigation } from "@react-navigation/native";
 import { HOME_SCREEN } from "../constants/navigation";
 
@@ -41,9 +37,7 @@ async function fetchWallets(setWallets: (wallets: any[]) => void) {
     const currentWalletKey = walletKeys[i];
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
-      if (Platform.OS === "ios") {
-        wallets.push(currentWallet);
-      } else {
+      try {
         const isAppInstalled = await Linking.canOpenURL(
           currentWallet.mobile.native
         );
@@ -51,7 +45,7 @@ async function fetchWallets(setWallets: (wallets: any[]) => void) {
         if (isAppInstalled) {
           wallets.push(currentWallet);
         }
-      }
+      } catch (e) {}
     }
   }
 
