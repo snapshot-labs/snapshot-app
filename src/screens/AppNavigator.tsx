@@ -2,7 +2,6 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import * as navigationConstants from "../constants/navigation";
 import FeedScreen from "./FeedScreen";
 import LandingScreen from "./LandingScreen";
@@ -10,11 +9,13 @@ import ExploreScreen from "./ExploreScreen";
 import HomeScreen from "./HomeScreen";
 import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
+import QRCodeScannerScreen from "./QRCodeScannerScreen";
+import { useAuthState } from "../context/authContext";
 
 const Stack = createStackNavigator();
 
 const Tab = createMaterialTopTabNavigator();
-
+const ICON_SIZE = 20;
 function TabNavigator() {
   return (
     <Tab.Navigator
@@ -30,8 +31,8 @@ function TabNavigator() {
         component={HomeScreen}
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="home" color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="home" color={color} size={ICON_SIZE} />
           ),
         }}
       />
@@ -40,8 +41,8 @@ function TabNavigator() {
         component={FeedScreen}
         options={{
           title: "Feed",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="rss" color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="rss" color={color} size={ICON_SIZE} />
           ),
         }}
       />
@@ -50,8 +51,8 @@ function TabNavigator() {
         component={ExploreScreen}
         options={{
           title: "Explore",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="compass" color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="compass" color={color} size={ICON_SIZE} />
           ),
         }}
       />
@@ -60,8 +61,8 @@ function TabNavigator() {
         component={MoreScreen}
         options={{
           title: "More",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="ellipsis-h" color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="ellipsis-h" color={color} size={ICON_SIZE} />
           ),
         }}
       />
@@ -70,11 +71,11 @@ function TabNavigator() {
 }
 
 export default function () {
-  const connector = useWalletConnect();
+  const { connectedAddress } = useAuthState();
   return (
     <Stack.Navigator
       initialRouteName={
-        connector.connected
+        connectedAddress !== null
           ? navigationConstants.HOME_SCREEN
           : navigationConstants.LANDING_SCREEN
       }
@@ -82,21 +83,24 @@ export default function () {
         headerTitleContainerStyle: { alignItems: "center" },
       }}
     >
-      {connector.connected && (
-        <Stack.Screen
-          name={navigationConstants.HOME_SCREEN}
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-      )}
       <Stack.Screen
         name={navigationConstants.LANDING_SCREEN}
         component={LandingScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name={navigationConstants.HOME_SCREEN}
+        component={TabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name={navigationConstants.WALLET_CONNECT_SCREEN}
         component={WalletConnectScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.QR_CODE_SCANNER_SCREEN}
+        component={QRCodeScannerScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

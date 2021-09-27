@@ -16,6 +16,11 @@ const common = StyleSheet.create({
     fontSize: 20,
     fontFamily: "Calibre-Medium",
   },
+  defaultText: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    color: colors.headingColor,
+  },
 });
 
 export default common;

@@ -1,8 +1,10 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "../types/context";
+import storage from "../util/storage";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
+  connectedAddress: null | string;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -12,9 +14,12 @@ const AuthDispatchContext = createContext<ContextDispatch | undefined>(
 
 const AUTH_ACTIONS = {
   SET_FOLLOWED_SPACES: "@auth/SET_FOLLOWED_SPACES",
+  SET_CONNECTED_ADDRESS: "@auth/SET_CONNECTED_ADDRESS",
+  LOGOUT: "@auth/LOGOUT",
 };
 
 const initialState = {
+  connectedAddress: null,
   followedSpaces: [],
 };
 
@@ -22,6 +27,15 @@ function authReducer(state: AuthState, action: ContextAction) {
   switch (action.type) {
     case AUTH_ACTIONS.SET_FOLLOWED_SPACES:
       return { ...state, followedSpaces: action.payload };
+    case AUTH_ACTIONS.SET_CONNECTED_ADDRESS:
+      const connectedAddress = action.payload.connectedAddress;
+      if (action.payload.addToStorage) {
+        storage.save(storage.KEYS.connectedAddress, connectedAddress);
+      }
+      return { ...state, connectedAddress };
+    case AUTH_ACTIONS.LOGOUT:
+      storage.clearAll();
+      return initialState;
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

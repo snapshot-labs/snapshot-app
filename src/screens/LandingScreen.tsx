@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
 import LoginButton from "../components/LoginButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "../constants/colors";
+import icon from "../images/Icon167.png";
 
 function LandingScreen() {
   const insets = useSafeAreaInsets();
@@ -15,9 +16,11 @@ function LandingScreen() {
         backgroundColor: colors.white,
       }}
     >
-      <Text style={{ fontFamily: "SpaceMono_700Bold", fontSize: 20 }}>
-        snapshot
-      </Text>
+      <Image
+        source={icon}
+        style={{ height: 75, width: 75 }}
+        resizeMode="contain"
+      />
       <Text
         style={{ fontFamily: "SpaceMono_700Bold", fontSize: 50, marginTop: 30 }}
       >

@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Linking,
-  Image,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { View, Text, Linking, Image, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
-import colors from "../constants/colors";
-import { convertArrayBufferToHex, generateKey, uuid } from "../util/miscUtils";
-import { HOME_SCREEN } from "../constants/navigation";
+import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "../constants/navigation";
 import { MetaMask } from "../constants/wallets";
 import { defaultHeaders } from "../util/apiUtils";
 import common from "../styles/common";
+import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
 
 const defaultWallets = [MetaMask];
 
@@ -64,7 +56,8 @@ function WalletConnectScreen() {
   const connector = useWalletConnect();
   const [connected, setConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
+  const authDispatch = useAuthDispatch();
 
   useEffect(() => {
     fetchWallets(setWallets, setLoading);
@@ -72,21 +65,37 @@ function WalletConnectScreen() {
   }, []);
 
   useEffect(() => {
-    if (connector.connected && connected !== connector.connect) {
-      navigation.navigate(HOME_SCREEN);
+    if (connector.connected && connected !== connector.connected) {
+      if (connector.accounts && connector.accounts.length > 0) {
+        console.log({ connecterAccounts: connector.accounts });
+        authDispatch({
+          type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+          payload: {
+            connectedAddress: connector.accounts[0],
+            addToStorage: true,
+          },
+        });
+      }
+      navigation.reset({
+        index: 0,
+        routes: [{ name: HOME_SCREEN }],
+      });
     }
   }, [connector.connected]);
 
   return (
     <View
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        backgroundColor: colors.white,
-        paddingHorizontal: 16,
-      }}
+      style={[
+        common.screen,
+        {
+          paddingTop: insets.top,
+          paddingHorizontal: 16,
+        },
+      ]}
     >
-      <Text style={common.headerTitle}>{i18n.t("logIn")}</Text>
+      <Text style={[{ marginTop: 30 }, common.headerTitle]}>
+        {i18n.t("logIn")}
+      </Text>
       <Text style={[common.subTitle, { marginTop: 16 }]}>
         {i18n.t("connectWallet")}
       </Text>
@@ -105,36 +114,36 @@ function WalletConnectScreen() {
             <TouchableOpacity
               key={wallet.id}
               onPress={async () => {
-                const newConnector = await connector.connect();
-                const bridge = encodeURIComponent(newConnector.bridge);
-                const arrayBufferKey = await generateKey();
-                const key = convertArrayBufferToHex(arrayBufferKey, true);
-                const handshakeTopic = uuid();
-                const createdUri = `wc:${handshakeTopic}@1`;
-                const redirectUrl = "org.snapshot";
-                newConnector._key = arrayBufferKey;
-                const request = newConnector._formatRequest({
-                  method: "wc_sessionRequest",
-                  params: [
-                    {
-                      peerId: newConnector.clientId,
-                      peerMeta: newConnector.clientMeta,
-                      chainId: null,
-                    },
-                  ],
-                });
-                newConnector.handshakeId = request.id;
-                newConnector.handshakeTopic = handshakeTopic;
-                newConnector._sendSessionRequest(
-                  request,
-                  "Session update rejected",
-                  {
-                    topic: handshakeTopic,
-                  }
-                );
-                const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
-
-                connector.connectToWalletService(wallet, formattedUri);
+                await connector.connect();
+                // const bridge = encodeURIComponent(newConnector.bridge);
+                // const arrayBufferKey = await generateKey();
+                // const key = convertArrayBufferToHex(arrayBufferKey, true);
+                // const handshakeTopic = uuid();
+                // const createdUri = `wc:${handshakeTopic}@1`;
+                // const redirectUrl = "org.snapshot";
+                // newConnector._key = arrayBufferKey;
+                // const request = newConnector._formatRequest({
+                //   method: "wc_sessionRequest",
+                //   params: [
+                //     {
+                //       peerId: newConnector.clientId,
+                //       peerMeta: newConnector.clientMeta,
+                //       chainId: null,
+                //     },
+                //   ],
+                // });
+                // newConnector.handshakeId = request.id;
+                // newConnector.handshakeTopic = handshakeTopic;
+                // newConnector._sendSessionRequest(
+                //   request,
+                //   "Session update rejected",
+                //   {
+                //     topic: handshakeTopic,
+                //   }
+                // );
+                // const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
+                //
+                // connector.connectToWalletService(wallet, formattedUri);
               }}
             >
               <View
@@ -150,7 +159,7 @@ function WalletConnectScreen() {
                   }}
                   style={{ marginRight: 16, width: 50, height: 50 }}
                 />
-                <Text>{wallet.name}</Text>
+                <Text style={common.defaultText}>{wallet.name}</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -181,10 +190,26 @@ function WalletConnectScreen() {
                     }}
                     resizeMode="contain"
                   />
-                  <Text>Get {wallet.name}</Text>
+                  <Text style={common.defaultText}>
+                    {i18n.t("getWallet", { walletName: wallet.name })}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
+          <View style={{ marginTop: 24 }}>
+            <Text style={common.subTitle}>{i18n.t("orUseACustomWallet")}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(QR_CODE_SCANNER_SCREEN);
+              }}
+            >
+              <View>
+                <Text style={[common.defaultText, { marginTop: 24 }]}>
+                  {i18n.t("customWalletReadOnly")}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </View>

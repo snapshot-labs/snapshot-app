@@ -8,6 +8,7 @@ import {
   SpaceMono_400Regular,
 } from "@expo-google-fonts/space-mono";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AuthProvider } from "./src/context/authContext";
 import AppWrapper from "./AppWrapper";
 import "./src/i18n";
 
@@ -35,7 +36,9 @@ export default function App() {
   if (fontsLoaded && fontLoaded) {
     return (
       <SafeAreaProvider>
-        <AppWrapper />
+        <AuthProvider>
+          <AppWrapper />
+        </AuthProvider>
       </SafeAreaProvider>
     );
   }
