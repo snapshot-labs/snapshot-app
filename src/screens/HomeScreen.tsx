@@ -114,7 +114,7 @@ function HomeScreen() {
             const currentSpace = data.item.space.id;
             const spaceData = Object.assign(
               get(spaces, currentSpace, {}),
-              data.item.space
+              data.item.space,
             );
             return <SpacePreview space={spaceData} />;
           }}
