@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, View, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import {
+  Fade,
+  Placeholder,
+  PlaceholderLine,
+  PlaceholderMedia,
+} from "rn-placeholder";
+import get from "lodash/get";
+import i18n from "i18n-js";
 import apolloClient from "../util/apolloClient";
 import { FOLLOWS_QUERY } from "../util/queries";
 import {
@@ -9,7 +16,6 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "../context/authContext";
-import get from "lodash/get";
 import { defaultHeaders } from "../util/apiUtils";
 import {
   EXPLORE_ACTIONS,
@@ -18,22 +24,31 @@ import {
 } from "../context/exploreContext";
 import common from "../styles/common";
 import SpacePreview from "../components/SpacePreview";
-import i18n from "i18n-js";
 import { ContextDispatch } from "../types/context";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
 
-async function getFollows(accountId: string, authDispatch: ContextDispatch) {
-  const query = {
-    query: FOLLOWS_QUERY,
-    variables: {
-      follower_in: accountId,
-    },
-  };
-  const result = await apolloClient.query(query);
-  const followedSpaces = get(result, "data.follows", []);
-  authDispatch({
-    type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
-    payload: followedSpaces,
-  });
+const loadingElements = [1, 2, 3, 4];
+
+async function getFollows(
+  accountId: string | null,
+  authDispatch: ContextDispatch,
+  setLoading: (loading: boolean) => void
+) {
+  if (accountId) {
+    const query = {
+      query: FOLLOWS_QUERY,
+      variables: {
+        follower_in: accountId,
+      },
+    };
+    const result = await apolloClient.query(query);
+    const followedSpaces = get(result, "data.follows", []);
+    authDispatch({
+      type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
+      payload: followedSpaces,
+    });
+  }
+  setLoading(false);
 }
 
 async function getExplore(exploreDispatch: ContextDispatch) {
@@ -52,41 +67,66 @@ async function getExplore(exploreDispatch: ContextDispatch) {
 }
 
 function HomeScreen() {
-  const { followedSpaces } = useAuthState();
+  const [loading, setLoading] = useState<boolean>(true);
+  const { followedSpaces, connectedAddress } = useAuthState();
   const { spaces } = useExploreState();
   const authDispatch = useAuthDispatch();
   const exploreDispatch = useExploreDispatch();
-  const connector = useWalletConnect();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     getExplore(exploreDispatch);
-    getFollows(connector.accounts[0], authDispatch);
+    getFollows(connectedAddress, authDispatch, setLoading);
   }, []);
 
   return (
     <View style={[common.screen, { paddingTop: insets.top }]}>
-      <FlatList
-        data={followedSpaces}
-        ListHeaderComponent={
-          <View style={{ paddingHorizontal: 16, paddingTop: 30 }}>
-            <Text style={common.headerTitle}>{i18n.t("dashboard")}</Text>
-            <Text style={[common.subTitle, { marginTop: 16 }]}>
-              {i18n.t("mySpaces")}
-            </Text>
+      {loading ? (
+        <>
+          <DashboardHeader />
+          <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+            {loadingElements.map((loadingId) => (
+              <Placeholder
+                key={`${loadingId}`}
+                Animation={Fade}
+                Left={(props) => (
+                  <PlaceholderMedia
+                    isRound={true}
+                    style={props.style}
+                    size={50}
+                  />
+                )}
+                style={{ justifyContent: "center", marginTop: 16 }}
+              >
+                <View style={{ marginTop: 6 }}>
+                  <PlaceholderLine width={80} />
+                  <PlaceholderLine width={80} />
+                </View>
+              </Placeholder>
+            ))}
           </View>
-        }
-        renderItem={(data) => {
-          const currentSpace = data.item.space.id;
-          const spaceData = Object.assign(
-            get(spaces, currentSpace, {}),
-            data.item.space
-          );
-          return <SpacePreview space={spaceData} />;
-        }}
-        onEndReachedThreshold={0.45}
-        onEndReached={() => {}}
-      />
+        </>
+      ) : (
+        <FlatList
+          data={followedSpaces}
+          ListHeaderComponent={<DashboardHeader />}
+          renderItem={(data) => {
+            const currentSpace = data.item.space.id;
+            const spaceData = Object.assign(
+              get(spaces, currentSpace, {}),
+              data.item.space
+            );
+            return <SpacePreview space={spaceData} />;
+          }}
+          onEndReachedThreshold={0.45}
+          ListEmptyComponent={
+            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+              <Text style={common.subTitle}>{i18n.t("noSpacesJoinedYet")}</Text>
+            </View>
+          }
+          onEndReached={() => {}}
+        />
+      )}
     </View>
   );
 }

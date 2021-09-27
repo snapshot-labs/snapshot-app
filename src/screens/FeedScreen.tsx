@@ -1,36 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import uniqBy from "lodash/uniqBy";
+import get from "lodash/get";
 import apolloClient from "../util/apolloClient";
-import { FOLLOWS_QUERY, PROPOSALS_QUERY } from "../util/queries";
+import { PROPOSALS_QUERY } from "../util/queries";
 import ProposalPreview from "../components/ProposalPreview";
 import { Proposal } from "../types/proposal";
-import {
-  AUTH_ACTIONS,
-  useAuthDispatch,
-  useAuthState,
-} from "../context/authContext";
-import get from "lodash/get";
+import { useAuthState } from "../context/authContext";
 import common from "../styles/common";
+import i18n from "i18n-js";
 
 const LOAD_BY = 6;
-
-async function getFollows(accountId, authDispatch) {
-  const query = {
-    query: FOLLOWS_QUERY,
-    variables: {
-      follower_in: accountId,
-    },
-  };
-  const result = await apolloClient.query(query);
-  const followedSpaces = get(result, "data.follows", []);
-  authDispatch({
-    type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
-    payload: followedSpaces,
-  });
-}
 
 async function getProposals(
   followedSpaces,
@@ -62,15 +44,9 @@ async function getProposals(
 
 function FeedScreen() {
   const { followedSpaces } = useAuthState();
-  const authDispatch = useAuthDispatch();
-  const connector = useWalletConnect();
   const insets = useSafeAreaInsets();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
-
-  useEffect(() => {
-    getFollows(connector.accounts[0], authDispatch);
-  }, []);
 
   useEffect(() => {
     if (followedSpaces.length > 0) {
@@ -102,6 +78,11 @@ function FeedScreen() {
             setProposals
           );
         }}
+        ListEmptyComponent={
+          <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+            <Text style={common.subTitle}>{i18n.t("noSpacesJoinedYet")}</Text>
+          </View>
+        }
       />
     </View>
   );

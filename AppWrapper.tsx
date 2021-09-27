@@ -1,19 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/screens/AppNavigator";
 import { withWalletConnect } from "@walletconnect/react-native-dapp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthProvider } from "./src/context/authContext";
 import { ExploreProvider } from "./src/context/exploreContext";
+import storage from "./src/util/storage";
+import { AUTH_ACTIONS, useAuthDispatch } from "./src/context/authContext";
+import { ContextDispatch } from "./src/types/context";
+
+async function loadFromStorage(
+  authDispatch: ContextDispatch,
+  setLoading: (loading: boolean) => void
+) {
+  try {
+    const connectedAddress = await storage.load(storage.KEYS.connectedAddress);
+    if (connectedAddress) {
+      authDispatch({
+        type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+        payload: {
+          connectedAddress,
+          addToStorage: false,
+        },
+      });
+    }
+  } catch (e) {}
+  setLoading(false);
+}
 
 function AppWrapper() {
+  const [loading, setLoading] = useState(true);
+  const authDispatch = useAuthDispatch();
+
+  useEffect(() => {
+    loadFromStorage(authDispatch, setLoading);
+    StatusBar.setBarStyle("dark-content", true);
+  }, []);
+
+  if (loading) {
+    return <View />;
+  }
+
   return (
     <ExploreProvider>
-      <AuthProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </AuthProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
     </ExploreProvider>
   );
 }
@@ -29,6 +61,7 @@ export default withWalletConnect(AppWrapper, {
     name: "snapshot",
   },
   storageOptions: {
+    //@ts-ignore
     asyncStorage: AsyncStorage,
   },
 });
