@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
+import { useAuthState } from "../context/authContext";
 import * as navigationConstants from "../constants/navigation";
 import FeedScreen from "./FeedScreen";
 import LandingScreen from "./LandingScreen";
@@ -10,7 +11,7 @@ import HomeScreen from "./HomeScreen";
 import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
-import { useAuthState } from "../context/authContext";
+import TokenScreen from "./TokenScreen";
 
 const Stack = createStackNavigator();
 
@@ -101,6 +102,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.QR_CODE_SCANNER_SCREEN}
         component={QRCodeScannerScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.TOKEN_SCREEN}
+        component={TokenScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

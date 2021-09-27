@@ -1,4 +1,3 @@
-
 export default {
   dashboard: "Dashboard",
   mySpaces: "My Spaces",
@@ -17,5 +16,6 @@ export default {
   requestingForCameraPermission: "Requesting for camera permission",
   noAccessToCamera: "No access to camera",
   requestAccessToCamera: "Request access to camera",
-  noSpacesJoinedYet: "Oops, you haven't joined any spaces yet"
+  noSpacesJoinedYet: "Oops, you haven't joined any spaces yet",
+  proposals: "Proposals",
 };
