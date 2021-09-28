@@ -8,4 +8,6 @@ export type Proposal = {
   start: number;
   state: string;
   title: string;
+  snapshot: string;
+  type: string;
 };

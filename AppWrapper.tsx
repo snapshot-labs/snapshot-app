@@ -28,19 +28,7 @@ async function loadFromStorage(
   setLoading(false);
 }
 
-function AppWrapper() {
-  const [loading, setLoading] = useState(true);
-  const authDispatch = useAuthDispatch();
-
-  useEffect(() => {
-    loadFromStorage(authDispatch, setLoading);
-    StatusBar.setBarStyle("dark-content", true);
-  }, []);
-
-  if (loading) {
-    return <View />;
-  }
-
+function MainApp() {
   return (
     <ExploreProvider>
       <NavigationContainer>
@@ -50,7 +38,7 @@ function AppWrapper() {
   );
 }
 
-export default withWalletConnect(AppWrapper, {
+const WrappedMainApp = withWalletConnect(MainApp, {
   redirectUrl: "org.snapshot",
   clientMeta: {
     description: "Snapshot Mobile App",
@@ -65,3 +53,21 @@ export default withWalletConnect(AppWrapper, {
     asyncStorage: AsyncStorage,
   },
 });
+
+function AppWrapper() {
+  const [loading, setLoading] = useState(true);
+  const authDispatch = useAuthDispatch();
+
+  useEffect(() => {
+    loadFromStorage(authDispatch, setLoading);
+    StatusBar.setBarStyle("dark-content", true);
+  }, []);
+
+  if (loading) {
+    return <View />;
+  }
+
+  return <WrappedMainApp />;
+}
+
+export default AppWrapper;

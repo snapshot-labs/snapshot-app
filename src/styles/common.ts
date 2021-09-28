@@ -21,6 +21,15 @@ const common = StyleSheet.create({
     fontSize: 18,
     color: colors.headingColor,
   },
+  h1: {
+    fontSize: 36,
+    fontWeight: "500",
+    fontFamily: "Calibre-Semibold",
+  },
+  h4: {
+    fontSize: 20,
+    fontFamily: "Calibre-Semibold",
+  },
 });
 
 export default common;

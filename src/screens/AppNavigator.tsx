@@ -12,6 +12,7 @@ import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
 import TokenScreen from "./TokenScreen";
+import ProposalScreen from "./ProposalScreen";
 
 const Stack = createStackNavigator();
 
@@ -107,6 +108,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.TOKEN_SCREEN}
         component={TokenScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.PROPOSAL_SCREEN}
+        component={ProposalScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
