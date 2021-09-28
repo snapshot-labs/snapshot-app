@@ -1,6 +1,10 @@
 // @ts-nocheck
 import * as crypto from "@walletconnect/crypto";
 import * as encoding from "@walletconnect/encoding";
+import { format } from "timeago.js";
+import moment from "moment-timezone";
+import numeral from "numeral";
+import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 
 export function uuid() {
   const result = ((a, b) => {
@@ -52,4 +56,22 @@ export function shorten(str: string, key?: any): string {
   }
 
   return shortenAddress(str);
+}
+
+export function getTimeAgo(number) {
+  return format(number * 1e3);
+}
+
+export function dateFormat(number, format?: string | undefined) {
+  let setFormat = "MMM DD, YYYY HH:mm";
+  return moment(number * 1e3).format(format ?? setFormat);
+}
+
+export function n(number, format = "(0.[00]a)") {
+  if (number < 0.00001) return format.includes("%") ? "0%" : 0;
+  return numeral(number).format(format);
+}
+
+export function explorerUrl(network, str: string, type = "address"): string {
+  return `${networks[network].explorer}/${type}/${str}`;
 }
