@@ -83,9 +83,13 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("strategies")}</Text>
             <View style={[styles.rowValue, { height: 20 }]}>
-              {symbols.map((symbol: string, symbolIndex: number) => (
-                <Token symbolIndex={symbolIndex} size={20} space={space} />
-              ))}
+              <View style={{ flexDirection: "row" }}>
+                {symbols.map((symbol: string, symbolIndex: number) => (
+                  <View key={symbolIndex} style={{ marginLeft: 6 }}>
+                    <Token symbolIndex={symbolIndex} size={20} space={space} />
+                  </View>
+                ))}
+              </View>
             </View>
           </View>
           <View style={styles.row}>
