@@ -13,6 +13,7 @@ import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
 import TokenScreen from "./TokenScreen";
 import ProposalScreen from "./ProposalScreen";
+import CustomWalletScreen from "./CustomWalletScreen";
 
 const Stack = createStackNavigator();
 
@@ -113,6 +114,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.PROPOSAL_SCREEN}
         component={ProposalScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CUSTOM_WALLET_SCREEN}
+        component={CustomWalletScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
