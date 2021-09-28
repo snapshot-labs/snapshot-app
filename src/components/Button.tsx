@@ -1,5 +1,12 @@
 import React from "react";
-import { Text, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+  TouchableWithoutFeedback,
+} from "react-native";
 import colors from "../constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -10,6 +17,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: "center",
     alignItems: "center",
+  },
+  disabled: {
+    backgroundColor: colors.bgGray,
   },
   buttonTitle: {
     color: colors.white,
@@ -23,6 +33,7 @@ type ButtonProps = {
   title: string;
   buttonContainerStyle?: ViewStyle;
   buttonTitleStyle?: TextStyle;
+  disabled?: boolean;
 };
 
 function Button({
@@ -30,13 +41,24 @@ function Button({
   title,
   buttonTitleStyle,
   buttonContainerStyle,
+  disabled = false,
 }: ButtonProps) {
+  const ButtonContainerComponent = disabled
+    ? TouchableWithoutFeedback
+    : TouchableOpacity;
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={[styles.button, buttonContainerStyle]}>
+    <ButtonContainerComponent onPress={disabled ? () => {} : onPress}>
+      <View
+        style={[
+          styles.button,
+          disabled ? styles.disabled : {},
+          buttonContainerStyle,
+        ]}
+      >
         <Text style={[styles.buttonTitle, buttonTitleStyle]}>{title}</Text>
       </View>
-    </TouchableOpacity>
+    </ButtonContainerComponent>
   );
 }
 

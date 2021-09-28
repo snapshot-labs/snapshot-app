@@ -5,7 +5,11 @@ import i18n from "i18n-js";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
-import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "../constants/navigation";
+import {
+  CUSTOM_WALLET_SCREEN,
+  HOME_SCREEN,
+  QR_CODE_SCANNER_SCREEN,
+} from "../constants/navigation";
 import { MetaMask } from "../constants/wallets";
 import { defaultHeaders } from "../util/apiUtils";
 import common from "../styles/common";
@@ -200,7 +204,7 @@ function WalletConnectScreen() {
             <Text style={common.subTitle}>{i18n.t("orUseACustomWallet")}</Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(QR_CODE_SCANNER_SCREEN);
+                navigation.navigate(CUSTOM_WALLET_SCREEN);
               }}
             >
               <View>

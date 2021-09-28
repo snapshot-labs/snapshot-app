@@ -38,4 +38,5 @@ export default {
   quadraticVoting: "Quadratic voting",
   rankedChoiceVoting: "Ranked choice voting",
   weightedVoting: "Weighted voting",
+  enterWalletAddress: "Enter wallet address"
 };
