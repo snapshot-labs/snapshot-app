@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   rowValueText: {
     fontSize: 18,
     fontFamily: "Calibre-Medium",
-    color: colors.darkGray,
+    color: colors.textColor,
   },
 });
 

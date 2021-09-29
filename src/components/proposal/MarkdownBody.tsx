@@ -14,6 +14,8 @@ const systemFonts = [
 const tagsStyles = {
   a: {
     fontFamily: "Calibre-Semibold",
+    color: colors.headingColor,
+    textDecorationColor: colors.headingColor,
   },
   p: {
     marginTop: 0,

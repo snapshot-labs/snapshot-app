@@ -17,14 +17,23 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
+  },
+  lightButton: {
+    backgroundColor: colors.white,
+    borderColor: colors.borderColor,
+    borderWidth: 1,
   },
   disabled: {
-    backgroundColor: colors.bgGray,
+    opacity: 0.3,
   },
   buttonTitle: {
     color: colors.white,
     fontSize: 20,
     fontFamily: "Calibre-Semibold",
+  },
+  lightButtonTitle: {
+    color: colors.textColor,
   },
 });
 
@@ -34,6 +43,8 @@ type ButtonProps = {
   buttonContainerStyle?: ViewStyle;
   buttonTitleStyle?: TextStyle;
   disabled?: boolean;
+  light?: boolean;
+  Icon?: React.FC | undefined;
 };
 
 function Button({
@@ -42,6 +53,8 @@ function Button({
   buttonTitleStyle,
   buttonContainerStyle,
   disabled = false,
+  light = false,
+  Icon = undefined,
 }: ButtonProps) {
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
@@ -52,11 +65,21 @@ function Button({
       <View
         style={[
           styles.button,
+          light ? styles.lightButton : {},
           disabled ? styles.disabled : {},
           buttonContainerStyle,
         ]}
       >
-        <Text style={[styles.buttonTitle, buttonTitleStyle]}>{title}</Text>
+        <Text
+          style={[
+            styles.buttonTitle,
+            light ? styles.lightButtonTitle : {},
+            buttonTitleStyle,
+          ]}
+        >
+          {title}
+        </Text>
+        {Icon !== undefined && <Icon />}
       </View>
     </ButtonContainerComponent>
   );

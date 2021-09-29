@@ -52,18 +52,43 @@ async function getFollows(
 }
 
 async function getExplore(exploreDispatch: ContextDispatch) {
-  const options: { [key: string]: any } = {
-    method: "get",
-    headers: {
-      ...defaultHeaders,
-    },
-  };
-  const response = await fetch("https://hub.snapshot.org/api/explore", options);
-  const explore = await response.json();
-  exploreDispatch({
-    type: EXPLORE_ACTIONS.SET_EXPLORE,
-    payload: explore,
-  });
+  try {
+    const options: { [key: string]: any } = {
+      method: "get",
+      headers: {
+        ...defaultHeaders,
+      },
+    };
+    const response = await fetch(
+      "https://hub.snapshot.org/api/explore",
+      options
+    );
+    const explore = await response.json();
+    exploreDispatch({
+      type: EXPLORE_ACTIONS.SET_EXPLORE,
+      payload: explore,
+    });
+  } catch (e) {}
+}
+
+async function getStrategies(exploreDispatch: ContextDispatch) {
+  try {
+    const options: { [key: string]: any } = {
+      method: "get",
+      headers: {
+        ...defaultHeaders,
+      },
+    };
+    const response = await fetch(
+      "https://score.snapshot.org/api/strategies",
+      options
+    );
+    const fullStrategies = await response.json();
+    exploreDispatch({
+      type: EXPLORE_ACTIONS.SET_FULL_STRATEGIES,
+      payload: fullStrategies,
+    });
+  } catch (e) {}
 }
 
 function HomeScreen() {
@@ -77,6 +102,7 @@ function HomeScreen() {
   useEffect(() => {
     getExplore(exploreDispatch);
     getFollows(connectedAddress, authDispatch, setLoading);
+    getStrategies(exploreDispatch);
   }, []);
 
   return (
@@ -114,7 +140,7 @@ function HomeScreen() {
             const currentSpace = data.item.space.id;
             const spaceData = Object.assign(
               get(spaces, currentSpace, {}),
-              data.item.space,
+              data.item.space
             );
             return <SpacePreview space={spaceData} />;
           }}

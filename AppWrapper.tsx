@@ -4,6 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/screens/AppNavigator";
 import { withWalletConnect } from "@walletconnect/react-native-dapp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+
 import { ExploreProvider } from "./src/context/exploreContext";
 import storage from "./src/util/storage";
 import { AUTH_ACTIONS, useAuthDispatch } from "./src/context/authContext";
@@ -30,11 +32,13 @@ async function loadFromStorage(
 
 function MainApp() {
   return (
-    <ExploreProvider>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </ExploreProvider>
+    <ActionSheetProvider>
+      <ExploreProvider>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </ExploreProvider>
+    </ActionSheetProvider>
   );
 }
 

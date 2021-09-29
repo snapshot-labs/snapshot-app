@@ -26,6 +26,10 @@ const common = StyleSheet.create({
     fontWeight: "500",
     fontFamily: "Calibre-Semibold",
   },
+  h3: {
+    fontSize: 26,
+    fontFamily: "Calibre-Semibold",
+  },
   h4: {
     fontSize: 20,
     fontFamily: "Calibre-Semibold",

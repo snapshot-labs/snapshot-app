@@ -9,4 +9,32 @@ export type Space = {
   skin: string;
   avatar?: string;
   id?: string;
+  private?: boolean;
+};
+
+type StrategyExample = {
+  addresses: string[];
+  name: string;
+  network: string;
+  snapshot: number;
+  strategy: {
+    name: string;
+    params: {
+      decimals: number;
+      ghstQuickAddress: string;
+      ghstUsdcAddress: string;
+      stakingAddress: string;
+      symbol: string;
+      tokenAddress: string;
+    };
+  };
+};
+
+export type Strategy = {
+  about: string;
+  author: string;
+  key: string;
+  version: string;
+  examples: StrategyExample[];
+  spaces: number;
 };

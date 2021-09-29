@@ -9,10 +9,12 @@ import colors from "../constants/colors";
 import common from "../styles/common";
 import { Space } from "../types/explore";
 import Token from "../components/Token";
-import { PROPOSALS_QUERY } from "../util/queries";
+import { PROPOSALS_QUERY, SPACES_QUERY } from "../util/queries";
 import apolloClient from "../util/apolloClient";
 import { Proposal } from "../types/proposal";
 import ProposalPreview from "../components/ProposalPreview";
+import { EXPLORE_ACTIONS, useExploreDispatch } from "../context/exploreContext";
+import { ContextDispatch } from "../types/context";
 
 const LOAD_BY = 6;
 
@@ -44,6 +46,20 @@ async function getProposals(
   }
 }
 
+async function getSpace(spaceId: string, exploreDispatch: ContextDispatch) {
+  const query = {
+    query: SPACES_QUERY,
+    variables: {
+      id_in: [spaceId],
+    },
+  };
+  const result: any = await apolloClient.query(query);
+  exploreDispatch({
+    type: EXPLORE_ACTIONS.UPDATE_SPACES,
+    payload: result.data.spaces,
+  });
+}
+
 type TokenScreenProps = {
   route: {
     params: {
@@ -57,6 +73,8 @@ function TokenScreen({ route }: TokenScreenProps) {
   const insets = useSafeAreaInsets();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const exploreDispatch = useExploreDispatch();
+
   useEffect(() => {
     getProposals(
       spaceId,
@@ -66,6 +84,7 @@ function TokenScreen({ route }: TokenScreenProps) {
       setProposals,
       true
     );
+    getSpace(spaceId, exploreDispatch);
   }, []);
 
   return (
