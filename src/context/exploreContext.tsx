@@ -1,12 +1,13 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "../types/context";
-import { Space } from "../types/explore";
+import { Space, Strategy } from "../types/explore";
 
 type ExploreState = {
   networks: {};
   plugins: {};
-  skins: {};
-  strategies: {};
+  skins: { [id: string]: number };
+  strategies: { [id: string]: number };
+  fullStrategies: { [id: string]: Strategy };
   spaces: { [id: string]: Space };
 };
 
@@ -16,7 +17,9 @@ const ExploreDispatchContext = createContext<ContextDispatch | undefined>(
 );
 
 const EXPLORE_ACTIONS = {
-  SET_EXPLORE: "@explore/EXPLORE",
+  SET_EXPLORE: "@explore/SET_EXPLORE",
+  SET_FULL_STRATEGIES: "@explore/SET_FULL_STRATEGIES",
+  UPDATE_SPACES: "@explore/UPDATE_SPACES",
 };
 
 const initialState = {
@@ -25,12 +28,32 @@ const initialState = {
   skins: {},
   strategies: {},
   spaces: {},
+  fullStrategies: {},
 };
 
 function exploreReducer(state: ExploreState, action: ContextAction) {
   switch (action.type) {
     case EXPLORE_ACTIONS.SET_EXPLORE:
       return { ...state, ...action.payload };
+    case EXPLORE_ACTIONS.UPDATE_SPACES:
+      const newSpaces = { ...state.spaces };
+      if (Array.isArray(action.payload)) {
+        action.payload.forEach((space) => {
+          const currentSpace = newSpaces[space.id];
+          if (currentSpace) {
+            newSpaces[space.id] = {
+              ...currentSpace,
+              ...space,
+            };
+          } else {
+            newSpaces[space.id] = space;
+          }
+        });
+      }
+
+      return { ...state, spaces: newSpaces };
+    case EXPLORE_ACTIONS.SET_FULL_STRATEGIES:
+      return { ...state, fullStrategies: action.payload };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

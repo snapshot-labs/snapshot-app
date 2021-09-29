@@ -4,7 +4,8 @@ import * as encoding from "@walletconnect/encoding";
 import { format } from "timeago.js";
 import moment from "moment-timezone";
 import numeral from "numeral";
-import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import networks from "@snapshot-labs/snapshot.js/src/networks.json";
+import voting from "./voting";
 
 export function uuid() {
   const result = ((a, b) => {
@@ -75,3 +76,9 @@ export function n(number, format = "(0.[00]a)") {
 export function explorerUrl(network, str: string, type = "address"): string {
   return `${networks[network].explorer}/${type}/${str}`;
 }
+
+export function getChoiceString(proposal, selected) {
+  const votingClass = new voting[proposal.type](proposal, "", "", selected);
+  return votingClass.getChoiceString();
+}
+
