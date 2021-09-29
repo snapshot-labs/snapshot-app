@@ -3,7 +3,7 @@ import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { Image } from "react-native";
 import { Space } from "../types/explore";
 
-function url(symbolIndex: string | number, space: Space | {}) {
+function url(symbolIndex: string | number, space: Space) {
   const spaceId = space.id;
   const file = symbolIndex
     ? symbolIndex === "space"
@@ -21,7 +21,7 @@ function url(symbolIndex: string | number, space: Space | {}) {
 type TokenProps = {
   symbolIndex: string | number;
   size: number;
-  space: {} | Space;
+  space: Space;
 };
 
 function Token({ symbolIndex, space, size }: TokenProps) {

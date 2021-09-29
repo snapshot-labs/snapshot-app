@@ -10,4 +10,5 @@ export type Proposal = {
   title: string;
   snapshot: string;
   type: string;
+  strategies: any;
 };

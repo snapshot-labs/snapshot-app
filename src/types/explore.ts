@@ -1,5 +1,13 @@
-type Networks = {
-  [key: string]: number;
+export type NetworkType = {
+  chainId: number;
+  explorer: string;
+  key: string;
+  multicall: string;
+  name: string;
+  network: string;
+  rpc: string[];
+  spaces: number;
+  ws: string[];
 };
 
 export type Space = {
@@ -10,6 +18,8 @@ export type Space = {
   avatar?: string;
   id?: string;
   private?: boolean;
+  strategies: any;
+  symbol?: string;
 };
 
 type StrategyExample = {

@@ -6,6 +6,7 @@ import i18n from "i18n-js";
 import Block from "../Block";
 import colors from "../../constants/colors";
 import { n } from "../../util/miscUtils";
+import { Space } from "../../types/explore";
 
 const ts = (Date.now() / 1e3).toFixed();
 
@@ -17,7 +18,19 @@ const styles = StyleSheet.create({
   },
 });
 
-function BlockResults({ resultsLoaded, results, proposal, space }) {
+type BlockResultsProps = {
+  resultsLoaded: boolean;
+  results: any;
+  proposal: any;
+  space: Space;
+};
+
+function BlockResults({
+  resultsLoaded,
+  results,
+  proposal,
+  space,
+}: BlockResultsProps) {
   const choices = useMemo(() => {
     if (proposal && proposal.choices) {
       const choices = proposal.choices.map((choice: any, i: number) => ({
@@ -26,7 +39,7 @@ function BlockResults({ resultsLoaded, results, proposal, space }) {
       }));
       if (results && results.resultsByVoteBalance) {
         return choices.sort(
-          (a, b) =>
+          (a: any, b: any) =>
             results.resultsByVoteBalance[b.i] -
             results.resultsByVoteBalance[a.i]
         );
