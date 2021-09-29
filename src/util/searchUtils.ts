@@ -20,17 +20,14 @@ export function getFilteredStrategies(
     .filter((s) => s.key.toLowerCase().includes(q.toLowerCase()))
     .sort((a, b) => b.spaces - a.spaces);
 }
-//
-// const minifiedNetworksArray = computed(() =>
-//   Object.keys(networks).map((n) => ({
-//     spaces: explore.value.networks[n] ?? 0,
-//     ...networks[n],
-//   }))
-// );
-// const filteredNetworks = (q = "") =>
-//   minifiedNetworksArray.value
-//     .filter((n) => JSON.stringify(n).toLowerCase().includes(q.toLowerCase()))
-//     .sort((a, b) => b.spaces - a.spaces);
+
+export function getFilteredNetworks(minifiedNetworksArray: any, q: string) {
+  return minifiedNetworksArray
+    .filter((n: any) =>
+      JSON.stringify(n).toLowerCase().includes(q.toLowerCase())
+    )
+    .sort((a: any, b: any) => b.spaces - a.spaces);
+}
 //
 // const minifiedPluginsArray = computed(() =>
 //   Object.entries(plugins).map(([key, pluginClass]: any) => {

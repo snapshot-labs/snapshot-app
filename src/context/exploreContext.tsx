@@ -3,7 +3,7 @@ import { ContextAction, ContextDispatch } from "../types/context";
 import { Space, Strategy } from "../types/explore";
 
 type ExploreState = {
-  networks: {};
+  networks: { [id: string]: number };
   plugins: {};
   skins: { [id: string]: number };
   strategies: { [id: string]: number };

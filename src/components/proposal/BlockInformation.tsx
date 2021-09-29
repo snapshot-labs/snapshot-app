@@ -58,7 +58,7 @@ function getVotingType(type: string) {
 
 type BlockInformationProps = {
   proposal: Proposal;
-  space: Space | {};
+  space: Space;
 };
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
@@ -71,7 +71,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
     [proposal, space]
   );
   const symbols = useMemo(
-    () => strategies.map((strategy) => strategy.params.symbol),
+    () => strategies.map((strategy: any) => strategy.params.symbol),
     [proposal, space]
   );
 

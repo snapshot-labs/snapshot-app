@@ -8,16 +8,21 @@ import SpacePreview from "../components/SpacePreview";
 import i18n from "i18n-js";
 import ExploreHeader from "../components/explore/ExploreHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
+import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
 import {
   getFilteredSpaces,
   getFilteredSkins,
   getFilteredStrategies,
+  getFilteredNetworks,
 } from "../util/searchUtils";
 import Skin from "../components/explore/Skin";
 import Strategy from "../components/explore/Strategy";
+import { NetworkType } from "../types/explore";
+import Network from "../components/explore/Network";
 
 function ExploreScreen() {
-  const { spaces, skins, strategies, fullStrategies } = useExploreState();
+  const { spaces, skins, strategies, fullStrategies, networks, plugins } =
+    useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [currentExplore, setCurrentExplore] = useState<{
@@ -54,6 +59,25 @@ function ExploreScreen() {
     }));
   }, [strategies, fullStrategies]);
 
+  const minifiedNetworksArray: NetworkType[] = useMemo(
+    () =>
+      Object.keys(networksJson).map((n) => ({
+        spaces: networks[n] ?? 0,
+        ...(networksJson[n] ?? {}),
+      })),
+    [networks]
+  );
+  const minifiedPluginsArray = useMemo(
+    () =>
+      Object.entries(plugins).map(([key, pluginClass]: any) => {
+        // const plugin = new pluginClass();
+        // plugin.key = key;
+        // plugin.spaces = plugins[key] ?? 0;
+        // return plugin;
+      }),
+    [plugins]
+  );
+
   useEffect(() => {
     if (currentExplore.key === "spaces") {
       setFilteredExplore(getFilteredSpaces(orderedSpaces, searchValue));
@@ -62,6 +86,10 @@ function ExploreScreen() {
     } else if (currentExplore.key === "strategies") {
       setFilteredExplore(
         getFilteredStrategies(minifiedStrategiesArray, searchValue)
+      );
+    } else if (currentExplore.key === "networks") {
+      setFilteredExplore(
+        getFilteredNetworks(minifiedNetworksArray, searchValue)
       );
     }
   }, [spaces, skins, currentExplore, searchValue]);
@@ -90,6 +118,8 @@ function ExploreScreen() {
               return <Skin skin={data.item} />;
             } else if (currentExplore.key === "strategies") {
               return <Strategy strategy={data.item} />;
+            } else if (currentExplore.key === "networks") {
+              return <Network network={data.item} />;
             } else {
               return <View />;
             }

@@ -1,0 +1,54 @@
+import React from "react";
+import { StyleSheet, View, Text, Image } from "react-native";
+import i18n from "i18n-js";
+import colors from "../../constants/colors";
+import { n } from "../../util/miscUtils";
+import { NetworkType } from "../../types/explore";
+import common from "../../styles/common";
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    borderBottomColor: colors.borderColor,
+    borderBottomWidth: 1,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  secondaryText: {
+    fontFamily: "Calibre-Medium",
+    color: colors.darkGray,
+    fontSize: 18,
+  },
+});
+
+function getLogoUrl(key: string) {
+  return `https://raw.githubusercontent.com/snapshot-labs/snapshot.js/master/src/networks/${key}.png`;
+}
+
+type NetworkProps = {
+  network: NetworkType;
+};
+
+function Network({ network }: NetworkProps) {
+  return (
+    <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Image
+          source={{ uri: getLogoUrl(network.key) }}
+          style={{ width: 24, height: 24, borderRadius: 12, marginRight: 4 }}
+        />
+        <Text style={[common.h3, { marginTop: 4 }]}>{network.name}</Text>
+        <Text style={[styles.secondaryText, { marginLeft: 4, marginTop: 4 }]}>
+          {network.key}
+        </Text>
+      </View>
+      <Text style={[styles.secondaryText, { marginTop: 6 }]}>
+        {i18n.t("inSpaces", { spaceCount: n(network.spaces) })}
+      </Text>
+    </View>
+  );
+}
+
+export default Network;
