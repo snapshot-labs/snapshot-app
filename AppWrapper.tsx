@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/screens/AppNavigator";
-import { withWalletConnect } from "@walletconnect/react-native-dapp";
+import {
+  useWalletConnect,
+  withWalletConnect,
+} from "@walletconnect/react-native-dapp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
@@ -18,11 +21,13 @@ async function loadFromStorage(
   try {
     const connectedAddress = await storage.load(storage.KEYS.connectedAddress);
     if (connectedAddress) {
+      const isWalletConnect = await storage.load(storage.KEYS.isWalletConnect);
       authDispatch({
         type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
         payload: {
           connectedAddress,
           addToStorage: false,
+          isWalletConnect: isWalletConnect === "true",
         },
       });
     }

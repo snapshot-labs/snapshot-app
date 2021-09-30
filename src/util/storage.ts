@@ -6,6 +6,7 @@ function getKey(key: string) {
 
 const KEYS = {
   connectedAddress: "connectedAddress",
+  isWalletConnect: "isWalletConnect",
 };
 
 export async function load(key: string) {
@@ -19,6 +20,9 @@ export async function save(key: string, value: string) {
 export async function clearAll() {
   try {
     await remove(KEYS.connectedAddress);
+  } catch (e) {}
+  try {
+    await remove(KEYS.isWalletConnect);
   } catch (e) {}
 }
 

@@ -43,11 +43,11 @@ async function getProposals(
 }
 
 function FeedScreen() {
+  const connector = useWalletConnect();
   const { followedSpaces } = useAuthState();
   const insets = useSafeAreaInsets();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
-
   useEffect(() => {
     if (followedSpaces.length > 0) {
       getProposals(
