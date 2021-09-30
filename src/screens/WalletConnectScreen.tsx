@@ -14,6 +14,7 @@ import { MetaMask } from "../constants/wallets";
 import { defaultHeaders } from "../util/apiUtils";
 import common from "../styles/common";
 import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
+import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
 
 const defaultWallets = [MetaMask];
 
@@ -118,36 +119,36 @@ function WalletConnectScreen() {
             <TouchableOpacity
               key={wallet.id}
               onPress={async () => {
-                await connector.connect();
-                // const bridge = encodeURIComponent(newConnector.bridge);
-                // const arrayBufferKey = await generateKey();
-                // const key = convertArrayBufferToHex(arrayBufferKey, true);
-                // const handshakeTopic = uuid();
-                // const createdUri = `wc:${handshakeTopic}@1`;
-                // const redirectUrl = "org.snapshot";
-                // newConnector._key = arrayBufferKey;
-                // const request = newConnector._formatRequest({
-                //   method: "wc_sessionRequest",
-                //   params: [
-                //     {
-                //       peerId: newConnector.clientId,
-                //       peerMeta: newConnector.clientMeta,
-                //       chainId: null,
-                //     },
-                //   ],
-                // });
-                // newConnector.handshakeId = request.id;
-                // newConnector.handshakeTopic = handshakeTopic;
-                // newConnector._sendSessionRequest(
-                //   request,
-                //   "Session update rejected",
-                //   {
-                //     topic: handshakeTopic,
-                //   }
-                // );
-                // const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
-                //
-                // connector.connectToWalletService(wallet, formattedUri);
+                const newConnector = await connector.connect();
+                const bridge = encodeURIComponent(newConnector.bridge);
+                const arrayBufferKey = await generateKey();
+                const key = convertArrayBufferToHex(arrayBufferKey, true);
+                const handshakeTopic = uuid();
+                const createdUri = `wc:${handshakeTopic}@1`;
+                const redirectUrl = "org.snapshot";
+                newConnector._key = arrayBufferKey;
+                const request = newConnector._formatRequest({
+                  method: "wc_sessionRequest",
+                  params: [
+                    {
+                      peerId: newConnector.clientId,
+                      peerMeta: newConnector.clientMeta,
+                      chainId: null,
+                    },
+                  ],
+                });
+                newConnector.handshakeId = request.id;
+                newConnector.handshakeTopic = handshakeTopic;
+                newConnector._sendSessionRequest(
+                  request,
+                  "Session update rejected",
+                  {
+                    topic: handshakeTopic,
+                  }
+                );
+                const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
+
+                connector.connectToWalletService(wallet, formattedUri);
               }}
             >
               <View
