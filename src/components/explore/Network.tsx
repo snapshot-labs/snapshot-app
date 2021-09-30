@@ -1,10 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, Platform } from "react-native";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
 import { n } from "../../util/miscUtils";
 import { NetworkType } from "../../types/explore";
 import common from "../../styles/common";
+
+const isIOS = Platform.OS === "ios";
 
 const styles = StyleSheet.create({
   container: {
@@ -39,8 +41,15 @@ function Network({ network }: NetworkProps) {
           source={{ uri: getLogoUrl(network.key) }}
           style={{ width: 24, height: 24, borderRadius: 12, marginRight: 4 }}
         />
-        <Text style={[common.h3, { marginTop: 4 }]}>{network.name}</Text>
-        <Text style={[styles.secondaryText, { marginLeft: 4, marginTop: 4 }]}>
+        <Text style={[common.h4, { marginTop: isIOS ? 4 : 0 }]}>
+          {network.name}
+        </Text>
+        <Text
+          style={[
+            styles.secondaryText,
+            { marginLeft: 4, marginTop: isIOS ? 4 : 0 },
+          ]}
+        >
           {network.key}
         </Text>
       </View>

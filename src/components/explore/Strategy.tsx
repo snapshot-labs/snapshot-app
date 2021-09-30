@@ -50,7 +50,7 @@ function StrategyComponent({ strategy }: StrategyComponentProps) {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={common.h3}>{strategy.key}</Text>
+        <Text style={common.h4}>{strategy.key}</Text>
         <Text style={styles.version}>v{strategy.version}</Text>
       </View>
       <View style={styles.authorContainer}>

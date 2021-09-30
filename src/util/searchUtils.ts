@@ -28,29 +28,10 @@ export function getFilteredNetworks(minifiedNetworksArray: any, q: string) {
     )
     .sort((a: any, b: any) => b.spaces - a.spaces);
 }
-//
-// const minifiedPluginsArray = computed(() =>
-//   Object.entries(plugins).map(([key, pluginClass]: any) => {
-//     const plugin = new pluginClass();
-//     plugin.key = key;
-//     plugin.spaces = explore.value.plugins[key] ?? 0;
-//     return plugin;
-//   })
-// );
-// const filteredPlugins = (q = "") =>
-//   minifiedPluginsArray.value
-//     .filter((plugin) =>
-//       JSON.stringify(plugin).toLowerCase().includes(q.toLowerCase())
-//     )
-//     .sort((a, b) => b.spaces - a.spaces);
-//
-// const minifiedValidationsArray = computed(() =>
-//   Object.keys(validations).map((key: any) => ({
-//     name: key,
-//     spaces: explore.value.validations[key],
-//   }))
-// );
-// const filteredValidations = (q = "") =>
-//   minifiedValidationsArray.value
-//     .filter((v) => JSON.stringify(v).toLowerCase().includes(q.toLowerCase()))
-//     .sort((a, b) => b.spaces - a.spaces);
+export function geFilteredPlugins(minifiedPluginsArray: any, q: string) {
+  return minifiedPluginsArray
+    .filter((plugin: any) =>
+      JSON.stringify(plugin).toLowerCase().includes(q.toLowerCase())
+    )
+    .sort((a: any, b: any) => b.spaces - a.spaces);
+}
