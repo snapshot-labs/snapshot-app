@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Linking, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Linking,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
@@ -15,6 +22,8 @@ import { defaultHeaders } from "../util/apiUtils";
 import common from "../styles/common";
 import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
 import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
+import SendIntentAndroid from "react-native-send-intent";
+import get from "lodash/get";
 
 const defaultWallets = [MetaMask];
 
@@ -39,15 +48,31 @@ async function fetchWallets(
     const currentWalletKey = walletKeys[i];
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
-      try {
-        const isAppInstalled = await Linking.canOpenURL(
-          currentWallet.mobile.native
+      if (
+        currentWallet.mobile.native.includes("trust") &&
+        Platform.OS === "android"
+      ) {
+        const androidAppArray = get(currentWallet, "app.android", "").split(
+          "id="
         );
-
+        const androidAppUrl = get(androidAppArray, 1, undefined);
+        const isAppInstalled = await SendIntentAndroid.isAppInstalled(
+          androidAppUrl
+        );
         if (isAppInstalled) {
           wallets.push(currentWallet);
         }
-      } catch (e) {}
+      } else {
+        try {
+          const isAppInstalled = await Linking.canOpenURL(
+            currentWallet.mobile.native
+          );
+
+          if (isAppInstalled) {
+            wallets.push(currentWallet);
+          }
+        } catch (e) {}
+      }
     }
   }
 
@@ -148,7 +173,20 @@ function WalletConnectScreen() {
                 );
                 const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
 
-                connector.connectToWalletService(wallet, formattedUri);
+                if (Platform.OS === "android") {
+                  const androidAppArray = get(wallet, "app.android", "").split(
+                    "id="
+                  );
+                  const androidAppUrl = get(androidAppArray, 1, undefined);
+                  if (androidAppUrl) {
+                    SendIntentAndroid.openAppWithData(
+                      androidAppUrl,
+                      formattedUri
+                    );
+                  }
+                } else {
+                  connector.connectToWalletService(wallet, formattedUri);
+                }
               }}
             >
               <View
