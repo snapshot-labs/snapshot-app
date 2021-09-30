@@ -4,7 +4,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "preinstall": "git submodule update --init --remote"
   },
   "dependencies": {
     "@apollo/client": "^3.4.13",
