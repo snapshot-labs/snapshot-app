@@ -31,6 +31,9 @@ function authReducer(state: AuthState, action: ContextAction) {
       const connectedAddress = action.payload.connectedAddress;
       if (action.payload.addToStorage) {
         storage.save(storage.KEYS.connectedAddress, connectedAddress);
+        if (action.payload.isWalletConnect) {
+          storage.save(storage.KEYS.isWalletConnect, "true");
+        }
       }
       return { ...state, connectedAddress };
     case AUTH_ACTIONS.LOGOUT:

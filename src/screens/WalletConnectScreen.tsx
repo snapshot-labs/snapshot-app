@@ -97,12 +97,12 @@ function WalletConnectScreen() {
   useEffect(() => {
     if (connector.connected && connected !== connector.connected) {
       if (connector.accounts && connector.accounts.length > 0) {
-        console.log({ connecterAccounts: connector.accounts });
         authDispatch({
           type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
           payload: {
             connectedAddress: connector.accounts[0],
             addToStorage: true,
+            isWalletConnect: true,
           },
         });
       }

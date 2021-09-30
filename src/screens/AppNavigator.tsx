@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
-import { useAuthState } from "../context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "../context/authContext";
 import * as navigationConstants from "../constants/navigation";
 import FeedScreen from "./FeedScreen";
 import LandingScreen from "./LandingScreen";
@@ -14,12 +19,40 @@ import QRCodeScannerScreen from "./QRCodeScannerScreen";
 import TokenScreen from "./TokenScreen";
 import ProposalScreen from "./ProposalScreen";
 import CustomWalletScreen from "./CustomWalletScreen";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { LANDING_SCREEN } from "../constants/navigation";
 
 const Stack = createStackNavigator();
 
 const Tab = createMaterialTopTabNavigator();
 const ICON_SIZE = 20;
 function TabNavigator() {
+  const connector = useWalletConnect();
+  const authDispatch = useAuthDispatch();
+  const [connectorListenersEnabled, setConnectorListenersEnabled] =
+    useState(false);
+  const navigation: any = useNavigation();
+
+  useEffect(() => {
+    if (connector && connector.on && !connectorListenersEnabled) {
+      connector.on("disconnect", (error, payload) => {
+        if (error) {
+          throw error;
+        }
+
+        authDispatch({
+          type: AUTH_ACTIONS.LOGOUT,
+        });
+        navigation.reset({
+          index: 0,
+          routes: [{ name: LANDING_SCREEN }],
+        });
+      });
+
+      setConnectorListenersEnabled(true);
+    }
+  }, [connector]);
+
   return (
     <Tab.Navigator
       tabBarPosition="bottom"
