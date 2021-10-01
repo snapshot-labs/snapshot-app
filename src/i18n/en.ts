@@ -57,5 +57,6 @@ export default {
   networksPlural: "network(s)",
   skinsPlural: "skin(s)",
   pluginsPlural: "plugin(s)",
-  strategiesPlural: "strategie(s)"
+  strategiesPlural: "strategie(s)",
+  join: "Join",
 };

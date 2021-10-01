@@ -30,6 +30,15 @@ async function loadFromStorage(
           isWalletConnect: isWalletConnect === "true",
         },
       });
+      const aliases = await storage.load(storage.KEYS.aliases);
+
+      if (aliases) {
+        const parsedAliases = JSON.parse(aliases);
+        authDispatch({
+          type: AUTH_ACTIONS.SET_INITIAL_ALIASES,
+          payload: parsedAliases,
+        });
+      }
     }
   } catch (e) {}
   setLoading(false);
