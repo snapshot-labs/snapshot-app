@@ -4,7 +4,9 @@ import storage from "../util/storage";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
-  connectedAddress: null | string;
+  connectedAddress: null | string | undefined;
+  isWalletConnect: undefined | boolean;
+  aliases: { [id: string]: string };
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -16,11 +18,15 @@ const AUTH_ACTIONS = {
   SET_FOLLOWED_SPACES: "@auth/SET_FOLLOWED_SPACES",
   SET_CONNECTED_ADDRESS: "@auth/SET_CONNECTED_ADDRESS",
   LOGOUT: "@auth/LOGOUT",
+  SET_ALIAS: "@auth/SET_ALIAS",
+  SET_INITIAL_ALIASES: "@auth/SET_INITIAL_ALIASES",
 };
 
 const initialState = {
   connectedAddress: null,
   followedSpaces: [],
+  isWalletConnect: false,
+  aliases: {},
 };
 
 function authReducer(state: AuthState, action: ContextAction) {
@@ -35,7 +41,17 @@ function authReducer(state: AuthState, action: ContextAction) {
           storage.save(storage.KEYS.isWalletConnect, "true");
         }
       }
-      return { ...state, connectedAddress };
+      return {
+        ...state,
+        connectedAddress,
+        isWalletConnect: action.payload.isWalletConnect,
+      };
+    case AUTH_ACTIONS.SET_INITIAL_ALIASES:
+      return { ...state, aliases: action.payload ?? {} };
+    case AUTH_ACTIONS.SET_ALIAS:
+      const aliases = Object.assign(action.payload, state.aliases);
+      storage.save(storage.KEYS.aliases, JSON.stringify(aliases));
+      return { ...state, aliases };
     case AUTH_ACTIONS.LOGOUT:
       storage.clearAll();
       return initialState;
