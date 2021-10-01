@@ -64,7 +64,7 @@ class Client {
       domain,
       types: updatedTypes,
       message,
-      primaryType: "Alias",
+      primaryType,
     };
     const sig = await wcConnector.signTypedData([address, wcData]);
     console.log("Sign", { address, sig, data: snapshotData });
