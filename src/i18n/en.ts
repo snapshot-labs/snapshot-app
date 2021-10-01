@@ -59,4 +59,5 @@ export default {
   pluginsPlural: "plugin(s)",
   strategiesPlural: "strategie(s)",
   join: "Join",
+  joined: "Joined",
 };

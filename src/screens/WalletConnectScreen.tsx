@@ -83,6 +83,7 @@ async function fetchWallets(
 function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
+  const [androidAppUrl, setAndroidAppUrl] = useState("");
   const connector = useWalletConnect();
   const [connected, setConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -105,6 +106,13 @@ function WalletConnectScreen() {
             isWalletConnect: true,
           },
         });
+
+        if (Platform.OS === "android") {
+          authDispatch({
+            type: AUTH_ACTIONS.SET_CONNECTED_ANDROID_APP_URL,
+            payload: androidAppUrl,
+          });
+        }
       }
       navigation.reset({
         index: 0,
@@ -177,12 +185,19 @@ function WalletConnectScreen() {
                   const androidAppArray = get(wallet, "app.android", "").split(
                     "id="
                   );
-                  const androidAppUrl = get(androidAppArray, 1, undefined);
-                  if (androidAppUrl) {
-                    SendIntentAndroid.openAppWithData(
-                      androidAppUrl,
-                      formattedUri
-                    );
+
+                  let androidAppUrl = get(androidAppArray, 1, undefined);
+
+                  if (wallet.name.includes("Rainbow")) {
+                    Linking.openURL(wallet.mobile.native);
+                  } else {
+                    if (androidAppUrl) {
+                      setAndroidAppUrl(androidAppUrl);
+                      SendIntentAndroid.openAppWithData(
+                        androidAppUrl,
+                        formattedUri
+                      );
+                    }
                   }
                 } else {
                   connector.connectToWalletService(wallet, formattedUri);

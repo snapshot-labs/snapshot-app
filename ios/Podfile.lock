@@ -36,6 +36,8 @@ PODS:
   - ExpoModulesCore/Interfaces (0.2.0):
     - ExpoModulesCore/Core
     - UMCore
+  - EXRandom (11.2.0):
+    - React-Core
   - EXSplashScreen (0.11.4):
     - React-Core
     - UMCore
@@ -372,6 +374,7 @@ DEPENDENCIES:
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - EXLocalization (from `../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
+  - EXRandom (from `../node_modules/expo-random/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - EXStructuredHeaders (from `../node_modules/expo-structured-headers/ios`)
   - EXUpdates (from `../node_modules/expo-updates/ios`)
@@ -449,6 +452,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-localization/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core/ios"
+  EXRandom:
+    :path: "../node_modules/expo-random/ios"
   EXSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
   EXStructuredHeaders:
@@ -555,6 +560,7 @@ SPEC CHECKSUMS:
   EXKeepAwake: f4105ef469be7b283f66ce2d7234bb71ac80cd26
   EXLocalization: 356f4e16a606cec21a77d6250528fde526152b45
   ExpoModulesCore: 2734852616127a6c1fc23012197890a6f3763dc7
+  EXRandom: ecb71f5d01991f29bb0277f8a2c35d168f85d637
   EXSplashScreen: 847e0d8026731c1090bf269ede3e15ac87d88958
   EXStructuredHeaders: e52b880264d15b8ad07d36670226c29476af6334
   EXUpdates: 013d26649cb6ab4f8d8d80c35d3d4be150b47e7c

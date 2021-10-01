@@ -33,7 +33,6 @@ const VERSION = "0.1.4";
 export const domain = {
   name: NAME,
   version: VERSION,
-  chainId: 1,
 };
 
 class Client {
@@ -44,7 +43,7 @@ class Client {
   }
 
   async sign(
-    wcConnector: WalletConnect,
+    wcConnector: WalletConnect | Wallet,
     address: string,
     message: any,
     types: any,
@@ -61,14 +60,34 @@ class Client {
     };
     const snapshotData = { domain, types, message };
     const wcData: any = {
-      domain,
+      domain: {
+        ...domain,
+        chainId: 1,
+      },
       types: updatedTypes,
       message,
       primaryType,
     };
-    const sig = await wcConnector.signTypedData([address, wcData]);
-    console.log("Sign", { address, sig, data: snapshotData });
-    return await this.send({ address, sig, data: snapshotData });
+    if (wcConnector instanceof Wallet) {
+      const sig = await wcConnector._signTypedData(
+        domain,
+        snapshotData.types,
+        message
+      );
+      return await this.send({ address, sig, data: snapshotData });
+    } else {
+      let sig;
+      try {
+        console.log(JSON.stringify(wcData));
+        sig = await wcConnector.signTypedData([address, wcData]);
+      } catch (e) {
+        console.log("WALLET CONNECT FAILED", e.message);
+      }
+      if (sig) {
+        return await this.send({ address, sig, data: snapshotData });
+      }
+      console.log("Sign", { address, sig, data: snapshotData });
+    }
   }
 
   async send(envelop: any) {
@@ -87,18 +106,26 @@ class Client {
     return new Promise((resolve, reject) => {
       fetch(url, init)
         .then((res) => {
+          console.log("RES RESPONSE", { res });
           if (res.ok) return resolve(res.json());
           throw res;
         })
-        .catch((e) => e.json().then((json) => reject(json)));
+        .catch((e) => {
+          if (e.json) {
+            e.json().then((json) => reject(json));
+          } else {
+            console.log("CLIENT ERROR", e);
+            reject(e);
+          }
+        });
     });
   }
 
-  async space(connector: WalletConnect, address: string, message: Space) {
+  async space(connector: Wallet, address: string, message: Space) {
     return await this.sign(connector, address, message, spaceTypes, "Space");
   }
 
-  async proposal(connector: WalletConnect, address: string, message: Proposal) {
+  async proposal(connector: Wallet, address: string, message: Proposal) {
     return await this.sign(
       connector,
       address,
@@ -109,7 +136,7 @@ class Client {
   }
 
   async cancelProposal(
-    connector: WalletConnect,
+    connector: Wallet,
     address: string,
     message: CancelProposal
   ) {
@@ -123,7 +150,7 @@ class Client {
     );
   }
 
-  async vote(connector: WalletConnect, address: string, message: Vote) {
+  async vote(connector: Wallet, address: string, message: Vote) {
     const type2 = message.proposal.startsWith("0x");
     let type = type2 ? vote2Types : voteTypes;
     if (["approval", "ranked-choice"].includes(message.type))
@@ -137,11 +164,11 @@ class Client {
     return await this.sign(connector, address, message, type, "Vote");
   }
 
-  async follow(connector: WalletConnect, address: string, message: Follow) {
+  async follow(connector: Wallet, address: string, message: Follow) {
     return await this.sign(connector, address, message, followTypes, "Follow");
   }
 
-  async unfollow(connector: WalletConnect, address: string, message: Unfollow) {
+  async unfollow(connector: Wallet, address: string, message: Unfollow) {
     return await this.sign(
       connector,
       address,
@@ -155,7 +182,7 @@ class Client {
     return await this.sign(connector, address, message, aliasTypes, "Alias");
   }
 }
-const hubUrl = "https://testnet.snapshot.org";
+const hubUrl = "https://hub.snapshot.org";
 
 const signClient = new Client(hubUrl);
 

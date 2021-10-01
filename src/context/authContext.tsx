@@ -1,12 +1,15 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "../types/context";
 import storage from "../util/storage";
+import { Wallet } from "ethers";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
   connectedAddress: null | string | undefined;
   isWalletConnect: undefined | boolean;
   aliases: { [id: string]: string };
+  androidAppUrl: string | null;
+  aliasWallet: Wallet | null;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -20,6 +23,8 @@ const AUTH_ACTIONS = {
   LOGOUT: "@auth/LOGOUT",
   SET_ALIAS: "@auth/SET_ALIAS",
   SET_INITIAL_ALIASES: "@auth/SET_INITIAL_ALIASES",
+  SET_CONNECTED_ANDROID_APP_URL: "@auth/SET_CONNECTED_ANDROID_APP_URL",
+  SET_ALIAS_WALLET: "@auth/SET_ALIAS_WALLET",
 };
 
 const initialState = {
@@ -27,6 +32,8 @@ const initialState = {
   followedSpaces: [],
   isWalletConnect: false,
   aliases: {},
+  androidAppUrl: null,
+  aliasWallet: null,
 };
 
 function authReducer(state: AuthState, action: ContextAction) {
@@ -49,9 +56,14 @@ function authReducer(state: AuthState, action: ContextAction) {
     case AUTH_ACTIONS.SET_INITIAL_ALIASES:
       return { ...state, aliases: action.payload ?? {} };
     case AUTH_ACTIONS.SET_ALIAS:
-      const aliases = Object.assign(action.payload, state.aliases);
+      const aliases = Object.assign(state.aliases, action.payload);
       storage.save(storage.KEYS.aliases, JSON.stringify(aliases));
       return { ...state, aliases };
+    case AUTH_ACTIONS.SET_CONNECTED_ANDROID_APP_URL:
+      storage.save(storage.KEYS.androidAppUrl, action.payload);
+      return { ...state, androidAppUrl: action.payload };
+    case AUTH_ACTIONS.SET_ALIAS_WALLET:
+      return { ...state, aliasWallet: action.payload };
     case AUTH_ACTIONS.LOGOUT:
       storage.clearAll();
       return initialState;

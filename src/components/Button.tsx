@@ -6,6 +6,7 @@ import {
   ViewStyle,
   TextStyle,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import colors from "../constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -45,6 +46,7 @@ type ButtonProps = {
   disabled?: boolean;
   light?: boolean;
   Icon?: React.FC | undefined;
+  loading?: boolean;
 };
 
 function Button({
@@ -55,13 +57,16 @@ function Button({
   disabled = false,
   light = false,
   Icon = undefined,
+  loading = false,
 }: ButtonProps) {
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
     : TouchableOpacity;
 
   return (
-    <ButtonContainerComponent onPress={disabled ? () => {} : onPress}>
+    <ButtonContainerComponent
+      onPress={disabled || loading ? () => {} : onPress}
+    >
       <View
         style={[
           styles.button,
@@ -70,16 +75,22 @@ function Button({
           buttonContainerStyle,
         ]}
       >
-        <Text
-          style={[
-            styles.buttonTitle,
-            light ? styles.lightButtonTitle : {},
-            buttonTitleStyle,
-          ]}
-        >
-          {title}
-        </Text>
-        {Icon !== undefined && <Icon />}
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.white} />
+        ) : (
+          <>
+            <Text
+              style={[
+                styles.buttonTitle,
+                light ? styles.lightButtonTitle : {},
+                buttonTitleStyle,
+              ]}
+            >
+              {title}
+            </Text>
+            {Icon !== undefined && <Icon />}
+          </>
+        )}
       </View>
     </ButtonContainerComponent>
   );
