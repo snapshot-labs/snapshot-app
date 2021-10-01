@@ -7,6 +7,8 @@ function getKey(key: string) {
 const KEYS = {
   connectedAddress: "connectedAddress",
   isWalletConnect: "isWalletConnect",
+  aliases: "aliases",
+  androidAppUrl: "androidAppUrl",
 };
 
 export async function load(key: string) {
@@ -23,6 +25,12 @@ export async function clearAll() {
   } catch (e) {}
   try {
     await remove(KEYS.isWalletConnect);
+  } catch (e) {}
+  try {
+    await remove(KEYS.aliases);
+  } catch (e) {}
+  try {
+    await remove(KEYS.androidAppUrl);
   } catch (e) {}
 }
 

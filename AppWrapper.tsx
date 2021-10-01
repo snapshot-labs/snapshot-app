@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, View } from "react-native";
+import { Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/screens/AppNavigator";
 import {
@@ -13,13 +13,16 @@ import { ExploreProvider } from "./src/context/exploreContext";
 import storage from "./src/util/storage";
 import { AUTH_ACTIONS, useAuthDispatch } from "./src/context/authContext";
 import { ContextDispatch } from "./src/types/context";
+import { getAliasWallet, getRandomAliasWallet } from "./src/util/aliasUtils";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
   setLoading: (loading: boolean) => void
 ) {
   try {
-    const connectedAddress = await storage.load(storage.KEYS.connectedAddress);
+    const connectedAddress: string | null = await storage.load(
+      storage.KEYS.connectedAddress
+    );
     if (connectedAddress) {
       const isWalletConnect = await storage.load(storage.KEYS.isWalletConnect);
       authDispatch({
@@ -37,6 +40,22 @@ async function loadFromStorage(
         authDispatch({
           type: AUTH_ACTIONS.SET_INITIAL_ALIASES,
           payload: parsedAliases,
+        });
+        const alias: any = parsedAliases[connectedAddress];
+        if (alias) {
+          authDispatch({
+            type: AUTH_ACTIONS.SET_ALIAS_WALLET,
+            payload: getAliasWallet(alias),
+          });
+        }
+      }
+    }
+    if (Platform.OS === "android") {
+      const androidAppUrl = await storage.load(storage.KEYS.androidAppUrl);
+      if (androidAppUrl) {
+        authDispatch({
+          type: AUTH_ACTIONS.SET_CONNECTED_ANDROID_APP_URL,
+          payload: androidAppUrl,
         });
       }
     }

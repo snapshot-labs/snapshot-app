@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Platform, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import get from "lodash/get";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
@@ -15,6 +15,9 @@ import { Proposal } from "../types/proposal";
 import ProposalPreview from "../components/ProposalPreview";
 import { EXPLORE_ACTIONS, useExploreDispatch } from "../context/exploreContext";
 import { ContextDispatch } from "../types/context";
+import { useAuthState } from "../context/authContext";
+import Button from "../components/Button";
+import FollowButton from "../components/FollowButton";
 
 const LOAD_BY = 6;
 
@@ -68,6 +71,7 @@ type TokenScreenProps = {
   };
 };
 function TokenScreen({ route }: TokenScreenProps) {
+  const { isWalletConnect } = useAuthState();
   const space = route.params.space;
   const spaceId: string = get(space, "id", "");
   const insets = useSafeAreaInsets();
@@ -99,13 +103,22 @@ function TokenScreen({ route }: TokenScreenProps) {
               borderBottomColor: colors.borderColor,
             }}
           >
-            <Token space={space} symbolIndex="space" size={60} />
-            <Text style={[{ marginTop: 16 }, common.headerTitle]}>
-              {get(space, "name")}
-            </Text>
-            <Text style={[{ marginTop: 4 }, common.subTitle]}>
-              {get(space, "id")}
-            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <View>
+                <Token space={space} symbolIndex="space" size={60} />
+                <Text style={[{ marginTop: 16 }, common.headerTitle]}>
+                  {get(space, "name")}
+                </Text>
+                <Text style={[{ marginTop: 4 }, common.subTitle]}>
+                  {get(space, "id")}
+                </Text>
+              </View>
+              {isWalletConnect && (
+                <View style={{ marginLeft: "auto", marginTop: 20 }}>
+                  <FollowButton space={space} />
+                </View>
+              )}
+            </View>
 
             <View
               style={{
