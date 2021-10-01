@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
-import {
-  useAuthDispatch,
-  useAuthState,
-} from "../context/authContext";
+import { useAuthDispatch, useAuthState } from "../context/authContext";
 import { Wallet } from "@ethersproject/wallet";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import signClient from "../util/signClient";
@@ -55,7 +52,7 @@ async function followSpace(
       }
     );
     if (unfollow && unfollow.id) {
-      getFollows(connectedAddress, authDispatch);
+      await getFollows(connectedAddress, authDispatch);
     }
   } else {
     const follows: any = await signClient.follow(
@@ -67,7 +64,7 @@ async function followSpace(
       }
     );
     if (follows && follows.id) {
-      getFollows(connectedAddress, authDispatch);
+      await getFollows(connectedAddress, authDispatch);
     }
   }
 }
@@ -108,7 +105,7 @@ function FollowButton({ space }: FollowButtonProps) {
               connectedAddress
             );
             if (isValidAlias) {
-              followSpace(
+              await followSpace(
                 isFollowingSpace,
                 aliasWallet,
                 connectedAddress ?? "",
@@ -129,7 +126,7 @@ function FollowButton({ space }: FollowButtonProps) {
                 );
 
                 if (isValidAlias) {
-                  followSpace(
+                  await followSpace(
                     isFollowingSpace,
                     aliasWallet,
                     connectedAddress ?? "",
@@ -153,7 +150,7 @@ function FollowButton({ space }: FollowButtonProps) {
               );
 
               if (isValidAlias) {
-                followSpace(
+                await followSpace(
                   isFollowingSpace,
                   aliasWallet,
                   connectedAddress ?? "",
