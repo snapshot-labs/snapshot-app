@@ -16,8 +16,9 @@ import ProposalPreview from "../components/ProposalPreview";
 import { EXPLORE_ACTIONS, useExploreDispatch } from "../context/exploreContext";
 import { ContextDispatch } from "../types/context";
 import { useAuthState } from "../context/authContext";
-import Button from "../components/Button";
 import FollowButton from "../components/FollowButton";
+import ProposalFilters from "../components/proposal/ProposalFilters";
+import proposal from "../constants/proposal";
 
 const LOAD_BY = 6;
 
@@ -28,7 +29,8 @@ async function getProposals(
   setLoadCount: (loadCount: number) => void,
   setProposals: (proposals: Proposal[]) => void,
   isInitial: boolean,
-  setLoadingMore: (loadingMore: boolean) => void
+  setLoadingMore: (loadingMore: boolean) => void,
+  state: string
 ) {
   const query = {
     query: PROPOSALS_QUERY,
@@ -36,7 +38,7 @@ async function getProposals(
       first: LOAD_BY,
       skip: loadCount,
       space_in: [space],
-      state: "all",
+      state,
     },
   };
   const result = await apolloClient.query(query);
@@ -80,6 +82,7 @@ function TokenScreen({ route }: TokenScreenProps) {
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const exploreDispatch = useExploreDispatch();
 
   useEffect(() => {
@@ -91,7 +94,8 @@ function TokenScreen({ route }: TokenScreenProps) {
       setLoadCount,
       setProposals,
       true,
-      setLoadingMore
+      setLoadingMore,
+      filter.key
     );
     getSpace(spaceId, exploreDispatch);
   }, []);
@@ -125,24 +129,56 @@ function TokenScreen({ route }: TokenScreenProps) {
                 </View>
               )}
             </View>
-
             <View
               style={{
-                borderBottomWidth: 5,
-                borderBottomColor: colors.black,
                 alignSelf: "flex-start",
+                flexDirection: "row",
+                width: "100%",
               }}
             >
-              <Text
-                style={[
-                  {
-                    marginTop: 24,
-                  },
-                  common.subTitle,
-                ]}
+              <View
+                style={{
+                  borderBottomWidth: 5,
+                  borderBottomColor: colors.black,
+                }}
               >
-                {i18n.t("proposals")}
-              </Text>
+                <Text
+                  style={[
+                    {
+                      marginTop: 24,
+                    },
+                    common.subTitle,
+                  ]}
+                >
+                  {i18n.t("proposals")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  alignSelf: "flex-end",
+                  marginLeft: "auto",
+                  borderBottomWidth: 5,
+                  borderBottomColor: "white",
+                }}
+              >
+                <ProposalFilters
+                  filter={filter}
+                  setFilter={setFilter}
+                  onChangeFilter={(newFilter) => {
+                    setLoadCount(0);
+                    getProposals(
+                      spaceId,
+                      0,
+                      proposals,
+                      setLoadCount,
+                      setProposals,
+                      true,
+                      setLoadingMore,
+                      newFilter
+                    );
+                  }}
+                />
+              </View>
             </View>
           </View>
         }
@@ -160,9 +196,21 @@ function TokenScreen({ route }: TokenScreenProps) {
             setLoadCount,
             setProposals,
             false,
-            setLoadingMore
+            setLoadingMore,
+            filter.key
           );
         }}
+        ListEmptyComponent={
+          loadingMore ? (
+            <View />
+          ) : (
+            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+              <Text style={common.subTitle}>
+                {i18n.t("cantFindAnyResults")}
+              </Text>
+            </View>
+          )
+        }
         ListFooterComponent={
           loadingMore ? (
             <View

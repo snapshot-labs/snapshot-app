@@ -144,13 +144,17 @@ function FeedScreen() {
           );
         }}
         ListEmptyComponent={
-          <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-            <Text style={common.subTitle}>
-              {followedSpaces.length === 0
-                ? i18n.t("noSpacesJoinedYet")
-                : i18n.t("cantFindAnyResults")}
-            </Text>
-          </View>
+          loadingMore ? (
+            <View />
+          ) : (
+            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+              <Text style={common.subTitle}>
+                {followedSpaces.length === 0
+                  ? i18n.t("noSpacesJoinedYet")
+                  : i18n.t("cantFindAnyResults")}
+              </Text>
+            </View>
+          )
         }
         ListFooterComponent={
           loadingMore ? (
