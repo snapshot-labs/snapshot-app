@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
 import apolloClient from "../util/apolloClient";
@@ -11,24 +10,30 @@ import { Proposal } from "../types/proposal";
 import { useAuthState } from "../context/authContext";
 import common from "../styles/common";
 import i18n from "i18n-js";
+import colors from "../constants/colors";
+import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
+import TimelineHeader from "../components/timeline/TimelineHeader";
+import proposal from "../constants/proposal";
 
 const LOAD_BY = 6;
 
 async function getProposals(
-  followedSpaces,
-  loadCount,
-  proposals,
-  setLoadCount,
-  setProposals,
-  isInitial = false
+  followedSpaces: any,
+  loadCount: number,
+  proposals: Proposal[],
+  setLoadCount: (loadCount: number) => void,
+  setProposals: (proposals: Proposal[]) => void,
+  isInitial: boolean,
+  setLoadingMore: (loadingMore: boolean) => void,
+  state: string
 ) {
   const query = {
     query: PROPOSALS_QUERY,
     variables: {
       first: LOAD_BY,
       skip: loadCount,
-      space_in: followedSpaces.map((follow) => follow.space.id),
-      state: "all",
+      space_in: followedSpaces.map((follow: any) => follow.space.id),
+      state,
     },
   };
   const result = await apolloClient.query(query);
@@ -40,6 +45,7 @@ async function getProposals(
     setProposals(newProposals);
     setLoadCount(loadCount + LOAD_BY);
   }
+  setLoadingMore(false);
 }
 
 function FeedScreen() {
@@ -47,6 +53,11 @@ function FeedScreen() {
   const insets = useSafeAreaInsets();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [filter, setFilter] = useState<{ key: string; text: string }>(
+    proposal.getStateFilters()[0]
+  );
+
   useEffect(() => {
     if (followedSpaces.length > 0) {
       getProposals(
@@ -55,32 +66,78 @@ function FeedScreen() {
         proposals,
         setLoadCount,
         setProposals,
-        true
+        true,
+        setLoadingMore,
+        filter.key
       );
     }
   }, [followedSpaces]);
 
   return (
     <View style={[common.screen, { paddingTop: insets.top }]}>
-      <FlatList
+      <CollapsibleHeaderFlatList
+        clipHeader
+        CollapsibleHeaderComponent={
+          <TimelineHeader
+            filter={filter}
+            setFilter={setFilter}
+            onChangeFilter={(newFilter: string) => {
+              getProposals(
+                followedSpaces,
+                0,
+                proposals,
+                setLoadCount,
+                setProposals,
+                true,
+                setLoadingMore,
+                newFilter
+              );
+            }}
+          />
+        }
+        headerHeight={65}
         data={proposals}
         renderItem={(data) => {
           return <ProposalPreview proposal={data.item} />;
         }}
+        keyExtractor={(item, i) => `${item.id}${i}`}
         onEndReachedThreshold={0.45}
         onEndReached={() => {
+          setLoadingMore(true);
           getProposals(
             followedSpaces,
             loadCount,
             proposals,
             setLoadCount,
-            setProposals
+            setProposals,
+            false,
+            setLoadingMore,
+            filter.key
           );
         }}
         ListEmptyComponent={
           <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
             <Text style={common.subTitle}>{i18n.t("noSpacesJoinedYet")}</Text>
           </View>
+        }
+        ListFooterComponent={
+          loadingMore ? (
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 24,
+                height: 150,
+              }}
+            >
+              <ActivityIndicator color={colors.textColor} size="large" />
+            </View>
+          ) : (
+            <View
+              style={{ width: "100%", height: 150, backgroundColor: "white" }}
+            />
+          )
         }
       />
     </View>

@@ -53,11 +53,11 @@ const styles = StyleSheet.create({
   },
 });
 
-function sortVotesUserFirst(votes, connectedAddress) {
-  if (votes.map((vote) => vote.voter).includes(connectedAddress)) {
+function sortVotesUserFirst(votes: any, connectedAddress: string) {
+  if (votes.map((vote: any) => vote.voter).includes(connectedAddress)) {
     votes.unshift(
       votes.splice(
-        votes.findIndex((item) => item.voter === connectedAddress),
+        votes.findIndex((item: any) => item.voter === connectedAddress),
         1
       )[0]
     );
@@ -86,8 +86,8 @@ function BlockVotes({
   const visibleVotes: any[] = useMemo(
     () =>
       showAllVotes
-        ? sortVotesUserFirst(votes, connectedAddress)
-        : sortVotesUserFirst(votes, connectedAddress).slice(0, 10),
+        ? sortVotesUserFirst(votes, connectedAddress ?? "")
+        : sortVotesUserFirst(votes, connectedAddress ?? "").slice(0, 10),
     [showAllVotes, votes]
   );
 
@@ -124,7 +124,8 @@ function BlockVotes({
                         ellipsizeMode="tail"
                         numberOfLines={1}
                       >
-                        {n(vote.balance)} {shorten(space.symbol, "symbol")}
+                        {n(vote.balance)}{" "}
+                        {shorten(space.symbol ?? "", "symbol")}
                       </Text>
                       <TouchableOpacity
                         onPress={() => {
@@ -154,7 +155,7 @@ function BlockVotes({
                   <PlaceholderLine width={100} />
                 </Placeholder>
               ))}
-          {votes.length > 10 && (
+          {!showAllVotes && votes.length > 10 && (
             <View style={styles.seeAll}>
               <TouchableOpacity
                 onPress={() => {

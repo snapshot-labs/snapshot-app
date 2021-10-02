@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import get from "lodash/get";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
@@ -27,7 +27,8 @@ async function getProposals(
   proposals: Proposal[],
   setLoadCount: (loadCount: number) => void,
   setProposals: (proposals: Proposal[]) => void,
-  isInitial = false
+  isInitial: boolean,
+  setLoadingMore: (loadingMore: boolean) => void
 ) {
   const query = {
     query: PROPOSALS_QUERY,
@@ -47,6 +48,7 @@ async function getProposals(
     setProposals(newProposals);
     setLoadCount(loadCount + LOAD_BY);
   }
+  setLoadingMore(false);
 }
 
 async function getSpace(spaceId: string, exploreDispatch: ContextDispatch) {
@@ -77,16 +79,19 @@ function TokenScreen({ route }: TokenScreenProps) {
   const insets = useSafeAreaInsets();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
   const exploreDispatch = useExploreDispatch();
 
   useEffect(() => {
+    setLoadingMore(true);
     getProposals(
       spaceId,
       loadCount,
       proposals,
       setLoadCount,
       setProposals,
-      true
+      true,
+      setLoadingMore
     );
     getSpace(spaceId, exploreDispatch);
   }, []);
@@ -95,6 +100,7 @@ function TokenScreen({ route }: TokenScreenProps) {
     <View style={[{ paddingTop: insets.top }, common.screen]}>
       <CollapsibleHeaderFlatList
         data={proposals}
+        clipHeader
         CollapsibleHeaderComponent={
           <View
             style={{
@@ -146,17 +152,37 @@ function TokenScreen({ route }: TokenScreenProps) {
         }}
         onEndReachedThreshold={0.45}
         onEndReached={() => {
+          setLoadingMore(true);
           getProposals(
             spaceId,
             loadCount,
             proposals,
             setLoadCount,
-            setProposals
+            setProposals,
+            false,
+            setLoadingMore
           );
         }}
-      >
-        <View style={{ height: 2000, backgroundColor: "wheat" }} />
-      </CollapsibleHeaderFlatList>
+        ListFooterComponent={
+          loadingMore ? (
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 24,
+                height: 150,
+              }}
+            >
+              <ActivityIndicator color={colors.textColor} size="large" />
+            </View>
+          ) : (
+            <View
+              style={{ width: "100%", height: 150, backgroundColor: "white" }}
+            />
+          )
+        }
+      />
     </View>
   );
 }
