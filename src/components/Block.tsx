@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Platform } from "react-native";
 import colors from "../constants/colors";
 import common from "../styles/common";
 
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: "Calibre-Medium",
     fontSize: 15,
-    marginTop: 4,
+    marginTop: Platform.OS === "ios" ? 4 : 0,
   },
 });
 

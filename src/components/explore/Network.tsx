@@ -1,10 +1,19 @@
 import React from "react";
-import { StyleSheet, View, Text, Image, Platform } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
 import { n } from "../../util/miscUtils";
-import { NetworkType } from "../../types/explore";
+import { NetworkType, Space } from "../../types/explore";
 import common from "../../styles/common";
+import { useNavigation } from "@react-navigation/native";
+import { NETWORK_SCREEN } from "../../constants/navigation";
 
 const isIOS = Platform.OS === "ios";
 
@@ -31,32 +40,44 @@ function getLogoUrl(key: string) {
 
 type NetworkProps = {
   network: NetworkType;
+  orderedSpaces: Space[];
 };
 
-function Network({ network }: NetworkProps) {
+function Network({ network, orderedSpaces }: NetworkProps) {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Image
-          source={{ uri: getLogoUrl(network.key) }}
-          style={{ width: 24, height: 24, borderRadius: 12, marginRight: 4 }}
-        />
-        <Text style={[common.h4, { marginTop: isIOS ? 4 : 0 }]}>
-          {network.name}
-        </Text>
-        <Text
-          style={[
-            styles.secondaryText,
-            { marginLeft: 4, marginTop: isIOS ? 4 : 0 },
-          ]}
-        >
-          {network.key}
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate(NETWORK_SCREEN, {
+          networkName: network.name,
+          networkId: network.key,
+          orderedSpaces,
+        });
+      }}
+    >
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Image
+            source={{ uri: getLogoUrl(network.key) }}
+            style={{ width: 24, height: 24, borderRadius: 12, marginRight: 4 }}
+          />
+          <Text style={[common.h4, { marginTop: isIOS ? 4 : 0 }]}>
+            {network.name}
+          </Text>
+          <Text
+            style={[
+              styles.secondaryText,
+              { marginLeft: 4, marginTop: isIOS ? 4 : 0 },
+            ]}
+          >
+            {network.key}
+          </Text>
+        </View>
+        <Text style={[styles.secondaryText, { marginTop: 6 }]}>
+          {i18n.t("inSpaces", { spaceCount: n(network.spaces) })}
         </Text>
       </View>
-      <Text style={[styles.secondaryText, { marginTop: 6 }]}>
-        {i18n.t("inSpaces", { spaceCount: n(network.spaces) })}
-      </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
