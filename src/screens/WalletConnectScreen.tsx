@@ -158,7 +158,6 @@ function WalletConnectScreen() {
                 const key = convertArrayBufferToHex(arrayBufferKey, true);
                 const handshakeTopic = uuid();
                 const createdUri = `wc:${handshakeTopic}@1`;
-                const redirectUrl = "org.snapshot";
                 newConnector._key = arrayBufferKey;
                 const request = newConnector._formatRequest({
                   method: "wc_sessionRequest",

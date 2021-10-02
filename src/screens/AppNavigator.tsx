@@ -60,6 +60,7 @@ function TabNavigator() {
         tabBarLabelStyle: {
           textTransform: "capitalize",
         },
+        swipeEnabled: false,
       }}
     >
       <Tab.Screen

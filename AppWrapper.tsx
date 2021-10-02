@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/screens/AppNavigator";
-import {
-  useWalletConnect,
-  withWalletConnect,
-} from "@walletconnect/react-native-dapp";
+import { withWalletConnect } from "@walletconnect/react-native-dapp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
@@ -13,7 +10,7 @@ import { ExploreProvider } from "./src/context/exploreContext";
 import storage from "./src/util/storage";
 import { AUTH_ACTIONS, useAuthDispatch } from "./src/context/authContext";
 import { ContextDispatch } from "./src/types/context";
-import { getAliasWallet, getRandomAliasWallet } from "./src/util/aliasUtils";
+import { getAliasWallet } from "./src/util/aliasUtils";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,

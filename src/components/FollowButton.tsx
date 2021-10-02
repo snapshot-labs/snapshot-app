@@ -26,8 +26,10 @@ function setConnectorOnConnect(
     if (connector) {
       connector.off("call_request_sent");
       connector.on("call_request_sent", async (error) => {
-        //@ts-ignore
-        SendIntentAndroid.openApp(androidAppUrl);
+        if (androidAppUrl) {
+          const createdUri = `wc:${connector.handshakeTopic}@1`;
+          SendIntentAndroid.openAppWithData(androidAppUrl, createdUri);
+        }
       });
 
       setDidSetConnectorOnConnect(true);

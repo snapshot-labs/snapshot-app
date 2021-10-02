@@ -60,10 +60,7 @@ class Client {
     };
     const snapshotData = { domain, types, message };
     const wcData: any = {
-      domain: {
-        ...domain,
-        chainId: 1,
-      },
+      domain,
       types: updatedTypes,
       message,
       primaryType,
@@ -79,14 +76,15 @@ class Client {
       let sig;
       try {
         console.log(JSON.stringify(wcData));
+        console.log("START WALLET CONNECT SIGN");
         sig = await wcConnector.signTypedData([address, wcData]);
       } catch (e) {
         console.log("WALLET CONNECT FAILED", e.message);
       }
       if (sig) {
+        console.log("Sign", { address, sig, data: snapshotData });
         return await this.send({ address, sig, data: snapshotData });
       }
-      console.log("Sign", { address, sig, data: snapshotData });
     }
   }
 
