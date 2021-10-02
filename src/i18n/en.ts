@@ -66,4 +66,5 @@ export default {
   pending: "Pending",
   closed: "Closed",
   all: "All",
+  cantFindAnyResults: "Oops, we can't find any results",
 };

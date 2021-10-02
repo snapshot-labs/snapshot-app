@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
@@ -36,6 +42,7 @@ async function getProposals(
       state,
     },
   };
+
   const result = await apolloClient.query(query);
   const proposalResult = get(result, "data.proposals", []);
   if (isInitial) {
@@ -54,6 +61,7 @@ function FeedScreen() {
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [filter, setFilter] = useState<{ key: string; text: string }>(
     proposal.getStateFilters()[0]
   );
@@ -77,11 +85,31 @@ function FeedScreen() {
     <View style={[common.screen, { paddingTop: insets.top }]}>
       <CollapsibleHeaderFlatList
         clipHeader
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setLoadCount(0);
+              setRefreshing(true);
+              getProposals(
+                followedSpaces,
+                0,
+                proposals,
+                setLoadCount,
+                setProposals,
+                true,
+                setRefreshing,
+                filter.key
+              );
+            }}
+          />
+        }
         CollapsibleHeaderComponent={
           <TimelineHeader
             filter={filter}
             setFilter={setFilter}
             onChangeFilter={(newFilter: string) => {
+              setLoadCount(0);
               getProposals(
                 followedSpaces,
                 0,
@@ -117,7 +145,11 @@ function FeedScreen() {
         }}
         ListEmptyComponent={
           <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-            <Text style={common.subTitle}>{i18n.t("noSpacesJoinedYet")}</Text>
+            <Text style={common.subTitle}>
+              {followedSpaces.length === 0
+                ? i18n.t("noSpacesJoinedYet")
+                : i18n.t("cantFindAnyResults")}
+            </Text>
           </View>
         }
         ListFooterComponent={

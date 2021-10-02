@@ -78,16 +78,16 @@ function TimelineHeader({
                 if (buttonIndex !== 4) {
                   if (buttonIndex === 0) {
                     setFilter(allFilter);
-                    onChangeFilter(allFilter.text);
+                    onChangeFilter(allFilter.key);
                   } else if (buttonIndex === 1) {
                     setFilter(activeFilter);
-                    onChangeFilter(activeFilter.text);
+                    onChangeFilter(activeFilter.key);
                   } else if (buttonIndex === 2) {
                     setFilter(pendingFilter);
-                    onChangeFilter(pendingFilter.text);
+                    onChangeFilter(pendingFilter.key);
                   } else if (buttonIndex === 3) {
                     setFilter(closedFilter);
-                    onChangeFilter(closedFilter.text);
+                    onChangeFilter(closedFilter.key);
                   }
                 }
               }
