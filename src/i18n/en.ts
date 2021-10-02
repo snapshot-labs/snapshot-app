@@ -68,4 +68,5 @@ export default {
   all: "All",
   cantFindAnyResults: "Oops, we can't find any results",
   back: "Back",
+  version: "Version",
 };

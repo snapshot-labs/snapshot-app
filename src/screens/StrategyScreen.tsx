@@ -5,6 +5,7 @@ import common from "../styles/common";
 import BackButton from "../components/BackButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MarkdownBody from "../components/proposal/MarkdownBody";
+import BlockInformation from "../components/strategy/BlockInformation";
 
 type StrategyScreenProps = {
   route: {
@@ -35,6 +36,8 @@ function StrategyScreen({ route }: StrategyScreenProps) {
             {i18n.t("inSpaces", { spaceCount: inSpaces })}
           </Text>
           <MarkdownBody body={strategy.about} />
+          <View style={{ width: "100%", height: 20 }} />
+          <BlockInformation strategy={strategy} />
         </ScrollView>
       </View>
     </SafeAreaView>
