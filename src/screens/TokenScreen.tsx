@@ -19,6 +19,7 @@ import { useAuthState } from "../context/authContext";
 import FollowButton from "../components/FollowButton";
 import ProposalFilters from "../components/proposal/ProposalFilters";
 import proposal from "../constants/proposal";
+import BackButton from "../components/BackButton";
 
 const LOAD_BY = 6;
 
@@ -102,6 +103,7 @@ function TokenScreen({ route }: TokenScreenProps) {
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
+      <BackButton />
       <CollapsibleHeaderFlatList
         data={proposals}
         clipHeader

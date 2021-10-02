@@ -66,6 +66,7 @@ function ExploreScreen() {
     () =>
       Object.keys(networksJson).map((n) => ({
         spaces: networks[n] ?? 0,
+        //@ts-ignore
         ...(networksJson[n] ?? {}),
       })),
     [networks]
@@ -75,6 +76,7 @@ function ExploreScreen() {
       Object.entries(pluginsObj).map(([key, pluginClass]: any) => {
         const plugin = new pluginClass();
         plugin.key = key;
+        //@ts-ignore
         plugin.spaces = plugins[key] ?? 0;
         return plugin;
       }),
@@ -122,7 +124,12 @@ function ExploreScreen() {
             } else if (currentExplore.key === "skins") {
               return <Skin skin={data.item} />;
             } else if (currentExplore.key === "strategies") {
-              return <Strategy strategy={data.item} />;
+              return (
+                <Strategy
+                  strategy={data.item}
+                  minifiedStrategiesArray={minifiedStrategiesArray}
+                />
+              );
             } else if (currentExplore.key === "networks") {
               return (
                 <Network network={data.item} orderedSpaces={orderedSpaces} />
