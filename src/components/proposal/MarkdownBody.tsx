@@ -52,6 +52,12 @@ const tagsStyles = {
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
   },
+  code: {
+    color: colors.darkGray,
+    fontFamily: "Calibre-Medium",
+    backgroundColor: colors.bgLightGray,
+    padding: 16,
+  },
 };
 
 const baseStyle = {
@@ -73,6 +79,7 @@ function MarkdownBody({ body }: MarkdownBodyProps) {
 
   useEffect(() => {
     const markedBody: any = remarkable.render(body);
+    console.log({ markedBody });
     setParsedBody(markedBody);
   }, [body]);
 

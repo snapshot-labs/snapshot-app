@@ -9,4 +9,5 @@ export default {
   bgGreen: "#21B66F",
   bgGray: "#6B7280",
   bgBlue: "#384aff",
+  bgLightGray: "#f6f8fa",
 };

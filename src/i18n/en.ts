@@ -67,4 +67,5 @@ export default {
   closed: "Closed",
   all: "All",
   cantFindAnyResults: "Oops, we can't find any results",
+  back: "Back",
 };

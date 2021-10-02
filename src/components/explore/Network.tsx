@@ -44,7 +44,7 @@ type NetworkProps = {
 };
 
 function Network({ network, orderedSpaces }: NetworkProps) {
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   return (
     <TouchableOpacity
       onPress={() => {
