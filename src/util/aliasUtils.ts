@@ -47,10 +47,7 @@ export async function setAlias(
   setAliasWallet?: (wallet: Wallet) => void
 ) {
   if (connectedAddress) {
-    console.log("SET ALIAS BEFORE WALLET");
     const wallet = await getRandomAliasWallet();
-    console.log("SET ALIAS AFTER WALLET", wallet.address, wallet.privateKey);
-
     const alias = {
       [connectedAddress]: wallet.privateKey,
     };

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ViewStyle,
   Text,
+  Platform,
 } from "react-native";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import i18n from "i18n-js";
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 24,
     marginLeft: 8,
-    marginTop: 6,
+    marginTop: Platform.OS === "ios" ? 6 : 0,
   },
 });
 

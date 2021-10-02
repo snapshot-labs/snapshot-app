@@ -7,6 +7,8 @@ const styles = StyleSheet.create({
     height: 28,
     paddingHorizontal: 12,
     borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
   },
   badgeTitle: {
     fontSize: 16,
