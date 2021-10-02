@@ -21,6 +21,7 @@ import ProposalScreen from "./ProposalScreen";
 import CustomWalletScreen from "./CustomWalletScreen";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { LANDING_SCREEN } from "../constants/navigation";
+import NetworkScreen from "./NetworkScreen";
 
 const Stack = createStackNavigator();
 
@@ -153,6 +154,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.CUSTOM_WALLET_SCREEN}
         component={CustomWalletScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.NETWORK_SCREEN}
+        component={NetworkScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

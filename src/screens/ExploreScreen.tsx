@@ -124,7 +124,9 @@ function ExploreScreen() {
             } else if (currentExplore.key === "strategies") {
               return <Strategy strategy={data.item} />;
             } else if (currentExplore.key === "networks") {
-              return <Network network={data.item} />;
+              return (
+                <Network network={data.item} orderedSpaces={orderedSpaces} />
+              );
             } else if (currentExplore.key === "plugins") {
               return <Plugin plugin={data.item} />;
             }

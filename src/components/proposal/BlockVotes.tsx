@@ -99,9 +99,15 @@ function BlockVotes({
       Content={
         <View>
           {resultsLoaded
-            ? visibleVotes.map((vote) => {
+            ? visibleVotes.map((vote, i) => {
                 return (
-                  <View key={vote.id} style={styles.row}>
+                  <View
+                    key={vote.id}
+                    style={[
+                      styles.row,
+                      showAllVotes ? { borderBottomWidth: 0 } : {},
+                    ]}
+                  >
                     <Text style={styles.rowText} ellipsizeMode="clip">
                       {shorten(vote.voter)}
                     </Text>
