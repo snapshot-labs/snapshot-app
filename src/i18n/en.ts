@@ -60,4 +60,10 @@ export default {
   strategiesPlural: "strategie(s)",
   join: "Join",
   joined: "Joined",
+  account: "Account",
+  timeline: "Timeline",
+  active: "Active",
+  pending: "Pending",
+  closed: "Closed",
+  all: "All",
 };

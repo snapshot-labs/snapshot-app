@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Platform } from "react-native";
 import i18n from "i18n-js";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
@@ -112,6 +112,7 @@ function ExploreHeader({
                   name="caret-down"
                   size={16}
                   color={colors.darkGray}
+                  style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
                 />
               </View>
             </TouchableOpacity>
