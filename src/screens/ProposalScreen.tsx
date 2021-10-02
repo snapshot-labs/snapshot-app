@@ -16,6 +16,7 @@ import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import { getResults } from "../util/snapshot";
 import BackButton from "../components/BackButton";
 import BlockResults from "../components/proposal/BlockResults";
+import BlockCastVote from "../components/proposal/BlockCastVote";
 
 type ProposalScreenProps = {
   route: {
@@ -125,6 +126,14 @@ function ProposalScreen({ route }: ProposalScreenProps) {
         <MarkdownBody body={proposal.body} />
         <BlockInformation proposal={proposal} space={space} />
         <View style={{ width: 10, height: 10 }} />
+
+        {proposal?.state === "active" && (
+          <>
+            <BlockCastVote proposal={proposal} resultsLoaded={resultsLoaded} />
+            <View style={{ width: 10, height: 10 }} />
+          </>
+        )}
+
         <BlockVotes
           proposal={proposal}
           votes={votes}

@@ -69,4 +69,6 @@ export default {
   cantFindAnyResults: "Oops, we can't find any results",
   back: "Back",
   version: "Version",
+  castYourVote: "Cast your vote",
+  vote: "Vote",
 };
