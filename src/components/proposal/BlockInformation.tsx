@@ -58,7 +58,7 @@ function getVotingType(type: string) {
 
 type BlockInformationProps = {
   proposal: Proposal;
-  space: Space;
+  space: Space | any;
 };
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
@@ -66,8 +66,8 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
   const proposalStart = useMemo(() => dateFormat(proposal.start), [proposal]);
   const proposalEnd = useMemo(() => dateFormat(proposal.end), [proposal]);
   const votingType = useMemo(() => getVotingType(proposal.type), [proposal]);
-  const strategies = useMemo(
-    () => proposal.strategies ?? space.strategies ?? [],
+  const strategies: any = useMemo(
+    () => proposal.strategies ?? space?.strategies ?? [],
     [proposal, space]
   );
   const symbols = useMemo(
@@ -147,7 +147,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
               <TouchableOpacity
                 onPress={() => {
                   const url = explorerUrl(
-                    space.network,
+                    space?.network,
                     proposal.snapshot,
                     "block"
                   );
