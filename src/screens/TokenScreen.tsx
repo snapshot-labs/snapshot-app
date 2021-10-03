@@ -13,13 +13,18 @@ import { PROPOSALS_QUERY, SPACES_QUERY } from "../util/queries";
 import apolloClient from "../util/apolloClient";
 import { Proposal } from "../types/proposal";
 import ProposalPreview from "../components/ProposalPreview";
-import { EXPLORE_ACTIONS, useExploreDispatch } from "../context/exploreContext";
+import {
+  EXPLORE_ACTIONS,
+  useExploreDispatch,
+  useExploreState,
+} from "../context/exploreContext";
 import { ContextDispatch } from "../types/context";
 import { useAuthState } from "../context/authContext";
 import FollowButton from "../components/FollowButton";
 import ProposalFilters from "../components/proposal/ProposalFilters";
 import proposal from "../constants/proposal";
 import BackButton from "../components/BackButton";
+import { setProfiles } from "../util/profile";
 
 const LOAD_BY = 6;
 
@@ -77,6 +82,7 @@ type TokenScreenProps = {
 };
 function TokenScreen({ route }: TokenScreenProps) {
   const { isWalletConnect } = useAuthState();
+  const { profiles } = useExploreState();
   const space = route.params.space;
   const spaceId: string = get(space, "id", "");
   const insets = useSafeAreaInsets();
@@ -100,6 +106,15 @@ function TokenScreen({ route }: TokenScreenProps) {
     );
     getSpace(spaceId, exploreDispatch);
   }, []);
+
+  useEffect(() => {
+    const profilesArray = Object.keys(profiles);
+    const addressArray = proposals.map((proposal: Proposal) => proposal.author);
+    const filteredArray = addressArray.filter((address) => {
+      return !profilesArray.includes(address);
+    });
+    setProfiles(filteredArray, exploreDispatch);
+  }, [proposals]);
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>

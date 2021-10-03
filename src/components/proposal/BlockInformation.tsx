@@ -15,6 +15,7 @@ import { shorten, dateFormat, n, explorerUrl } from "../../util/miscUtils";
 import Block from "../Block";
 import { Space } from "../../types/explore";
 import Token from "../Token";
+import { useExploreState } from "../../context/exploreContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -62,7 +63,12 @@ type BlockInformationProps = {
 };
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
-  const author = useMemo(() => shorten(proposal.author), [proposal]);
+  const { profiles } = useExploreState();
+  const authorProfile = profiles[proposal.author];
+  const author =
+    authorProfile && authorProfile.ens
+      ? authorProfile.ens
+      : shorten(proposal.author);
   const proposalStart = useMemo(() => dateFormat(proposal.start), [proposal]);
   const proposalEnd = useMemo(() => dateFormat(proposal.end), [proposal]);
   const votingType = useMemo(() => getVotingType(proposal.type), [proposal]);

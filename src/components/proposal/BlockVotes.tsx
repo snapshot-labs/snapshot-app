@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,11 @@ import {
 } from "rn-placeholder";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import ReceiptModal from "./ReceiptModal";
+import {
+  useExploreDispatch,
+  useExploreState,
+} from "../../context/exploreContext";
+import { setProfiles } from "../../util/profile";
 
 const { width } = Dimensions.get("screen");
 const contentWidth = (width - 64) / 3;
@@ -80,6 +85,8 @@ function BlockVotes({
   resultsLoaded,
 }: BlockVotesProps) {
   const { connectedAddress } = useAuthState();
+  const { profiles } = useExploreState();
+  const exploreDispatch = useExploreDispatch();
   const [showAllVotes, setShowAllVotes] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [currentAuthorIpfsHash, setCurrentAuthorIpfsHash] = useState("");
@@ -91,6 +98,15 @@ function BlockVotes({
     [showAllVotes, votes]
   );
 
+  useEffect(() => {
+    const profilesArray = Object.keys(profiles);
+    const addressArray = votes.map((vote: any) => vote.voter);
+    const filteredArray = addressArray.filter((address) => {
+      return !profilesArray.includes(address);
+    });
+    setProfiles(filteredArray, exploreDispatch);
+  }, [votes]);
+
   return (
     <Block
       count={resultsLoaded ? votes.length : undefined}
@@ -100,6 +116,12 @@ function BlockVotes({
         <View>
           {resultsLoaded
             ? visibleVotes.map((vote, i) => {
+                const voterProfile = profiles[vote.voter];
+                const voterName =
+                  voterProfile && voterProfile.ens
+                    ? voterProfile.ens
+                    : shorten(vote.voter);
+
                 return (
                   <View
                     key={vote.id}
@@ -109,7 +131,7 @@ function BlockVotes({
                     ]}
                   >
                     <Text style={styles.rowText} ellipsizeMode="clip">
-                      {shorten(vote.voter)}
+                      {voterName}
                     </Text>
                     <Text
                       style={[styles.rowText, { textAlign: "center" }]}
