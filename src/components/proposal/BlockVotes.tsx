@@ -127,7 +127,9 @@ function BlockVotes({
                     key={vote.id}
                     style={[
                       styles.row,
-                      showAllVotes ? { borderBottomWidth: 0 } : {},
+                      showAllVotes && i === visibleVotes.length - 1
+                        ? { borderBottomWidth: 0 }
+                        : {},
                     ]}
                   >
                     <Text style={styles.rowText} ellipsizeMode="clip">
