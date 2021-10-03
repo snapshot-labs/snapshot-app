@@ -13,6 +13,7 @@ import VotingSingleChoice from "./VotingSingleChoice";
 import VotingRankedChoice from "./VotingRankedChoice";
 import VoteConfirmModal from "./VoteConfirmModal";
 import { useAuthState } from "../../context/authContext";
+import VotingQuadratic from "./VotingQuadratic";
 
 type BlockCastVoteProps = {
   proposal: Proposal;
@@ -51,6 +52,8 @@ function BlockCastVote({
     VotesComponent = VotingSingleChoice;
   } else if (proposal.type === "ranked-choice") {
     VotesComponent = VotingRankedChoice;
+  } else if (proposal.type === "quadratic" || proposal.type === "weighted") {
+    VotesComponent = VotingQuadratic;
   }
 
   useEffect(() => {
@@ -63,23 +66,22 @@ function BlockCastVote({
         <Block
           title={i18n.t("castYourVote")}
           Content={
-            <View style={{ padding: 24 }}>
+            <View
+              style={{
+                paddingVertical: 24,
+                paddingHorizontal:
+                  proposal.type === "quadratic" || proposal.type === "weighted"
+                    ? 8
+                    : 24,
+              }}
+            >
               {resultsLoaded ? (
-                proposal.type === "ranked-choice" ? (
-                  <VotesComponent
-                    proposal={proposal}
-                    selectedChoices={selectedChoices}
-                    setSelectedChoices={setSelectedChoices}
-                    setScrollEnabled={setScrollEnabled}
-                  />
-                ) : (
-                  <VotesComponent
-                    proposal={proposal}
-                    selectedChoices={selectedChoices}
-                    setSelectedChoices={setSelectedChoices}
-                    setScrollEnabled={setScrollEnabled}
-                  />
-                )
+                <VotesComponent
+                  proposal={proposal}
+                  selectedChoices={selectedChoices}
+                  setSelectedChoices={setSelectedChoices}
+                  setScrollEnabled={setScrollEnabled}
+                />
               ) : (
                 <Placeholder
                   style={{ justifyContent: "center", alignItems: "center" }}

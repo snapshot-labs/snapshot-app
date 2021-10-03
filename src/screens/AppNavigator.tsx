@@ -168,11 +168,6 @@ export default function () {
         component={StrategyScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name={navigationConstants.VOTING_RANKED_CHOICE_SCREEN}
-        component={VotingRankedChoiceScreen}
-        options={{ headerShown: false }}
-      />
     </Stack.Navigator>
   );
 }
