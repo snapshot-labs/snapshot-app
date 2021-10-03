@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
+  Animated,
   RefreshControl,
   Text,
   View,
+  useWindowDimensions,
+  StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uniqBy from "lodash/uniqBy";
@@ -20,6 +22,7 @@ import colors from "../constants/colors";
 import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
 import TimelineHeader from "../components/timeline/TimelineHeader";
 import proposal from "../constants/proposal";
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 const LOAD_BY = 6;
 
@@ -31,14 +34,17 @@ async function getProposals(
   setProposals: (proposals: Proposal[]) => void,
   isInitial: boolean,
   setLoadingMore: (loadingMore: boolean) => void,
-  state: string
+  state: string,
+  useFollowedSpaces: boolean
 ) {
   const query = {
     query: PROPOSALS_QUERY,
     variables: {
       first: LOAD_BY,
       skip: loadCount,
-      space_in: followedSpaces.map((follow: any) => follow.space.id),
+      space_in: useFollowedSpaces
+        ? followedSpaces.map((follow: any) => follow.space.id)
+        : [],
       state,
     },
   };
@@ -55,9 +61,12 @@ async function getProposals(
   setLoadingMore(false);
 }
 
-function FeedScreen() {
+type FeedScreenProps = {
+  useFollowedSpaces?: boolean;
+};
+
+function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
   const { followedSpaces } = useAuthState();
-  const insets = useSafeAreaInsets();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -76,108 +85,168 @@ function FeedScreen() {
         setProposals,
         true,
         setLoadingMore,
-        filter.key
+        filter.key,
+        useFollowedSpaces
       );
     }
   }, [followedSpaces]);
 
   return (
-    <View style={[common.screen, { paddingTop: insets.top }]}>
-      <CollapsibleHeaderFlatList
-        clipHeader
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => {
-              setLoadCount(0);
-              setRefreshing(true);
-              getProposals(
-                followedSpaces,
-                0,
-                proposals,
-                setLoadCount,
-                setProposals,
-                true,
-                setRefreshing,
-                filter.key
-              );
-            }}
-          />
-        }
-        CollapsibleHeaderComponent={
-          <TimelineHeader
-            filter={filter}
-            setFilter={setFilter}
-            onChangeFilter={(newFilter: string) => {
-              setLoadCount(0);
-              getProposals(
-                followedSpaces,
-                0,
-                proposals,
-                setLoadCount,
-                setProposals,
-                true,
-                setLoadingMore,
-                newFilter
-              );
-            }}
-          />
-        }
-        headerHeight={65}
-        data={proposals}
-        renderItem={(data) => {
-          return <ProposalPreview proposal={data.item} />;
-        }}
-        keyExtractor={(item, i) => `${item.id}${i}`}
-        onEndReachedThreshold={0.45}
-        onEndReached={() => {
-          setLoadingMore(true);
-          getProposals(
-            followedSpaces,
-            loadCount,
-            proposals,
-            setLoadCount,
-            setProposals,
-            false,
-            setLoadingMore,
-            filter.key
-          );
-        }}
-        ListEmptyComponent={
-          loadingMore ? (
-            <View />
-          ) : (
-            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-              <Text style={common.subTitle}>
-                {followedSpaces.length === 0
+    <CollapsibleHeaderFlatList
+      clipHeader
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => {
+            setLoadCount(0);
+            setRefreshing(true);
+            getProposals(
+              followedSpaces,
+              0,
+              proposals,
+              setLoadCount,
+              setProposals,
+              true,
+              setRefreshing,
+              filter.key,
+              useFollowedSpaces
+            );
+          }}
+        />
+      }
+      CollapsibleHeaderComponent={
+        <TimelineHeader
+          filter={filter}
+          setFilter={setFilter}
+          onChangeFilter={(newFilter: string) => {
+            setLoadCount(0);
+            getProposals(
+              followedSpaces,
+              0,
+              proposals,
+              setLoadCount,
+              setProposals,
+              true,
+              setLoadingMore,
+              newFilter,
+              useFollowedSpaces
+            );
+          }}
+        />
+      }
+      headerHeight={65}
+      data={proposals}
+      renderItem={(data) => {
+        return <ProposalPreview proposal={data.item} fromFeed={true} />;
+      }}
+      keyExtractor={(item, i) => `${item.id}${i}`}
+      onEndReachedThreshold={0.6}
+      onEndReached={() => {
+        setLoadingMore(true);
+        getProposals(
+          followedSpaces,
+          loadCount,
+          proposals,
+          setLoadCount,
+          setProposals,
+          false,
+          setLoadingMore,
+          filter.key,
+          useFollowedSpaces
+        );
+      }}
+      ListEmptyComponent={
+        loadingMore ? (
+          <View />
+        ) : (
+          <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+            <Text style={common.subTitle}>
+              {followedSpaces.length === 0
+                ? useFollowedSpaces
                   ? i18n.t("noSpacesJoinedYet")
-                  : i18n.t("cantFindAnyResults")}
-              </Text>
-            </View>
-          )
-        }
-        ListFooterComponent={
-          loadingMore ? (
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 24,
-                height: 150,
-              }}
-            >
-              <ActivityIndicator color={colors.textColor} size="large" />
-            </View>
-          ) : (
-            <View
-              style={{ width: "100%", height: 150, backgroundColor: "white" }}
-            />
-          )
-        }
+                  : i18n.t("cantFindAnyResults")
+                : i18n.t("cantFindAnyResults")}
+            </Text>
+          </View>
+        )
+      }
+      ListFooterComponent={
+        loadingMore ? (
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 24,
+              height: 150,
+            }}
+          >
+            <ActivityIndicator color={colors.textColor} size="large" />
+          </View>
+        ) : (
+          <View
+            style={{ width: "100%", height: 150, backgroundColor: "white" }}
+          />
+        )
+      }
+    />
+  );
+}
+
+const styles = StyleSheet.create({
+  indicatorStyle: {
+    fontFamily: "Calibre-Medium",
+    color: colors.textColor,
+    backgroundColor: colors.darkGray,
+  },
+  labelStyle: {
+    fontFamily: "Calibre-Medium",
+    color: colors.textColor,
+    textTransform: "capitalize",
+    fontSize: 18,
+  },
+});
+
+function AllSpacesFeedScreen() {
+  return <FeedScreen useFollowedSpaces={false} />;
+}
+
+const renderScene = SceneMap({
+  first: FeedScreen,
+  second: AllSpacesFeedScreen,
+});
+
+function FeedScreenTabView() {
+  const [index, setIndex] = React.useState(0);
+  const layout = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const [routes] = React.useState([
+    { key: "first", title: i18n.t("joinedSpaces") },
+    { key: "second", title: i18n.t("allSpaces") },
+  ]);
+
+  const renderTabBar = (props: any) => (
+    <TabBar
+      {...props}
+      labelStyle={styles.labelStyle}
+      indicatorStyle={styles.indicatorStyle}
+      activeColor={colors.textColor}
+      style={{ backgroundColor: colors.white }}
+      inactiveColor={colors.textColor}
+    />
+  );
+
+  return (
+    <View style={[common.screen, { paddingTop: insets.top }]}>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
       />
     </View>
   );
 }
 
-export default FeedScreen;
+export default FeedScreenTabView;

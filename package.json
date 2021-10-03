@@ -66,7 +66,7 @@
     "react-native-level-fs": "^3.0.1",
     "react-native-modal": "^13.0.0",
     "react-native-os": "^1.2.6",
-    "react-native-pager-view": "^5.4.4",
+    "react-native-pager-view": "5.0.12",
     "react-native-progress": "^5.0.0",
     "react-native-randombytes": "^3.6.1",
     "react-native-reanimated": "~2.2.0",

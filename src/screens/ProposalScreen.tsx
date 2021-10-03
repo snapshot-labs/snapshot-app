@@ -12,7 +12,6 @@ import StateBadge from "../components/StateBadge";
 import BlockInformation from "../components/proposal/BlockInformation";
 import get from "lodash/get";
 import BlockVotes from "../components/proposal/BlockVotes";
-import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import { getResults } from "../util/snapshot";
 import BackButton from "../components/BackButton";
 import BlockResults from "../components/proposal/BlockResults";
@@ -22,6 +21,7 @@ type ProposalScreenProps = {
   route: {
     params: {
       proposal: Proposal;
+      fromFeed: boolean;
     };
   };
 };
@@ -116,7 +116,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <BackButton title={space?.name} />
+      <BackButton title={route.params.fromFeed ? null : space?.name} />
       <ScrollView
         scrollEnabled={scrollEnabled}
         contentContainerStyle={{ paddingHorizontal: 16 }}
