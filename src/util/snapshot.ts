@@ -25,7 +25,7 @@ export async function getResults(space: any, proposal: any, votes: any) {
           vote.scores = strategies.map(
             (strategy: any, i: any) => scores[i][vote.voter] || 0
           );
-          vote.balance = vote.scores.reduce((a, b: any) => a + b, 0);
+          vote.balance = vote.scores.reduce((a: number, b: number) => a + b, 0);
           return vote;
         })
         .sort((a: any, b: any) => b.balance - a.balance)
@@ -63,12 +63,12 @@ export async function getPower(
       [address],
       parseInt(proposal.snapshot)
     );
-    scores = scores.map((score: any) =>
-      Object.values(score).reduce((a, b: any) => a + b, 0)
+    scores = scores.map((score: number) =>
+      Object.values(score).reduce((a: number, b: number) => a + b, 0)
     );
     return {
       scores,
-      totalScore: scores.reduce((a, b: any) => a + b, 0),
+      totalScore: scores.reduce((a: number, b: number) => a + b, 0),
     };
   } catch (e) {
     console.log(e);
