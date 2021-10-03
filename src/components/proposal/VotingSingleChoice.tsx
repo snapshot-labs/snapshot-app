@@ -17,7 +17,7 @@ function VotingSingleChoice({
     <View>
       {proposal?.choices.map((choice: any, i: number) => {
         return (
-          <View style={{ paddingBottom: 20 }}>
+          <View style={{ paddingBottom: 20 }} key={`${i}`}>
             <Button
               onPress={() => {
                 setSelectedChoices([i + 1]);
