@@ -4,14 +4,14 @@ import Button from "../Button";
 
 type VotingSingleChoiceProps = {
   proposal: any;
-  selectedChoice: number;
-  setSelectedChoice: (selectedChoice: number) => void;
+  selectedChoices: number[];
+  setSelectedChoices: (selectedChoices: number[]) => void;
 };
 
 function VotingSingleChoice({
   proposal,
-  selectedChoice,
-  setSelectedChoice,
+  selectedChoices,
+  setSelectedChoices,
 }: VotingSingleChoiceProps) {
   return (
     <View>
@@ -20,10 +20,10 @@ function VotingSingleChoice({
           <View style={{ paddingBottom: 20 }}>
             <Button
               onPress={() => {
-                setSelectedChoice(i + 1);
+                setSelectedChoices([i + 1]);
               }}
               title={choice}
-              light={selectedChoice !== i + 1}
+              light={selectedChoices[0] !== i + 1}
             />
           </View>
         );

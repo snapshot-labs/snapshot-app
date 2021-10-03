@@ -7797,6 +7797,11 @@ react-native-crypto@^2.2.0:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
+react-native-drag-sort@^2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-drag-sort/-/react-native-drag-sort-2.4.4.tgz#7c7aeea8729423a920b8db5900ea3c704ee1ff29"
+  integrity sha512-MixkgMzybt8tn9m850YK5VOSlicytV41mOp/b1gAE7cK94bou27ApvVJH9oCM61vY5EN6g9VT5PwLOahbYc+BQ==
+
 react-native-gesture-handler@~1.10.2:
   version "1.10.3"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz#942bbf2963bbf49fa79593600ee9d7b5dab3cfc0"

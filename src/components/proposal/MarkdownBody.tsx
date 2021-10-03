@@ -79,7 +79,6 @@ function MarkdownBody({ body }: MarkdownBodyProps) {
 
   useEffect(() => {
     const markedBody: any = remarkable.render(body);
-    console.log({ markedBody });
     setParsedBody(markedBody);
   }, [body]);
 

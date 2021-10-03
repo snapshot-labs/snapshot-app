@@ -71,4 +71,11 @@ export default {
   version: "Version",
   castYourVote: "Cast your vote",
   vote: "Vote",
+  navigateToCastVote: "Navigate to cast your vote",
+  longPressToDragAndDrop: "(Long press to drag and drop choices)",
+  confirmVote: "Confirm vote",
+  areYouSureYouWantToVote: 'Are you sure you want to vote "{{choice}}"?',
+  optionss: "Option(s)",
+  yourVotingPower: "Your voting power",
+  thisActionCannotBeUndone: "This action cannot be undone."
 };

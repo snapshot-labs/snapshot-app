@@ -23,6 +23,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { LANDING_SCREEN } from "../constants/navigation";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
+import VotingRankedChoiceScreen from "./VotingRankedChoiceScreen";
 
 const Stack = createStackNavigator();
 
@@ -165,6 +166,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.STRATEGY_SCREEN}
         component={StrategyScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.VOTING_RANKED_CHOICE_SCREEN}
+        component={VotingRankedChoiceScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
