@@ -122,6 +122,7 @@ function TokenScreen({ route }: TokenScreenProps) {
       <CollapsibleHeaderFlatList
         data={proposals}
         clipHeader
+        keyExtractor={(item) => `${item.id}`}
         CollapsibleHeaderComponent={
           <View
             style={{
@@ -208,7 +209,7 @@ function TokenScreen({ route }: TokenScreenProps) {
           setLoadingMore(true);
           getProposals(
             spaceId,
-            loadCount,
+            loadCount === 0 ? LOAD_BY : loadCount,
             proposals,
             setLoadCount,
             setProposals,
