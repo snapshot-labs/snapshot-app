@@ -153,7 +153,11 @@ function VotingQuadratic({
                 onChangeText={(text) => {
                   const parsedInt = parseInt(text);
                   const newSelectedChoices = [...selectedChoices];
-                  newSelectedChoices[i + 1] = parsedInt;
+                  if (isNaN(parsedInt)) {
+                    newSelectedChoices[i + 1] = 0;
+                  } else {
+                    newSelectedChoices[i + 1] = parsedInt;
+                  }
                   setSelectedChoices(newSelectedChoices);
                 }}
               />

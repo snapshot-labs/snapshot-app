@@ -154,13 +154,13 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
       renderItem={(data) => {
         return <ProposalPreview proposal={data.item} fromFeed={true} />;
       }}
-      keyExtractor={(item, i) => `${item.id}${i}`}
+      keyExtractor={(item) => `${item.id}`}
       onEndReachedThreshold={0.6}
       onEndReached={() => {
         setLoadingMore(true);
         getProposals(
           followedSpaces,
-          loadCount,
+          loadCount === 0 ? LOAD_BY : loadCount,
           proposals,
           setLoadCount,
           setProposals,
