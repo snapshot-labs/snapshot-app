@@ -80,7 +80,8 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
   );
 
   useEffect(() => {
-    if (followedSpaces.length > 0) {
+    if (followedSpaces.length > 0 || !useFollowedSpaces) {
+      setLoadingMore(true);
       getProposals(
         followedSpaces,
         loadCount,
