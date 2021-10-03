@@ -70,9 +70,10 @@ function getPeriod(state: string, start: number, end: number) {
 
 type ProposalPreviewProps = {
   proposal: Proposal;
+  fromFeed?: boolean;
 };
 
-function ProposalPreview({ proposal }: ProposalPreviewProps) {
+function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
   const formattedBody = useMemo(
     () =>
@@ -92,7 +93,7 @@ function ProposalPreview({ proposal }: ProposalPreviewProps) {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate(PROPOSAL_SCREEN, { proposal });
+        navigation.navigate(PROPOSAL_SCREEN, { proposal, fromFeed });
       }}
     >
       <View style={styles.proposalPreviewContainer}>

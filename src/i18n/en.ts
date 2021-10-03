@@ -77,5 +77,7 @@ export default {
   areYouSureYouWantToVote: 'Are you sure you want to vote "{{choice}}"?',
   optionss: "Option(s)",
   yourVotingPower: "Your voting power",
-  thisActionCannotBeUndone: "This action cannot be undone."
+  thisActionCannotBeUndone: "This action cannot be undone.",
+  joinedSpaces: "Joined spaces",
+  allSpaces: "All spaces"
 };

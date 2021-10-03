@@ -7834,10 +7834,10 @@ react-native-os@^1.2.6:
   resolved "https://registry.yarnpkg.com/react-native-os/-/react-native-os-1.2.6.tgz#1bb16d78ccad1143972183a04f443cf1af9fbefa"
   integrity sha512-OlT+xQAcvkcnf7imgXiu+myMkqDt4xw2bP5SlVo19hEn5XHBkPMLX7dk3sSGxxncH/ToMDsf1KLyrPabNVtadA==
 
-react-native-pager-view@^5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.4.4.tgz#83a873a82748440696ca0e0fd07a77477b854a78"
-  integrity sha512-5zyol+FZ9X4N4OEz92IyaFFROR3KtgAgTmgqlUvG59Eigf+f6aWs5fvcbWwzuz/AlLZbrxIDrnLmSpMUOK57ww==
+react-native-pager-view@5.0.12:
+  version "5.0.12"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.0.12.tgz#5106735d944e7f876b006377ab6a18859bf7730c"
+  integrity sha512-QmHUnQeP2qcxDofEOnKRmoUue0RaT55lhNJDfcQ1/SNuxif4Q2UyvDfqeItm1+toaE5tVnXqoreZh82FqUqnvw==
 
 react-native-progress@^5.0.0:
   version "5.0.0"
