@@ -66,7 +66,7 @@ async function getProposal(
 }
 
 async function getResultsObj(
-  space: Space | {},
+  space: Space,
   proposal: Proposal,
   votes: any[],
   setVotes: (votes: any[]) => void,
@@ -89,8 +89,9 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const [votes, setVotes] = useState<any[]>([]);
   const [results, setResults] = useState({});
   const [resultsLoaded, setResultsLoaded] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState<boolean>(true);
   const { spaces } = useExploreState();
-  const space: Space | {} = useMemo(
+  const space: any = useMemo(
     () => getSpace(spaces, proposal),
     [spaces, proposal]
   );
@@ -115,8 +116,11 @@ function ProposalScreen({ route }: ProposalScreenProps) {
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <BackButton title={space.name} />
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16 }}>
+      <BackButton title={space?.name} />
+      <ScrollView
+        scrollEnabled={scrollEnabled}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+      >
         <Text style={[common.h1, { marginBottom: 8, marginTop: 8 }]}>
           {proposal.title}
         </Text>
@@ -129,7 +133,12 @@ function ProposalScreen({ route }: ProposalScreenProps) {
 
         {proposal?.state === "active" && (
           <>
-            <BlockCastVote proposal={proposal} resultsLoaded={resultsLoaded} />
+            <BlockCastVote
+              proposal={proposal}
+              resultsLoaded={resultsLoaded}
+              setScrollEnabled={setScrollEnabled}
+              space={space}
+            />
             <View style={{ width: 10, height: 10 }} />
           </>
         )}

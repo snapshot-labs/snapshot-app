@@ -47,6 +47,7 @@ type ButtonProps = {
   light?: boolean;
   Icon?: React.FC | undefined;
   loading?: boolean;
+  onlyOneLine?: boolean;
 };
 
 function Button({
@@ -58,6 +59,7 @@ function Button({
   light = false,
   Icon = undefined,
   loading = false,
+  onlyOneLine = false,
 }: ButtonProps) {
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
@@ -80,6 +82,9 @@ function Button({
         ) : (
           <>
             <Text
+              {...(onlyOneLine
+                ? { numberOfLines: 1, ellipsizeMode: "tail" }
+                : {})}
               style={[
                 styles.buttonTitle,
                 light ? styles.lightButtonTitle : {},
