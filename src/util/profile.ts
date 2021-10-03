@@ -19,7 +19,7 @@ function get3BoxProfiles(addresses: string[]) {
     })
       .then(({ profiles }) => {
         const _3BoxProfiles: any = {};
-        profiles.forEach((profile: { eth_address: string }) => {
+        profiles?.forEach((profile: { eth_address: string }) => {
           _3BoxProfiles[profile.eth_address.toLowerCase()] = profile;
         });
         resolove(_3BoxProfiles);

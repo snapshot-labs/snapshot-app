@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   Linking,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import Modal from "react-native-modal";
 import i18n from "i18n-js";
 import common from "../../styles/common";
 import colors from "../../constants/colors";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import Button from "../Button";
+import Button, { styles as buttonStyles } from "../Button";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 
@@ -165,25 +166,43 @@ function VoteConfirmModal({
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <Button
+          <TouchableOpacity
             onPress={() => {
               onClose();
             }}
-            title={i18n.t("cancel")}
-            light
-            buttonContainerStyle={{ width: width / 3 }}
-          />
-          <Button
-            onPress={() => {
-              Linking.openURL("https://app.mycrypto.com/verify-message");
-            }}
-            title={i18n.t("vote")}
-            buttonContainerStyle={{
-              width: width / 3,
-              marginLeft: totalScore === 0 ? "auto" : 20,
-            }}
-            disabled={totalScore === 0}
-          />
+          >
+            <View
+              style={[
+                buttonStyles.button,
+                buttonStyles.lightButton,
+                { width: width / 3 },
+              ]}
+            >
+              <Text
+                style={[
+                  buttonStyles.buttonTitle,
+                  buttonStyles.lightButtonTitle,
+                ]}
+              >
+                {i18n.t("cancel")}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => {}}>
+            <View
+              style={[
+                buttonStyles.button,
+                {
+                  width: width / 3,
+                  marginLeft: width / 3 - 100,
+                  opacity: totalScore === 0 ? 0.3 : 1,
+                },
+              ]}
+            >
+              <Text style={[buttonStyles.buttonTitle]}>{i18n.t("vote")}</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>

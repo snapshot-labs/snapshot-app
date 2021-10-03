@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: "100%",
     marginBottom: 6,
+    height: 50,
   },
   choiceContainer: {
     paddingLeft: 16,
@@ -142,7 +143,7 @@ function VotingQuadratic({
               <TextInput
                 style={{
                   width: inputWidth,
-                  paddingLeft: 6,
+                  paddingLeft: 10,
                   fontFamily: "Calibre-Medium",
                   color: colors.textColor,
                   fontSize: 18,

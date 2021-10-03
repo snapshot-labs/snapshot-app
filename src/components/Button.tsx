@@ -11,7 +11,7 @@ import {
 import colors from "../constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   button: {
     padding: 16,
     backgroundColor: colors.black,
