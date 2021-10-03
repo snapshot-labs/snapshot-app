@@ -23,6 +23,8 @@ import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views
 import TimelineHeader from "../components/timeline/TimelineHeader";
 import proposal from "../constants/proposal";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { useExploreDispatch, useExploreState } from "../context/exploreContext";
+import { setProfiles } from "../util/profile";
 
 const LOAD_BY = 6;
 
@@ -67,6 +69,8 @@ type FeedScreenProps = {
 
 function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
   const { followedSpaces } = useAuthState();
+  const { profiles } = useExploreState();
+  const exploreDispatch = useExploreDispatch();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -90,6 +94,15 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
       );
     }
   }, [followedSpaces]);
+
+  useEffect(() => {
+    const profilesArray = Object.keys(profiles);
+    const addressArray = proposals.map((proposal: Proposal) => proposal.author);
+    const filteredArray = addressArray.filter((address) => {
+      return !profilesArray.includes(address);
+    });
+    setProfiles(filteredArray, exploreDispatch);
+  }, [proposals]);
 
   return (
     <CollapsibleHeaderFlatList
@@ -132,6 +145,7 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
               useFollowedSpaces
             );
           }}
+          useFollowedSpaces={useFollowedSpaces}
         />
       }
       headerHeight={65}

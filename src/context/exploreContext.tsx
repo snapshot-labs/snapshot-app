@@ -9,6 +9,7 @@ type ExploreState = {
   strategies: { [id: string]: number };
   fullStrategies: { [id: string]: Strategy };
   spaces: { [id: string]: Space };
+  profiles: { [id: string]: any };
 };
 
 const ExploreContext = createContext<ExploreState | undefined>(undefined);
@@ -20,6 +21,7 @@ const EXPLORE_ACTIONS = {
   SET_EXPLORE: "@explore/SET_EXPLORE",
   SET_FULL_STRATEGIES: "@explore/SET_FULL_STRATEGIES",
   UPDATE_SPACES: "@explore/UPDATE_SPACES",
+  SET_PROFILES: "@explore/SET_PROFILES",
 };
 
 const initialState = {
@@ -29,6 +31,7 @@ const initialState = {
   strategies: {},
   spaces: {},
   fullStrategies: {},
+  profiles: {},
 };
 
 function exploreReducer(state: ExploreState, action: ContextAction) {
@@ -54,6 +57,8 @@ function exploreReducer(state: ExploreState, action: ContextAction) {
       return { ...state, spaces: newSpaces };
     case EXPLORE_ACTIONS.SET_FULL_STRATEGIES:
       return { ...state, fullStrategies: action.payload };
+    case EXPLORE_ACTIONS.SET_PROFILES:
+      return { ...state, profiles: { ...state.profiles, ...action.payload } };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

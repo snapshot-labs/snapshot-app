@@ -30,18 +30,20 @@ type TimelineHeaderProps = {
   filter: { key: string; text: string };
   setFilter: (filter: { key: string; text: string }) => void;
   onChangeFilter: (newFilter: string) => void;
+  useFollowedSpaces: boolean;
 };
 
 function TimelineHeader({
   filter,
   setFilter,
   onChangeFilter,
+  useFollowedSpaces,
 }: TimelineHeaderProps) {
   const { followedSpaces } = useAuthState();
   return (
     <View style={styles.container}>
       <Text style={common.headerTitle}>{i18n.t("timeline")}</Text>
-      {followedSpaces.length > 0 && (
+      {(followedSpaces.length > 0 || !useFollowedSpaces) && (
         <ProposalFilters
           filter={filter}
           setFilter={setFilter}

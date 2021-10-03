@@ -1,5 +1,12 @@
 import React, { useMemo } from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import colors from "../constants/colors";
 import { Proposal } from "../types/proposal";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
@@ -9,15 +16,20 @@ import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "../constants/navigation";
 import removeMd from "remove-markdown";
 import i18n from "i18n-js";
-import get = Reflect.get;
-import { Space } from "../types/explore";
+import { useExploreState } from "../context/exploreContext";
+
+const { width } = Dimensions.get("screen");
+
+const previewPadding = 16;
+const avatarSize = 28;
+const stateBadgeMaxWidth = 80;
 
 const styles = StyleSheet.create({
   proposalPreviewContainer: {
     borderColor: colors.borderColor,
     borderBottomWidth: 1,
     paddingVertical: 24,
-    paddingHorizontal: 16,
+    paddingHorizontal: previewPadding,
   },
   header: {
     flexDirection: "row",
@@ -25,8 +37,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatar: {
-    width: 28,
-    height: 28,
+    width: avatarSize,
+    height: avatarSize,
     borderRadius: 14,
   },
   headerAuthor: {
@@ -36,6 +48,7 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     lineHeight: 28,
     marginRight: 10,
+    width: width - 2 * previewPadding - avatarSize - stateBadgeMaxWidth - 8,
   },
   statusContainer: {
     marginLeft: "auto",
@@ -75,6 +88,7 @@ type ProposalPreviewProps = {
 
 function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
+  const { profiles } = useExploreState();
   const formattedBody = useMemo(
     () =>
       shorten(removeMd(proposal.body), 140).replace(
@@ -89,6 +103,11 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
     () => getPeriod(proposal.state, proposal.start, proposal.end),
     [proposal]
   );
+  const authorProfile = profiles[proposal.author];
+  const authorName =
+    authorProfile && authorProfile.ens
+      ? authorProfile.ens
+      : shorten(proposal.author);
 
   return (
     <TouchableOpacity
@@ -99,8 +118,12 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
       <View style={styles.proposalPreviewContainer}>
         <View style={styles.header}>
           <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-          <Text style={styles.headerAuthor}>
-            {proposal.space.name} by {shorten(proposal.author)}
+          <Text
+            style={styles.headerAuthor}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {proposal.space.name} by {authorName}
           </Text>
           <View style={styles.statusContainer}>
             <StateBadge state={proposal.state} />
