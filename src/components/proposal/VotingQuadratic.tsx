@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import colors from "../../constants/colors";
 import { percentageOfTotal } from "../../util/voting/quadratic";
+import { Proposal } from "../../types/proposal";
 
 const { width } = Dimensions.get("screen");
 
@@ -95,7 +96,17 @@ function removeVote(i: number, selectedChoices: number[]) {
     selectedChoices[i] = selectedChoices[i] < 1 ? 0 : (selectedChoices[i] -= 1);
 }
 
-function VotingQuadratic({ proposal, selectedChoices, setSelectedChoices }) {
+type VotingQuadraticProps = {
+  proposal: Proposal | any;
+  selectedChoices: number[];
+  setSelectedChoices: (selectedChoices: number[]) => void;
+};
+
+function VotingQuadratic({
+  proposal,
+  selectedChoices,
+  setSelectedChoices,
+}: VotingQuadraticProps) {
   useEffect(() => {
     if (selectedChoices.length === 0) {
       setSelectedChoices(new Array(proposal.choices.length + 1).fill(0));

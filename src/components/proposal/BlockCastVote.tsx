@@ -14,6 +14,7 @@ import VotingRankedChoice from "./VotingRankedChoice";
 import VoteConfirmModal from "./VoteConfirmModal";
 import { useAuthState } from "../../context/authContext";
 import VotingQuadratic from "./VotingQuadratic";
+import VotingApproval from "./VotingApproval";
 
 type BlockCastVoteProps = {
   proposal: Proposal;
@@ -54,6 +55,8 @@ function BlockCastVote({
     VotesComponent = VotingRankedChoice;
   } else if (proposal.type === "quadratic" || proposal.type === "weighted") {
     VotesComponent = VotingQuadratic;
+  } else if (proposal.type === "approval") {
+    VotesComponent = VotingApproval;
   }
 
   useEffect(() => {
