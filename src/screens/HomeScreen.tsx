@@ -30,9 +30,8 @@ import DashboardHeader from "../components/dashboard/DashboardHeader";
 const loadingElements = [1, 2, 3, 4];
 
 async function getFollows(
-  accountId: string | null,
-  authDispatch: ContextDispatch,
-  setLoading: (loading: boolean) => void
+  accountId: string | null | undefined,
+  authDispatch: ContextDispatch
 ) {
   if (accountId) {
     const query = {
@@ -48,7 +47,6 @@ async function getFollows(
       payload: followedSpaces,
     });
   }
-  setLoading(false);
 }
 
 async function getExplore(exploreDispatch: ContextDispatch) {
@@ -71,7 +69,10 @@ async function getExplore(exploreDispatch: ContextDispatch) {
   } catch (e) {}
 }
 
-async function getStrategies(exploreDispatch: ContextDispatch) {
+async function getStrategies(
+  exploreDispatch: ContextDispatch,
+  setLoading: (loading: boolean) => void
+) {
   try {
     const options: { [key: string]: any } = {
       method: "get",
@@ -89,6 +90,8 @@ async function getStrategies(exploreDispatch: ContextDispatch) {
       payload: fullStrategies,
     });
   } catch (e) {}
+
+  setLoading(false);
 }
 
 function HomeScreen() {
@@ -101,8 +104,8 @@ function HomeScreen() {
 
   useEffect(() => {
     getExplore(exploreDispatch);
-    getFollows(connectedAddress, authDispatch, setLoading);
-    getStrategies(exploreDispatch);
+    getFollows(connectedAddress, authDispatch);
+    getStrategies(exploreDispatch, setLoading);
   }, []);
 
   return (

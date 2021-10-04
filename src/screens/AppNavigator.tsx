@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import i18n from "i18n-js";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import {
   AUTH_ACTIONS,
@@ -23,11 +24,11 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { LANDING_SCREEN } from "../constants/navigation";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
-import VotingRankedChoiceScreen from "./VotingRankedChoiceScreen";
+import colors from "../constants/colors";
 
 const Stack = createStackNavigator();
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createBottomTabNavigator();
 const ICON_SIZE = 20;
 function TabNavigator() {
   const connector = useWalletConnect();
@@ -58,19 +59,19 @@ function TabNavigator() {
 
   return (
     <Tab.Navigator
-      tabBarPosition="bottom"
       screenOptions={{
         tabBarLabelStyle: {
           textTransform: "capitalize",
         },
-        swipeEnabled: false,
+        headerShown: false,
+        tabBarActiveTintColor: colors.textColor,
       }}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          title: "Home",
+          title: i18n.t("home"),
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" color={color} size={ICON_SIZE} />
           ),
@@ -80,7 +81,7 @@ function TabNavigator() {
         name="Feed"
         component={FeedScreen}
         options={{
-          title: "Feed",
+          title: i18n.t("feed"),
           tabBarIcon: ({ color }) => (
             <FontAwesome name="rss" color={color} size={ICON_SIZE} />
           ),
@@ -90,7 +91,7 @@ function TabNavigator() {
         name="Explore"
         component={ExploreScreen}
         options={{
-          title: "Explore",
+          title: i18n.t("explore"),
           tabBarIcon: ({ color }) => (
             <FontAwesome name="compass" color={color} size={ICON_SIZE} />
           ),
@@ -100,9 +101,9 @@ function TabNavigator() {
         name="More"
         component={MoreScreen}
         options={{
-          title: "More",
+          title: i18n.t("profile"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="ellipsis-h" color={color} size={ICON_SIZE} />
+            <FontAwesome name="user" color={color} size={ICON_SIZE} />
           ),
         }}
       />

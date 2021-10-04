@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 6,
     borderColor: colors.borderColor,
+    fontFamily: "Calibre-Medium",
   },
 });
 

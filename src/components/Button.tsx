@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   button: {
     padding: 16,
     backgroundColor: colors.black,
-    borderRadius: 24,
+    borderRadius: 60,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",

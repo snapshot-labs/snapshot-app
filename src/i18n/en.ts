@@ -79,5 +79,8 @@ export default {
   yourVotingPower: "Your voting power",
   thisActionCannotBeUndone: "This action cannot be undone.",
   joinedSpaces: "Joined spaces",
-  allSpaces: "All spaces"
+  allSpaces: "All spaces",
+  home: "Home",
+  feed: "Feed",
+  profile: "Profile",
 };

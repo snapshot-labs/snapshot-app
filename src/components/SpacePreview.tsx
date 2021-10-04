@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
   },
   spacePreviewTitle: {
     color: colors.black,
-    fontSize: 28,
+    fontSize: 22,
     fontFamily: "Calibre-Semibold",
   },
   spacePreviewFollowerCount: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "Calibre-Medium",
     color: colors.darkGray,
   },

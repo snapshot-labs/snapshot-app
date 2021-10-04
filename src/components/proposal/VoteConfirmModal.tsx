@@ -20,6 +20,10 @@ import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
+  view: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
   container: {
     backgroundColor: colors.white,
     borderRadius: 6,
@@ -91,6 +95,8 @@ function VoteConfirmModal({
       backdropOpacity={0.3}
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
+      swipeDirection={["up", "left", "right", "down"]}
+      style={styles.view}
     >
       <View style={styles.container}>
         <View style={styles.header}>
@@ -195,7 +201,7 @@ function VoteConfirmModal({
                 buttonStyles.button,
                 {
                   width: width / 3,
-                  marginLeft: width / 3 - 100,
+                  marginLeft: width / 3 - 50,
                   opacity: totalScore === 0 ? 0.3 : 1,
                 },
               ]}

@@ -117,17 +117,16 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
       <BackButton title={route.params.fromFeed ? null : space?.name} />
-      <ScrollView
-        scrollEnabled={scrollEnabled}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
-      >
-        <Text style={[common.h1, { marginBottom: 8, marginTop: 8 }]}>
-          {proposal.title}
-        </Text>
-        <View style={{ alignSelf: "flex-start", marginBottom: 24 }}>
-          <StateBadge state={proposal.state} />
+      <ScrollView scrollEnabled={scrollEnabled}>
+        <View style={{ paddingHorizontal: 16 }}>
+          <Text style={[common.h1, { marginBottom: 8, marginTop: 8 }]}>
+            {proposal.title}
+          </Text>
+          <View style={{ alignSelf: "flex-start", marginBottom: 24 }}>
+            <StateBadge state={proposal.state} />
+          </View>
+          <MarkdownBody body={proposal.body} />
         </View>
-        <MarkdownBody body={proposal.body} />
         <BlockInformation proposal={proposal} space={space} />
         <View style={{ width: 10, height: 10 }} />
 
