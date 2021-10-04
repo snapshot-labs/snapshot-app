@@ -54,11 +54,9 @@ function VotingRankedChoice({
   setSelectedChoices,
   setScrollEnabled,
 }: VotingRankedChoiceProps) {
-  const [proposalChoices, setProposalChoices] = useState<any[]>(
-    proposal.choices
-  );
+  const [proposalChoices, setProposalChoices] = useState<any[]>([]);
   const [removedProposalChoices, setRemovedProposalChoices] = useState<any[]>(
-    []
+    proposal.choices
   );
 
   useEffect(() => {
