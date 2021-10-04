@@ -55,7 +55,6 @@ function ExploreHeader({
                   i18n.t("networks"),
                   i18n.t("strategiess"),
                   i18n.t("plugins"),
-                  i18n.t("skins"),
                   i18n.t("cancel"),
                 ];
                 const cancelButtonIndex = options.length - 1;
@@ -86,11 +85,6 @@ function ExploreHeader({
                       setCurrentExplore({
                         key: "plugins",
                         text: i18n.t("plugins"),
-                      });
-                    } else if (buttonIndex === 4) {
-                      setCurrentExplore({
-                        key: "skins",
-                        text: i18n.t("skins"),
                       });
                     }
                   }

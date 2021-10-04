@@ -12,19 +12,17 @@ import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
 import pluginsObj from "../../snapshot-plugins/src/plugins";
 import {
   getFilteredSpaces,
-  getFilteredSkins,
   getFilteredStrategies,
   getFilteredNetworks,
   geFilteredPlugins,
 } from "../util/searchUtils";
-import Skin from "../components/explore/Skin";
 import Strategy from "../components/explore/Strategy";
 import { NetworkType } from "../types/explore";
 import Network from "../components/explore/Network";
 import Plugin from "../components/explore/Plugin";
 
 function ExploreScreen() {
-  const { spaces, skins, strategies, fullStrategies, networks, plugins } =
+  const { spaces, strategies, fullStrategies, networks, plugins } =
     useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState("");
@@ -48,12 +46,6 @@ function ExploreScreen() {
       .filter((space) => !space.private);
     return orderBy(list, ["following", "followers"], ["desc", "desc"]);
   }, [spaces]);
-  const minifiedSkinsArray = useMemo(() => {
-    return Object.keys(skins).map((s) => ({
-      key: s,
-      spaces: skins[s] ?? 0,
-    }));
-  }, [skins]);
   const minifiedStrategiesArray = useMemo(() => {
     return Object.keys(fullStrategies).map((s) => ({
       //@ts-ignore
@@ -86,8 +78,6 @@ function ExploreScreen() {
   useEffect(() => {
     if (currentExplore.key === "spaces") {
       setFilteredExplore(getFilteredSpaces(orderedSpaces, searchValue));
-    } else if (currentExplore.key === "skins") {
-      setFilteredExplore(getFilteredSkins(minifiedSkinsArray, searchValue));
     } else if (currentExplore.key === "strategies") {
       setFilteredExplore(
         getFilteredStrategies(minifiedStrategiesArray, searchValue)
@@ -99,7 +89,7 @@ function ExploreScreen() {
     } else if (currentExplore.key === "plugins") {
       setFilteredExplore(geFilteredPlugins(minifiedPluginsArray, searchValue));
     }
-  }, [spaces, skins, currentExplore, searchValue]);
+  }, [spaces, currentExplore, searchValue]);
 
   return (
     <SafeAreaView style={common.screen}>
@@ -121,8 +111,6 @@ function ExploreScreen() {
           renderItem={(data) => {
             if (currentExplore.key === "spaces") {
               return <SpacePreview space={data.item} />;
-            } else if (currentExplore.key === "skins") {
-              return <Skin skin={data.item} />;
             } else if (currentExplore.key === "strategies") {
               return (
                 <Strategy

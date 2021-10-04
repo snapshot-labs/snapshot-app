@@ -7,7 +7,9 @@ const styles = StyleSheet.create({
   block: {
     borderWidth: 1,
     borderColor: colors.borderColor,
-    borderRadius: 16,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    width: "100%",
   },
   header: {
     paddingHorizontal: 24,

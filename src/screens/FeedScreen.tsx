@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   labelStyle: {
     fontFamily: "Calibre-Medium",
     color: colors.textColor,
-    textTransform: "capitalize",
+    textTransform: "none",
     fontSize: 18,
   },
 });

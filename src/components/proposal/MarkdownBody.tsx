@@ -23,6 +23,7 @@ const tagsStyles = {
     paddingTop: 0,
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
+    lineHeight: 30,
   },
   h1: {
     fontSize: 30,
