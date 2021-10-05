@@ -14,7 +14,7 @@ import { Proposal } from "../../types/proposal";
 import { shorten, dateFormat, n, explorerUrl } from "../../util/miscUtils";
 import Block from "../Block";
 import { Space } from "../../types/explore";
-import Token from "../Token";
+import Avatar from "../Avatar";
 import { useExploreState } from "../../context/exploreContext";
 
 const styles = StyleSheet.create({
@@ -92,7 +92,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
               <View style={{ flexDirection: "row" }}>
                 {symbols.map((symbol: string, symbolIndex: number) => (
                   <View key={symbolIndex} style={{ marginLeft: 6 }}>
-                    <Token symbolIndex={symbolIndex} size={20} space={space} />
+                    <Avatar symbolIndex={symbolIndex} size={20} space={space} />
                   </View>
                 ))}
               </View>

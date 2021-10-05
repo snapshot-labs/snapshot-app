@@ -36,8 +36,6 @@ function NetworkScreen({ route }: NetworkScreenProps) {
     }
   }, [searchText]);
 
-  console.log({ orderedSpaces: orderedSpaces });
-
   return (
     <SafeAreaView style={common.screen}>
       <View style={[common.screen]}>

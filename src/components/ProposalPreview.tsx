@@ -17,7 +17,7 @@ import { PROPOSAL_SCREEN } from "../constants/navigation";
 import removeMd from "remove-markdown";
 import i18n from "i18n-js";
 import { useExploreState } from "../context/exploreContext";
-import Token from "./Token";
+import Avatar from "./Avatar";
 
 const { width } = Dimensions.get("screen");
 
@@ -118,7 +118,7 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
     >
       <View style={styles.proposalPreviewContainer}>
         <View style={styles.header}>
-          <Token symbolIndex="space" size={28} space={proposal.space} />
+          <Avatar symbolIndex="space" size={28} space={proposal.space} />
           <Text
             style={styles.headerAuthor}
             numberOfLines={1}

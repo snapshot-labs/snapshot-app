@@ -19,13 +19,13 @@ function url(symbolIndex: string | number, space: Space | any) {
   return `https://worker.snapshot.org/mirror?img=${encodeURIComponent(url)}`;
 }
 
-type TokenProps = {
+type AvatarProps = {
   symbolIndex: string | number;
   size: number;
   space: Space | { id?: string; avatar: string };
 };
 
-function Token({ symbolIndex, space, size }: TokenProps) {
+function Avatar({ symbolIndex, space, size }: AvatarProps) {
   const [blockie, setBlockie] = useState<string | null>(null);
   let imgSrc: any = { uri: url(symbolIndex, space) };
 
@@ -45,4 +45,4 @@ function Token({ symbolIndex, space, size }: TokenProps) {
   );
 }
 
-export default Token;
+export default Avatar;
