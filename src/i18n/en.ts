@@ -84,4 +84,10 @@ export default {
   feed: "Feed",
   profile: "Profile",
   about: "About",
+  network: "Network",
+  proposalValidation: "Proposal validation",
+  proposalThreshold: "Proposal threshold",
+  terms: "Terms",
+  admins: "Admins",
+  authors: "Authors",
 };
