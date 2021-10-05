@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const headerHeight = 130;
+export const headerHeight = 145;
 
 const renderScene = (
   route: any,
@@ -176,7 +176,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             position: "absolute",
             top: 0,
             left: 0,
-            zIndex: 9999,
+            zIndex: 100,
             height: headerHeight,
             backgroundColor: colors.white,
             width: "100%",
@@ -191,10 +191,22 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           indicatorStyle={styles.indicatorStyle}
           activeColor={colors.textColor}
           style={{
+            shadowColor: "transparent",
+            borderTopWidth: 0,
+            shadowOpacity: 0,
             backgroundColor: colors.white,
             paddingTop: 0,
             marginTop: 0,
             height: 45,
+            shadowRadius: 0,
+            elevation: 0,
+            shadowOffset: {
+              height: 0,
+              width: 0,
+            },
+            borderBottomColor: colors.borderColor,
+            borderBottomWidth: 1,
+            zIndex: 200,
           }}
           inactiveColor={colors.textColor}
         />
