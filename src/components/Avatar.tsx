@@ -23,10 +23,16 @@ type AvatarProps = {
   symbolIndex: string | number;
   size: number;
   space: Space | { id?: string; avatar: string };
+  initialBlockie?: null | string;
 };
 
-function Avatar({ symbolIndex, space, size }: AvatarProps) {
-  const [blockie, setBlockie] = useState<string | null>(null);
+function Avatar({
+  symbolIndex,
+  space,
+  size,
+  initialBlockie = null,
+}: AvatarProps) {
+  const [blockie, setBlockie] = useState<string | null>(initialBlockie);
   let imgSrc: any = { uri: url(symbolIndex, space) };
 
   if (blockie) {
