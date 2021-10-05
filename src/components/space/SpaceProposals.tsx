@@ -18,7 +18,6 @@ import {
 } from "../../context/exploreContext";
 import { Space } from "../../types/explore";
 import React, { useEffect, useState } from "react";
-import proposal from "../../constants/proposal";
 import { setProfiles } from "../../util/profile";
 import common from "../../styles/common";
 import ProposalPreview from "../ProposalPreview";
@@ -78,45 +77,28 @@ type SpaceProposalsProps = {
   space: Space;
   spaceScreenRef: any;
   scrollProps: any;
+  headerHeight?: number;
+  filter: { key: string };
 };
 function SpaceProposals({
   space,
   spaceScreenRef,
   scrollProps,
+  headerHeight,
+  filter,
 }: SpaceProposalsProps) {
   const { profiles } = useExploreState();
   const spaceId: string = get(space, "id", "");
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const exploreDispatch = useExploreDispatch();
-  spaceScreenRef.current = {
-    filter,
-    setFilter,
-    onChangeFilter: (newFilter: string) => {
-      console.log("ON CHANGE FILTER INITIAL", { newFilter });
-      setLoadCount(0);
-      getProposals(
-        spaceId,
-        0,
-        proposals,
-        setLoadCount,
-        setProposals,
-        true,
-        setLoadingMore,
-        newFilter
-      );
-    },
-  };
 
   useEffect(() => {
     spaceScreenRef.current = {
-      filter,
-      setFilter,
       onChangeFilter: (newFilter: string) => {
+        console.log({ newFilter });
         setLoadCount(0);
-        console.log("ON CHANGE FILTER", { newFilter });
         getProposals(
           spaceId,
           0,
@@ -129,7 +111,7 @@ function SpaceProposals({
         );
       },
     };
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     setLoadingMore(true);
@@ -158,8 +140,9 @@ function SpaceProposals({
   return (
     <View style={common.screen}>
       <AnimatedFlatList
+        contentContainerStyle={{ paddingTop: headerHeight }}
         data={proposals}
-        keyExtractor={(item: Proposal) => `${item.id}`}
+        keyExtractor={(item: Proposal, i) => item.id}
         renderItem={(data: { item: Proposal }) => {
           return <ProposalPreview proposal={data.item} />;
         }}
@@ -181,7 +164,7 @@ function SpaceProposals({
           loadingMore ? (
             <View />
           ) : (
-            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+            <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
               <Text style={common.subTitle}>
                 {i18n.t("cantFindAnyResults")}
               </Text>

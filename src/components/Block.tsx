@@ -40,28 +40,37 @@ const styles = StyleSheet.create({
 });
 
 type BlockProps = {
-  title: string;
+  title?: string;
   Content: React.ReactElement;
   count?: number | string | undefined;
   hideHeaderBorder?: boolean;
+  hideHeader?: boolean;
 };
 
-function Block({ title, Content, count, hideHeaderBorder }: BlockProps) {
+function Block({
+  title,
+  Content,
+  count,
+  hideHeaderBorder,
+  hideHeader = false,
+}: BlockProps) {
   return (
     <View style={styles.block}>
-      <View
-        style={[
-          styles.header,
-          hideHeaderBorder ? { borderBottomWidth: 0 } : {},
-        ]}
-      >
-        <Text style={[common.h4]}>{title}</Text>
-        {count !== undefined && (
-          <View style={styles.countContainer}>
-            <Text style={styles.countText}>{count}</Text>
-          </View>
-        )}
-      </View>
+      {!hideHeader && (
+        <View
+          style={[
+            styles.header,
+            hideHeaderBorder ? { borderBottomWidth: 0 } : {},
+          ]}
+        >
+          {title !== undefined && <Text style={[common.h4]}>{title}</Text>}
+          {count !== undefined && (
+            <View style={styles.countContainer}>
+              <Text style={styles.countText}>{count}</Text>
+            </View>
+          )}
+        </View>
+      )}
       {Content}
     </View>
   );

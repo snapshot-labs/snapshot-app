@@ -20,6 +20,12 @@ export type Space = {
   private?: boolean;
   strategies: any;
   symbol?: string;
+  validation?: any;
+  filters?: any;
+  terms?: string;
+  plugins?: any;
+  admins?: any;
+  members?: any;
 };
 
 type StrategyExample = {
