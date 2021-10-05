@@ -4,7 +4,7 @@ import get from "lodash/get";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
 import { Space } from "../types/explore";
-import Token from "./Token";
+import Avatar from "./Avatar";
 import colors from "../constants/colors";
 import { SPACE_SCREEN } from "../constants/navigation";
 
@@ -43,7 +43,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
       }}
     >
       <View style={styles.spacePreviewContainer}>
-        <Token space={space} symbolIndex="space" size={60} />
+        <Avatar space={space} symbolIndex="space" size={60} />
         <View style={styles.spacePreviewTitleContainer}>
           <Text style={styles.spacePreviewTitle}>{get(space, "name")}</Text>
           <Text style={styles.spacePreviewFollowerCount}>
