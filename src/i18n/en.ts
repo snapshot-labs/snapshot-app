@@ -83,4 +83,5 @@ export default {
   home: "Home",
   feed: "Feed",
   profile: "Profile",
+  about: "About",
 };

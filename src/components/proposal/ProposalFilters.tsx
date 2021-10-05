@@ -35,7 +35,7 @@ type ProposalFiltersProps = {
 };
 
 function ProposalFilters({
-  filter,
+  filter = { key: "all", text: i18n.t("all") },
   setFilter,
   onChangeFilter,
   containerStyle,

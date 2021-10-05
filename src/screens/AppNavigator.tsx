@@ -17,7 +17,7 @@ import HomeScreen from "./HomeScreen";
 import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
-import TokenScreen from "./TokenScreen";
+import SpaceScreen from "./SpaceScreen";
 import ProposalScreen from "./ProposalScreen";
 import CustomWalletScreen from "./CustomWalletScreen";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
@@ -145,8 +145,8 @@ export default function () {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name={navigationConstants.TOKEN_SCREEN}
-        component={TokenScreen}
+        name={navigationConstants.SPACE_SCREEN}
+        component={SpaceScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

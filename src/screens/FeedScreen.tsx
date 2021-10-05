@@ -227,8 +227,8 @@ function AllSpacesFeedScreen() {
 }
 
 const renderScene = SceneMap({
-  first: FeedScreen,
-  second: AllSpacesFeedScreen,
+  joinedSpaces: FeedScreen,
+  allSpaces: AllSpacesFeedScreen,
 });
 
 function FeedScreenTabView() {
@@ -236,8 +236,8 @@ function FeedScreenTabView() {
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [routes] = React.useState([
-    { key: "first", title: i18n.t("joinedSpaces") },
-    { key: "second", title: i18n.t("allSpaces") },
+    { key: "joinedSpaces", title: i18n.t("joinedSpaces") },
+    { key: "allSpaces", title: i18n.t("allSpaces") },
   ]);
 
   const renderTabBar = (props: any) => (
