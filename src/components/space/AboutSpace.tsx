@@ -180,7 +180,7 @@ function AboutSpace({
         )}
         {space.members?.length ? (
           <View style={[styles.labelValueContainer, { marginTop: 24 }]}>
-            <Text style={styles.label}>{i18n.t("admins")}</Text>
+            <Text style={styles.label}>{i18n.t("authors")}</Text>
             {space.members.map((member: string, i: number) => {
               const memberProfile = profiles[member];
               const memberName =
