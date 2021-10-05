@@ -52,7 +52,7 @@ function BackButton({ containerStyle, title, onPress }: BackButtonProps) {
           color={colors.darkGray}
           size={20}
         />
-        <Text style={styles.backButtonTitle}>{title ?? i18n.t("back")}</Text>
+        <Text style={styles.backButtonTitle}>{title ?? ""}</Text>
       </View>
     </TouchableOpacity>
   );

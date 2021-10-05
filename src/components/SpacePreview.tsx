@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Space } from "../types/explore";
 import Token from "./Token";
 import colors from "../constants/colors";
-import { TOKEN_SCREEN } from "../constants/navigation";
+import { SPACE_SCREEN } from "../constants/navigation";
 
 const styles = StyleSheet.create({
   spacePreviewContainer: {
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 });
 
 type SpacePreviewProps = {
-  space: Space | {};
+  space: Space | any;
 };
 
 function SpacePreview({ space = {} }: SpacePreviewProps) {
@@ -39,7 +39,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate(TOKEN_SCREEN, { space });
+        navigation.navigate(SPACE_SCREEN, { space });
       }}
     >
       <View style={styles.spacePreviewContainer}>
