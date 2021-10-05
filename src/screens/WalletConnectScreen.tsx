@@ -48,19 +48,27 @@ async function fetchWallets(
     const currentWalletKey = walletKeys[i];
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
-      if (
-        currentWallet.mobile.native.includes("trust") &&
-        Platform.OS === "android"
-      ) {
+      if (Platform.OS === "android") {
         const androidAppArray = get(currentWallet, "app.android", "").split(
           "id="
         );
         const androidAppUrl = get(androidAppArray, 1, undefined);
-        const isAppInstalled = await SendIntentAndroid.isAppInstalled(
-          androidAppUrl
-        );
-        if (isAppInstalled) {
-          wallets.push(currentWallet);
+
+        if (androidAppUrl) {
+          const isAppInstalled = await SendIntentAndroid.isAppInstalled(
+            androidAppUrl
+          );
+          if (isAppInstalled) {
+            wallets.push(currentWallet);
+          }
+        } else {
+          const isAppInstalled = await Linking.canOpenURL(
+            currentWallet.mobile.native
+          );
+
+          if (isAppInstalled) {
+            wallets.push(currentWallet);
+          }
         }
       } else {
         try {
