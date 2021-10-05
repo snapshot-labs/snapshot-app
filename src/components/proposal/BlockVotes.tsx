@@ -26,6 +26,8 @@ import {
   useExploreState,
 } from "../../context/exploreContext";
 import { setProfiles } from "../../util/profile";
+import Avatar from "../Avatar";
+import makeBlockie from "ethereum-blockies-base64";
 
 const { width } = Dimensions.get("screen");
 const contentWidth = (width - 64) / 3;
@@ -121,7 +123,7 @@ function BlockVotes({
                   voterProfile && voterProfile.ens
                     ? voterProfile.ens
                     : shorten(vote.voter);
-
+                const blockie = makeBlockie(vote.voter);
                 return (
                   <View
                     key={vote.id}
@@ -132,9 +134,20 @@ function BlockVotes({
                         : {},
                     ]}
                   >
-                    <Text style={styles.rowText} ellipsizeMode="clip">
-                      {voterName}
-                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                      <Avatar
+                        symbolIndex="space"
+                        size={20}
+                        space={space}
+                        initialBlockie={blockie}
+                      />
+                      <Text
+                        style={[styles.rowText, { marginLeft: 6 }]}
+                        ellipsizeMode="clip"
+                      >
+                        {voterName}
+                      </Text>
+                    </View>
                     <Text
                       style={[styles.rowText, { textAlign: "center" }]}
                       ellipsizeMode="clip"

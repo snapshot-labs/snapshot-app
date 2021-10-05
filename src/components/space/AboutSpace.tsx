@@ -21,6 +21,8 @@ import {
   useExploreState,
 } from "../../context/exploreContext";
 import { setProfiles } from "../../util/profile";
+import Avatar from "../Avatar";
+import makeBlockie from "ethereum-blockies-base64";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -162,16 +164,30 @@ function AboutSpace({
                 adminProfile && adminProfile.ens
                   ? adminProfile.ens
                   : shorten(admin);
+              const blockie = makeBlockie(admin);
               return (
-                <Text
-                  style={[
-                    styles.value,
-                    { marginBottom: i === space.strategies.length - 1 ? 0 : 4 },
-                  ]}
+                <View
                   key={`${i}`}
+                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  {adminName}
-                </Text>
+                  <Avatar
+                    symbolIndex="space"
+                    size={20}
+                    space={space}
+                    initialBlockie={blockie}
+                  />
+                  <Text
+                    style={[
+                      styles.value,
+                      {
+                        marginBottom: i === space.strategies.length - 1 ? 0 : 4,
+                        marginLeft: 6,
+                      },
+                    ]}
+                  >
+                    {adminName}
+                  </Text>
+                </View>
               );
             })}
           </View>
@@ -187,16 +203,31 @@ function AboutSpace({
                 memberProfile && memberProfile.ens
                   ? memberProfile.ens
                   : shorten(member);
+              const blockie = makeBlockie(member);
+
               return (
-                <Text
-                  style={[
-                    styles.value,
-                    { marginBottom: i === space.strategies.length - 1 ? 0 : 4 },
-                  ]}
+                <View
                   key={`${i}`}
+                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  {memberName}
-                </Text>
+                  <Avatar
+                    symbolIndex="space"
+                    size={20}
+                    space={space}
+                    initialBlockie={blockie}
+                  />
+                  <Text
+                    style={[
+                      styles.value,
+                      {
+                        marginBottom: i === space.strategies.length - 1 ? 0 : 4,
+                        marginLeft: 6,
+                      },
+                    ]}
+                  >
+                    {memberName}
+                  </Text>
+                </View>
               );
             })}
           </View>
