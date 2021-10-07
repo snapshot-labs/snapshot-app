@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, StyleSheet, useWindowDimensions, View } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import colors from "../constants/colors";
@@ -7,7 +14,7 @@ import common from "../styles/common";
 import { useAuthState } from "../context/authContext";
 import ProposalFilters from "../components/proposal/ProposalFilters";
 import BackButton from "../components/BackButton";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import { SceneMap, TabBar, TabBarItem, TabView } from "react-native-tab-view";
 import AboutSpace from "../components/space/AboutSpace";
 import SpaceHeader from "../components/space/SpaceHeader";
 import SpaceProposals from "../components/space/SpaceProposals";
@@ -71,7 +78,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const space = route.params.space;
   const spaceScreenRef: any = useRef(null);
-  const scrollEndTimer: any = useRef(-1);
   const scrollAnim = useRef(new Animated.Value(0));
   const offsetAnim = useRef(new Animated.Value(0));
   const scrollValue = useRef(0);
@@ -141,14 +147,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     );
   }
 
-  function onScrollEndDrag() {
-    scrollEndTimer.current = setTimeout(onMomentumScrollEnd, 250);
-  }
-
-  function onMomentumScrollBegin() {
-    clearTimeout(scrollEndTimer.current);
-  }
-
   const sceneMap = useMemo(
     () =>
       renderScene(
@@ -156,8 +154,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         spaceScreenRef,
         {
           onMomentumScrollEnd,
-          onScrollEndDrag,
-          onMomentumScrollBegin,
           onScroll: Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollAnim.current } } }],
             { useNativeDriver: true }
@@ -209,6 +205,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             zIndex: 200,
           }}
           inactiveColor={colors.textColor}
+          renderTabBarItem={(item) => {
+            return <TabBarItem {...item} />;
+          }}
         />
       </Animated.View>
     </>
