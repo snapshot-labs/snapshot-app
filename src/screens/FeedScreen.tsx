@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Animated,
   RefreshControl,
   Text,
   View,
   useWindowDimensions,
   StyleSheet,
+  FlatList,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uniqBy from "lodash/uniqBy";
@@ -19,7 +19,6 @@ import { useAuthState } from "../context/authContext";
 import common from "../styles/common";
 import i18n from "i18n-js";
 import colors from "../constants/colors";
-import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
 import TimelineHeader from "../components/timeline/TimelineHeader";
 import proposal from "../constants/proposal";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
@@ -65,9 +64,15 @@ async function getProposals(
 
 type FeedScreenProps = {
   useFollowedSpaces?: boolean;
+  feedRef: any;
+  filter: { key: string; title: string };
 };
 
-function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
+function FeedScreen({
+  useFollowedSpaces = true,
+  feedRef,
+  filter,
+}: FeedScreenProps) {
   const { followedSpaces } = useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
@@ -75,9 +80,24 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [filter, setFilter] = useState<{ key: string; text: string }>(
-    proposal.getStateFilters()[0]
-  );
+  useEffect(() => {
+    feedRef.current = {
+      onChangeFilter: (newFilter: string) => {
+        setLoadCount(0);
+        getProposals(
+          followedSpaces,
+          0,
+          proposals,
+          setLoadCount,
+          setProposals,
+          true,
+          setLoadingMore,
+          newFilter,
+          useFollowedSpaces
+        );
+      },
+    };
+  }, []);
 
   useEffect(() => {
     if (followedSpaces.length > 0 || !useFollowedSpaces) {
@@ -106,8 +126,7 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
   }, [proposals]);
 
   return (
-    <CollapsibleHeaderFlatList
-      clipHeader
+    <FlatList
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -128,28 +147,6 @@ function FeedScreen({ useFollowedSpaces = true }: FeedScreenProps) {
           }}
         />
       }
-      CollapsibleHeaderComponent={
-        <TimelineHeader
-          filter={filter}
-          setFilter={setFilter}
-          onChangeFilter={(newFilter: string) => {
-            setLoadCount(0);
-            getProposals(
-              followedSpaces,
-              0,
-              proposals,
-              setLoadCount,
-              setProposals,
-              true,
-              setLoadingMore,
-              newFilter,
-              useFollowedSpaces
-            );
-          }}
-          useFollowedSpaces={useFollowedSpaces}
-        />
-      }
-      headerHeight={65}
       data={proposals}
       renderItem={(data) => {
         return <ProposalPreview proposal={data.item} fromFeed={true} />;
@@ -222,23 +219,52 @@ const styles = StyleSheet.create({
   },
 });
 
-function AllSpacesFeedScreen() {
-  return <FeedScreen useFollowedSpaces={false} />;
-}
-
-const renderScene = SceneMap({
-  joinedSpaces: FeedScreen,
-  allSpaces: AllSpacesFeedScreen,
-});
+const renderScene = (
+  joinedSpacesRef: any,
+  allSpacesRef: any,
+  joinedSpacesFilter: any,
+  allSpacesFilter: any
+) =>
+  SceneMap({
+    joinedSpaces: () => (
+      <FeedScreen feedRef={joinedSpacesRef} filter={joinedSpacesFilter} />
+    ),
+    allSpaces: () => (
+      <FeedScreen
+        useFollowedSpaces={false}
+        feedRef={allSpacesRef}
+        filter={allSpacesFilter}
+      />
+    ),
+  });
 
 function FeedScreenTabView() {
   const [index, setIndex] = React.useState(0);
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const joinedSpacesRef: any = useRef(null);
+  const allSpacesRef: any = useRef(null);
+
   const [routes] = React.useState([
     { key: "joinedSpaces", title: i18n.t("joinedSpaces") },
     { key: "allSpaces", title: i18n.t("allSpaces") },
   ]);
+  const [joinedSpacesFilter, setJoinedSpacesFilter] = useState(
+    proposal.getStateFilters()[0]
+  );
+  const [allSpacesFilter, setAllSpacesFilter] = useState(
+    proposal.getStateFilters()[0]
+  );
+  const sceneMap = useMemo(
+    () =>
+      renderScene(
+        joinedSpacesRef,
+        allSpacesRef,
+        joinedSpacesFilter,
+        allSpacesFilter
+      ),
+    [joinedSpacesFilter, allSpacesFilter]
+  );
 
   const renderTabBar = (props: any) => (
     <TabBar
@@ -249,6 +275,7 @@ function FeedScreenTabView() {
       style={{
         backgroundColor: colors.white,
         shadowOpacity: 0,
+        elevation: 0,
       }}
       inactiveColor={colors.textColor}
     />
@@ -256,9 +283,23 @@ function FeedScreenTabView() {
 
   return (
     <View style={[common.screen, { paddingTop: insets.top }]}>
+      <TimelineHeader
+        joinedSpacesFilter={joinedSpacesFilter}
+        allSpacesFilter={allSpacesFilter}
+        setJoinedSpacesFilter={setJoinedSpacesFilter}
+        setAllSpacesFilter={setAllSpacesFilter}
+        currentIndex={index}
+        onChangeJoinedSpacesFilter={
+          joinedSpacesRef.current?.onChangeFilter ?? function () {}
+        }
+        onChangeAllSpacesFilter={
+          allSpacesRef.current?.onChangeFilter ?? function () {}
+        }
+        useFollowedSpaces={index === 0}
+      />
       <TabView
         navigationState={{ index, routes }}
-        renderScene={renderScene}
+        renderScene={sceneMap}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
