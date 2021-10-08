@@ -140,6 +140,8 @@ function SpaceProposals({
   return (
     <View style={common.screen}>
       <AnimatedFlatList
+        scrollEventThrottle={1}
+        bounces={false}
         contentContainerStyle={{ paddingTop: headerHeight }}
         data={proposals}
         keyExtractor={(item: Proposal, i) => item.id}

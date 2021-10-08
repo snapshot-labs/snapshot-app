@@ -246,7 +246,10 @@ function FeedScreenTabView() {
       labelStyle={styles.labelStyle}
       indicatorStyle={styles.indicatorStyle}
       activeColor={colors.textColor}
-      style={{ backgroundColor: colors.white }}
+      style={{
+        backgroundColor: colors.white,
+        shadowOpacity: 0,
+      }}
       inactiveColor={colors.textColor}
     />
   );

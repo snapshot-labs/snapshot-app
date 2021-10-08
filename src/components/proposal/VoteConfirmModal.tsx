@@ -19,6 +19,8 @@ import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 
 const { width } = Dimensions.get("screen");
 
+const buttonWidth = width / 2 - 32;
+
 const styles = StyleSheet.create({
   view: {
     justifyContent: "flex-end",
@@ -33,10 +35,13 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderColor,
+    flexDirection: "row",
+    width,
+    paddingHorizontal: 16,
   },
   mainContent: {
     marginTop: 12,
-    marginHorizontal: 24,
+    marginHorizontal: 16,
     padding: 24,
     borderColor: colors.borderColor,
     borderWidth: 1,
@@ -95,34 +100,28 @@ function VoteConfirmModal({
       backdropOpacity={0.3}
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
-      swipeDirection={["up", "left", "right", "down"]}
       style={styles.view}
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={onClose}>
+          <Text style={[common.h3, { textAlign: "center" }]}>
+            {i18n.t("confirmVote")}
+          </Text>
+          <TouchableOpacity onPress={onClose} style={{ marginLeft: "auto" }}>
             <FontAwesome5Icon
               name="times"
-              style={{ marginLeft: "auto", paddingRight: 16 }}
+              style={{ paddingRight: 16 }}
               size={20}
               color={colors.darkGray}
             />
           </TouchableOpacity>
-          <Text style={[common.h3, { textAlign: "center" }]}>
-            {i18n.t("confirmVote")}
-          </Text>
         </View>
-        <Text
-          style={[
-            common.h4,
-            { paddingHorizontal: 16, paddingTop: 16, textAlign: "center" },
-          ]}
-        >
+        <Text style={[common.h4, { paddingHorizontal: 16, paddingTop: 16 }]}>
           {i18n.t("areYouSureYouWantToVote", {
             choice: shorten(formattedChoiceString, "choice"),
           })}
         </Text>
-        <Text style={[common.h4, { textAlign: "center", paddingTop: 8 }]}>
+        <Text style={[common.h4, { paddingHorizontal: 16, paddingTop: 8 }]}>
           {i18n.t("thisActionCannotBeUndone")}
         </Text>
         <View style={styles.mainContent}>
@@ -132,7 +131,10 @@ function VoteConfirmModal({
             </Text>
             <View style={{ marginLeft: "auto" }}>
               <Text
-                style={[styles.rowValue, { textAlign: "right", width: 150 }]}
+                style={[
+                  styles.rowValue,
+                  { textAlign: "right", width: width / 2 },
+                ]}
               >
                 {formattedChoiceString}
               </Text>
@@ -181,7 +183,7 @@ function VoteConfirmModal({
               style={[
                 buttonStyles.button,
                 buttonStyles.lightButton,
-                { width: width / 3 },
+                { width: buttonWidth },
               ]}
             >
               <Text
@@ -200,8 +202,8 @@ function VoteConfirmModal({
               style={[
                 buttonStyles.button,
                 {
-                  width: width / 3,
-                  marginLeft: width / 3 - 50,
+                  width: buttonWidth,
+                  marginLeft: 16,
                   opacity: totalScore === 0 ? 0.3 : 1,
                 },
               ]}

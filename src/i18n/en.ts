@@ -90,4 +90,8 @@ export default {
   terms: "Terms",
   admins: "Admins",
   authors: "Authors",
+  settings: "Settings",
+  appearance: "Appearance",
+  light: "Light",
+  dark: "Dark",
 };

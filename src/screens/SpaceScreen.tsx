@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export const headerHeight = 145;
+export const headerHeight = Platform.OS === "android" ? 180 : 170;
 
 const renderScene = (
   route: any,
@@ -76,12 +77,14 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const insets = useSafeAreaInsets();
   const { isWalletConnect } = useAuthState();
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
+  const [showTitle, setShowTitle] = useState(false);
   const space = route.params.space;
   const spaceScreenRef: any = useRef(null);
   const scrollAnim = useRef(new Animated.Value(0));
   const offsetAnim = useRef(new Animated.Value(0));
   const scrollValue = useRef(0);
   const offsetValue = useRef(0);
+  const scrollEndTimer: any = useRef(-1);
   const clampedScrollValue = useRef(0);
   //@ts-ignore
   const headerSnap = useRef(Animated.CompositeAnimation);
@@ -111,10 +114,16 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         Math.max(clampedScrollValue.current + diff, 0),
         headerHeight
       );
+      if (clampedScrollValue.current === headerHeight) {
+        setShowTitle(true);
+      } else {
+        setShowTitle(false);
+      }
     });
     return () => {
       scrollAnim.current.removeAllListeners();
       offsetAnim.current.removeAllListeners();
+      clearTimeout(scrollEndTimer.current);
     };
   }, []);
 
@@ -147,6 +156,14 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     );
   }
 
+  function onScrollEndDrag() {
+    scrollEndTimer.current = setTimeout(onMomentumScrollEnd, 250);
+  }
+
+  function onMomentumScrollBegin() {
+    clearTimeout(scrollEndTimer.current);
+  }
+
   const sceneMap = useMemo(
     () =>
       renderScene(
@@ -154,6 +171,8 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         spaceScreenRef,
         {
           onMomentumScrollEnd,
+          onScrollEndDrag,
+          onMomentumScrollBegin,
           onScroll: Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollAnim.current } } }],
             { useNativeDriver: true }
@@ -192,7 +211,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             shadowOpacity: 0,
             backgroundColor: colors.white,
             paddingTop: 0,
-            marginTop: 0,
+            marginTop: 16,
             height: 45,
             shadowRadius: 0,
             elevation: 0,
@@ -200,13 +219,15 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               height: 0,
               width: 0,
             },
-            borderBottomColor: colors.borderColor,
-            borderBottomWidth: 1,
             zIndex: 200,
           }}
           inactiveColor={colors.textColor}
           renderTabBarItem={(item) => {
             return <TabBarItem {...item} />;
+          }}
+          onTabPress={() => {
+            console.log("ON TAB PRESS");
+            moveHeader(headerHeight);
           }}
         />
       </Animated.View>
@@ -225,14 +246,23 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          height: 30,
+          height: 45,
+          backgroundColor: colors.bgBlue,
         }}
       >
-        <BackButton containerStyle={{ paddingBottom: 0 }} />
+        <BackButton
+          iconColor={colors.white}
+          titleStyle={{
+            color: colors.white,
+            fontSize: 16,
+            overflow: "visible",
+          }}
+          title={showTitle ? space.name : ""}
+        />
         <View
           style={{
             paddingHorizontal: 16,
-            paddingTop: 16,
+            paddingTop: Platform.OS === "android" ? 12 : 16,
             height: 45,
             marginRight: 18,
           }}
@@ -244,6 +274,8 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               onChangeFilter={
                 spaceScreenRef?.current?.onChangeFilter ?? function () {}
               }
+              iconColor={colors.white}
+              filterTextStyle={{ color: colors.white }}
             />
           )}
         </View>
@@ -254,6 +286,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
+        onSwipeEnd={() => {
+          moveHeader(headerHeight);
+        }}
       />
     </View>
   );

@@ -36,6 +36,7 @@ type SpacePreviewProps = {
 
 function SpacePreview({ space = {} }: SpacePreviewProps) {
   const navigation: any = useNavigation();
+  const hasMembers = get(space, "followers") !== undefined;
   return (
     <TouchableOpacity
       onPress={() => {
@@ -46,9 +47,13 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
         <Avatar space={space} symbolIndex="space" size={60} />
         <View style={styles.spacePreviewTitleContainer}>
           <Text style={styles.spacePreviewTitle}>{get(space, "name")}</Text>
-          <Text style={styles.spacePreviewFollowerCount}>
-            {get(space, "followers")} {i18n.t("members")}
-          </Text>
+          {hasMembers ? (
+            <Text style={styles.spacePreviewFollowerCount}>
+              {get(space, "followers")} {i18n.t("members")}
+            </Text>
+          ) : (
+            <Text />
+          )}
         </View>
       </View>
     </TouchableOpacity>

@@ -3,6 +3,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -32,6 +33,8 @@ type ProposalFiltersProps = {
   setFilter: (filter: { key: string; text: string }) => void;
   onChangeFilter: (newFilter: string) => void;
   containerStyle?: ViewStyle;
+  filterTextStyle?: TextStyle;
+  iconColor?: string;
 };
 
 function ProposalFilters({
@@ -39,6 +42,8 @@ function ProposalFilters({
   setFilter,
   onChangeFilter,
   containerStyle,
+  filterTextStyle = {},
+  iconColor = colors.darkGray,
 }: ProposalFiltersProps) {
   const { showActionSheetWithOptions } = useActionSheet();
   return (
@@ -86,11 +91,11 @@ function ProposalFilters({
       }}
     >
       <View style={styles.filterContainer}>
-        <Text style={styles.filterText}>{filter.text}</Text>
+        <Text style={[styles.filterText, filterTextStyle]}>{filter.text}</Text>
         <FontAwesome5Icon
           name="caret-down"
           size={16}
-          color={colors.darkGray}
+          color={iconColor}
           style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
         />
       </View>

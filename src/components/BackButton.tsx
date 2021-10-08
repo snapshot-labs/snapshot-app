@@ -6,6 +6,7 @@ import {
   ViewStyle,
   Text,
   Platform,
+  TextStyle,
 } from "react-native";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import i18n from "i18n-js";
@@ -32,9 +33,17 @@ type BackButtonProps = {
   containerStyle?: ViewStyle;
   title?: string | undefined;
   onPress?: () => void | undefined;
+  titleStyle?: TextStyle;
+  iconColor?: string;
 };
 
-function BackButton({ containerStyle, title, onPress }: BackButtonProps) {
+function BackButton({
+  containerStyle,
+  title,
+  onPress,
+  titleStyle,
+  iconColor,
+}: BackButtonProps) {
   const navigation: any = useNavigation();
   return (
     <TouchableOpacity
@@ -49,10 +58,10 @@ function BackButton({ containerStyle, title, onPress }: BackButtonProps) {
       <View style={[styles.backButton, containerStyle ?? {}]}>
         <FontAwesome5Icon
           name="long-arrow-alt-left"
-          color={colors.darkGray}
+          color={iconColor ? iconColor : colors.darkGray}
           size={20}
         />
-        <Text style={styles.backButtonTitle}>{title ?? ""}</Text>
+        <Text style={[styles.backButtonTitle, titleStyle]}>{title ?? ""}</Text>
       </View>
     </TouchableOpacity>
   );
