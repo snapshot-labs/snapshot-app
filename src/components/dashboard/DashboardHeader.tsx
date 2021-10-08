@@ -1,12 +1,32 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import i18n from "i18n-js";
+import { useNavigation } from "@react-navigation/native";
 import common from "../../styles/common";
+import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import colors from "../../constants/colors";
+import { SETTINGS_SCREEN } from "../../constants/navigation";
 
 function DashboardHeader() {
+  const navigation: any = useNavigation();
   return (
     <View style={{ paddingHorizontal: 16, paddingTop: 30 }}>
-      <Text style={common.headerTitle}>{i18n.t("dashboard")}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={common.headerTitle}>{i18n.t("dashboard")}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(SETTINGS_SCREEN);
+          }}
+        >
+          <FontAwesome5Icon name="cog" size={20} color={colors.darkGray} />
+        </TouchableOpacity>
+      </View>
       <Text style={[common.subTitle, { marginTop: 16 }]}>
         {i18n.t("mySpaces")}
       </Text>

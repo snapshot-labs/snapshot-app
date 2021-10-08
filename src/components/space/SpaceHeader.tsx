@@ -16,6 +16,7 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
     <View
       style={{
         paddingHorizontal: 16,
+        marginTop: 24,
       }}
     >
       <View style={{ flexDirection: "row" }}>

@@ -4,25 +4,29 @@ import { Image } from "react-native";
 import { Space } from "../types/explore";
 import makeBlockie from "ethereum-blockies-base64";
 
-function url(symbolIndex: string | number, space: Space | any) {
-  const spaceId = space.id;
-  const file = symbolIndex
-    ? symbolIndex === "space"
-      ? "space"
-      : `logo${symbolIndex}`
-    : "logo";
+function url(symbolIndex: string | number | undefined, space: Space | any) {
+  if (symbolIndex) {
+    const spaceId = space.id;
+    const file = symbolIndex
+      ? symbolIndex === "space"
+        ? "space"
+        : `logo${symbolIndex}`
+      : "logo";
 
-  const url =
-    getUrl(space.avatar) ??
-    `https://raw.githubusercontent.com/snapshot-labs/snapshot-spaces/master/spaces/${spaceId}/${file}.png`;
+    const url =
+      getUrl(space.avatar) ??
+      `https://raw.githubusercontent.com/snapshot-labs/snapshot-spaces/master/spaces/${spaceId}/${file}.png`;
 
-  return `https://worker.snapshot.org/mirror?img=${encodeURIComponent(url)}`;
+    return `https://worker.snapshot.org/mirror?img=${encodeURIComponent(url)}`;
+  } else {
+    return "";
+  }
 }
 
 type AvatarProps = {
-  symbolIndex: string | number;
+  symbolIndex?: string | number;
   size: number;
-  space: Space | { id?: string; avatar: string };
+  space?: Space | { id?: string; avatar: string };
   initialBlockie?: null | string;
 };
 

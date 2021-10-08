@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Platform } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
@@ -25,11 +26,15 @@ import { LANDING_SCREEN } from "../constants/navigation";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
 import colors from "../constants/colors";
+import SettingsScreen from "./SettingsScreen";
 
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 const ICON_SIZE = 20;
+const BOTTOM_ICON_PADDING = 0;
+const BOTTOM_LABEL_PADDING = Platform.OS === "android" ? 16 : 0;
+
 function TabNavigator() {
   const connector = useWalletConnect();
   const authDispatch = useAuthDispatch();
@@ -65,6 +70,13 @@ function TabNavigator() {
         },
         headerShown: false,
         tabBarActiveTintColor: colors.textColor,
+        tabBarStyle: {
+          padding: 16,
+          shadowOpacity: 0,
+          borderTopWidth: 0,
+          height: Platform.OS === "android" ? 75 : 85,
+          paddingTop: 0,
+        },
       }}
     >
       <Tab.Screen
@@ -73,8 +85,18 @@ function TabNavigator() {
         options={{
           title: i18n.t("home"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="home" color={color} size={ICON_SIZE} />
+            <FontAwesome
+              name="home"
+              color={color}
+              size={ICON_SIZE}
+              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
+            />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Calibre-Medium",
+            fontSize: 18,
+            paddingBottom: BOTTOM_LABEL_PADDING,
+          },
         }}
       />
       <Tab.Screen
@@ -83,8 +105,18 @@ function TabNavigator() {
         options={{
           title: i18n.t("feed"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="rss" color={color} size={ICON_SIZE} />
+            <FontAwesome
+              name="rss"
+              color={color}
+              size={ICON_SIZE}
+              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
+            />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Calibre-Medium",
+            fontSize: 18,
+            paddingBottom: BOTTOM_LABEL_PADDING,
+          },
         }}
       />
       <Tab.Screen
@@ -93,8 +125,18 @@ function TabNavigator() {
         options={{
           title: i18n.t("explore"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="compass" color={color} size={ICON_SIZE} />
+            <FontAwesome
+              name="compass"
+              color={color}
+              size={ICON_SIZE}
+              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
+            />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Calibre-Medium",
+            fontSize: 18,
+            paddingBottom: BOTTOM_LABEL_PADDING,
+          },
         }}
       />
       <Tab.Screen
@@ -103,8 +145,18 @@ function TabNavigator() {
         options={{
           title: i18n.t("profile"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="user" color={color} size={ICON_SIZE} />
+            <FontAwesome
+              name="user"
+              color={color}
+              size={ICON_SIZE}
+              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
+            />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Calibre-Medium",
+            fontSize: 18,
+            paddingBottom: BOTTOM_LABEL_PADDING,
+          },
         }}
       />
     </Tab.Navigator>
@@ -167,6 +219,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.STRATEGY_SCREEN}
         component={StrategyScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.SETTINGS_SCREEN}
+        component={SettingsScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
