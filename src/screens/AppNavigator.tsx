@@ -27,6 +27,7 @@ import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
 import colors from "../constants/colors";
 import SettingsScreen from "./SettingsScreen";
+import ConnectAccountScreen from "./ConnectAccountScreen";
 
 const Stack = createStackNavigator();
 
@@ -224,6 +225,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.SETTINGS_SCREEN}
         component={SettingsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CONNECT_ACCOUNT_SCREEN}
+        component={ConnectAccountScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

@@ -9,6 +9,7 @@ const KEYS = {
   isWalletConnect: "isWalletConnect",
   aliases: "aliases",
   androidAppUrl: "androidAppUrl",
+  savedWallets: "savedWallets",
 };
 
 export async function load(key: string) {
@@ -31,6 +32,9 @@ export async function clearAll() {
   } catch (e) {}
   try {
     await remove(KEYS.androidAppUrl);
+  } catch (e) {}
+  try {
+    await remove(KEYS.savedWallets);
   } catch (e) {}
 }
 

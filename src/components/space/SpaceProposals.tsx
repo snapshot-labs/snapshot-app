@@ -97,7 +97,6 @@ function SpaceProposals({
   useEffect(() => {
     spaceScreenRef.current = {
       onChangeFilter: (newFilter: string) => {
-        console.log({ newFilter });
         setLoadCount(0);
         getProposals(
           spaceId,

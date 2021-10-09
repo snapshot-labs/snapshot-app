@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     color: colors.headingColor,
     fontFamily: "Calibre-Semibold",
     fontSize: 24,
+    lineHeight: 30,
   },
   body: {
     color: colors.darkGray,
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 8,
     marginBottom: 8,
+    lineHeight: 30,
   },
   period: {
     fontSize: 18,
