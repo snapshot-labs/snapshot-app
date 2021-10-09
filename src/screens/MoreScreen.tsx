@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   Linking,
+  ScrollView,
 } from "react-native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   bottomButton: {
     position: "absolute",
     bottom: 30,
-    width: "100%",
+    width: width - 32,
     left: 16,
   },
 });
@@ -95,7 +96,7 @@ function MoreScreen() {
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <View style={{ paddingHorizontal: 16, marginTop: 24, flex: 1 }}>
+      <ScrollView style={{ paddingHorizontal: 16, marginTop: 24, flex: 1 }}>
         <Text style={[common.headerTitle, { marginBottom: 16 }]}>
           {i18n.t("account")}
         </Text>
@@ -285,23 +286,23 @@ function MoreScreen() {
             <Text style={common.h4}>{i18n.t("addWallet")}</Text>
           </View>
         </TouchableOpacity>
-        <View style={styles.bottomButton}>
-          <Button
-            onPress={async () => {
-              try {
-                await connector.killSession();
-              } catch (e) {}
-              authDispatch({
-                type: AUTH_ACTIONS.LOGOUT,
-              });
-              navigation.reset({
-                index: 0,
-                routes: [{ name: LANDING_SCREEN }],
-              });
-            }}
-            title={i18n.t("logout")}
-          />
-        </View>
+      </ScrollView>
+      <View style={styles.bottomButton}>
+        <Button
+          onPress={async () => {
+            try {
+              await connector.killSession();
+            } catch (e) {}
+            authDispatch({
+              type: AUTH_ACTIONS.LOGOUT,
+            });
+            navigation.reset({
+              index: 0,
+              routes: [{ name: LANDING_SCREEN }],
+            });
+          }}
+          title={i18n.t("logout")}
+        />
       </View>
     </View>
   );
