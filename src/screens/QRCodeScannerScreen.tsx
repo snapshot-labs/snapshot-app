@@ -87,6 +87,7 @@ function QRCodeScannerScreen() {
                   payload: {
                     connectedAddress: data,
                     addToStorage: true,
+                    addToSavedWallets: true,
                   },
                 });
                 navigation.reset({

@@ -44,19 +44,31 @@ function authReducer(state: AuthState, action: ContextAction) {
   switch (action.type) {
     case AUTH_ACTIONS.SET_FOLLOWED_SPACES:
       return { ...state, followedSpaces: action.payload };
-    case AUTH_ACTIONS.SET_CONNECTED_ADDRESS:
+    case AUTH_ACTIONS.SET_CONNECTED_ADDRESS: {
       const connectedAddress = action.payload.connectedAddress;
+      const savedWallets = { ...state.savedWallets };
       if (action.payload.addToStorage) {
         storage.save(storage.KEYS.connectedAddress, connectedAddress);
         if (action.payload.isWalletConnect) {
           storage.save(storage.KEYS.isWalletConnect, "true");
         }
       }
+
+      if (action.payload.addToSavedWallets) {
+        savedWallets[action.payload.connectedAddress] = {
+          name: "Custom Wallet",
+          address: connectedAddress,
+        };
+        storage.save(storage.KEYS.savedWallets, JSON.stringify(savedWallets));
+      }
+
       return {
         ...state,
         connectedAddress,
         isWalletConnect: action.payload.isWalletConnect,
+        savedWallets,
       };
+    }
     case AUTH_ACTIONS.SET_INITIAL_ALIASES:
       return { ...state, aliases: action.payload ?? {} };
     case AUTH_ACTIONS.SET_ALIAS:
