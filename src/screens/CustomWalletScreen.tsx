@@ -32,6 +32,7 @@ function CustomWalletScreen() {
               payload: {
                 connectedAddress: address,
                 addToStorage: true,
+                addToSavedWallets: true,
               },
             });
             navigation.reset({
