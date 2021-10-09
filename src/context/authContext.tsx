@@ -10,6 +10,7 @@ type AuthState = {
   aliases: { [id: string]: string };
   androidAppUrl: string | null;
   aliasWallet: Wallet | null;
+  savedWallets: { [id: string]: { name: string; address: string } };
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -25,6 +26,8 @@ const AUTH_ACTIONS = {
   SET_INITIAL_ALIASES: "@auth/SET_INITIAL_ALIASES",
   SET_CONNECTED_ANDROID_APP_URL: "@auth/SET_CONNECTED_ANDROID_APP_URL",
   SET_ALIAS_WALLET: "@auth/SET_ALIAS_WALLET",
+  SET_SAVED_WALLETS: "@auth/SET_SAVED_WALLETS",
+  SET_OVERWRITE_SAVED_WALLETS: "@auth/SET_OVERWRITE_SAVED_WALLETS",
 };
 
 const initialState = {
@@ -34,6 +37,7 @@ const initialState = {
   aliases: {},
   androidAppUrl: null,
   aliasWallet: null,
+  savedWallets: {},
 };
 
 function authReducer(state: AuthState, action: ContextAction) {
@@ -64,6 +68,14 @@ function authReducer(state: AuthState, action: ContextAction) {
       return { ...state, androidAppUrl: action.payload };
     case AUTH_ACTIONS.SET_ALIAS_WALLET:
       return { ...state, aliasWallet: action.payload };
+    case AUTH_ACTIONS.SET_SAVED_WALLETS:
+      let savedWallets = { ...state.savedWallets };
+      if (action.payload) {
+        savedWallets = { ...savedWallets, ...action.payload };
+      }
+      return { ...state, savedWallets };
+    case AUTH_ACTIONS.SET_OVERWRITE_SAVED_WALLETS:
+      return { ...state, savedWallets: action.payload };
     case AUTH_ACTIONS.LOGOUT:
       storage.clearAll();
       return initialState;

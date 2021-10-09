@@ -96,6 +96,7 @@ async function getStrategies(
 
 function HomeScreen() {
   const [loading, setLoading] = useState<boolean>(true);
+  const [isInitial, setIsInitial] = useState<boolean>(true);
   const { followedSpaces, connectedAddress } = useAuthState();
   const { spaces } = useExploreState();
   const authDispatch = useAuthDispatch();
@@ -106,7 +107,14 @@ function HomeScreen() {
     getExplore(exploreDispatch);
     getFollows(connectedAddress, authDispatch);
     getStrategies(exploreDispatch, setLoading);
+    setIsInitial(false);
   }, []);
+
+  useEffect(() => {
+    if (!isInitial) {
+      getFollows(connectedAddress, authDispatch);
+    }
+  }, [connectedAddress]);
 
   return (
     <View style={[common.screen, { paddingTop: insets.top }]}>

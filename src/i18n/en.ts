@@ -94,4 +94,8 @@ export default {
   appearance: "Appearance",
   light: "Light",
   dark: "Dark",
+  addWallet: "Add wallet",
+  useWallet: "Use wallet",
+  removeWallet: "Remove wallet",
+  viewWallet: "View wallet",
 };

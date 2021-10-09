@@ -24,6 +24,7 @@ import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
 import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
+import storage from "../util/storage";
 
 const defaultWallets = [MetaMask];
 
@@ -92,6 +93,7 @@ function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
   const [androidAppUrl, setAndroidAppUrl] = useState("");
+  const [currentWallet, setCurrentWallet] = useState({});
   const connector = useWalletConnect();
   const [connected, setConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -106,10 +108,11 @@ function WalletConnectScreen() {
   useEffect(() => {
     if (connector.connected && connected !== connector.connected) {
       if (connector.accounts && connector.accounts.length > 0) {
+        const address = connector.accounts[0];
         authDispatch({
           type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
           payload: {
-            connectedAddress: connector.accounts[0],
+            connectedAddress: address,
             addToStorage: true,
             isWalletConnect: true,
           },
@@ -121,6 +124,25 @@ function WalletConnectScreen() {
             payload: androidAppUrl,
           });
         }
+
+        const connectedWallet = {
+          address: connector.accounts[0],
+          name: get(currentWallet, "name", ""),
+          mobile: get(currentWallet, "mobile.native", ""),
+          androidAppUrl,
+        };
+        storage.save(
+          storage.KEYS.savedWallets,
+          JSON.stringify({
+            [address]: connectedWallet,
+          })
+        );
+        authDispatch({
+          type: AUTH_ACTIONS.SET_SAVED_WALLETS,
+          payload: {
+            [address]: connectedWallet,
+          },
+        });
       }
       navigation.reset({
         index: 0,
@@ -209,6 +231,8 @@ function WalletConnectScreen() {
                 } else {
                   connector.connectToWalletService(wallet, formattedUri);
                 }
+
+                setCurrentWallet(wallet);
               }}
             >
               <View
