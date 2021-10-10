@@ -14,8 +14,11 @@ import common from "../../styles/common";
 import colors from "../../constants/colors";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Button, { styles as buttonStyles } from "../Button";
-import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
+import signClient from "../../util/signClient";
+import { useAuthDispatch, useAuthState } from "../../context/authContext";
+import { signWithAliasCheck } from "../../util/aliasUtils";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
 const { width } = Dimensions.get("screen");
 
@@ -94,6 +97,9 @@ function VoteConfirmModal({
   totalScore,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
+  const { aliasWallet, connectedAddress } = useAuthState();
+  const authDispatch = useAuthDispatch();
+  const connector = useWalletConnect();
   return (
     <Modal
       isVisible={isVisible}
@@ -197,7 +203,25 @@ function VoteConfirmModal({
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity
+            onPress={() => {
+              const message = {
+                type: proposal.type,
+                choice: selectedChoices,
+                proposal: proposal.id,
+                from: connectedAddress,
+              };
+              signWithAliasCheck(
+                aliasWallet,
+                connectedAddress,
+                connector,
+                authDispatch,
+                () => {
+                  signClient.vote(aliasWallet, aliasWallet.address, message);
+                }
+              );
+            }}
+          >
             <View
               style={[
                 buttonStyles.button,

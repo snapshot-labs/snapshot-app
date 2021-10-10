@@ -48,7 +48,7 @@ function Avatar({
       source={imgSrc}
       style={{ width: size, height: size, borderRadius: size / 2 }}
       onError={() => {
-        const blockie = makeBlockie(space.id ?? "");
+        const blockie = makeBlockie(space?.id ?? "");
         setBlockie(blockie);
       }}
     />

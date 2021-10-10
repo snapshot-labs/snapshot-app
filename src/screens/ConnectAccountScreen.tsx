@@ -51,6 +51,9 @@ async function fetchWallets(
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
       if (Platform.OS === "android") {
+        if (currentWallet.name && currentWallet.name.includes("Rainbow")) {
+          continue;
+        }
         const androidAppArray = get(currentWallet, "app.android", "").split(
           "id="
         );
@@ -93,9 +96,7 @@ async function fetchWallets(
 function ConnectAccountScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
-  const [androidAppUrl, setAndroidAppUrl] = useState("");
   const connector = useWalletConnect();
-  const [connected, setConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
@@ -103,7 +104,6 @@ function ConnectAccountScreen() {
 
   useEffect(() => {
     fetchWallets(setWallets, setLoading);
-    setConnected(connector.connected);
   }, []);
 
   return (
@@ -211,7 +211,6 @@ function ConnectAccountScreen() {
                       Linking.openURL(wallet.mobile.native);
                     } else {
                       if (androidAppUrl) {
-                        setAndroidAppUrl(androidAppUrl);
                         SendIntentAndroid.openAppWithData(
                           androidAppUrl,
                           formattedUri
