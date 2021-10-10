@@ -235,7 +235,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             return <TabBarItem {...item} />;
           }}
           onTabPress={() => {
-            moveHeader(headerHeight);
+            moveHeader(offsetValue.current - headerHeight);
           }}
         />
       </Animated.View>
@@ -279,9 +279,10 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             <ProposalFilters
               filter={filter}
               setFilter={setFilter}
-              onChangeFilter={
-                spaceScreenRef?.current?.onChangeFilter ?? function () {}
-              }
+              onChangeFilter={(newFilter: string) => {
+                spaceScreenRef?.current?.onChangeFilter(newFilter);
+                moveHeader(offsetValue.current - headerHeight);
+              }}
               iconColor={colors.white}
               filterTextStyle={{ color: colors.white }}
             />
@@ -295,7 +296,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
         onSwipeEnd={() => {
-          moveHeader(headerHeight);
+          moveHeader(offsetValue.current - headerHeight);
         }}
       />
     </View>
