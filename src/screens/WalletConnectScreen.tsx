@@ -50,6 +50,9 @@ async function fetchWallets(
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
       if (Platform.OS === "android") {
+        if (currentWallet.name && currentWallet.name.includes("Rainbow")) {
+          continue;
+        }
         const androidAppArray = get(currentWallet, "app.android", "").split(
           "id="
         );
@@ -128,7 +131,7 @@ function WalletConnectScreen() {
         const connectedWallet = {
           address: connector.accounts[0],
           name: get(currentWallet, "name", ""),
-          mobile: get(currentWallet, "mobile.native", ""),
+          mobile: get(currentWallet, "mobile.native"),
           androidAppUrl,
         };
         storage.save(

@@ -89,3 +89,50 @@ export async function setAlias(
 
   return false;
 }
+
+export async function signWithAliasCheck(
+  aliasWallet: Wallet,
+  connectedAddress: string,
+  connector: WalletConnect,
+  authDispatch: ContextDispatch,
+  signAction: () => void
+) {
+  try {
+    if (aliasWallet) {
+      const isValidAlias = await checkAlias(aliasWallet, connectedAddress);
+      if (isValidAlias) {
+        signAction();
+      } else {
+        const aliasWallet = await setAlias(
+          connectedAddress,
+          connector,
+          authDispatch
+        );
+
+        if (aliasWallet) {
+          const isValidAlias = await checkAlias(aliasWallet, connectedAddress);
+
+          if (isValidAlias) {
+            signAction();
+          }
+        }
+      }
+    } else {
+      const aliasWallet = await setAlias(
+        connectedAddress,
+        connector,
+        authDispatch
+      );
+
+      if (aliasWallet) {
+        const isValidAlias = await checkAlias(aliasWallet, connectedAddress);
+
+        if (isValidAlias) {
+          signAction();
+        }
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
