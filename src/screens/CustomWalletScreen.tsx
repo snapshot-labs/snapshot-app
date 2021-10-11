@@ -8,11 +8,16 @@ import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
 import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "../constants/navigation";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { ethers } from "ethers";
+import colors from "../constants/colors";
+import { EXPLORE_ACTIONS, useExploreDispatch } from "../context/exploreContext";
 
 function CustomWalletScreen() {
   const insets = useSafeAreaInsets();
   const [address, setAddress] = useState("");
+  const [error, setError] = useState("");
   const authDispatch = useAuthDispatch();
+  const exploreDispatch = useExploreDispatch();
   const navigation: any = useNavigation();
 
   return (
@@ -24,21 +29,61 @@ function CustomWalletScreen() {
         {i18n.t("enterWalletAddress")}
       </Text>
       <Input value={address} onChangeText={(text) => setAddress(text)} />
+      <Text
+        style={{
+          fontFamily: "Calibre-Medium",
+          color: colors.red,
+          paddingHorizontal: 16,
+        }}
+      >
+        {error}
+      </Text>
       <View style={{ paddingHorizontal: 16, marginTop: 24 }}>
         <Button
-          onPress={() => {
-            authDispatch({
-              type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
-              payload: {
-                connectedAddress: address,
-                addToStorage: true,
-                addToSavedWallets: true,
-              },
-            });
-            navigation.reset({
-              index: 0,
-              routes: [{ name: HOME_SCREEN }],
-            });
+          onPress={async () => {
+            setError("");
+            if (address.includes("eth")) {
+              const resolveName = await ethers
+                .getDefaultProvider()
+                .resolveName(address);
+              if (resolveName) {
+                exploreDispatch({
+                  type: EXPLORE_ACTIONS.SET_PROFILES,
+                  payload: {
+                    [resolveName]: {
+                      ens: address,
+                    },
+                  },
+                });
+                authDispatch({
+                  type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+                  payload: {
+                    connectedAddress: resolveName,
+                    addToStorage: true,
+                    addToSavedWallets: true,
+                  },
+                });
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: HOME_SCREEN }],
+                });
+              } else {
+                setError(i18n.t("unableToFindAssociatedAddress"));
+              }
+            } else {
+              authDispatch({
+                type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+                payload: {
+                  connectedAddress: address,
+                  addToStorage: true,
+                  addToSavedWallets: true,
+                },
+              });
+              navigation.reset({
+                index: 0,
+                routes: [{ name: HOME_SCREEN }],
+              });
+            }
           }}
           title={i18n.t("loginWithThisAddress")}
           disabled={address.trim().length === 0}

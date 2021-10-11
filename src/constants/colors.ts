@@ -11,4 +11,5 @@ export default {
   bgBlue: "#384aff",
   bgLightGray: "#f6f8fa",
   highlightColor: "rgba(208,215,222, .20)",
+  red: "#d20000",
 };

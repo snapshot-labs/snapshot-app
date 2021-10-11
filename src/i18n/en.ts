@@ -98,4 +98,5 @@ export default {
   useWallet: "Use wallet",
   removeWallet: "Remove wallet",
   viewWallet: "View wallet",
+  unableToFindAssociatedAddress: "Unable to find associated address.",
 };
