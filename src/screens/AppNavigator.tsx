@@ -35,6 +35,7 @@ const Tab = createBottomTabNavigator();
 const ICON_SIZE = 20;
 const BOTTOM_ICON_PADDING = 0;
 const BOTTOM_LABEL_PADDING = Platform.OS === "android" ? 16 : 0;
+const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
   const connector = useWalletConnect();
@@ -74,9 +75,10 @@ function TabNavigator() {
         tabBarStyle: {
           padding: 16,
           shadowOpacity: 0,
-          borderTopWidth: 0,
           height: Platform.OS === "android" ? 75 : 85,
-          paddingTop: 0,
+          borderTopWidth: 1,
+          borderTopColor: colors.borderColor,
+          elevation: 0,
         },
       }}
     >
@@ -95,7 +97,7 @@ function TabNavigator() {
           ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
-            fontSize: 18,
+            fontSize: TAB_LABEL_FONT_SIZE,
             paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}
@@ -115,7 +117,7 @@ function TabNavigator() {
           ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
-            fontSize: 18,
+            fontSize: TAB_LABEL_FONT_SIZE,
             paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}
@@ -135,7 +137,7 @@ function TabNavigator() {
           ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
-            fontSize: 18,
+            fontSize: TAB_LABEL_FONT_SIZE,
             paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}
@@ -155,7 +157,7 @@ function TabNavigator() {
           ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
-            fontSize: 18,
+            fontSize: TAB_LABEL_FONT_SIZE,
             paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}

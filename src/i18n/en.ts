@@ -1,6 +1,6 @@
 export default {
   dashboard: "Dashboard",
-  mySpaces: "My Spaces",
+  mySpaces: "My spaces",
   members: "members",
   explore: "Explore",
   logIn: "Log in",
