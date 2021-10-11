@@ -17,7 +17,7 @@ import Button, { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 import signClient from "../../util/signClient";
 import { useAuthDispatch, useAuthState } from "../../context/authContext";
-import { signWithAliasCheck } from "../../util/aliasUtils";
+import client from "../../util/snapshotClient";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
 const { width } = Dimensions.get("screen");
@@ -205,19 +205,15 @@ function VoteConfirmModal({
 
           <TouchableOpacity
             onPress={() => {
-              const message = {
-                type: proposal.type,
-                choice: selectedChoices,
-                proposal: proposal.id,
-                from: connectedAddress,
-              };
-              signWithAliasCheck(
+              client.broadcast(
                 aliasWallet,
-                connectedAddress,
-                connector,
-                authDispatch,
-                () => {
-                  signClient.vote(aliasWallet, aliasWallet.address, message);
+                aliasWallet.address,
+                space.id,
+                "vote",
+                {
+                  proposal: proposal.id,
+                  choice: selectedChoices,
+                  metadata: {},
                 }
               );
             }}

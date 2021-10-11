@@ -91,7 +91,7 @@ export async function setAlias(
 }
 
 export async function signWithAliasCheck(
-  aliasWallet: Wallet,
+  aliasWallet: Wallet | null,
   connectedAddress: string,
   connector: WalletConnect,
   authDispatch: ContextDispatch,
