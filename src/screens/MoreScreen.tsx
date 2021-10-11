@@ -118,7 +118,7 @@ function MoreScreen() {
               },
               (buttonIndex) => {
                 if (buttonIndex === 0) {
-                  const url = explorerUrl("1", connectedAddress ?? "AAA");
+                  const url = explorerUrl("1", connectedAddress ?? "");
                   Linking.openURL(url);
                 } else if (buttonIndex === destructiveButtonIndex) {
                   const newSavedWallets = { ...savedWallets };
@@ -206,6 +206,7 @@ function MoreScreen() {
           const blockie = makeBlockie(address);
           const profile = profiles[address];
           const ens = get(profile, "ens", undefined);
+          const walletName = get(savedWallets, `${address}.name`);
           return (
             <TouchableOpacity
               key={address}
@@ -232,6 +233,7 @@ function MoreScreen() {
                         payload: {
                           connectedAddress: address,
                           addToStorage: true,
+                          isWalletConnect: walletName !== "Custom Wallet",
                         },
                       });
                     } else if (buttonIndex === 1) {
