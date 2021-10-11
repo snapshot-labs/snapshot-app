@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableHighlight } from "react-native";
 import get from "lodash/get";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
@@ -12,8 +12,10 @@ const styles = StyleSheet.create({
   spacePreviewContainer: {
     flexDirection: "row",
     paddingHorizontal: 16,
-    marginTop: 16,
+    paddingVertical: 8,
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderColor,
   },
   spacePreviewTitleContainer: {
     marginLeft: 10,
@@ -38,10 +40,11 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
   return (
-    <TouchableOpacity
+    <TouchableHighlight
       onPress={() => {
         navigation.navigate(SPACE_SCREEN, { space });
       }}
+      underlayColor={colors.highlightColor}
     >
       <View style={styles.spacePreviewContainer}>
         <Avatar space={space} symbolIndex="space" size={60} />
@@ -56,7 +59,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 }
 

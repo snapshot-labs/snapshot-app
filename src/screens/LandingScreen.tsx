@@ -3,8 +3,8 @@ import { Text, View, Image } from "react-native";
 import LoginButton from "../components/LoginButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
-import { APP_VERSION } from "../constants/app";
 import colors from "../constants/colors";
+import packageJson from "../../package.json";
 import icon from "../images/Icon167.png";
 
 function LandingScreen() {
@@ -45,7 +45,7 @@ function LandingScreen() {
       >
         <LoginButton />
         <Text style={{ marginTop: 20, alignSelf: "center" }}>
-          {i18n.t("versionApp", { version: APP_VERSION })}
+          {i18n.t("versionApp", { version: packageJson.version })}
         </Text>
       </View>
     </View>

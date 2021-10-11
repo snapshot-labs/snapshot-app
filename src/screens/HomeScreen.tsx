@@ -162,6 +162,7 @@ function HomeScreen() {
             </View>
           }
           onEndReached={() => {}}
+          ListFooterComponent={<View style={{ width: "100%", height: 30 }} />}
         />
       )}
     </View>
