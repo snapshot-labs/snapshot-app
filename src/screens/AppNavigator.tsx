@@ -33,7 +33,7 @@ const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 const ICON_SIZE = 20;
-const BOTTOM_ICON_PADDING = 0;
+const BOTTOM_ICON_PADDING = Platform.OS === "android" ? 0 : 30;
 const BOTTOM_LABEL_PADDING = Platform.OS === "android" ? 16 : 0;
 const TAB_LABEL_FONT_SIZE = 16;
 

@@ -16,6 +16,7 @@ import { getResults } from "../util/snapshot";
 import BackButton from "../components/BackButton";
 import BlockResults from "../components/proposal/BlockResults";
 import BlockCastVote from "../components/proposal/BlockCastVote";
+import colors from "../constants/colors";
 
 type ProposalScreenProps = {
   route: {
@@ -116,7 +117,9 @@ function ProposalScreen({ route }: ProposalScreenProps) {
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <BackButton title={route.params.fromFeed ? null : space?.name} />
+      <View style={common.headerContainer}>
+        <BackButton title={route.params.fromFeed ? null : space?.name} />
+      </View>
       <ScrollView scrollEnabled={scrollEnabled}>
         <View style={{ paddingHorizontal: 16 }}>
           <Text style={[common.h1, { marginBottom: 8, marginTop: 8 }]}>

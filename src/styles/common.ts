@@ -34,6 +34,13 @@ const common = StyleSheet.create({
     fontSize: 20,
     fontFamily: "Calibre-Semibold",
   },
+  headerContainer: {
+    borderBottomColor: colors.borderColor,
+    borderBottomWidth: 1,
+    height: 60,
+    alignItems: "center",
+    flexDirection: "row",
+  }
 });
 
 export default common;

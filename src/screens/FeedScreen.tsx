@@ -21,7 +21,7 @@ import i18n from "i18n-js";
 import colors from "../constants/colors";
 import TimelineHeader from "../components/timeline/TimelineHeader";
 import proposal from "../constants/proposal";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { TabView, SceneMap, TabBar, TabBarItem } from "react-native-tab-view";
 import { useExploreDispatch, useExploreState } from "../context/exploreContext";
 import { setProfiles } from "../util/profile";
 
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     color: colors.textColor,
     backgroundColor: colors.darkGray,
+    height: 5,
   },
   labelStyle: {
     fontFamily: "Calibre-Medium",
@@ -278,6 +279,25 @@ function FeedScreenTabView() {
         elevation: 0,
       }}
       inactiveColor={colors.textColor}
+      renderTabBarItem={(props) => {
+        const tabBarItemIndex = props.key === "joinedSpaces" ? 0 : 1;
+        return (
+          <View
+            style={{
+              flex: 1,
+              ...(tabBarItemIndex !== index
+                ? {
+                    borderBottomColor: colors.borderColor,
+                    borderBottomWidth: 1,
+                  }
+                : { borderBottomWidth: 1, borderBottomColor: "transparent" }),
+            }}
+            key={props.key}
+          >
+            <TabBarItem {...props} />
+          </View>
+        );
+      }}
     />
   );
 
