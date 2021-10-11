@@ -9,7 +9,6 @@ import {
   TextStyle,
 } from "react-native";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import i18n from "i18n-js";
 import colors from "../constants/colors";
 import { useNavigation } from "@react-navigation/native";
 

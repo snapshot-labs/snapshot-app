@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Image,
   Text,
-  TouchableOpacity,
+  TouchableHighlight,
   Dimensions,
 } from "react-native";
 import colors from "../constants/colors";
@@ -113,7 +113,8 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
       : shorten(proposal.author);
 
   return (
-    <TouchableOpacity
+    <TouchableHighlight
+      underlayColor={colors.highlightColor}
       onPress={() => {
         navigation.navigate(PROPOSAL_SCREEN, { proposal, fromFeed });
       }}
@@ -138,7 +139,7 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
           <Text style={styles.period}>{period}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 }
 

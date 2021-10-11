@@ -246,23 +246,22 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     { key: "proposals", title: i18n.t("proposals") },
     { key: "about", title: i18n.t("about") },
   ]);
-
   return (
     <View style={[common.screen, { paddingTop: insets.top }]}>
       <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: 45,
-          backgroundColor: colors.bgBlue,
-        }}
+        style={[
+          common.headerContainer,
+          {
+            justifyContent: "space-between",
+            backgroundColor: showTitle ? colors.bgBlue : "transparent",
+            borderBottomColor: showTitle ? colors.bgBlue : colors.borderColor,
+          },
+        ]}
       >
         <BackButton
-          iconColor={colors.white}
+          iconColor={showTitle ? colors.white : colors.textColor}
           titleStyle={{
-            color: colors.white,
-            fontSize: 16,
+            color: showTitle ? colors.white : colors.textColor,
             overflow: "visible",
           }}
           title={showTitle ? space.name : ""}
@@ -271,7 +270,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           style={{
             paddingHorizontal: 16,
             paddingTop: Platform.OS === "android" ? 12 : 16,
-            height: 45,
+            height: 60,
             marginRight: 18,
           }}
         >
@@ -281,10 +280,18 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               setFilter={setFilter}
               onChangeFilter={(newFilter: string) => {
                 spaceScreenRef?.current?.onChangeFilter(newFilter);
-                moveHeader(offsetValue.current - headerHeight);
+                if (offsetValue.current - headerHeight === 0) {
+                  moveHeader(offsetValue.current - headerHeight);
+                }
               }}
-              iconColor={colors.white}
-              filterTextStyle={{ color: colors.white }}
+              iconColor={showTitle ? colors.white : colors.textColor}
+              filterTextStyle={{
+                color: showTitle ? colors.white : colors.textColor,
+                fontSize: 24,
+              }}
+              filterContainerStyle={{
+                marginTop: 6,
+              }}
             />
           )}
         </View>

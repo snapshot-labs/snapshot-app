@@ -34,6 +34,7 @@ type ProposalFiltersProps = {
   onChangeFilter: (newFilter: string) => void;
   containerStyle?: ViewStyle;
   filterTextStyle?: TextStyle;
+  filterContainerStyle?: ViewStyle;
   iconColor?: string;
 };
 
@@ -43,6 +44,7 @@ function ProposalFilters({
   onChangeFilter,
   containerStyle,
   filterTextStyle = {},
+  filterContainerStyle = {},
   iconColor = colors.darkGray,
 }: ProposalFiltersProps) {
   const { showActionSheetWithOptions } = useActionSheet();
@@ -60,9 +62,13 @@ function ProposalFilters({
           activeFilter.text,
           pendingFilter.text,
           closedFilter.text,
-          i18n.t("cancel"),
         ];
-        const cancelButtonIndex = options.length - 1;
+
+        if (Platform.OS === "ios") {
+          options.push(i18n.t("cancel"));
+        }
+
+        const cancelButtonIndex = 4;
 
         showActionSheetWithOptions(
           {
@@ -90,7 +96,7 @@ function ProposalFilters({
         );
       }}
     >
-      <View style={styles.filterContainer}>
+      <View style={[styles.filterContainer, filterContainerStyle]}>
         <Text style={[styles.filterText, filterTextStyle]}>{filter.text}</Text>
         <FontAwesome5Icon
           name="caret-down"
