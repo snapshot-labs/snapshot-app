@@ -68,6 +68,16 @@ const renderScene = (
             profiles={profiles}
           />
         )}
+        ListHeaderComponent={
+          route.key !== allVotesKey ? (
+            <View style={{ padding: 16 }}>
+              <Text style={common.h3}>{route.title}</Text>
+            </View>
+          ) : (
+            <View />
+          )
+        }
+        ListFooterComponent={<View style={{ width: 100, height: 75 }} />}
       />
     );
 
@@ -195,6 +205,17 @@ function VotesScreen({ route }: VotesScreenProps) {
                 borderBottomWidth: 1,
               }}
               inactiveColor={colors.textColor}
+              renderLabel={(props) => {
+                return (
+                  <Text
+                    style={styles.labelStyle}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                  >
+                    {props.route.title}
+                  </Text>
+                );
+              }}
             />
           );
         }}
