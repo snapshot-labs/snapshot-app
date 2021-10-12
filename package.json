@@ -5,7 +5,8 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "preinstall": "git submodule update --init --remote"
+    "preinstall": "git submodule update --init --remote",
+    "postinstall": "rn-nodeify --install --hack"
   },
   "dependencies": {
     "@apollo/client": "^3.4.13",
