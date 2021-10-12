@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -28,6 +31,7 @@ import StrategyScreen from "./StrategyScreen";
 import colors from "../constants/colors";
 import SettingsScreen from "./SettingsScreen";
 import ConnectAccountScreen from "./ConnectAccountScreen";
+import VotesScreen from "./VotesScreen";
 
 const Stack = createStackNavigator();
 
@@ -233,6 +237,14 @@ export default function () {
         name={navigationConstants.CONNECT_ACCOUNT_SCREEN}
         component={ConnectAccountScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={navigationConstants.PROPOSAL_VOTES_SCREEN}
+        component={VotesScreen}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+        }}
       />
     </Stack.Navigator>
   );

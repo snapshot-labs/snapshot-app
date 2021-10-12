@@ -83,6 +83,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const space = route.params.space;
   const spaceScreenRef: any = useRef(null);
   const scrollAnim = useRef(new Animated.Value(0));
+  const scrollAnim2 = useRef(new Animated.Value(0));
   const offsetAnim = useRef(new Animated.Value(0));
   const scrollValue = useRef(0);
   const offsetValue = useRef(0);
@@ -143,6 +144,11 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     outputRange: [0, -headerHeight],
     extrapolate: "clamp",
   });
+  const bgBackground = clampedScroll.current.interpolate({
+    inputRange: [0, headerHeight],
+    outputRange: [colors.white, colors.bgBlue],
+    extrapolate: "clamp",
+  });
 
   function moveHeader(toValue: number) {
     if (headerSnap.current) {
@@ -152,7 +158,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     headerSnap.current = Animated.timing(offsetAnim.current, {
       toValue,
       duration: 350,
-      useNativeDriver: true,
+      useNativeDriver: false,
     });
 
     headerSnap.current.start();
@@ -186,7 +192,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           onMomentumScrollBegin,
           onScroll: Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollAnim.current } } }],
-            { useNativeDriver: true }
+            { useNativeDriver: false }
           ),
         },
         filter
@@ -234,8 +240,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             return <TabBarItem {...item} />;
           }}
           onTabPress={() => {
-            if (offsetValue.current - headerHeight !== 0) {
+            if (clampedScrollValue.current !== 0) {
               moveHeader(offsetValue.current - headerHeight);
+              clampedScrollValue.current = 0;
             }
           }}
         />
@@ -249,13 +256,13 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   ]);
   return (
     <View style={[common.screen, { paddingTop: insets.top }]}>
-      <View
+      <Animated.View
         style={[
           common.headerContainer,
           {
             justifyContent: "space-between",
-            backgroundColor: showTitle ? colors.bgBlue : "transparent",
-            borderBottomColor: showTitle ? colors.bgBlue : colors.borderColor,
+            backgroundColor: bgBackground,
+            borderBottomColor: showTitle ? "transparent" : colors.borderColor,
           },
         ]}
       >
@@ -281,8 +288,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               setFilter={setFilter}
               onChangeFilter={(newFilter: string) => {
                 spaceScreenRef?.current?.onChangeFilter(newFilter);
-                if (offsetValue.current - headerHeight !== 0) {
+                if (clampedScrollValue.current !== 0) {
                   moveHeader(offsetValue.current - headerHeight);
+                  clampedScrollValue.current = 0;
                 }
               }}
               iconColor={showTitle ? colors.white : colors.textColor}
@@ -296,7 +304,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             />
           )}
         </View>
-      </View>
+      </Animated.View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={sceneMap}
@@ -304,9 +312,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
         onSwipeStart={() => {
-          if (offsetValue.current - headerHeight !== 0) {
+          if (clampedScrollValue.current !== 0) {
             moveHeader(offsetValue.current - headerHeight);
-            offsetValue.current = headerHeight;
+            clampedScrollValue.current = 0;
           }
         }}
       />
