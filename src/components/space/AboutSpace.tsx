@@ -76,6 +76,9 @@ function AboutSpace({
 
   return (
     <AnimatedScrollView
+      bounces={false}
+      overScrollMode={"never"}
+      scrollEventThrottle={1}
       style={[common.screen, { paddingTop: headerHeight + 60 }]}
       {...scrollProps}
     >
@@ -234,7 +237,7 @@ function AboutSpace({
         ) : (
           <View />
         )}
-        <View style={{ width: "100%", height: 200 }} />
+        <View style={{ width: 200, height: 300 }} />
       </View>
     </AnimatedScrollView>
   );

@@ -86,7 +86,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const offsetValue = useRef(0);
   const scrollEndTimer: any = useRef(-1);
   const clampedScrollValue = useRef(0);
-  const [isInitial, setIsInitial] = useState(true);
   //@ts-ignore
   const headerSnap = useRef(Animated.CompositeAnimation);
   const clampedScroll = useRef(
@@ -103,14 +102,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
       headerHeight
     )
   );
-
-  useEffect(() => {
-    if (!isInitial) {
-      moveHeader(headerHeight);
-    }
-
-    setIsInitial(false);
-  }, [index]);
 
   useEffect(() => {
     offsetAnim.current.addListener(({ value }) => {
@@ -235,7 +226,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             return <TabBarItem {...item} />;
           }}
           onTabPress={() => {
-            moveHeader(offsetValue.current - headerHeight);
+            if (offsetValue.current - headerHeight !== 0) {
+              moveHeader(offsetValue.current - headerHeight);
+            }
           }}
         />
       </Animated.View>
@@ -280,7 +273,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               setFilter={setFilter}
               onChangeFilter={(newFilter: string) => {
                 spaceScreenRef?.current?.onChangeFilter(newFilter);
-                if (offsetValue.current - headerHeight === 0) {
+                if (offsetValue.current - headerHeight !== 0) {
                   moveHeader(offsetValue.current - headerHeight);
                 }
               }}
@@ -302,8 +295,11 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
-        onSwipeEnd={() => {
-          moveHeader(offsetValue.current - headerHeight);
+        onSwipeStart={() => {
+          if (offsetValue.current - headerHeight !== 0) {
+            moveHeader(offsetValue.current - headerHeight);
+            offsetValue.current = headerHeight;
+          }
         }}
       />
     </View>
