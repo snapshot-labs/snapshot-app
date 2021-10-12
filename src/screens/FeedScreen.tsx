@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     backgroundColor: colors.darkGray,
     height: 5,
+    top: 46,
   },
   labelStyle: {
     fontFamily: "Calibre-Medium",
@@ -277,27 +278,10 @@ function FeedScreenTabView() {
         backgroundColor: colors.white,
         shadowOpacity: 0,
         elevation: 0,
+        borderBottomColor: colors.borderColor,
+        borderBottomWidth: 1,
       }}
       inactiveColor={colors.textColor}
-      renderTabBarItem={(props) => {
-        const tabBarItemIndex = props.key === "joinedSpaces" ? 0 : 1;
-        return (
-          <View
-            style={{
-              flex: 1,
-              ...(tabBarItemIndex !== index
-                ? {
-                    borderBottomColor: colors.borderColor,
-                    borderBottomWidth: 1,
-                  }
-                : { borderBottomWidth: 1, borderBottomColor: "transparent" }),
-            }}
-            key={props.key}
-          >
-            <TabBarItem {...props} />
-          </View>
-        );
-      }}
     />
   );
 

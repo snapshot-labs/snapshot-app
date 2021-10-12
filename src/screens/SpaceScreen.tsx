@@ -27,6 +27,8 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     color: colors.textColor,
     backgroundColor: colors.darkGray,
+    height: 5,
+    top: 42,
   },
   labelStyle: {
     fontFamily: "Calibre-Medium",
@@ -222,13 +224,10 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             paddingTop: 0,
             marginTop: 16,
             height: 45,
-            shadowRadius: 0,
             elevation: 0,
-            shadowOffset: {
-              height: 0,
-              width: 0,
-            },
             zIndex: 200,
+            borderBottomColor: colors.borderColor,
+            borderBottomWidth: 1,
           }}
           inactiveColor={colors.textColor}
           renderTabBarItem={(item) => {
