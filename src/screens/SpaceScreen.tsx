@@ -86,6 +86,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const offsetValue = useRef(0);
   const scrollEndTimer: any = useRef(-1);
   const clampedScrollValue = useRef(0);
+  const [isInitial, setIsInitial] = useState(true);
   //@ts-ignore
   const headerSnap = useRef(Animated.CompositeAnimation);
   const clampedScroll = useRef(
@@ -102,6 +103,14 @@ function SpaceScreen({ route }: SpaceScreenProps) {
       headerHeight
     )
   );
+
+  useEffect(() => {
+    if (!isInitial) {
+      setShowTitle(false);
+    }
+
+    setIsInitial(false);
+  }, [index]);
 
   useEffect(() => {
     offsetAnim.current.addListener(({ value }) => {
