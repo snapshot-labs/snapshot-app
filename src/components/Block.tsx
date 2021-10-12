@@ -45,10 +45,14 @@ type BlockProps = {
   count?: number | string | undefined;
   hideHeaderBorder?: boolean;
   hideHeader?: boolean;
+  TitleComponent?: React.ReactElement;
+  TitleRightComponent?: React.ReactElement;
 };
 
 function Block({
   title,
+  TitleComponent,
+  TitleRightComponent,
   Content,
   count,
   hideHeaderBorder,
@@ -63,12 +67,14 @@ function Block({
             hideHeaderBorder ? { borderBottomWidth: 0 } : {},
           ]}
         >
+          {TitleComponent !== undefined && TitleComponent}
           {title !== undefined && <Text style={[common.h4]}>{title}</Text>}
           {count !== undefined && (
             <View style={styles.countContainer}>
               <Text style={styles.countText}>{count}</Text>
             </View>
           )}
+          {TitleRightComponent !== undefined && TitleRightComponent}
         </View>
       )}
       {Content}

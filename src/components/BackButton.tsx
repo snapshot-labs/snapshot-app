@@ -34,6 +34,8 @@ type BackButtonProps = {
   onPress?: () => void | undefined;
   titleStyle?: TextStyle;
   iconColor?: string;
+  backIcon?: string;
+  backIconSize?: number;
 };
 
 function BackButton({
@@ -42,6 +44,8 @@ function BackButton({
   onPress,
   titleStyle,
   iconColor,
+  backIcon = "long-arrow-alt-left",
+  backIconSize = 20,
 }: BackButtonProps) {
   const navigation: any = useNavigation();
   return (
@@ -56,9 +60,9 @@ function BackButton({
     >
       <View style={[styles.backButton, containerStyle ?? {}]}>
         <FontAwesome5Icon
-          name="long-arrow-alt-left"
+          name={backIcon}
           color={iconColor ? iconColor : colors.darkGray}
-          size={20}
+          size={backIconSize}
         />
         <Text style={[styles.backButtonTitle, titleStyle]}>{title ?? ""}</Text>
       </View>

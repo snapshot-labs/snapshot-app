@@ -28,6 +28,9 @@ import {
 import { setProfiles } from "../../util/profile";
 import Avatar from "../Avatar";
 import makeBlockie from "ethereum-blockies-base64";
+import common from "../../styles/common";
+import { useNavigation } from "@react-navigation/native";
+import { PROPOSAL_VOTES_SCREEN } from "../../constants/navigation";
 
 const { width } = Dimensions.get("screen");
 const contentWidth = (width - 64) / 3;
@@ -89,6 +92,7 @@ function BlockVotes({
   const { connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
+  const navigation: any = useNavigation();
   const [showAllVotes, setShowAllVotes] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [currentAuthorIpfsHash, setCurrentAuthorIpfsHash] = useState("");
@@ -112,7 +116,54 @@ function BlockVotes({
   return (
     <Block
       count={resultsLoaded ? votes.length : undefined}
-      title={i18n.t("votes")}
+      TitleComponent={
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(PROPOSAL_VOTES_SCREEN, {
+              votes,
+              space,
+              proposal,
+            });
+          }}
+        >
+          <Text style={common.h4}>{i18n.t("votes")}</Text>
+        </TouchableOpacity>
+      }
+      TitleRightComponent={
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(PROPOSAL_VOTES_SCREEN, {
+              votes,
+              space,
+              proposal,
+            });
+          }}
+        >
+          <View
+            style={{ flexDirection: "row", marginLeft: 8, marginBottom: 6 }}
+          >
+            {votes.slice(0, 5).map((vote, i) => {
+              const blockie = makeBlockie(vote.voter);
+              return (
+                <View
+                  style={{
+                    position: "relative",
+                    left: i === 0 ? 0 : i * -10,
+                    zIndex: 10 - i,
+                  }}
+                >
+                  <Avatar
+                    symbolIndex="space"
+                    size={26}
+                    space={space}
+                    initialBlockie={blockie}
+                  />
+                </View>
+              );
+            })}
+          </View>
+        </TouchableOpacity>
+      }
       hideHeaderBorder={votes.length === 0}
       Content={
         <View>
@@ -129,7 +180,8 @@ function BlockVotes({
                     key={vote.id}
                     style={[
                       styles.row,
-                      showAllVotes && i === visibleVotes.length - 1
+                      (votes.length <= 10 || showAllVotes) &&
+                      i === visibleVotes.length - 1
                         ? { borderBottomWidth: 0 }
                         : {},
                     ]}

@@ -122,7 +122,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       </View>
       <ScrollView scrollEnabled={scrollEnabled}>
         <View style={{ paddingHorizontal: 16 }}>
-          <Text style={[common.h1, { marginBottom: 8, marginTop: 8 }]}>
+          <Text style={[common.h1, { marginBottom: 8, marginTop: 16 }]}>
             {proposal.title}
           </Text>
           <View style={{ alignSelf: "flex-start", marginBottom: 24 }}>
