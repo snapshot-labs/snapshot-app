@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Platform } from "react-native";
 import colors from "../constants/colors";
 import common from "../styles/common";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   block: {
     borderWidth: 1,
     borderColor: colors.borderColor,
