@@ -4,13 +4,14 @@ import iconfont from "../constants/iconfont.json";
 import colors from "../constants/colors";
 
 const CustomIcon = createIconSet(
+  //@ts-ignore
   iconfont,
   "IconFont",
   require("../styles/iconfont.ttf")
 );
 
 type IconFontProps = {
-  name: string;
+  name: string | any;
   size: number;
   color: string;
 };

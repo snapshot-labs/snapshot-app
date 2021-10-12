@@ -7,6 +7,7 @@ import { Space } from "../types/explore";
 import Avatar from "./Avatar";
 import colors from "../constants/colors";
 import { SPACE_SCREEN } from "../constants/navigation";
+import { n } from "../util/miscUtils";
 
 const styles = StyleSheet.create({
   spacePreviewContainer: {
@@ -52,7 +53,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
           <Text style={styles.spacePreviewTitle}>{get(space, "name")}</Text>
           {hasMembers ? (
             <Text style={styles.spacePreviewFollowerCount}>
-              {get(space, "followers")} {i18n.t("members")}
+              {n(get(space, "followers", 0))} {i18n.t("members")}
             </Text>
           ) : (
             <Text />
