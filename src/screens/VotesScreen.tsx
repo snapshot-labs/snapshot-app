@@ -132,9 +132,9 @@ function VotesScreen({ route }: VotesScreenProps) {
   const insets = useSafeAreaInsets();
   const layout = useWindowDimensions();
   const space = route.params.space;
-  const proposal = route.params.proposal;
+  const proposal: any = route.params.proposal;
   const votes: any[] = route.params.votes;
-  const choices = route.params?.proposal?.choices ?? [];
+  const choices = proposal.choices ?? [];
   const { profiles } = useExploreState();
   const [index, setIndex] = React.useState(0);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
