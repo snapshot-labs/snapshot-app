@@ -141,6 +141,7 @@ function SpaceProposals({
       <AnimatedFlatList
         scrollEventThrottle={1}
         bounces={false}
+        overScrollMode={"never"}
         contentContainerStyle={{ paddingTop: headerHeight }}
         data={proposals}
         keyExtractor={(item: Proposal, i) => item.id}
