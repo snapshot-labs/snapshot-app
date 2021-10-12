@@ -130,9 +130,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           </View>
           <MarkdownBody body={proposal.body} />
         </View>
-        <BlockInformation proposal={proposal} space={space} />
-        <View style={{ width: 10, height: 10 }} />
-
+        <View style={{ width: 10, height: 30 }} />
         {proposal?.state === "active" && (
           <>
             <BlockCastVote
@@ -158,7 +156,9 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           proposal={proposal}
           space={space}
         />
-        <View style={{ width: 10, height: 200 }} />
+        <View style={{ width: 10, height: 10 }} />
+        <BlockInformation proposal={proposal} space={space} />
+        <View style={{ width: 10, height: 75 }} />
       </ScrollView>
     </View>
   );

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  TouchableHighlight,
   TouchableOpacity,
   Linking,
   ScrollView,
@@ -45,6 +46,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     flex: 1,
   },
+  connectedEns: {
+    color: colors.textColor,
+    fontFamily: "Calibre-Medium",
+    fontSize: 24,
+    marginLeft: 8,
+  },
   ens: {
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
@@ -52,6 +59,12 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   connectedAddress: {
+    color: colors.textColor,
+    fontFamily: "Calibre-Medium",
+    fontSize: 24,
+    marginLeft: 8,
+  },
+  address: {
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
     fontSize: 18,
@@ -96,11 +109,17 @@ function MoreScreen() {
 
   return (
     <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <ScrollView style={{ paddingHorizontal: 16, marginTop: 24, flex: 1 }}>
-        <Text style={[common.headerTitle, { marginBottom: 16 }]}>
+      <ScrollView style={{ marginTop: 24, flex: 1 }}>
+        <Text
+          style={[
+            common.headerTitle,
+            { marginBottom: 16, paddingHorizontal: 16 },
+          ]}
+        >
           {i18n.t("account")}
         </Text>
-        <TouchableOpacity
+        <TouchableHighlight
+          underlayColor={colors.highlightColor}
           onPress={() => {
             const options = [
               i18n.t("viewWallet"),
@@ -167,48 +186,54 @@ function MoreScreen() {
               }
             );
           }}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: width - 32,
-            marginBottom: 16,
-          }}
         >
-          <Avatar
-            size={40}
-            initialBlockie={connectedAddressBlockie}
-            key={connectedAddress}
-          />
-          <View style={styles.connectedAddressContainer}>
-            <View style={{ justifyContent: "center" }}>
-              {ens !== undefined && ens !== "" && (
-                <Text style={styles.ens}>{ens}</Text>
-              )}
-              <Text
-                style={styles.connectedAddress}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {shorten(connectedAddress ?? "")}
-              </Text>
-            </View>
-            <FontAwesome5Icon
-              name="check"
-              style={{
-                marginLeft: "auto",
-              }}
-              size={16}
-              color={colors.textColor}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: colors.borderColor,
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+            }}
+          >
+            <Avatar
+              size={60}
+              initialBlockie={connectedAddressBlockie}
+              key={connectedAddress}
             />
+            <View style={styles.connectedAddressContainer}>
+              <View style={{ justifyContent: "center" }}>
+                {ens !== undefined && ens !== "" && (
+                  <Text style={styles.connectedEns}>{ens}</Text>
+                )}
+                <Text
+                  style={styles.address}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {shorten(connectedAddress ?? "")}
+                </Text>
+              </View>
+              <FontAwesome5Icon
+                name="check"
+                style={{
+                  marginLeft: "auto",
+                }}
+                size={16}
+                color={colors.textColor}
+              />
+            </View>
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
         {savedWalletKeys.map((address: string) => {
           const blockie = makeBlockie(address);
           const profile = profiles[address];
           const ens = get(profile, "ens", undefined);
           const walletName = get(savedWallets, `${address}.name`);
           return (
-            <TouchableOpacity
+            <TouchableHighlight
+              underlayColor={colors.highlightColor}
               key={address}
               onPress={() => {
                 const options = [
@@ -254,29 +279,34 @@ function MoreScreen() {
                   }
                 );
               }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                width: width - 32,
-                marginBottom: 16,
-              }}
             >
-              <Avatar size={40} initialBlockie={blockie} />
-              <View style={styles.connectedAddressContainer}>
-                <View>
-                  {ens !== undefined && ens !== "" && (
-                    <Text style={styles.ens}>{ens}</Text>
-                  )}
-                  <Text
-                    style={styles.connectedAddress}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {shorten(address ?? "")}
-                  </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.borderColor,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                }}
+              >
+                <Avatar size={40} initialBlockie={blockie} />
+                <View style={styles.connectedAddressContainer}>
+                  <View>
+                    {ens !== undefined && ens !== "" && (
+                      <Text style={styles.ens}>{ens}</Text>
+                    )}
+                    <Text
+                      style={styles.address}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {shorten(address ?? "")}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
           );
         })}
         <TouchableOpacity
@@ -284,7 +314,7 @@ function MoreScreen() {
             navigation.navigate(CONNECT_ACCOUNT_SCREEN);
           }}
         >
-          <View style={{ marginTop: 24 }}>
+          <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
             <Text style={common.h4}>{i18n.t("addWallet")}</Text>
           </View>
         </TouchableOpacity>
