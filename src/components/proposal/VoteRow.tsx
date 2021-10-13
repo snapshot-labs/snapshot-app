@@ -8,11 +8,13 @@ import {
 } from "react-native";
 import Avatar from "../Avatar";
 import { getChoiceString, n, shorten } from "../../util/miscUtils";
+import i18n from "i18n-js";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import colors from "../../constants/colors";
 import makeBlockie from "ethereum-blockies-base64";
 import { Space } from "../../types/explore";
 import { Proposal } from "../../types/proposal";
+import { useAuthState } from "../../context/authContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -59,9 +61,13 @@ function VoteRow({
   setCurrentAuthorIpfsHash,
   setShowReceiptModal,
 }: VoteRowProps) {
+  const { connectedAddress } = useAuthState();
   const voterProfile = profiles[vote.voter];
-  const voterName =
+  let voterName =
     voterProfile && voterProfile.ens ? voterProfile.ens : shorten(vote.voter);
+  if (connectedAddress === vote.voter) {
+    voterName = i18n.t("you");
+  }
   const blockie = makeBlockie(vote.voter);
   return (
     <View key={vote.id} style={[styles.row]}>

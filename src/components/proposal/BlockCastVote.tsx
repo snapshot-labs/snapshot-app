@@ -21,6 +21,7 @@ type BlockCastVoteProps = {
   resultsLoaded: boolean;
   setScrollEnabled: (scrollEnabled: boolean) => void;
   space: Space;
+  getProposal: () => void;
 };
 
 async function loadPower(
@@ -41,6 +42,7 @@ function BlockCastVote({
   resultsLoaded,
   setScrollEnabled,
   space,
+  getProposal,
 }: BlockCastVoteProps) {
   const { connectedAddress } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
@@ -118,6 +120,7 @@ function BlockCastVote({
           selectedChoices={selectedChoices}
           space={space}
           totalScore={totalScore}
+          getProposal={getProposal}
         />
       </>
     );
