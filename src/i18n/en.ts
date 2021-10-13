@@ -99,4 +99,5 @@ export default {
   removeWallet: "Remove wallet",
   viewWallet: "View wallet",
   unableToFindAssociatedAddress: "Unable to find associated address.",
+  you: "You",
 };

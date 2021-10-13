@@ -86,6 +86,7 @@ type VoteConfirmModalProps = {
   selectedChoices: any;
   space: any;
   totalScore: number;
+  getProposal: () => void;
 };
 
 function VoteConfirmModal({
@@ -95,6 +96,7 @@ function VoteConfirmModal({
   selectedChoices,
   space,
   totalScore,
+  getProposal,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
   const { aliasWallet, connectedAddress } = useAuthState();
@@ -205,17 +207,26 @@ function VoteConfirmModal({
 
           <TouchableOpacity
             onPress={() => {
-              client.broadcast(
-                aliasWallet,
-                aliasWallet.address,
-                space.id,
-                "vote",
-                {
-                  proposal: proposal.id,
-                  choice: selectedChoices,
-                  metadata: {},
+              connector.send = async (type, params) => {
+                return await connector.signPersonalMessage(params);
+              };
+
+              try {
+                const sign = client.broadcast(
+                  connector,
+                  connectedAddress,
+                  space.id,
+                  "vote",
+                  {
+                    proposal: proposal.id,
+                    choice: selectedChoices,
+                    metadata: {},
+                  }
+                );
+                if (sign) {
+                  getProposal();
                 }
-              );
+              } catch (e) {}
             }}
           >
             <View

@@ -138,6 +138,9 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               resultsLoaded={resultsLoaded}
               setScrollEnabled={setScrollEnabled}
               space={space}
+              getProposal={() => {
+                getProposal(proposal, setProposal, setLoaded, setVotes);
+              }}
             />
             <View style={{ width: 10, height: 10 }} />
           </>
