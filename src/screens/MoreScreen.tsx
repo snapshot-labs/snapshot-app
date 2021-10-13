@@ -10,7 +10,7 @@ import {
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   CONNECT_ACCOUNT_SCREEN,
   LANDING_SCREEN,
@@ -25,6 +25,8 @@ import {
 import { useExploreDispatch, useExploreState } from "../context/exploreContext";
 import { setProfiles } from "../util/profile";
 import ConnectedWallet from "../components/ConnectedWallet";
+import ActiveAccount from "../components/ActiveAccount";
+import tailwind from "tailwind-rn";
 
 const { width } = Dimensions.get("screen");
 
@@ -43,7 +45,6 @@ function MoreScreen() {
   const exploreDispatch = useExploreDispatch();
   const connector = useWalletConnect();
   const navigation: any = useNavigation();
-  const insets = useSafeAreaInsets();
   const authDispatch = useAuthDispatch();
   const savedWalletKeys = Object.keys(savedWallets).filter(
     (address: string) => address !== connectedAddress
@@ -61,7 +62,7 @@ function MoreScreen() {
   }, [connectedAddress]);
 
   return (
-    <View style={[{ paddingTop: insets.top }, common.screen]}>
+    <SafeAreaView style={tailwind("h-full bg-white")}>
       <ScrollView style={{ marginTop: 24, flex: 1 }}>
         <Text
           style={[
@@ -71,7 +72,7 @@ function MoreScreen() {
         >
           {i18n.t("account")}
         </Text>
-        <ConnectedWallet address={connectedAddress} isConnected />
+        <ActiveAccount address={connectedAddress} />
         {savedWalletKeys.map((address: string) => {
           return (
             <ConnectedWallet
@@ -86,7 +87,7 @@ function MoreScreen() {
             navigation.navigate(CONNECT_ACCOUNT_SCREEN);
           }}
         >
-          <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
+          <View style={tailwind("mt-6 pl-4")}>
             <Text style={common.h4}>{i18n.t("addWallet")}</Text>
           </View>
         </TouchableOpacity>
@@ -108,7 +109,7 @@ function MoreScreen() {
           title={i18n.t("logout")}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 30,
+    backgroundColor: colors.black,
   },
   successContainer: { backgroundColor: colors.bgGreen },
   errorContainer: { backgroundColor: colors.red },

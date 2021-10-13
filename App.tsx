@@ -25,6 +25,11 @@ async function _loadFontsAsync(setFontsLoaded: (fontsLoaded: boolean) => void) {
 }
 
 const toastConfig = {
+  default: ({ text1 }: { text1: string }) => (
+    <View style={styles.container}>
+      <Text style={styles.text}>{text1}</Text>
+    </View>
+  ),
   customSuccess: ({ text1 }: { text1: string }) => (
     <View style={[styles.container, styles.successContainer]}>
       <Text style={styles.text}>{text1}</Text>
