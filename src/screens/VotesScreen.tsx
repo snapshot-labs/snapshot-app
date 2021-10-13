@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     backgroundColor: colors.darkGray,
     height: 5,
-    top: 42,
+    top: Platform.OS === "ios" ? 42 : 43,
   },
   labelStyle: {
     fontFamily: "Calibre-Medium",
@@ -198,41 +198,52 @@ function VotesScreen({ route }: VotesScreenProps) {
             <View
               style={{
                 width: "100%",
-                borderBottomColor: colors.borderColor,
-                borderBottomWidth: 1,
               }}
             >
               <ScrollViewComponent {...viewProps}>
-                <TabBar
-                  {...props}
-                  labelStyle={styles.labelStyle}
-                  indicatorStyle={styles.indicatorStyle}
-                  activeColor={colors.textColor}
-                  style={{
-                    shadowColor: "transparent",
-                    borderTopWidth: 0,
-                    shadowOpacity: 0,
-                    backgroundColor: colors.white,
-                    paddingTop: 0,
-                    marginTop: 16,
-                    height: 45,
-                    elevation: 0,
-                    zIndex: 200,
-                  }}
-                  tabStyle={tabStyle}
-                  inactiveColor={colors.textColor}
-                  renderLabel={(props) => {
-                    return (
-                      <Text
-                        style={styles.labelStyle}
-                        ellipsizeMode="tail"
-                        numberOfLines={1}
-                      >
-                        {props.route.title}
-                      </Text>
-                    );
-                  }}
-                />
+                <View style={{ paddingBottom: 10 }}>
+                  <View
+                    style={{
+                      width: "100%",
+                      borderBottomColor: colors.borderColor,
+                      borderBottomWidth: 1,
+                    }}
+                  >
+                    <TabBar
+                      {...props}
+                      labelStyle={styles.labelStyle}
+                      indicatorStyle={[
+                        styles.indicatorStyle,
+                        tabWidth <= 80 ? { top: 43 } : {},
+                      ]}
+                      activeColor={colors.textColor}
+                      style={{
+                        shadowColor: "transparent",
+                        borderTopWidth: 0,
+                        shadowOpacity: 0,
+                        backgroundColor: colors.white,
+                        paddingTop: 0,
+                        marginTop: 16,
+                        height: 45,
+                        elevation: 0,
+                        zIndex: 200,
+                      }}
+                      tabStyle={tabStyle}
+                      inactiveColor={colors.textColor}
+                      renderLabel={(props) => {
+                        return (
+                          <Text
+                            style={styles.labelStyle}
+                            ellipsizeMode="tail"
+                            numberOfLines={1}
+                          >
+                            {props.route.title}
+                          </Text>
+                        );
+                      }}
+                    />
+                  </View>
+                </View>
               </ScrollViewComponent>
             </View>
           );

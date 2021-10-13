@@ -11,15 +11,14 @@ import {
 import Modal from "react-native-modal";
 import i18n from "i18n-js";
 import common from "../../styles/common";
+import Toast from "react-native-toast-message";
 import colors from "../../constants/colors";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import Button, { styles as buttonStyles } from "../Button";
+import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
-import signClient from "../../util/signClient";
-import { useAuthDispatch, useAuthState } from "../../context/authContext";
+import { useAuthState } from "../../context/authContext";
 import client from "../../util/snapshotClient";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("screen");
 
