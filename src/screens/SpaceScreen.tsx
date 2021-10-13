@@ -4,10 +4,10 @@ import {
   StyleSheet,
   useWindowDimensions,
   View,
-  Text,
-  TouchableOpacity,
   Platform,
+  Dimensions,
 } from "react-native";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import colors from "../constants/colors";
@@ -15,12 +15,15 @@ import common from "../styles/common";
 import { useAuthState } from "../context/authContext";
 import ProposalFilters from "../components/proposal/ProposalFilters";
 import BackButton from "../components/BackButton";
-import { SceneMap, TabBar, TabBarItem, TabView } from "react-native-tab-view";
+import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AboutSpace from "../components/space/AboutSpace";
 import SpaceHeader from "../components/space/SpaceHeader";
 import SpaceProposals from "../components/space/SpaceProposals";
+import TabBarItem from "../components/tabBar/TabBarItem";
 import { Space } from "../types/explore";
 import proposal from "../constants/proposal";
+
+const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   indicatorStyle: {
@@ -73,6 +76,18 @@ type SpaceScreenProps = {
   };
 };
 
+function TabCustomTouchableNativeFeedback({ children, ...props }: any) {
+  return (
+    <TouchableNativeFeedback
+      {...props}
+      background={TouchableNativeFeedback.Ripple("rgba(0, 0, 0, .32)", false)}
+      style={[{ width: width / 2 }].concat(props.style)}
+    >
+      {children}
+    </TouchableNativeFeedback>
+  );
+}
+
 function SpaceScreen({ route }: SpaceScreenProps) {
   const [index, setIndex] = React.useState(0);
   const layout = useWindowDimensions();
@@ -83,7 +98,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const space = route.params.space;
   const spaceScreenRef: any = useRef(null);
   const scrollAnim = useRef(new Animated.Value(0));
-  const scrollAnim2 = useRef(new Animated.Value(0));
   const offsetAnim = useRef(new Animated.Value(0));
   const scrollValue = useRef(0);
   const offsetValue = useRef(0);
@@ -208,7 +222,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             position: "absolute",
             top: 0,
             left: 0,
-            zIndex: 100,
+            zIndex: 1,
             height: headerHeight,
             backgroundColor: colors.white,
             width: "100%",
@@ -228,7 +242,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             shadowOpacity: 0,
             backgroundColor: colors.white,
             paddingTop: 0,
-            marginTop: 16,
             height: 45,
             elevation: 0,
             zIndex: 200,
@@ -237,8 +250,18 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           }}
           inactiveColor={colors.textColor}
           renderTabBarItem={(item) => {
-            return <TabBarItem {...item} />;
+            return (
+              <TabBarItem
+                {...item}
+                PressableComponent={
+                  Platform.OS === "android"
+                    ? TabCustomTouchableNativeFeedback
+                    : undefined
+                }
+              />
+            );
           }}
+          tabStyle={{ zIndex: 300 }}
           onTabPress={() => {
             if (clampedScrollValue.current !== 0) {
               moveHeader(offsetValue.current - headerHeight);

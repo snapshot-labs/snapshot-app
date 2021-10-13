@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from "react";
 import {
-  FlatList,
   StyleSheet,
   useWindowDimensions,
   View,
   Text,
   Platform,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import colors from "../constants/colors";
 import common from "../styles/common";
 import i18n from "i18n-js";
-import VoteRow from "../components/proposal/VoteRow";
 import ReceiptModal from "../components/proposal/ReceiptModal";
 import { useExploreState } from "../context/exploreContext";
 import BackButton from "../components/BackButton";
@@ -19,6 +19,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthState } from "../context/authContext";
 import { Space } from "../types/explore";
 import { Proposal } from "../types/proposal";
+import VoteList from "../components/proposal/VotesList";
+
+const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   indicatorStyle: {
@@ -51,33 +54,22 @@ const renderScene = (
   profiles: any,
   setShowReceiptModal: (showModal: boolean) => void,
   setCurrentAuthorIpfsHash: (authorHash: string) => void,
-  votesMap: any
+  votesMap: any,
+  proposal: Proposal
 ) => {
   const sceneMap = routes.reduce((allRoutes, route) => {
     const allData =
       route.key === allVotesKey ? votes : votesMap[route.key] ?? [];
     allRoutes[route.key] = () => (
-      <FlatList
-        data={allData}
-        renderItem={(data) => (
-          <VoteRow
-            vote={data.item}
-            space={space}
-            setShowReceiptModal={setShowReceiptModal}
-            setCurrentAuthorIpfsHash={setCurrentAuthorIpfsHash}
-            profiles={profiles}
-          />
-        )}
-        ListHeaderComponent={
-          route.key !== allVotesKey ? (
-            <View style={{ padding: 16 }}>
-              <Text style={common.h3}>{route.title}</Text>
-            </View>
-          ) : (
-            <View />
-          )
-        }
-        ListFooterComponent={<View style={{ width: 100, height: 75 }} />}
+      <VoteList
+        allData={allData}
+        setShowReceiptModal={setShowReceiptModal}
+        setCurrentAuthorIpfsHash={setCurrentAuthorIpfsHash}
+        space={space}
+        profiles={profiles}
+        proposal={proposal}
+        route={route}
+        allVotesKey={allVotesKey}
       />
     );
 
@@ -139,13 +131,18 @@ function VotesScreen({ route }: VotesScreenProps) {
   const [index, setIndex] = React.useState(0);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [currentAuthorIpfsHash, setCurrentAuthorIpfsHash] = useState("");
+  const allVotes = [{ key: allVotesKey, title: i18n.t("all") }];
   const [routes] = React.useState(
-    [{ key: allVotesKey, title: i18n.t("all") }].concat(
-      choices.map((choice: string, i: number) => ({
-        key: `${i + 1}`,
-        title: choice,
-      }))
-    )
+    proposal.type === "quadratic" ||
+      proposal.type === "ranked-choice" ||
+      proposal.type === "weighted"
+      ? allVotes
+      : allVotes.concat(
+          choices.map((choice: string, i: number) => ({
+            key: `${i + 1}`,
+            title: choice,
+          }))
+        )
   );
   const votesMap = parseVotes(votes, connectedAddress ?? "");
 
@@ -158,7 +155,8 @@ function VotesScreen({ route }: VotesScreenProps) {
         profiles,
         setShowReceiptModal,
         setCurrentAuthorIpfsHash,
-        votesMap
+        votesMap,
+        proposal
       ),
     [route]
   );
@@ -185,38 +183,58 @@ function VotesScreen({ route }: VotesScreenProps) {
           height: 50,
         }}
         renderTabBar={(props) => {
+          const tabWidth = width / (choices.length + 1);
+          const tabStyle: { width: number } = {
+            width: tabWidth,
+          };
+          let viewProps = {};
+          let ScrollViewComponent = View;
+          if (tabWidth <= 80) {
+            tabStyle["width"] = 80;
+            ScrollViewComponent = ScrollView;
+            viewProps = { horizontal: true };
+          }
           return (
-            <TabBar
-              {...props}
-              labelStyle={styles.labelStyle}
-              indicatorStyle={styles.indicatorStyle}
-              activeColor={colors.textColor}
+            <View
               style={{
-                shadowColor: "transparent",
-                borderTopWidth: 0,
-                shadowOpacity: 0,
-                backgroundColor: colors.white,
-                paddingTop: 0,
-                marginTop: 16,
-                height: 45,
-                elevation: 0,
-                zIndex: 200,
+                width: "100%",
                 borderBottomColor: colors.borderColor,
                 borderBottomWidth: 1,
               }}
-              inactiveColor={colors.textColor}
-              renderLabel={(props) => {
-                return (
-                  <Text
-                    style={styles.labelStyle}
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                  >
-                    {props.route.title}
-                  </Text>
-                );
-              }}
-            />
+            >
+              <ScrollViewComponent {...viewProps}>
+                <TabBar
+                  {...props}
+                  labelStyle={styles.labelStyle}
+                  indicatorStyle={styles.indicatorStyle}
+                  activeColor={colors.textColor}
+                  style={{
+                    shadowColor: "transparent",
+                    borderTopWidth: 0,
+                    shadowOpacity: 0,
+                    backgroundColor: colors.white,
+                    paddingTop: 0,
+                    marginTop: 16,
+                    height: 45,
+                    elevation: 0,
+                    zIndex: 200,
+                  }}
+                  tabStyle={tabStyle}
+                  inactiveColor={colors.textColor}
+                  renderLabel={(props) => {
+                    return (
+                      <Text
+                        style={styles.labelStyle}
+                        ellipsizeMode="tail"
+                        numberOfLines={1}
+                      >
+                        {props.route.title}
+                      </Text>
+                    );
+                  }}
+                />
+              </ScrollViewComponent>
+            </View>
           );
         }}
       />

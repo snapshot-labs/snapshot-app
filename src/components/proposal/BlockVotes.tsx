@@ -97,13 +97,9 @@ function BlockVotes({
           {resultsLoaded ? (
             <>
               <Text style={common.h4}>{i18n.t("votes")}</Text>
-              {resultsLoaded ? (
-                <View style={blockStyles.countContainer}>
-                  <Text style={blockStyles.countText}>{votes.length}</Text>
-                </View>
-              ) : (
-                <View />
-              )}
+              <View style={blockStyles.countContainer}>
+                <Text style={blockStyles.countText}>{votes.length}</Text>
+              </View>
               <View
                 style={{ flexDirection: "row", marginLeft: 8, marginBottom: 6 }}
               >
@@ -130,10 +126,11 @@ function BlockVotes({
             </>
           ) : (
             <Placeholder
-              style={[
-                styles.row,
-                { justifyContent: "center", alignItems: "center" },
-              ]}
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                borderBottomWidth: 0,
+              }}
               Animation={Fade}
             >
               <PlaceholderLine width={100} />

@@ -100,4 +100,6 @@ export default {
   viewWallet: "View wallet",
   unableToFindAssociatedAddress: "Unable to find associated address.",
   you: "You",
+  yourVoteIsIn: "Your vote is in!",
+  unableToCastVote: "Unable to cast vote",
 };

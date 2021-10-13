@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { View, Text } from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
-import { useEffect } from "react";
 import {
   useFonts,
   SpaceMono_700Bold,
   SpaceMono_400Regular,
 } from "@expo-google-fonts/space-mono";
+import Toast from "react-native-toast-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "./src/context/authContext";
 import AppWrapper from "./AppWrapper";
+import styles from "./src/styles/toast";
 import "./src/i18n";
 
 let customFonts = {
@@ -21,6 +23,19 @@ async function _loadFontsAsync(setFontsLoaded: (fontsLoaded: boolean) => void) {
   await Font.loadAsync(customFonts);
   setFontsLoaded(true);
 }
+
+const toastConfig = {
+  customSuccess: ({ text1 }: { text1: string }) => (
+    <View style={[styles.container, styles.successContainer]}>
+      <Text style={styles.text}>{text1}</Text>
+    </View>
+  ),
+  customError: ({ text1 }: { text1: string }) => (
+    <View style={[styles.container, styles.errorContainer]}>
+      <Text style={styles.text}>{text1}</Text>
+    </View>
+  ),
+};
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
@@ -39,6 +54,7 @@ export default function App() {
         <AuthProvider>
           <AppWrapper />
         </AuthProvider>
+        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaProvider>
     );
   }

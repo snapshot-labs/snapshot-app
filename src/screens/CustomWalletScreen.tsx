@@ -28,7 +28,12 @@ function CustomWalletScreen() {
       <Text style={[common.subTitle, { marginTop: 24, paddingLeft: 16 }]}>
         {i18n.t("enterWalletAddress")}
       </Text>
-      <Input value={address} onChangeText={(text) => setAddress(text)} />
+      <Input
+        value={address}
+        onChangeText={(text) => setAddress(text)}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
       <Text
         style={{
           fontFamily: "Calibre-Medium",
@@ -42,7 +47,7 @@ function CustomWalletScreen() {
         <Button
           onPress={async () => {
             setError("");
-            if (address.includes("eth")) {
+            if (address.toLowerCase().includes("eth")) {
               const resolveName = await ethers
                 .getDefaultProvider()
                 .resolveName(address);
