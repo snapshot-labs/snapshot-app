@@ -8120,6 +8120,13 @@ react-native-tcp@^3.3.2:
     process "^0.11.9"
     util "^0.10.3"
 
+react-native-toast-message@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-toast-message/-/react-native-toast-message-1.6.0.tgz#863466ff78429902c7182bc08dd8d879476c0a3b"
+  integrity sha512-EDXSGyuhRdy5/S4bDlfJ/fkKXM7Gxz6OTx0obBS5kyGq+ci8rvrrOVJkYhgYyjdppYdzCMIvNuIxkUkCjk80fw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-udp@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/react-native-udp/-/react-native-udp-2.7.0.tgz#d04c5100fcbff343f8a2bf35a3025743d8960f93"

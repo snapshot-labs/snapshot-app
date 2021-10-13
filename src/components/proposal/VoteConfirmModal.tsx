@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import signClient from "../../util/signClient";
 import { useAuthDispatch, useAuthState } from "../../context/authContext";
 import client from "../../util/snapshotClient";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("screen");
 
@@ -99,9 +100,10 @@ function VoteConfirmModal({
   getProposal,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
-  const { aliasWallet, connectedAddress } = useAuthState();
-  const authDispatch = useAuthDispatch();
+  const { connectedAddress } = useAuthState();
   const connector = useWalletConnect();
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <Modal
       isVisible={isVisible}
@@ -206,27 +208,54 @@ function VoteConfirmModal({
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
+              if (loading) return;
+
+              setLoading(true);
+
               connector.send = async (type, params) => {
                 return await connector.signPersonalMessage(params);
               };
 
+              let formattedSelectedChoices = selectedChoices;
+
+              if (
+                proposal.type === "single-choice" ||
+                proposal.type === "approval"
+              ) {
+                formattedSelectedChoices = selectedChoices[0];
+              }
+
               try {
-                const sign = client.broadcast(
+                const sign = await client.broadcast(
                   connector,
                   connectedAddress,
                   space.id,
                   "vote",
                   {
                     proposal: proposal.id,
-                    choice: selectedChoices,
+                    choice: formattedSelectedChoices,
                     metadata: {},
                   }
                 );
                 if (sign) {
+                  Toast.show({
+                    type: "customSuccess",
+                    text1: i18n.t("yourVoteIsIn"),
+                  });
+
                   getProposal();
+                  onClose();
                 }
-              } catch (e) {}
+              } catch (e) {
+                console.log(e);
+                Toast.show({
+                  type: "customError",
+                  text1: i18n.t("unableToCastVote"),
+                });
+              }
+
+              setLoading(false);
             }}
           >
             <View
@@ -235,11 +264,15 @@ function VoteConfirmModal({
                 {
                   width: buttonWidth,
                   marginLeft: 16,
-                  opacity: totalScore === 0 ? 0.3 : 1,
+                  opacity: loading || totalScore === 0 ? 0.3 : 1,
                 },
               ]}
             >
-              <Text style={[buttonStyles.buttonTitle]}>{i18n.t("vote")}</Text>
+              {loading ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <Text style={[buttonStyles.buttonTitle]}>{i18n.t("vote")}</Text>
+              )}
             </View>
           </TouchableOpacity>
         </View>

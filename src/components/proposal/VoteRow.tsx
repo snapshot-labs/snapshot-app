@@ -3,6 +3,7 @@ import {
   Dimensions,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,6 +19,9 @@ import { useAuthState } from "../../context/authContext";
 
 const { width } = Dimensions.get("screen");
 
+const contentWidth3 = (width - 64) / 3;
+const contentWidth2 = width / 2 - 60;
+
 const styles = StyleSheet.create({
   row: {
     paddingHorizontal: 16,
@@ -31,7 +35,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
-    width: width / 2 - 60,
   },
   seeAll: {
     paddingHorizontal: 16,
@@ -52,6 +55,7 @@ type VoteRowProps = {
   space: Space;
   setCurrentAuthorIpfsHash: (ipfsHash: string) => void;
   setShowReceiptModal: (showModal: boolean) => void;
+  proposal: Proposal;
 };
 
 function VoteRow({
@@ -60,6 +64,7 @@ function VoteRow({
   space,
   setCurrentAuthorIpfsHash,
   setShowReceiptModal,
+  proposal,
 }: VoteRowProps) {
   const { connectedAddress } = useAuthState();
   const voterProfile = profiles[vote.voter];
@@ -69,52 +74,75 @@ function VoteRow({
     voterName = i18n.t("you");
   }
   const blockie = makeBlockie(vote.voter);
+  const isQuadraticOrRankedChoice =
+    proposal.type === "quadratic" ||
+    proposal.type === "ranked-choice" ||
+    proposal.type === "weighted";
+
   return (
-    <View key={vote.id} style={[styles.row]}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Avatar
-          symbolIndex="space"
-          size={20}
-          space={space}
-          initialBlockie={blockie}
-        />
-        <Text
-          style={[styles.rowText, { marginLeft: 6 }]}
-          ellipsizeMode="tail"
-          numberOfLines={1}
-        >
-          {voterName}
-        </Text>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <Text
-          style={[
-            styles.rowText,
-            {
-              textAlign: "right",
-              marginRight: 8,
-            },
-          ]}
-          ellipsizeMode="tail"
-          numberOfLines={1}
-        >
-          {n(vote.balance)} {space.symbol}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            setCurrentAuthorIpfsHash(vote.id);
-            setShowReceiptModal(true);
-          }}
-        >
-          <FontAwesome5Icon
-            name="signature"
-            color={colors.darkGray}
-            size={16}
+    <TouchableHighlight
+      onPress={() => {
+        setCurrentAuthorIpfsHash(vote.id);
+        setShowReceiptModal(true);
+      }}
+      underlayColor={colors.highlightColor}
+    >
+      <View key={vote.id} style={[styles.row]}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Avatar
+            symbolIndex="space"
+            size={20}
+            space={space}
+            initialBlockie={blockie}
           />
-        </TouchableOpacity>
+          <Text
+            style={[
+              styles.rowText,
+              {
+                marginLeft: 6,
+                width: isQuadraticOrRankedChoice
+                  ? contentWidth3
+                  : contentWidth2,
+              },
+            ]}
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
+            {voterName}
+          </Text>
+        </View>
+        {isQuadraticOrRankedChoice && (
+          <Text
+            style={[
+              styles.rowText,
+              { textAlign: "center", width: contentWidth3 },
+            ]}
+            ellipsizeMode="clip"
+          >
+            {shorten(getChoiceString(proposal, vote.choice), 24)}
+          </Text>
+        )}
+        <View style={{ flexDirection: "row" }}>
+          <Text
+            style={[
+              styles.rowText,
+              {
+                textAlign: "right",
+                marginRight: 8,
+                width: isQuadraticOrRankedChoice
+                  ? contentWidth3
+                  : contentWidth2,
+              },
+            ]}
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
+            {n(vote.balance)} {space.symbol}
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableHighlight>
   );
 }
 
-export default VoteRow;
+export default React.memo(VoteRow);
