@@ -111,6 +111,7 @@ function BlockVotes({
                         left: i === 0 ? 0 : i * -10,
                         zIndex: 10 - i,
                       }}
+                      key={vote.voter}
                     >
                       <UserAvatar
                         address={vote.voter}

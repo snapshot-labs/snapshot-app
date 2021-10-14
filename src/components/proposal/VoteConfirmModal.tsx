@@ -99,8 +99,7 @@ function VoteConfirmModal({
   getProposal,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
-  const { connectedAddress } = useAuthState();
-  const connector = useWalletConnect();
+  const { connectedAddress, wcConnector } = useAuthState();
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
@@ -116,7 +115,13 @@ function VoteConfirmModal({
           <Text style={[common.h3, { textAlign: "center" }]}>
             {i18n.t("confirmVote")}
           </Text>
-          <TouchableOpacity onPress={onClose} style={{ marginLeft: "auto" }}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(false);
+              onClose();
+            }}
+            style={{ marginLeft: "auto" }}
+          >
             <FontAwesome5Icon
               name="times"
               style={{ paddingRight: 16 }}
@@ -185,6 +190,7 @@ function VoteConfirmModal({
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             onPress={() => {
+              setLoading(false);
               onClose();
             }}
           >
@@ -212,8 +218,9 @@ function VoteConfirmModal({
 
               setLoading(true);
 
-              connector.send = async (type, params) => {
-                return await connector.signPersonalMessage(params);
+              //@ts-ignore
+              wcConnector.send = async (type, params) => {
+                return await wcConnector.signPersonalMessage(params);
               };
 
               let formattedSelectedChoices = selectedChoices;
@@ -227,7 +234,7 @@ function VoteConfirmModal({
 
               try {
                 const sign = await client.broadcast(
-                  connector,
+                  wcConnector,
                   connectedAddress,
                   space.id,
                   "vote",

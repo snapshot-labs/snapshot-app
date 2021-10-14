@@ -26,6 +26,11 @@ import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
 import BackButton from "../components/BackButton";
 import storage from "../util/storage";
+import WalletConnect from "@walletconnect/client";
+import {
+  connectToWalletService,
+  initialWalletConnectValues,
+} from "../util/walletConnectUtils";
 
 const defaultWallets = [MetaMask];
 
@@ -135,7 +140,11 @@ function ConnectAccountScreen() {
               <TouchableOpacity
                 key={wallet.id}
                 onPress={async () => {
-                  const newConnector = await connector.connect();
+                  const newConnector = new WalletConnect({
+                    ...initialWalletConnectValues,
+                    session: undefined,
+                  });
+
                   const bridge = encodeURIComponent(newConnector.bridge);
                   const arrayBufferKey = await generateKey();
                   const key = convertArrayBufferToHex(arrayBufferKey, true);
@@ -152,6 +161,7 @@ function ConnectAccountScreen() {
                       },
                     ],
                   });
+
                   newConnector.handshakeId = request.id;
                   newConnector.handshakeTopic = handshakeTopic;
                   newConnector._sendSessionRequest(
@@ -163,7 +173,7 @@ function ConnectAccountScreen() {
                   );
                   const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
 
-                  newConnector.on("session_update", (error, payload) => {
+                  newConnector.on("connect", async (error, payload) => {
                     if (!error) {
                       const params = payload.params[0];
                       const address = params ? params.accounts[0] : "";
@@ -179,7 +189,10 @@ function ConnectAccountScreen() {
                         address,
                         androidAppUrl,
                         mobile: wallet.mobile.native,
+                        walletService: wallet,
+                        session: newConnector.session,
                       };
+
                       storage.save(
                         storage.KEYS.savedWallets,
                         JSON.stringify({
@@ -192,6 +205,22 @@ function ConnectAccountScreen() {
                         payload: {
                           ...savedWallets,
                           [address]: connectedWallet,
+                        },
+                      });
+                      authDispatch({
+                        type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+                        payload: {
+                          connectedAddress: address,
+                          isWalletConnect: true,
+                          addToStorage: true,
+                        },
+                      });
+                      authDispatch({
+                        type: AUTH_ACTIONS.SET_WC_CONNECTOR,
+                        payload: {
+                          newConnector: newConnector,
+                          androidAppUrl: androidAppUrl,
+                          walletService: wallet
                         },
                       });
                       navigation.goBack();
@@ -207,18 +236,14 @@ function ConnectAccountScreen() {
 
                     let androidAppUrl = get(androidAppArray, 1, undefined);
 
-                    if (wallet.name.includes("Rainbow")) {
-                      Linking.openURL(wallet.mobile.native);
-                    } else {
-                      if (androidAppUrl) {
-                        SendIntentAndroid.openAppWithData(
-                          androidAppUrl,
-                          formattedUri
-                        );
-                      }
+                    if (androidAppUrl) {
+                      SendIntentAndroid.openAppWithData(
+                        androidAppUrl,
+                        formattedUri
+                      );
                     }
                   } else {
-                    connector.connectToWalletService(wallet, formattedUri);
+                    connectToWalletService(wallet, formattedUri);
                   }
                 }}
               >

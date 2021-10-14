@@ -3,8 +3,12 @@ import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { Image } from "react-native";
 import { Space } from "../types/explore";
 import makeBlockie from "ethereum-blockies-base64";
+import isEmpty from "lodash/isEmpty";
 
-function createUrl(symbolIndex: string | number | undefined, space: Space | any) {
+function createUrl(
+  symbolIndex: string | number | undefined,
+  space: Space | any
+) {
   if (symbolIndex) {
     const spaceId = space.id;
     const file = symbolIndex
@@ -27,24 +31,17 @@ type AvatarProps = {
   symbolIndex?: string | number;
   size: number;
   space?: Space | { id?: string; avatar: string };
-  initialBlockie?: null | string;
-  url?: string;
 };
 
-function SpaceAvatar({
-  symbolIndex,
-  space,
-  size,
-  initialBlockie = null,
-  url,
-}: AvatarProps) {
-  const [blockie, setBlockie] = useState<string | null>(initialBlockie);
+function SpaceAvatar({ symbolIndex, space, size }: AvatarProps) {
+  const url = createUrl(symbolIndex, space);
+  const [blockie, setBlockie] = useState<string | null>(
+    isEmpty(url) ? makeBlockie(space?.id ?? "") : null
+  );
   let imgSrc: any = { uri: createUrl(symbolIndex, space) };
 
   if (blockie) {
     imgSrc = { uri: blockie };
-  } else if (url) {
-    imgSrc = { uri: url };
   }
 
   return (

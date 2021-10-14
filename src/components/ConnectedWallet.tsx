@@ -51,10 +51,6 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
   const { savedWallets }: any = useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
-  const blockie = useMemo(
-    () => (address ? makeBlockie(address) : null),
-    [address]
-  );
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address}.name`);
@@ -64,6 +60,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
       underlayColor={colors.highlightColor}
       key={address}
       onPress={() => {
+        const walletProfile = savedWallets[address];
         authDispatch({
           type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
           payload: {
@@ -72,6 +69,17 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             isWalletConnect: walletName !== "Custom Wallet",
           },
         });
+
+        if (walletName !== "Custom Wallet" && walletProfile) {
+          authDispatch({
+            type: AUTH_ACTIONS.SET_WC_CONNECTOR,
+            payload: {
+              androidAppUrl: walletProfile?.androidAppUrl,
+              session: walletProfile?.session,
+              walletService: walletProfile?.walletService,
+            },
+          });
+        }
       }}
     >
       <View

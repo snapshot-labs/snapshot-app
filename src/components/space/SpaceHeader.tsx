@@ -47,3 +47,4 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
 }
 
 export default SpaceHeader;
+
