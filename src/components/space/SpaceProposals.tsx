@@ -146,7 +146,7 @@ function SpaceProposals({
         data={proposals}
         keyExtractor={(item: Proposal, i) => item.id}
         renderItem={(data: { item: Proposal }) => {
-          return <ProposalPreview proposal={data.item} />;
+          return <ProposalPreview proposal={data.item} space={space} />;
         }}
         onEndReachedThreshold={0.1}
         onEndReached={() => {

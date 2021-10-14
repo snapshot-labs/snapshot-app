@@ -4,6 +4,7 @@ import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import { subgraphRequest, call } from "@snapshot-labs/snapshot.js/src/utils";
 import { ContextDispatch } from "../types/context";
 import { EXPLORE_ACTIONS } from "../context/exploreContext";
+import { shorten } from "./miscUtils";
 
 function get3BoxProfiles(addresses: string[]) {
   return new Promise((resolove, reject) => {
@@ -111,4 +112,21 @@ export async function setProfiles(
       });
     }
   } catch (e) {}
+}
+
+export function getUsername(
+  address: string,
+  userProfile: any,
+  short: boolean = true
+) {
+  if (userProfile) {
+    if (userProfile.name) {
+      return userProfile.name;
+    } else if (userProfile.ens) {
+      return userProfile.ens;
+    }
+    return short ? shorten(address) : address;
+  }
+
+  return short ? shorten(address) : address;
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import i18n from "i18n-js";
 import get from "lodash/get";
-import Avatar from "../Avatar";
+import SpaceAvatar from "../SpaceAvatar";
 import common from "../../styles/common";
 import FollowButton from "../FollowButton";
 import { Space } from "../../types/explore";
@@ -25,7 +25,7 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
     >
       <View style={{ flexDirection: "row" }}>
         <View>
-          <Avatar space={space} symbolIndex="space" size={60} />
+          <SpaceAvatar space={space} symbolIndex="space" size={60} />
           <Text style={[{ marginTop: 8 }, common.headerTitle]}>
             {get(space, "name")}
           </Text>

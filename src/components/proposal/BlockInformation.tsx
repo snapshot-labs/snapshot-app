@@ -11,11 +11,14 @@ import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import colors from "../../constants/colors";
 import { Proposal } from "../../types/proposal";
-import { shorten, dateFormat, n, explorerUrl } from "../../util/miscUtils";
+import { dateFormat, n, explorerUrl } from "../../util/miscUtils";
 import Block from "../Block";
 import { Space } from "../../types/explore";
-import Avatar from "../Avatar";
+import UserAvatar from "../UserAvatar";
+import SpaceAvatar from "../SpaceAvatar";
 import { useExploreState } from "../../context/exploreContext";
+import { getUsername } from "../../util/profile";
+import CoreBadge from "../CoreBadge";
 
 const styles = StyleSheet.create({
   container: {
@@ -65,10 +68,7 @@ type BlockInformationProps = {
 function BlockInformation({ proposal, space }: BlockInformationProps) {
   const { profiles } = useExploreState();
   const authorProfile = profiles[proposal.author];
-  const author =
-    authorProfile && authorProfile.ens
-      ? authorProfile.ens
-      : shorten(proposal.author);
+  const authorName = getUsername(proposal.author, authorProfile);
   const proposalStart = useMemo(() => dateFormat(proposal.start), [proposal]);
   const proposalEnd = useMemo(() => dateFormat(proposal.end), [proposal]);
   const votingType = useMemo(() => getVotingType(proposal.type), [proposal]);
@@ -92,7 +92,11 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
               <View style={{ flexDirection: "row" }}>
                 {symbols.map((symbol: string, symbolIndex: number) => (
                   <View key={symbolIndex} style={{ marginLeft: 6 }}>
-                    <Avatar symbolIndex={symbolIndex} size={20} space={space} />
+                    <SpaceAvatar
+                      symbolIndex={symbolIndex}
+                      size={20}
+                      space={space}
+                    />
                   </View>
                 ))}
               </View>
@@ -101,7 +105,17 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("author")}</Text>
             <View style={styles.rowValue}>
-              <Text style={styles.rowValueText}>{author}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <UserAvatar
+                  size={20}
+                  address={proposal.author}
+                  imgSrc={authorProfile?.image}
+                />
+                <Text style={[styles.rowValueText, { marginLeft: 4 }]}>
+                  {authorName}
+                </Text>
+                <CoreBadge address={proposal.author} members={space?.members} />
+              </View>
             </View>
           </View>
           <View style={styles.row}>

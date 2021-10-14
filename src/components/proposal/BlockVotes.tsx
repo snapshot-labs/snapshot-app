@@ -17,8 +17,7 @@ import {
   useExploreState,
 } from "../../context/exploreContext";
 import { setProfiles } from "../../util/profile";
-import Avatar from "../Avatar";
-import makeBlockie from "ethereum-blockies-base64";
+import UserAvatar from "../UserAvatar";
 import common from "../../styles/common";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_VOTES_SCREEN } from "../../constants/navigation";
@@ -104,7 +103,7 @@ function BlockVotes({
                 style={{ flexDirection: "row", marginLeft: 8, marginBottom: 6 }}
               >
                 {votes.slice(0, 5).map((vote, i) => {
-                  const blockie = makeBlockie(vote.voter);
+                  const voterProfile = profiles[vote.voter];
                   return (
                     <View
                       style={{
@@ -113,11 +112,10 @@ function BlockVotes({
                         zIndex: 10 - i,
                       }}
                     >
-                      <Avatar
-                        symbolIndex="space"
+                      <UserAvatar
+                        address={vote.voter}
+                        imgSrc={voterProfile?.image}
                         size={26}
-                        space={space}
-                        initialBlockie={blockie}
                       />
                     </View>
                   );

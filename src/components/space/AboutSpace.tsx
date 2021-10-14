@@ -21,7 +21,7 @@ import {
   useExploreState,
 } from "../../context/exploreContext";
 import { setProfiles } from "../../util/profile";
-import Avatar from "../Avatar";
+import SpaceAvatar from "../SpaceAvatar";
 import makeBlockie from "ethereum-blockies-base64";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
@@ -173,7 +173,7 @@ function AboutSpace({
                   key={`${i}`}
                   style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <Avatar
+                  <SpaceAvatar
                     symbolIndex="space"
                     size={20}
                     space={space}
@@ -213,7 +213,7 @@ function AboutSpace({
                   key={`${i}`}
                   style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <Avatar
+                  <SpaceAvatar
                     symbolIndex="space"
                     size={20}
                     space={space}
