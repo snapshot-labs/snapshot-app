@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 });
 
 function MoreScreen() {
-  const { connectedAddress, savedWallets }: any = useAuthState();
+  const { connectedAddress, savedWallets, wcConnector }: any = useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const connector = useWalletConnect();
@@ -97,6 +97,9 @@ function MoreScreen() {
           onPress={async () => {
             try {
               await connector.killSession();
+            } catch (e) {}
+            try {
+              await wcConnector.killSession();
             } catch (e) {}
             authDispatch({
               type: AUTH_ACTIONS.LOGOUT,

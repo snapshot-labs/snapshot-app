@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import colors from "../constants/colors";
 
 const styles = StyleSheet.create({
@@ -16,6 +16,8 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     color: colors.white,
     textTransform: "capitalize",
+    marginTop: Platform.OS === "ios" ? 1 : 0,
+    marginBottom: Platform.OS === "android" ? 4 : 0,
   },
   purpleBg: {
     backgroundColor: colors.bgPurple,
