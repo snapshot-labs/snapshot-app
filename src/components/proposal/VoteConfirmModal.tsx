@@ -99,7 +99,7 @@ function VoteConfirmModal({
   getProposal,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
-  const { connectedAddress, wcConnector } = useAuthState();
+  const { connectedAddress, wcConnector, isWalletConnect } = useAuthState();
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
@@ -214,7 +214,7 @@ function VoteConfirmModal({
 
           <TouchableOpacity
             onPress={async () => {
-              if (loading) return;
+              if (loading || !isWalletConnect || totalScore === 0) return;
 
               setLoading(true);
 
@@ -270,7 +270,8 @@ function VoteConfirmModal({
                 {
                   width: buttonWidth,
                   marginLeft: 16,
-                  opacity: loading || totalScore === 0 ? 0.3 : 1,
+                  opacity:
+                    !isWalletConnect || loading || totalScore === 0 ? 0.3 : 1,
                 },
               ]}
             >
