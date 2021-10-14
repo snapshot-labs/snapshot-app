@@ -232,7 +232,7 @@ function WalletConnectScreen() {
                     }
                   }
                 } else {
-                  connector.connectToWalletService(wallet, formattedUri);
+                  newConnector.connectToWalletService(wallet, formattedUri);
                 }
 
                 setCurrentWallet(wallet);

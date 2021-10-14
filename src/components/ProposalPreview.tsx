@@ -6,6 +6,7 @@ import {
   Text,
   TouchableHighlight,
   Dimensions,
+  Platform,
 } from "react-native";
 import colors from "../constants/colors";
 import { Proposal } from "../types/proposal";
@@ -17,13 +18,19 @@ import { PROPOSAL_SCREEN } from "../constants/navigation";
 import removeMd from "remove-markdown";
 import i18n from "i18n-js";
 import { useExploreState } from "../context/exploreContext";
-import Avatar from "./Avatar";
+import SpaceAvatar from "./SpaceAvatar";
+import CoreBadge from "./CoreBadge";
+import { Space } from "../types/explore";
+import { getUsername } from "../util/profile";
 
 const { width } = Dimensions.get("screen");
 
 const previewPadding = 16;
 const avatarSize = 28;
 const stateBadgeMaxWidth = 80;
+const coreWidth = 42;
+const defaultAuthorTextWidth =
+  width - 2 * previewPadding - avatarSize - stateBadgeMaxWidth - 8;
 
 const styles = StyleSheet.create({
   proposalPreviewContainer: {
@@ -48,8 +55,13 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontFamily: "Calibre-Medium",
     lineHeight: 28,
+    marginTop: Platform.OS === "ios" ? 4 : 0,
+  },
+  authorContainer: {
+    flexDirection: "row",
+    width: defaultAuthorTextWidth,
     marginRight: 10,
-    width: width - 2 * previewPadding - avatarSize - stateBadgeMaxWidth - 8,
+    alignItems: "center",
   },
   statusContainer: {
     marginLeft: "auto",
@@ -86,18 +98,19 @@ function getPeriod(state: string, start: number, end: number) {
 
 type ProposalPreviewProps = {
   proposal: Proposal;
+  space: Space;
   fromFeed?: boolean;
 };
 
-function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
+function ProposalPreview({
+  proposal,
+  space,
+  fromFeed = false,
+}: ProposalPreviewProps) {
   const navigation: any = useNavigation();
   const { profiles } = useExploreState();
   const formattedBody = useMemo(
-    () =>
-      shorten(removeMd(proposal.body), 140).replace(
-        /(\S+)\n\s*(\S+)/g,
-        "$1 $2"
-      ),
+    () => shorten(removeMd(proposal.body), 140).replace(/\r?\n|\r/g, " "),
     [proposal]
   );
   const avatarUrl = useMemo(() => getUrl(proposal.space.avatar), [proposal]);
@@ -107,10 +120,7 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
     [proposal]
   );
   const authorProfile = profiles[proposal.author];
-  const authorName =
-    authorProfile && authorProfile.ens
-      ? authorProfile.ens
-      : shorten(proposal.author);
+  const authorName = getUsername(proposal.author, authorProfile);
 
   return (
     <TouchableHighlight
@@ -121,14 +131,21 @@ function ProposalPreview({ proposal, fromFeed = false }: ProposalPreviewProps) {
     >
       <View style={styles.proposalPreviewContainer}>
         <View style={styles.header}>
-          <Avatar symbolIndex="space" size={28} space={proposal.space} />
-          <Text
-            style={styles.headerAuthor}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {proposal.space.name} by {authorName}
-          </Text>
+          <SpaceAvatar symbolIndex="space" size={28} space={proposal.space} />
+          <View style={styles.authorContainer}>
+            <Text
+              style={styles.headerAuthor}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {proposal.space.name} by {authorName}
+            </Text>
+            <CoreBadge
+              address={proposal.author}
+              members={[proposal.author] ?? space?.members}
+              key={proposal.id}
+            />
+          </View>
           <View style={styles.statusContainer}>
             <StateBadge state={proposal.state} />
           </View>

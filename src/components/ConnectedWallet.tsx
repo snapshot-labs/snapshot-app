@@ -17,13 +17,10 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "../context/authContext";
-import Avatar from "./Avatar";
-import { explorerUrl, shorten } from "../util/miscUtils";
+import UserAvatar from "./UserAvatar";
+import { shorten } from "../util/miscUtils";
 import storage from "../util/storage";
 import { useExploreState } from "../context/exploreContext";
-import { LANDING_SCREEN } from "../constants/navigation";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -32,22 +29,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     flex: 1,
   },
-  connectedEns: {
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-    fontSize: 24,
-    marginLeft: 8,
-  },
   ens: {
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
     fontSize: 20,
-    marginLeft: 8,
-  },
-  connectedAddress: {
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-    fontSize: 24,
     marginLeft: 8,
   },
   address: {
@@ -60,19 +45,16 @@ const styles = StyleSheet.create({
 
 type ConnectedWalletProps = {
   address: string;
-  isConnected: boolean;
 };
 
-function ConnectedWallet({ address, isConnected }: ConnectedWalletProps) {
+function ConnectedWallet({ address }: ConnectedWalletProps) {
   const { savedWallets }: any = useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
-  const connector = useWalletConnect();
   const blockie = useMemo(
     () => (address ? makeBlockie(address) : null),
     [address]
   );
-  const navigation: any = useNavigation();
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address}.name`);
@@ -102,80 +84,20 @@ function ConnectedWallet({ address, isConnected }: ConnectedWalletProps) {
           paddingVertical: 8,
         }}
       >
-        <Avatar size={isConnected ? 60 : 40} initialBlockie={blockie} />
+        <UserAvatar size={40} address={address} imgSrc={profile?.image} />
         <View style={styles.connectedAddressContainer}>
           <View>
             {ens !== undefined && ens !== "" && (
-              <Text style={isConnected ? styles.connectedEns : styles.ens}>
-                {ens}
-              </Text>
+              <Text style={styles.ens}>{ens}</Text>
             )}
             <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
               {shorten(address ?? "")}
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              const url = explorerUrl("1", address);
-              Linking.openURL(url);
-            }}
-            style={{ marginLeft: 8 }}
-          >
-            <FontAwesome5Icon
-              name="external-link-alt"
-              size={20}
-              color={colors.textColor}
-              style={{ marginBottom: Platform.OS === "ios" ? 6 : 0 }}
-            />
-          </TouchableOpacity>
         </View>
-        {isConnected && (
-          <FontAwesome5Icon
-            name="check"
-            style={{
-              marginRight: 10,
-            }}
-            size={16}
-            color={colors.textColor}
-          />
-        )}
         <TouchableOpacity
           onPress={() => {
             const newSavedWallets = { ...savedWallets };
-            const savedWalletKeys = Object.keys(savedWallets);
-            if (isConnected) {
-              if (savedWalletKeys.length === 1) {
-                try {
-                  connector.killSession();
-                } catch (e) {}
-                authDispatch({
-                  type: AUTH_ACTIONS.LOGOUT,
-                });
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: LANDING_SCREEN }],
-                });
-              } else {
-                const nextWallet = savedWalletKeys.find(
-                  (nextAddress) => nextAddress !== address
-                );
-
-                if (nextWallet) {
-                  authDispatch({
-                    type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
-                    payload: {
-                      connectedAddress: nextWallet,
-                      addToStorage: true,
-                    },
-                  });
-                } else {
-                  authDispatch({
-                    type: AUTH_ACTIONS.LOGOUT,
-                  });
-                }
-              }
-            }
-
             delete newSavedWallets[address];
             authDispatch({
               type: AUTH_ACTIONS.SET_OVERWRITE_SAVED_WALLETS,

@@ -12,6 +12,8 @@ import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import colors from "../../constants/colors";
 import Block from "../Block";
 import { Strategy } from "../../types/explore";
+import { getUsername } from "../../util/profile";
+import { useExploreState } from "../../context/exploreContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -53,6 +55,9 @@ type BlockInformationProps = {
 };
 
 function BlockInformation({ strategy }: BlockInformationProps) {
+  const { profiles } = useExploreState();
+  const authorProfile = profiles[strategy.author];
+  const authorName = getUsername(strategy.author, authorProfile);
   return (
     <Block
       title={i18n.t("information")}
@@ -72,7 +77,7 @@ function BlockInformation({ strategy }: BlockInformationProps) {
                     color={colors.textColor}
                     size={16}
                   />
-                  <Text style={styles.authorText}>{strategy.author}</Text>
+                  <Text style={styles.authorText}>{authorName}</Text>
                 </View>
               </TouchableOpacity>
             </View>

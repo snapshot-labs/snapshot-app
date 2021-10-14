@@ -74,7 +74,7 @@ function FeedScreen({
   filter,
 }: FeedScreenProps) {
   const { followedSpaces } = useAuthState();
-  const { profiles } = useExploreState();
+  const { profiles, spaces } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -149,7 +149,13 @@ function FeedScreen({
       }
       data={proposals}
       renderItem={(data) => {
-        return <ProposalPreview proposal={data.item} fromFeed={true} />;
+        return (
+          <ProposalPreview
+            proposal={data.item}
+            fromFeed={true}
+            space={spaces[data.item?.space?.id]}
+          />
+        );
       }}
       keyExtractor={(item) => `${item.id}`}
       onEndReachedThreshold={0.6}

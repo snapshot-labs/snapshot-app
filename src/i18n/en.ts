@@ -102,5 +102,6 @@ export default {
   you: "You",
   yourVoteIsIn: "Your vote is in!",
   unableToCastVote: "Unable to cast vote",
-  publicAddressCopiedToClipboard: "Public address copied to clipboard"
+  publicAddressCopiedToClipboard: "Public address copied to clipboard",
+  core: "Core",
 };

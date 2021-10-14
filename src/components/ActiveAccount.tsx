@@ -1,5 +1,11 @@
-import React, { useMemo } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+} from "react-native";
 import tailwind from "tailwind-rn";
 import i18n from "i18n-js";
 import Toast from "react-native-toast-message";
@@ -7,8 +13,8 @@ import makeBlockie from "ethereum-blockies-base64";
 import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import Avatar from "./Avatar";
-import { shorten } from "../util/miscUtils";
+import UserAvatar from "./UserAvatar";
+import { explorerUrl, shorten } from "../util/miscUtils";
 import { useExploreState } from "../context/exploreContext";
 import colors from "../constants/colors";
 
@@ -32,12 +38,9 @@ type ActiveAccountProps = {
 
 function ActiveAccount({ address }: ActiveAccountProps) {
   const { profiles } = useExploreState();
-  const blockie = useMemo(
-    () => (address ? makeBlockie(address) : null),
-    [address]
-  );
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
+
   const copyToClipboard = () => {
     Clipboard.setString(address);
     Toast.show({
@@ -45,9 +48,26 @@ function ActiveAccount({ address }: ActiveAccountProps) {
       text1: i18n.t("publicAddressCopiedToClipboard"),
     });
   };
+
   return (
     <View style={tailwind("justify-center items-center pb-6 h-32")}>
-      <Avatar size={60} initialBlockie={blockie} />
+      {address ? (
+        <TouchableOpacity
+          onPress={() => {
+            const url = explorerUrl("1", address);
+            Linking.openURL(url);
+          }}
+        >
+          <UserAvatar
+            size={60}
+            address={address}
+            imgSrc={profile?.image}
+            key={address}
+          />
+        </TouchableOpacity>
+      ) : (
+        <View />
+      )}
       <View style={tailwind("h-16 justify-center items-center")}>
         {!isEmpty(ens) && <Text style={styles.connectedEns}>{ens}</Text>}
         <TouchableOpacity onPress={copyToClipboard}>
