@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import {
   View,
   StyleSheet,
-  Image,
   Text,
   TouchableHighlight,
   Dimensions,
@@ -10,7 +9,6 @@ import {
 } from "react-native";
 import colors from "../constants/colors";
 import { Proposal } from "../types/proposal";
-import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { getTimeAgo, shorten } from "../util/miscUtils";
 import StateBadge from "./StateBadge";
 import { useNavigation } from "@react-navigation/native";
@@ -22,6 +20,7 @@ import SpaceAvatar from "./SpaceAvatar";
 import CoreBadge from "./CoreBadge";
 import { Space } from "../types/explore";
 import { getUsername } from "../util/profile";
+import isEmpty from "lodash/isEmpty";
 
 const { width } = Dimensions.get("screen");
 
@@ -113,7 +112,6 @@ function ProposalPreview({
     () => shorten(removeMd(proposal.body), 140).replace(/\r?\n|\r/g, " "),
     [proposal]
   );
-  const avatarUrl = useMemo(() => getUrl(proposal.space.avatar), [proposal]);
   const title = useMemo(() => shorten(proposal.title, 124), [proposal]);
   const period = useMemo(
     () => getPeriod(proposal.state, proposal.start, proposal.end),
@@ -121,6 +119,13 @@ function ProposalPreview({
   );
   const authorProfile = profiles[proposal.author];
   const authorName = getUsername(proposal.author, authorProfile);
+  const isCore = useMemo(() => {
+    if (isEmpty(space?.members)) return false;
+    let updatedMembers = space.members.map((address: string) =>
+      address.toLowerCase()
+    );
+    return updatedMembers.includes(proposal.author.toLowerCase());
+  }, [proposal, space.members]);
 
   return (
     <TouchableHighlight
@@ -132,7 +137,16 @@ function ProposalPreview({
       <View style={styles.proposalPreviewContainer}>
         <View style={styles.header}>
           <SpaceAvatar symbolIndex="space" size={28} space={proposal.space} />
-          <View style={styles.authorContainer}>
+          <View
+            style={[
+              styles.authorContainer,
+              {
+                width: isCore
+                  ? defaultAuthorTextWidth - coreWidth
+                  : defaultAuthorTextWidth,
+              },
+            ]}
+          >
             <Text
               style={styles.headerAuthor}
               numberOfLines={1}
@@ -142,7 +156,7 @@ function ProposalPreview({
             </Text>
             <CoreBadge
               address={proposal.author}
-              members={[proposal.author] ?? space?.members}
+              members={space?.members}
               key={proposal.id}
             />
           </View>

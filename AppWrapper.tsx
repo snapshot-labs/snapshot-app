@@ -47,15 +47,30 @@ async function loadFromStorage(
         }
       }
 
-      const savedWallets = await storage.load(storage.KEYS.savedWallets);
+      const savedWallets: any = await storage.load(storage.KEYS.savedWallets);
 
       if (savedWallets) {
+        let parsedSavedWallets: any = {};
         try {
+          parsedSavedWallets = JSON.parse(savedWallets);
           authDispatch({
             type: AUTH_ACTIONS.SET_SAVED_WALLETS,
-            payload: JSON.parse(savedWallets),
+            payload: parsedSavedWallets,
           });
         } catch (e) {}
+        const session = parsedSavedWallets[connectedAddress]?.session;
+        const androidAppUrl =
+          parsedSavedWallets[connectedAddress]?.androidAppUrl;
+        const walletService =
+          parsedSavedWallets[connectedAddress]?.walletService;
+        authDispatch({
+          type: AUTH_ACTIONS.SET_WC_CONNECTOR,
+          payload: {
+            session,
+            androidAppUrl,
+            walletService,
+          },
+        });
       }
     }
     if (Platform.OS === "android") {

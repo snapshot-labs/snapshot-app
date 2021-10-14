@@ -2,6 +2,14 @@ import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "../types/context";
 import storage from "../util/storage";
 import { Wallet } from "ethers";
+import WalletConnect from "@walletconnect/client";
+import { Platform } from "react-native";
+import SendIntentAndroid from "react-native-send-intent";
+import {
+  initialWalletConnectValues,
+  setAndroidListeners,
+  setWalletConnectListeners,
+} from "../util/walletConnectUtils";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
@@ -11,6 +19,7 @@ type AuthState = {
   androidAppUrl: string | null;
   aliasWallet: Wallet | null;
   savedWallets: { [id: string]: { name: string; address: string } };
+  wcConnector: WalletConnect;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -28,6 +37,7 @@ const AUTH_ACTIONS = {
   SET_ALIAS_WALLET: "@auth/SET_ALIAS_WALLET",
   SET_SAVED_WALLETS: "@auth/SET_SAVED_WALLETS",
   SET_OVERWRITE_SAVED_WALLETS: "@auth/SET_OVERWRITE_SAVED_WALLETS",
+  SET_WC_CONNECTOR: "@auth/SET_WC_CONNECTOR",
 };
 
 const initialState = {
@@ -38,6 +48,7 @@ const initialState = {
   androidAppUrl: null,
   aliasWallet: null,
   savedWallets: {},
+  wcConnector: null,
 };
 
 function authReducer(state: AuthState, action: ContextAction) {
@@ -86,6 +97,33 @@ function authReducer(state: AuthState, action: ContextAction) {
         savedWallets = { ...savedWallets, ...action.payload };
       }
       return { ...state, savedWallets };
+    case AUTH_ACTIONS.SET_WC_CONNECTOR:
+      let wcConnector;
+      if (action.payload.newConnector) {
+        wcConnector = action.payload.newConnector;
+        setWalletConnectListeners(
+          wcConnector,
+          action.payload.androidAppUrl,
+          action.payload.walletService
+        );
+      } else {
+        if (action.payload.session) {
+          wcConnector = new WalletConnect({
+            ...initialWalletConnectValues,
+            session: action.payload.session,
+          });
+          setWalletConnectListeners(
+            wcConnector,
+            action.payload.androidAppUrl,
+            action.payload.walletService
+          );
+        }
+      }
+
+      return {
+        ...state,
+        wcConnector,
+      };
     case AUTH_ACTIONS.SET_OVERWRITE_SAVED_WALLETS:
       return { ...state, savedWallets: action.payload };
     case AUTH_ACTIONS.LOGOUT:

@@ -4,38 +4,14 @@ import { useAuthDispatch, useAuthState } from "../context/authContext";
 import { Wallet } from "@ethersproject/wallet";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import signClient from "../util/signClient";
-import { Platform } from "react-native";
-import SendIntentAndroid from "react-native-send-intent";
 import "@ethersproject/shims";
 import { checkAlias, setAlias } from "../util/aliasUtils";
-import WalletConnect from "@walletconnect/client";
 import find from "lodash/find";
 import i18n from "i18n-js";
 import get from "lodash/get";
 import { getFollows } from "../util/apiUtils";
 import { ContextDispatch } from "../types/context";
 import { Space } from "../types/explore";
-
-function setConnectorOnConnect(
-  connector: WalletConnect,
-  androidAppUrl: string | null,
-  didSetConnectorOnConnect: boolean,
-  setDidSetConnectorOnConnect: (didSetConnectorOnConnect: boolean) => void
-) {
-  if (!didSetConnectorOnConnect && Platform.OS === "android") {
-    if (connector) {
-      connector.off("call_request_sent");
-      connector.on("call_request_sent", async (error) => {
-        if (androidAppUrl) {
-          const createdUri = `wc:${connector.handshakeTopic}@1`;
-          SendIntentAndroid.openAppWithData(androidAppUrl, createdUri);
-        }
-      });
-
-      setDidSetConnectorOnConnect(true);
-    }
-  }
-}
 
 async function followSpace(
   isFollowingSpace: any,
@@ -79,22 +55,11 @@ function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const authDispatch = useAuthDispatch();
   const connector = useWalletConnect();
-  const [didSetConnectorOnConnect, setDidSetConnectorOnConnect] =
-    useState(false);
-  const { aliasWallet, androidAppUrl, followedSpaces, connectedAddress } =
+  const { aliasWallet, followedSpaces, connectedAddress } =
     useAuthState();
   const isFollowingSpace = find(followedSpaces, (followedSpace) => {
     return get(followedSpace, "space.id") === space.id;
   });
-
-  useEffect(() => {
-    setConnectorOnConnect(
-      connector,
-      androidAppUrl,
-      didSetConnectorOnConnect,
-      setDidSetConnectorOnConnect
-    );
-  }, [connector]);
 
   return (
     <Button

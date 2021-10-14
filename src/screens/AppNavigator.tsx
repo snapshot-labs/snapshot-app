@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Platform } from "react-native";
 import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
-import {
-  AUTH_ACTIONS,
-  useAuthDispatch,
-  useAuthState,
-} from "../context/authContext";
+import { useAuthState } from "../context/authContext";
 import * as navigationConstants from "../constants/navigation";
 import FeedScreen from "./FeedScreen";
 import LandingScreen from "./LandingScreen";
@@ -24,8 +19,6 @@ import QRCodeScannerScreen from "./QRCodeScannerScreen";
 import SpaceScreen from "./SpaceScreen";
 import ProposalScreen from "./ProposalScreen";
 import CustomWalletScreen from "./CustomWalletScreen";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { LANDING_SCREEN } from "../constants/navigation";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
 import colors from "../constants/colors";
@@ -42,32 +35,6 @@ const BOTTOM_LABEL_PADDING = Platform.OS === "android" ? 16 : 0;
 const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
-  const connector = useWalletConnect();
-  const authDispatch = useAuthDispatch();
-  const [connectorListenersEnabled, setConnectorListenersEnabled] =
-    useState(false);
-  const navigation: any = useNavigation();
-
-  useEffect(() => {
-    if (connector && connector.on && !connectorListenersEnabled) {
-      connector.on("disconnect", (error, payload) => {
-        if (error) {
-          throw error;
-        }
-
-        authDispatch({
-          type: AUTH_ACTIONS.LOGOUT,
-        });
-        navigation.reset({
-          index: 0,
-          routes: [{ name: LANDING_SCREEN }],
-        });
-      });
-
-      setConnectorListenersEnabled(true);
-    }
-  }, [connector]);
-
   return (
     <Tab.Navigator
       screenOptions={{

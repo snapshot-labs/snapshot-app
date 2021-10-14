@@ -25,6 +25,7 @@ import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
 import storage from "../util/storage";
+import { connectToWalletService } from "../util/walletConnectUtils";
 
 const defaultWallets = [MetaMask];
 
@@ -133,6 +134,8 @@ function WalletConnectScreen() {
           name: get(currentWallet, "name", ""),
           mobile: get(currentWallet, "mobile.native"),
           androidAppUrl,
+          session: connector.session,
+          walletService: currentWallet,
         };
         storage.save(
           storage.KEYS.savedWallets,
@@ -144,6 +147,12 @@ function WalletConnectScreen() {
           type: AUTH_ACTIONS.SET_SAVED_WALLETS,
           payload: {
             [address]: connectedWallet,
+          },
+        });
+        authDispatch({
+          type: AUTH_ACTIONS.SET_WC_CONNECTOR,
+          payload: {
+            newConnector: connector,
           },
         });
       }
@@ -232,7 +241,7 @@ function WalletConnectScreen() {
                     }
                   }
                 } else {
-                  newConnector.connectToWalletService(wallet, formattedUri);
+                  connectToWalletService(wallet, formattedUri);
                 }
 
                 setCurrentWallet(wallet);
