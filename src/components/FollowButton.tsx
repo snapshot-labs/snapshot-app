@@ -53,10 +53,9 @@ type FollowButtonProps = {
 
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+  const { wcConnector } = useAuthState();
   const authDispatch = useAuthDispatch();
-  const connector = useWalletConnect();
-  const { aliasWallet, followedSpaces, connectedAddress } =
-    useAuthState();
+  const { aliasWallet, followedSpaces, connectedAddress } = useAuthState();
   const isFollowingSpace = find(followedSpaces, (followedSpace) => {
     return get(followedSpace, "space.id") === space.id;
   });
@@ -82,7 +81,7 @@ function FollowButton({ space }: FollowButtonProps) {
             } else {
               const aliasWallet = await setAlias(
                 connectedAddress,
-                connector,
+                wcConnector,
                 authDispatch
               );
 
@@ -106,7 +105,7 @@ function FollowButton({ space }: FollowButtonProps) {
           } else {
             const aliasWallet = await setAlias(
               connectedAddress,
-              connector,
+              wcConnector,
               authDispatch
             );
 
