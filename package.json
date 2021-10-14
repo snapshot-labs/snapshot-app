@@ -64,6 +64,7 @@
     "react-native": "~0.63.4",
     "react-native-collapsible-header-views": "^1.1.2",
     "react-native-crypto": "^2.2.0",
+    "react-native-device-info": "^8.4.1",
     "react-native-drag-sort": "^2.4.4",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-level-fs": "^3.0.1",

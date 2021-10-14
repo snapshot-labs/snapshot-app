@@ -74,13 +74,7 @@ function MoreScreen() {
         </Text>
         <ActiveAccount address={connectedAddress} />
         {savedWalletKeys.map((address: string) => {
-          return (
-            <ConnectedWallet
-              address={address}
-              isConnected={false}
-              key={address}
-            />
-          );
+          return <ConnectedWallet address={address} key={address} />;
         })}
         <TouchableOpacity
           onPress={() => {

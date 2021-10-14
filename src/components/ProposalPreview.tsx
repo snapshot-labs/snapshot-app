@@ -125,7 +125,7 @@ function ProposalPreview({
       address.toLowerCase()
     );
     return updatedMembers.includes(proposal.author.toLowerCase());
-  }, [proposal, space.members]);
+  }, [proposal, space]);
 
   return (
     <TouchableHighlight

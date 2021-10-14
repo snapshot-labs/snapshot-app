@@ -21,6 +21,7 @@ import UserAvatar from "./UserAvatar";
 import { shorten } from "../util/miscUtils";
 import storage from "../util/storage";
 import { useExploreState } from "../context/exploreContext";
+import { getAliasWallet } from "../util/aliasUtils";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -48,7 +49,7 @@ type ConnectedWalletProps = {
 };
 
 function ConnectedWallet({ address }: ConnectedWalletProps) {
-  const { savedWallets }: any = useAuthState();
+  const { savedWallets, aliases }: any = useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
   const profile = profiles[address];
@@ -78,6 +79,11 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
               session: walletProfile?.session,
               walletService: walletProfile?.walletService,
             },
+          });
+
+          authDispatch({
+            type: AUTH_ACTIONS.SET_ALIAS_WALLET,
+            payload: aliases[address] ? getAliasWallet(aliases[address]) : null,
           });
         }
       }}
