@@ -44,11 +44,10 @@ function BlockCastVote({
   space,
   getProposal,
 }: BlockCastVoteProps) {
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, isWalletConnect } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
-  const navigation = useNavigation();
   let VotesComponent;
 
   if (proposal.type === "single-choice") {
@@ -103,7 +102,7 @@ function BlockCastVote({
                 onPress={() => {
                   setModalVisible(true);
                 }}
-                disabled={selectedChoices.length === 0}
+                disabled={!isWalletConnect || selectedChoices.length === 0}
                 buttonContainerStyle={{
                   backgroundColor: colors.bgBlue,
                 }}

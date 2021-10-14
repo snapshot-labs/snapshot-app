@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import { useAuthState } from "../context/authContext";
 import * as navigationConstants from "../constants/navigation";
+import { isOldIphone } from "../util/phoneUtils";
 import FeedScreen from "./FeedScreen";
 import LandingScreen from "./LandingScreen";
 import ExploreScreen from "./ExploreScreen";
@@ -31,7 +32,11 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ICON_SIZE = 20;
 const BOTTOM_ICON_PADDING = Platform.OS === "android" ? 0 : 30;
-const BOTTOM_LABEL_PADDING = Platform.OS === "android" ? 16 : 0;
+const BOTTOM_LABEL_PADDING = isOldIphone()
+  ? 8
+  : Platform.OS === "android"
+  ? 16
+  : 0;
 const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
@@ -46,7 +51,7 @@ function TabNavigator() {
         tabBarStyle: {
           padding: 16,
           shadowOpacity: 0,
-          height: Platform.OS === "android" ? 75 : 85,
+          height: isOldIphone() ? 60 : Platform.OS === "android" ? 75 : 85,
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
           elevation: 0,
