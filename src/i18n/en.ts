@@ -104,4 +104,25 @@ export default {
   unableToCastVote: "Unable to cast vote",
   publicAddressCopiedToClipboard: "Public address copied to clipboard",
   core: "Core",
+  choices: "Choices",
+  question: "Question",
+  addChoice: "Add choice",
+  selectVotingSystem: "Select voting system",
+  singleChoiceVotingDescription: "Each voter may select only one choice.",
+  approvalVotingDescription: "Each voter may select any number of choices.",
+  quadraticVotingDescription:
+    "Each voter may spread voting power across any number of choices. Results are calculated quadratically.",
+  rankedChoiceVotingDescription:
+    "Each voter may select and rank any number of choices. Results are calculated by instant-runoff counting method.",
+  weightedVotingDescription:
+    "Each voter may spread voting power across any number of choices.",
+  createProposal: "Create proposal",
+  whatIsYourProposal: "What is your proposal?",
+  actions: "Actions",
+  selectStartDate: "Select start date",
+  selectEndDate: "Select end date",
+  publish: "Publish",
+  selectTime: "Select time",
+  preview: "Preview",
+  select: "Select",
 };

@@ -7,7 +7,9 @@ import {
   Platform,
   Dimensions,
 } from "react-native";
-import { TouchableNativeFeedback } from "react-native-gesture-handler";
+import {
+  TouchableNativeFeedback,
+} from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import colors from "../constants/colors";

@@ -41,16 +41,21 @@ function NetworkScreen({ route }: NetworkScreenProps) {
       <View style={[common.screen]}>
         <CollapsibleHeaderFlatList
           data={filteredSpaces}
-          headerHeight={100}
+          headerHeight={116}
           CollapsibleHeaderComponent={
-            <View>
+            <View style={{ paddingBottom: 16 }}>
               <SearchInput
                 onChangeText={(searchText) => {
                   setSearchText(searchText);
                 }}
                 value={searchText}
               />
-              <View style={{ paddingHorizontal: 16, paddingTop: 30 }}>
+              <View
+                style={{
+                  paddingHorizontal: 16,
+                  paddingTop: 30,
+                }}
+              >
                 <Text style={common.headerTitle}>{networkName}</Text>
               </View>
             </View>

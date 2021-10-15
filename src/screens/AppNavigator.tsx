@@ -26,6 +26,7 @@ import colors from "../constants/colors";
 import SettingsScreen from "./SettingsScreen";
 import ConnectAccountScreen from "./ConnectAccountScreen";
 import VotesScreen from "./VotesScreen";
+import CreateProposalScreen from "./CreateProposalScreen";
 
 const Stack = createStackNavigator();
 
@@ -217,6 +218,11 @@ export default function () {
           headerShown: false,
           ...TransitionPresets.ModalSlideFromBottomIOS,
         }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CREATE_PROPOSAL_SCREEN}
+        component={CreateProposalScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

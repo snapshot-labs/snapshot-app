@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.zyu.ReactNativeWheelPickerPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;

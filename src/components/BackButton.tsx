@@ -36,6 +36,7 @@ type BackButtonProps = {
   iconColor?: string;
   backIcon?: string;
   backIconSize?: number;
+  backIconStyle?: object;
 };
 
 function BackButton({
@@ -46,6 +47,7 @@ function BackButton({
   iconColor,
   backIcon = "long-arrow-alt-left",
   backIconSize = 20,
+  backIconStyle = {},
 }: BackButtonProps) {
   const navigation: any = useNavigation();
   return (
@@ -63,6 +65,7 @@ function BackButton({
           name={backIcon}
           color={iconColor ? iconColor : colors.darkGray}
           size={backIconSize}
+          style={backIconStyle}
         />
         <Text style={[styles.backButtonTitle, titleStyle]}>{title ?? ""}</Text>
       </View>

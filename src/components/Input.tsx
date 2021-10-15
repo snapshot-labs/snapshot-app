@@ -14,8 +14,17 @@ const styles = StyleSheet.create({
   },
 });
 
-function Input(props: TextInputProps) {
-  return <TextInput {...props} style={[styles.input, props.style ?? {}]} />;
-}
+const Input = (props: TextInputProps & { setRef?: any }) => {
+  let inputProps = { ...props };
+  delete inputProps.setRef;
+
+  return (
+    <TextInput
+      {...inputProps}
+      style={[styles.input, props.style ?? {}]}
+      {...(props.setRef ? { ref: props.setRef } : {})}
+    />
+  );
+};
 
 export default Input;
