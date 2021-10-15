@@ -6,6 +6,12 @@ const common = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  screenHeaderTitle: {
+    color: colors.darkGray,
+    fontFamily: "Calibre-Medium",
+    fontSize: 24,
+    paddingLeft: 16,
+  },
   headerTitle: {
     color: colors.headingColor,
     fontSize: 30,
@@ -40,7 +46,37 @@ const common = StyleSheet.create({
     height: 60,
     alignItems: "center",
     flexDirection: "row",
-  }
+    width: "100%",
+  },
+  buttonContainer: {
+    borderRadius: 25,
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: colors.white,
+    borderColor: colors.borderColor,
+    borderWidth: 1,
+    width: "100%",
+    marginBottom: 20,
+    height: 50,
+  },
+  containerHorizontalPadding: {
+    paddingHorizontal: 16,
+  },
+  containerVerticalPadding: {
+    paddingVertical: 16,
+  },
+  fullScreenModal: {
+    height: "100%",
+    width: "100%",
+    justifyContent: "flex-start",
+    margin: 0,
+  },
+  row: {
+    flexDirection: "row",
+  },
+  flex1: {
+    flex: 1,
+  },
 });
 
 export default common;

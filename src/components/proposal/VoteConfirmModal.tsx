@@ -18,7 +18,6 @@ import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 import { useAuthState } from "../../context/authContext";
 import client from "../../util/snapshotClient";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
 const { width } = Dimensions.get("screen");
 

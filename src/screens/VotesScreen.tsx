@@ -192,7 +192,10 @@ function VotesScreen({ route }: VotesScreenProps) {
           if (tabWidth <= 80) {
             tabStyle["width"] = 80;
             ScrollViewComponent = ScrollView;
-            viewProps = { horizontal: true };
+            viewProps = {
+              horizontal: true,
+              showsHorizontalScrollIndicator: false,
+            };
           }
           return (
             <View
