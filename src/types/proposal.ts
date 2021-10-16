@@ -11,4 +11,5 @@ export type Proposal = {
   snapshot: string;
   type: string;
   strategies: any;
+  choices?: string[]
 };

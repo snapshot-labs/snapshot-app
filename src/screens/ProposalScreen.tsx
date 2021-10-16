@@ -72,6 +72,7 @@ async function getProposal(
   setVotes(votes);
   setLoaded(true);
   setProposalFullyLoading(false);
+  return { proposal: updatedProposal, votes };
 }
 
 async function getResultsObj(
@@ -183,8 +184,23 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                 resultsLoaded={resultsLoaded}
                 setScrollEnabled={setScrollEnabled}
                 space={space}
-                getProposal={() => {
-                  getProposal(proposal, setProposal, setLoaded, setVotes);
+                getProposal={async () => {
+                  const proposalResponse = await getProposal(
+                    proposal,
+                    setProposal,
+                    setLoaded,
+                    setVotes,
+                    setProposalFullyLoading
+                  );
+
+                  getResultsObj(
+                    space,
+                    proposalResponse?.proposal,
+                    proposalResponse?.votes,
+                    setVotes,
+                    setResults,
+                    setResultsLoaded
+                  );
                 }}
               />
               <View style={{ width: 10, height: 10 }} />
