@@ -125,4 +125,16 @@ export default {
   selectTime: "Select time",
   preview: "Preview",
   select: "Select",
+  validationWarningMinScore:
+    "You need to have a minimum of {{amount}} {{token}} in order to submit a proposal.",
+  validationWarningBasic:
+    "You need to be an author of the space in order to submit a proposal.",
+  validationWarningCustom:
+    "You need to pass the proposal validation in order to submit a proposal.",
+  proposalCreated: "Proposal created",
+  unableToCreateProposal: "Unable to create proposal",
+  duplicateProposal: "Duplicate proposal",
+  deleteProposal: "Delete proposal",
+  proposalDeleted: "Proposal deleted",
+  unableToDeleteProposal: "Unable to delete proposal",
 };

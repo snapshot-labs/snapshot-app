@@ -5,6 +5,7 @@ import { subgraphRequest, call } from "@snapshot-labs/snapshot.js/src/utils";
 import { ContextDispatch } from "../types/context";
 import { EXPLORE_ACTIONS } from "../context/exploreContext";
 import { shorten } from "./miscUtils";
+import i18n from "i18n-js";
 
 function get3BoxProfiles(addresses: string[]) {
   return new Promise((resolove, reject) => {
@@ -117,8 +118,13 @@ export async function setProfiles(
 export function getUsername(
   address: string,
   userProfile: any,
+  connectedAddress?: string,
   short: boolean = true
 ) {
+  if (address === connectedAddress) {
+    return i18n.t("you");
+  }
+
   if (userProfile) {
     if (userProfile.name) {
       return userProfile.name;

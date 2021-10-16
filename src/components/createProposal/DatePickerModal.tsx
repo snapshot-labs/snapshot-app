@@ -14,19 +14,18 @@ import colors from "../../constants/colors";
 type DatePickerModalProps = {
   isVisible: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   timestamp?: number;
-  setTimestamp: (timestamp: number) => void;
+  setTimestamp?: (timestamp: number) => void;
 };
 
-const initialDate = moment().format("YYYY-MM-DD");
-const initialTime = { hour: 1, minutes: 0 };
+const initialDate = new Date().getTime() / 1e3;
 
 function DatePickerModal({
   isVisible,
   onClose,
   title,
-  timestamp = new Date().getTime() / 1e3,
+  timestamp = initialDate,
   setTimestamp,
 }: DatePickerModalProps) {
   const insets = useSafeAreaInsets();
@@ -40,8 +39,11 @@ function DatePickerModal({
   );
 
   function onCloseHandler() {
-    setTime(initialTime);
-    setSelected(initialDate);
+    setTime({
+      hour: momentTimestamp.get("hour"),
+      minutes: momentTimestamp.get("minutes"),
+    });
+    setSelected(momentTimestamp.format("YYYY-MM-DD"));
     onClose();
   }
   return (
@@ -161,7 +163,9 @@ function DatePickerModal({
               time.minutes,
               0
             );
-            setTimestamp(new Date(timestamp).getTime() / (1e3).toFixed());
+            if (setTimestamp) {
+              setTimestamp(new Date(timestamp).getTime() / 1e3);
+            }
             onCloseHandler();
           }}
         >

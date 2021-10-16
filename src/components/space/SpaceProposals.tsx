@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Animated,
   FlatList,
+  RefreshControl,
   Text,
   View,
 } from "react-native";
@@ -148,6 +149,25 @@ function SpaceProposals({
         renderItem={(data: { item: Proposal }) => {
           return <ProposalPreview proposal={data.item} space={space} />;
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            progressViewOffset={200}
+            onRefresh={() => {
+              setLoadCount(0);
+              getProposals(
+                spaceId,
+                0,
+                proposals,
+                setLoadCount,
+                setProposals,
+                true,
+                setLoadingMore,
+                filter.key
+              );
+            }}
+          />
+        }
         onEndReachedThreshold={0.1}
         onEndReached={() => {
           setLoadingMore(true);
