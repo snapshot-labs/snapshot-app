@@ -77,6 +77,14 @@ const common = StyleSheet.create({
   flex1: {
     flex: 1,
   },
+  justifySpaceBetween: {
+    justifyContent: "space-between",
+  },
 });
+
+export const actionSheetTextStyles = {
+  fontFamily: "Calibre-Medium",
+  fontSize: 20,
+};
 
 export default common;

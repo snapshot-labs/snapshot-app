@@ -19,6 +19,7 @@ import SpaceAvatar from "../SpaceAvatar";
 import { useExploreState } from "../../context/exploreContext";
 import { getUsername } from "../../util/profile";
 import CoreBadge from "../CoreBadge";
+import { useAuthState } from "../../context/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -67,8 +68,9 @@ type BlockInformationProps = {
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
   const { profiles } = useExploreState();
+  const { connectedAddress } = useAuthState()
   const authorProfile = profiles[proposal.author];
-  const authorName = getUsername(proposal.author, authorProfile);
+  const authorName = getUsername(proposal.author, authorProfile, connectedAddress ?? "");
   const proposalStart = useMemo(() => dateFormat(proposal.start), [proposal]);
   const proposalEnd = useMemo(() => dateFormat(proposal.end), [proposal]);
   const votingType = useMemo(() => getVotingType(proposal.type), [proposal]);

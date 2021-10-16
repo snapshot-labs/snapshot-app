@@ -120,6 +120,13 @@ function authReducer(state: AuthState, action: ContextAction) {
         }
       }
 
+      if (wcConnector) {
+        wcConnector.send = async (type: string, params: any) => {
+          //@ts-ignore
+          return await wcConnector.signPersonalMessage(params);
+        };
+      }
+
       return {
         ...state,
         wcConnector,

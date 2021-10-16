@@ -14,6 +14,7 @@ import Block from "../Block";
 import { Strategy } from "../../types/explore";
 import { getUsername } from "../../util/profile";
 import { useExploreState } from "../../context/exploreContext";
+import { useAuthState } from "../../context/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -56,8 +57,13 @@ type BlockInformationProps = {
 
 function BlockInformation({ strategy }: BlockInformationProps) {
   const { profiles } = useExploreState();
+  const { connectedAddress } = useAuthState();
   const authorProfile = profiles[strategy.author];
-  const authorName = getUsername(strategy.author, authorProfile);
+  const authorName = getUsername(
+    strategy.author,
+    authorProfile,
+    connectedAddress ?? ""
+  );
   return (
     <Block
       title={i18n.t("information")}

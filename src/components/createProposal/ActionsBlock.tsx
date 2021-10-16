@@ -9,12 +9,13 @@ import DatePickerModal from "./DatePickerModal";
 import { dateFormat } from "../../util/miscUtils";
 
 type ActionsBlockProps = {
-  startTimestamp: number | null;
-  endTimestamp: number | null;
+  startTimestamp: number | undefined;
+  endTimestamp: number | undefined;
   setStartTimestamp: (timestamp: number) => void;
   setEndTimestamp: (timestamp: number) => void;
   isValid: boolean;
-  snapshot: number;
+  snapshot: number | string;
+  onSubmit: () => void;
 };
 
 function ActionsBlock({
@@ -24,6 +25,7 @@ function ActionsBlock({
   setEndTimestamp,
   isValid,
   snapshot,
+  onSubmit,
 }: ActionsBlockProps) {
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
   const [datePickerProps, setDatePickerProps] = useState({});
@@ -40,7 +42,7 @@ function ActionsBlock({
           >
             <Button
               title={
-                startTimestamp === null
+                startTimestamp === undefined
                   ? i18n.t("selectStartDate")
                   : dateFormat(startTimestamp)
               }
@@ -57,7 +59,7 @@ function ActionsBlock({
             />
             <Button
               title={
-                endTimestamp === null
+                endTimestamp === undefined
                   ? i18n.t("selectEndDate")
                   : dateFormat(endTimestamp)
               }
@@ -80,7 +82,7 @@ function ActionsBlock({
             <Button
               title={i18n.t("publish")}
               disabled={!isValid}
-              onPress={() => {}}
+              onPress={onSubmit}
             />
           </View>
         }

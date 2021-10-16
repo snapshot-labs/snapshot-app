@@ -11,7 +11,6 @@ import UserAvatar from "../UserAvatar";
 import { getChoiceString, n } from "../../util/miscUtils";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
-import makeBlockie from "ethereum-blockies-base64";
 import { Space } from "../../types/explore";
 import { Proposal } from "../../types/proposal";
 import { useAuthState } from "../../context/authContext";
@@ -69,7 +68,7 @@ function VoteRow({
 }: VoteRowProps) {
   const { connectedAddress } = useAuthState();
   const voterProfile = profiles[vote.voter];
-  let voterName = getUsername(vote.voter, voterProfile);
+  let voterName = getUsername(vote.voter, voterProfile, connectedAddress ?? "");
   if (connectedAddress === vote.voter) {
     voterName = i18n.t("you");
   }

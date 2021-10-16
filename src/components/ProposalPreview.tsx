@@ -21,6 +21,7 @@ import CoreBadge from "./CoreBadge";
 import { Space } from "../types/explore";
 import { getUsername } from "../util/profile";
 import isEmpty from "lodash/isEmpty";
+import {useAuthState} from "../context/authContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -107,6 +108,7 @@ function ProposalPreview({
   fromFeed = false,
 }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
+  const { connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
   const formattedBody = useMemo(
     () => shorten(removeMd(proposal.body), 140).replace(/\r?\n|\r/g, " "),
@@ -118,7 +120,7 @@ function ProposalPreview({
     [proposal]
   );
   const authorProfile = profiles[proposal.author];
-  const authorName = getUsername(proposal.author, authorProfile);
+  const authorName = getUsername(proposal.author, authorProfile, connectedAddress ?? "");
   const isCore = useMemo(() => {
     if (isEmpty(space?.members)) return false;
     let updatedMembers = space.members.map((address: string) =>

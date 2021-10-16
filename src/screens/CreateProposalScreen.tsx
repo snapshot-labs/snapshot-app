@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import { getBlockNumber } from "@snapshot-labs/snapshot.js/src/utils/web3";
+import validations from "@snapshot-labs/snapshot.js/src/validations";
 import { Space } from "../types/explore";
 import i18n from "i18n-js";
 import Input from "../components/Input";
@@ -13,7 +14,12 @@ import ChoicesBlock from "../components/createProposal/ChoicesBlock";
 import ActionsBlock from "../components/createProposal/ActionsBlock";
 import proposal from "../constants/proposal";
 import MarkdownBody from "../components/proposal/MarkdownBody";
-import set = Reflect.set;
+import { useAuthState } from "../context/authContext";
+import Warning from "../components/createProposal/Warning";
+import client from "../util/snapshotClient";
+import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
+import { PROPOSAL_SCREEN } from "../constants/navigation";
 
 const bodyLimit = 6400;
 
@@ -47,11 +53,12 @@ const isValid = (
   name: string,
   body: string,
   choices: string[],
-  start: number | null,
-  end: number | null,
-  snapshot: number
+  start: number | undefined,
+  end: number | undefined,
+  snapshot: number | string,
+  passValidation: [boolean, string]
 ) => {
-  return !!(
+  return (
     name &&
     body.length <= bodyLimit &&
     start &&
@@ -60,7 +67,8 @@ const isValid = (
     snapshot &&
     snapshot > snapshot / 2 &&
     choices.length >= 2 &&
-    !choices.some((a) => a === "")
+    !choices.some((a) => a === "") &&
+    passValidation[0]
   );
 };
 
@@ -72,6 +80,22 @@ async function fetchBlockNumber(
   setSnapshot(blockNumber);
 }
 
+async function validateUser(
+  connectedAddress: string,
+  space: Space,
+  setPassValidation: (passValidation: [boolean, string]) => void
+) {
+  const validationName = space.validation?.name ?? "basic";
+  const validationParams = space.validation?.params ?? {};
+  const isValid = await validations[validationName](
+    connectedAddress,
+    { ...space },
+    "",
+    { ...validationParams }
+  );
+  setPassValidation([isValid, validationName]);
+}
+
 type CreateProposalScreenProps = {
   route: {
     params: {
@@ -81,17 +105,27 @@ type CreateProposalScreenProps = {
 };
 
 function CreateProposalScreen({ route }: CreateProposalScreenProps) {
+  const space = route.params.space;
+  const { connectedAddress, wcConnector } = useAuthState();
   const [choices, setChoices] = useState([""]);
   const [votingType, setVotingType] = useState<{ key: string; text: string }>(
     proposal.getVotingTypes()[0]
   );
   const [question, setQuestion] = useState<string>("");
   const [proposalText, setProposalText] = useState<string>("");
-  const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
-  const [endTimestamp, setEndTimestamp] = useState<number | null>(null);
-  const [snapshot, setSnapshot] = useState(0);
+  const [startTimestamp, setStartTimestamp] = useState<number | undefined>();
+  const [endTimestamp, setEndTimestamp] = useState<number | undefined>();
+  const [snapshot, setSnapshot] = useState<number | string>(0);
+  const [passValidation, setPassValidation] = useState<[boolean, string]>([
+    false,
+    "basic",
+  ]);
+  const navigation: any = useNavigation();
 
-  useEffect(() => {}, [fetchBlockNumber(route.params.space, setSnapshot)]);
+  useEffect(() => {
+    fetchBlockNumber(space, setSnapshot);
+    validateUser(connectedAddress ?? "", space, setPassValidation);
+  }, []);
 
   return (
     <SafeAreaView style={common.screen}>
@@ -99,6 +133,9 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
         <BackButton title={i18n.t("createProposal")} />
       </View>
       <ScrollView style={common.screen}>
+        {!passValidation[0] && (
+          <Warning passValidation={passValidation} space={space} />
+        )}
         <Input
           placeholder={i18n.t("question")}
           style={[styles.input, styles.questionInput]}
@@ -111,7 +148,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
           placeholder={i18n.t("whatIsYourProposal")}
           multiline
           numberOfLines={4}
-          style={[styles.input, { minHeight: 60 }]}
+          style={[styles.input, { minHeight: 200 }]}
           textAlignVertical="top"
           value={proposalText}
           onChangeText={(text: string) => {
@@ -149,9 +186,64 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
             choices,
             startTimestamp,
             endTimestamp,
-            snapshot
+            snapshot,
+            passValidation
           )}
           snapshot={snapshot}
+          onSubmit={async () => {
+            const form = {
+              name: question,
+              body: proposalText,
+              start: startTimestamp,
+              end: endTimestamp,
+              type: votingType.key,
+              snapshot:
+                typeof snapshot === "number" ? snapshot : parseInt(snapshot),
+              choices,
+              metadata: {
+                network: space.network,
+                strategies: space.strategies,
+              },
+            };
+
+            try {
+              wcConnector.send = async (type, params) => {
+                return await wcConnector.signPersonalMessage(params);
+              };
+
+              const sign: any = await client.broadcast(
+                wcConnector,
+                connectedAddress,
+                space.id,
+                "proposal",
+                form
+              );
+              const { ipfsHash } = sign;
+
+              navigation.replace(PROPOSAL_SCREEN, {
+                proposalId: ipfsHash,
+                spaceId: space.id,
+              });
+
+              if (sign) {
+                Toast.show({
+                  type: "customSuccess",
+                  text1: i18n.t("proposalCreated"),
+                });
+              } else {
+                Toast.show({
+                  type: "customError",
+                  text1: i18n.t("unableToCreateProposal"),
+                });
+              }
+            } catch (e) {
+              console.log(e);
+              Toast.show({
+                type: "customError",
+                text1: i18n.t("unableToCreateProposal"),
+              });
+            }
+          }}
         />
       </ScrollView>
     </SafeAreaView>
