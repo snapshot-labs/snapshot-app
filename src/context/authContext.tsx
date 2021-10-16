@@ -3,11 +3,8 @@ import { ContextAction, ContextDispatch } from "../types/context";
 import storage from "../util/storage";
 import { Wallet } from "ethers";
 import WalletConnect from "@walletconnect/client";
-import { Platform } from "react-native";
-import SendIntentAndroid from "react-native-send-intent";
 import {
   initialWalletConnectValues,
-  setAndroidListeners,
   setWalletConnectListeners,
 } from "../util/walletConnectUtils";
 
@@ -20,6 +17,7 @@ type AuthState = {
   aliasWallet: Wallet | null;
   savedWallets: { [id: string]: { name: string; address: string } };
   wcConnector: WalletConnect;
+  refreshFeed: null | { spaceId: string };
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -38,6 +36,7 @@ const AUTH_ACTIONS = {
   SET_SAVED_WALLETS: "@auth/SET_SAVED_WALLETS",
   SET_OVERWRITE_SAVED_WALLETS: "@auth/SET_OVERWRITE_SAVED_WALLETS",
   SET_WC_CONNECTOR: "@auth/SET_WC_CONNECTOR",
+  SET_REFRESH_FEED: "@auth/SET_REFRESH_FEED",
 };
 
 const initialState = {
@@ -49,6 +48,7 @@ const initialState = {
   aliasWallet: null,
   savedWallets: {},
   wcConnector: null,
+  refreshFeed: null,
 };
 
 function authReducer(state: AuthState, action: ContextAction) {
@@ -133,6 +133,8 @@ function authReducer(state: AuthState, action: ContextAction) {
       };
     case AUTH_ACTIONS.SET_OVERWRITE_SAVED_WALLETS:
       return { ...state, savedWallets: action.payload };
+    case AUTH_ACTIONS.SET_REFRESH_FEED:
+      return { ...state, refreshFeed: action.payload };
     case AUTH_ACTIONS.LOGOUT:
       storage.clearAll();
       return initialState;

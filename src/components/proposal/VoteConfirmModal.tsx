@@ -224,10 +224,7 @@ function VoteConfirmModal({
 
               let formattedSelectedChoices = selectedChoices;
 
-              if (
-                proposal.type === "single-choice" ||
-                proposal.type === "approval"
-              ) {
+              if (proposal.type === "single-choice") {
                 formattedSelectedChoices = selectedChoices[0];
               }
 

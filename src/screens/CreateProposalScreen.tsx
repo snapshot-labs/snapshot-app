@@ -14,12 +14,17 @@ import ChoicesBlock from "../components/createProposal/ChoicesBlock";
 import ActionsBlock from "../components/createProposal/ActionsBlock";
 import proposal from "../constants/proposal";
 import MarkdownBody from "../components/proposal/MarkdownBody";
-import { useAuthState } from "../context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "../context/authContext";
 import Warning from "../components/createProposal/Warning";
 import client from "../util/snapshotClient";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "../constants/navigation";
+import { Proposal } from "../types/proposal";
 
 const bodyLimit = 6400;
 
@@ -55,7 +60,7 @@ const isValid = (
   choices: string[],
   start: number | undefined,
   end: number | undefined,
-  snapshot: number | string,
+  snapshot: number,
   passValidation: [boolean, string]
 ) => {
   return (
@@ -87,6 +92,7 @@ async function validateUser(
 ) {
   const validationName = space.validation?.name ?? "basic";
   const validationParams = space.validation?.params ?? {};
+  //@ts-ignore
   const isValid = await validations[validationName](
     connectedAddress,
     { ...space },
@@ -100,21 +106,41 @@ type CreateProposalScreenProps = {
   route: {
     params: {
       space: Space;
+      proposal?: Proposal;
     };
   };
 };
 
 function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const space = route.params.space;
+  const duplicateProposal = route.params.proposal;
+  const authDispatch = useAuthDispatch();
+  const allVotingTypes = proposal.getVotingTypes();
   const { connectedAddress, wcConnector } = useAuthState();
-  const [choices, setChoices] = useState([""]);
-  const [votingType, setVotingType] = useState<{ key: string; text: string }>(
-    proposal.getVotingTypes()[0]
+  const [choices, setChoices] = useState(
+    duplicateProposal && duplicateProposal?.choices
+      ? duplicateProposal.choices
+      : [""]
   );
-  const [question, setQuestion] = useState<string>("");
-  const [proposalText, setProposalText] = useState<string>("");
-  const [startTimestamp, setStartTimestamp] = useState<number | undefined>();
-  const [endTimestamp, setEndTimestamp] = useState<number | undefined>();
+  const [votingType, setVotingType] = useState<{ key: string; text: string }>(
+    duplicateProposal
+      ? allVotingTypes.find(
+          (votingType) => votingType.key === duplicateProposal.type
+        ) ?? allVotingTypes[0]
+      : allVotingTypes[0]
+  );
+  const [question, setQuestion] = useState<string>(
+    duplicateProposal ? duplicateProposal.title : ""
+  );
+  const [proposalText, setProposalText] = useState<string>(
+    duplicateProposal ? duplicateProposal.body : ""
+  );
+  const [startTimestamp, setStartTimestamp] = useState<number | undefined>(
+    duplicateProposal?.start ?? undefined
+  );
+  const [endTimestamp, setEndTimestamp] = useState<number | undefined>(
+    duplicateProposal?.end ?? undefined
+  );
   const [snapshot, setSnapshot] = useState<number | string>(0);
   const [passValidation, setPassValidation] = useState<[boolean, string]>([
     false,
@@ -180,15 +206,17 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
           endTimestamp={endTimestamp}
           setStartTimestamp={setStartTimestamp}
           setEndTimestamp={setEndTimestamp}
-          isValid={isValid(
-            question,
-            proposalText,
-            choices,
-            startTimestamp,
-            endTimestamp,
-            snapshot,
-            passValidation
-          )}
+          isValid={
+            !!isValid(
+              question,
+              proposalText,
+              choices,
+              startTimestamp,
+              endTimestamp,
+              typeof snapshot === "number" ? snapshot : parseInt(snapshot),
+              passValidation
+            )
+          }
           snapshot={snapshot}
           onSubmit={async () => {
             const form = {
@@ -207,11 +235,8 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
             };
 
             try {
-              wcConnector.send = async (type, params) => {
-                return await wcConnector.signPersonalMessage(params);
-              };
-
               const sign: any = await client.broadcast(
+                //@ts-ignore
                 wcConnector,
                 connectedAddress,
                 space.id,
@@ -229,6 +254,12 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
                 Toast.show({
                   type: "customSuccess",
                   text1: i18n.t("proposalCreated"),
+                });
+                authDispatch({
+                  type: AUTH_ACTIONS.SET_REFRESH_FEED,
+                  payload: {
+                    spaceId: space.id,
+                  },
                 });
               } else {
                 Toast.show({

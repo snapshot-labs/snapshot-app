@@ -5,12 +5,17 @@ import { Space } from "../../types/explore";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
-import { useAuthState } from "../../context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "../../context/authContext";
 import common, { actionSheetTextStyles } from "../../styles/common";
 import { Proposal } from "../../types/proposal";
 import { useNavigation } from "@react-navigation/native";
 import client from "../../util/snapshotClient";
 import Toast from "react-native-toast-message";
+import { CREATE_PROPOSAL_SCREEN } from "../../constants/navigation";
 
 const isAdmin = (connectedAddress: string, space: Space) => {
   const admins = (space.admins || []).map((admin: string) =>
@@ -27,6 +32,7 @@ type ProposalMenuProps = {
 function ProposalMenu({ proposal, space }: ProposalMenuProps) {
   const { showActionSheetWithOptions } = useActionSheet();
   const { connectedAddress, wcConnector } = useAuthState();
+  const authDispatch = useAuthDispatch();
   const navigation = useNavigation();
 
   const deleteProposal = async () => {
@@ -46,6 +52,12 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
         Toast.show({
           type: "customSuccess",
           text1: i18n.t("proposalDeleted"),
+        });
+        authDispatch({
+          type: AUTH_ACTIONS.SET_REFRESH_FEED,
+          payload: {
+            spaceId: space.id,
+          },
         });
         navigation.goBack();
       } else {
@@ -89,7 +101,9 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
             textStyle: actionSheetTextStyles,
           },
           (buttonIndex) => {
-            if (
+            if (buttonIndex === 0) {
+              navigation.navigate(CREATE_PROPOSAL_SCREEN, { proposal, space });
+            } else if (
               (isAdmin(connectedAddress ?? "", space) ||
                 connectedAddress === proposal?.author) &&
               buttonIndex === 1

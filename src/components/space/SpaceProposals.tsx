@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Animated,
   FlatList,
+  Platform,
   RefreshControl,
   Text,
   View,
@@ -24,6 +25,7 @@ import common from "../../styles/common";
 import ProposalPreview from "../ProposalPreview";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
+import {AUTH_ACTIONS, useAuthDispatch, useAuthState} from "../../context/authContext";
 
 const LOAD_BY = 6;
 
@@ -88,12 +90,38 @@ function SpaceProposals({
   headerHeight,
   filter,
 }: SpaceProposalsProps) {
+  const { refreshFeed } = useAuthState();
   const { profiles } = useExploreState();
+  const authDispatch = useAuthDispatch();
   const spaceId: string = get(space, "id", "");
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const exploreDispatch = useExploreDispatch();
+
+  const onRefresh = () => {
+    setLoadCount(0);
+    getProposals(
+      spaceId,
+      0,
+      proposals,
+      setLoadCount,
+      setProposals,
+      true,
+      setLoadingMore,
+      filter.key
+    );
+  };
+
+  useEffect(() => {
+    if (refreshFeed?.spaceId === spaceId) {
+      onRefresh();
+      authDispatch({
+        type: AUTH_ACTIONS.SET_REFRESH_FEED,
+        payload: null,
+      });
+    }
+  }, [refreshFeed]);
 
   useEffect(() => {
     spaceScreenRef.current = {
@@ -143,7 +171,7 @@ function SpaceProposals({
         scrollEventThrottle={1}
         bounces={false}
         overScrollMode={"never"}
-        contentContainerStyle={{ paddingTop: headerHeight }}
+        contentContainerStyle={{ marginTop: headerHeight }}
         data={proposals}
         keyExtractor={(item: Proposal, i) => item.id}
         renderItem={(data: { item: Proposal }) => {
@@ -153,19 +181,10 @@ function SpaceProposals({
           <RefreshControl
             refreshing={false}
             progressViewOffset={200}
-            onRefresh={() => {
-              setLoadCount(0);
-              getProposals(
-                spaceId,
-                0,
-                proposals,
-                setLoadCount,
-                setProposals,
-                true,
-                setLoadingMore,
-                filter.key
-              );
-            }}
+            colors={[colors.textColor]}
+            tintColor={colors.textColor}
+            titleColor={colors.textColor}
+            onRefresh={onRefresh}
           />
         }
         onEndReachedThreshold={0.1}
