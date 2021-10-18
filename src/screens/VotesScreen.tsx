@@ -164,14 +164,15 @@ function VotesScreen({ route }: VotesScreenProps) {
   return (
     <View style={common.screen}>
       <View
-        style={{
-          paddingTop: insets.top,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingLeft: 16,
-        }}
+        style={[
+          common.headerContainer,
+          common.justifySpaceBetween,
+          { borderBottomWidth: 0 },
+        ]}
       >
-        <Text style={styles.headerTitle}>{i18n.t("votes")}</Text>
+        <Text style={[styles.headerTitle, common.containerHorizontalPadding]}>
+          {i18n.t("votes")}
+        </Text>
         <BackButton backIcon="times" containerStyle={{ paddingBottom: 0 }} />
       </View>
       <TabView

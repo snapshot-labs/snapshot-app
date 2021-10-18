@@ -25,6 +25,7 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "../constants/navigation";
 import { Proposal } from "../types/proposal";
+import { useToastShowConfig } from "../constants/toast";
 
 const bodyLimit = 6400;
 
@@ -147,6 +148,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
     "basic",
   ]);
   const navigation: any = useNavigation();
+  const toastShowConfig = useToastShowConfig();
 
   useEffect(() => {
     fetchBlockNumber(space, setSnapshot);
@@ -254,6 +256,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
                 Toast.show({
                   type: "customSuccess",
                   text1: i18n.t("proposalCreated"),
+                  ...toastShowConfig,
                 });
                 authDispatch({
                   type: AUTH_ACTIONS.SET_REFRESH_FEED,
@@ -265,6 +268,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
                 Toast.show({
                   type: "customError",
                   text1: i18n.t("unableToCreateProposal"),
+                  ...toastShowConfig,
                 });
               }
             } catch (e) {
@@ -272,6 +276,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
               Toast.show({
                 type: "customError",
                 text1: i18n.t("unableToCreateProposal"),
+                ...toastShowConfig,
               });
             }
           }}

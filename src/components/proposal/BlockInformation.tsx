@@ -112,6 +112,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
                   size={20}
                   address={proposal.author}
                   imgSrc={authorProfile?.image}
+                  key={`${proposal.author}${authorProfile?.image}`}
                 />
                 <Text style={[styles.rowValueText, { marginLeft: 4 }]}>
                   {authorName}

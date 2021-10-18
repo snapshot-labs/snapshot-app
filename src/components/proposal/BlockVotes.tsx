@@ -117,6 +117,7 @@ function BlockVotes({
                         address={vote.voter}
                         imgSrc={voterProfile?.image}
                         size={26}
+                        key={`${vote.voter}${voterProfile?.image}`}
                       />
                     </View>
                   );

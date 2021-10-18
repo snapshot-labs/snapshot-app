@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import client from "../../util/snapshotClient";
 import Toast from "react-native-toast-message";
 import { CREATE_PROPOSAL_SCREEN } from "../../constants/navigation";
+import { useToastShowConfig } from "../../constants/toast";
 
 const isAdmin = (connectedAddress: string, space: Space) => {
   const admins = (space.admins || []).map((admin: string) =>
@@ -34,6 +35,7 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
   const { connectedAddress, wcConnector } = useAuthState();
   const authDispatch = useAuthDispatch();
   const navigation = useNavigation();
+  const toastShowConfig = useToastShowConfig();
 
   const deleteProposal = async () => {
     try {
@@ -52,6 +54,7 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
         Toast.show({
           type: "customSuccess",
           text1: i18n.t("proposalDeleted"),
+          ...toastShowConfig,
         });
         authDispatch({
           type: AUTH_ACTIONS.SET_REFRESH_FEED,
@@ -64,12 +67,14 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
         Toast.show({
           type: "customError",
           text1: i18n.t("unableToDeleteProposal"),
+          ...toastShowConfig,
         });
       }
     } catch (e) {
       Toast.show({
         type: "customError",
         text1: i18n.t("unableToDeleteProposal"),
+        ...toastShowConfig,
       });
     }
   };

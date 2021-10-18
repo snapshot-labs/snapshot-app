@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "./src/context/authContext";
 import AppWrapper from "./AppWrapper";
-import styles from "./src/styles/toast";
+import { toastLayoutConfig } from "./src/constants/toast";
 import "./src/i18n";
 
 let customFonts = {
@@ -24,23 +24,6 @@ async function _loadFontsAsync(setFontsLoaded: (fontsLoaded: boolean) => void) {
   setFontsLoaded(true);
 }
 
-const toastConfig = {
-  default: ({ text1 }: { text1: string }) => (
-    <View style={styles.container}>
-      <Text style={styles.text}>{text1}</Text>
-    </View>
-  ),
-  customSuccess: ({ text1 }: { text1: string }) => (
-    <View style={[styles.container, styles.successContainer]}>
-      <Text style={styles.text}>{text1}</Text>
-    </View>
-  ),
-  customError: ({ text1 }: { text1: string }) => (
-    <View style={[styles.container, styles.errorContainer]}>
-      <Text style={styles.text}>{text1}</Text>
-    </View>
-  ),
-};
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
@@ -59,7 +42,7 @@ export default function App() {
         <AuthProvider>
           <AppWrapper />
         </AuthProvider>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+        <Toast config={toastLayoutConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaProvider>
     );
   }

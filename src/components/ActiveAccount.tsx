@@ -9,7 +9,6 @@ import {
 import tailwind from "tailwind-rn";
 import i18n from "i18n-js";
 import Toast from "react-native-toast-message";
-import makeBlockie from "ethereum-blockies-base64";
 import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -17,6 +16,7 @@ import UserAvatar from "./UserAvatar";
 import { explorerUrl, shorten } from "../util/miscUtils";
 import { useExploreState } from "../context/exploreContext";
 import colors from "../constants/colors";
+import { useToastShowConfig } from "../constants/toast";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -40,12 +40,14 @@ function ActiveAccount({ address }: ActiveAccountProps) {
   const { profiles } = useExploreState();
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
+  const toastShowConfig = useToastShowConfig();
 
   const copyToClipboard = () => {
     Clipboard.setString(address);
     Toast.show({
       type: "default",
       text1: i18n.t("publicAddressCopiedToClipboard"),
+      ...toastShowConfig,
     });
   };
 
@@ -62,7 +64,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
             size={60}
             address={address}
             imgSrc={profile?.image}
-            key={address}
+            key={`${address}${profile?.image}`}
           />
         </TouchableOpacity>
       ) : (

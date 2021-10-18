@@ -21,7 +21,7 @@ import CoreBadge from "./CoreBadge";
 import { Space } from "../types/explore";
 import { getUsername } from "../util/profile";
 import isEmpty from "lodash/isEmpty";
-import {useAuthState} from "../context/authContext";
+import { useAuthState } from "../context/authContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -76,8 +76,7 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
     fontSize: 20,
-    marginTop: 8,
-    marginBottom: 8,
+    marginVertical: 8,
     lineHeight: 30,
   },
   period: {
@@ -120,7 +119,11 @@ function ProposalPreview({
     [proposal]
   );
   const authorProfile = profiles[proposal.author];
-  const authorName = getUsername(proposal.author, authorProfile, connectedAddress ?? "");
+  const authorName = getUsername(
+    proposal.author,
+    authorProfile,
+    connectedAddress ?? ""
+  );
   const isCore = useMemo(() => {
     if (isEmpty(space?.members)) return false;
     let updatedMembers = space.members.map((address: string) =>
@@ -167,8 +170,17 @@ function ProposalPreview({
           </View>
         </View>
         <View>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.body}>{formattedBody}</Text>
+          <Text
+            style={[
+              styles.title,
+              { marginBottom: isEmpty(formattedBody) ? 8 : 0 },
+            ]}
+          >
+            {title}
+          </Text>
+          {!isEmpty(formattedBody) && (
+            <Text style={styles.body}>{formattedBody}</Text>
+          )}
           <Text style={styles.period}>{period}</Text>
         </View>
       </View>

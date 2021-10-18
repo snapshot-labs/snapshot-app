@@ -92,6 +92,7 @@ function VoteRow({
               size={20}
               address={vote.voter}
               imgSrc={voterProfile?.image}
+              key={`${vote.voter}${voterProfile?.image}`}
             />
             <Text
               style={[
