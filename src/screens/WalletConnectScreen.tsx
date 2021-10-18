@@ -12,11 +12,7 @@ import i18n from "i18n-js";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
-import {
-  CUSTOM_WALLET_SCREEN,
-  HOME_SCREEN,
-  QR_CODE_SCANNER_SCREEN,
-} from "../constants/navigation";
+import { CUSTOM_WALLET_SCREEN, HOME_SCREEN } from "../constants/navigation";
 import { MetaMask } from "../constants/wallets";
 import { defaultHeaders } from "../util/apiUtils";
 import common from "../styles/common";
@@ -25,7 +21,11 @@ import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
 import storage from "../util/storage";
-import { connectToWalletService } from "../util/walletConnectUtils";
+import {
+  connectToWalletService,
+  initialWalletConnectValues,
+} from "../util/walletConnectUtils";
+import WalletConnect from "@walletconnect/client";
 
 const defaultWallets = [MetaMask];
 
@@ -96,72 +96,14 @@ async function fetchWallets(
 function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
-  const [androidAppUrl, setAndroidAppUrl] = useState("");
-  const [currentWallet, setCurrentWallet] = useState({});
   const connector = useWalletConnect();
-  const [connected, setConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
 
   useEffect(() => {
     fetchWallets(setWallets, setLoading);
-    setConnected(connector.connected);
   }, []);
-
-  useEffect(() => {
-    if (connector.connected && connected !== connector.connected) {
-      if (connector.accounts && connector.accounts.length > 0) {
-        const address = connector.accounts[0];
-        authDispatch({
-          type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
-          payload: {
-            connectedAddress: address,
-            addToStorage: true,
-            isWalletConnect: true,
-          },
-        });
-
-        if (Platform.OS === "android") {
-          authDispatch({
-            type: AUTH_ACTIONS.SET_CONNECTED_ANDROID_APP_URL,
-            payload: androidAppUrl,
-          });
-        }
-
-        const connectedWallet = {
-          address: connector.accounts[0],
-          name: get(currentWallet, "name", ""),
-          mobile: get(currentWallet, "mobile.native"),
-          androidAppUrl,
-          session: connector.session,
-          walletService: currentWallet,
-        };
-        storage.save(
-          storage.KEYS.savedWallets,
-          JSON.stringify({
-            [address]: connectedWallet,
-          })
-        );
-        authDispatch({
-          type: AUTH_ACTIONS.SET_SAVED_WALLETS,
-          payload: {
-            [address]: connectedWallet,
-          },
-        });
-        authDispatch({
-          type: AUTH_ACTIONS.SET_WC_CONNECTOR,
-          payload: {
-            newConnector: connector,
-          },
-        });
-      }
-      navigation.reset({
-        index: 0,
-        routes: [{ name: HOME_SCREEN }],
-      });
-    }
-  }, [connector.connected]);
 
   return (
     <View
@@ -194,7 +136,10 @@ function WalletConnectScreen() {
             <TouchableOpacity
               key={wallet.id}
               onPress={async () => {
-                const newConnector = await connector.connect();
+                const newConnector: any = new WalletConnect({
+                  ...initialWalletConnectValues,
+                  session: undefined,
+                });
                 const bridge = encodeURIComponent(newConnector.bridge);
                 const arrayBufferKey = await generateKey();
                 const key = convertArrayBufferToHex(arrayBufferKey, true);
@@ -222,6 +167,61 @@ function WalletConnectScreen() {
                 );
                 const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
 
+                newConnector.on("connect", async (error: any, payload: any) => {
+                  if (!error) {
+                    const params = payload.params[0];
+                    const address = params ? params.accounts[0] : "";
+                    const androidAppArray = get(
+                      wallet,
+                      "app.android",
+                      ""
+                    ).split("id=");
+
+                    let androidAppUrl = get(androidAppArray, 1, undefined);
+                    const connectedWallet = {
+                      name: wallet.name,
+                      address,
+                      androidAppUrl,
+                      mobile: wallet.mobile.native,
+                      walletService: wallet,
+                      session: newConnector.session,
+                    };
+
+                    storage.save(
+                      storage.KEYS.savedWallets,
+                      JSON.stringify({
+                        [address]: connectedWallet,
+                      })
+                    );
+                    authDispatch({
+                      type: AUTH_ACTIONS.SET_SAVED_WALLETS,
+                      payload: {
+                        [address]: connectedWallet,
+                      },
+                    });
+                    authDispatch({
+                      type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+                      payload: {
+                        connectedAddress: address,
+                        isWalletConnect: true,
+                        addToStorage: true,
+                      },
+                    });
+                    authDispatch({
+                      type: AUTH_ACTIONS.SET_WC_CONNECTOR,
+                      payload: {
+                        newConnector: newConnector,
+                        androidAppUrl: androidAppUrl,
+                        walletService: wallet,
+                      },
+                    });
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: HOME_SCREEN }],
+                    });
+                  }
+                });
+
                 if (Platform.OS === "android") {
                   const androidAppArray = get(wallet, "app.android", "").split(
                     "id="
@@ -233,7 +233,6 @@ function WalletConnectScreen() {
                     Linking.openURL(wallet.mobile.native);
                   } else {
                     if (androidAppUrl) {
-                      setAndroidAppUrl(androidAppUrl);
                       SendIntentAndroid.openAppWithData(
                         androidAppUrl,
                         formattedUri
@@ -243,8 +242,6 @@ function WalletConnectScreen() {
                 } else {
                   connectToWalletService(wallet, formattedUri);
                 }
-
-                setCurrentWallet(wallet);
               }}
             >
               <View
