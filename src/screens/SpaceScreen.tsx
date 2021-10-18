@@ -7,9 +7,7 @@ import {
   Platform,
   Dimensions,
 } from "react-native";
-import {
-  TouchableNativeFeedback,
-} from "react-native-gesture-handler";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import colors from "../constants/colors";
@@ -40,10 +38,11 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     textTransform: "none",
     fontSize: 18,
+    marginTop: 0,
   },
 });
 
-export const headerHeight = Platform.OS === "android" ? 180 : 170;
+export const headerHeight = Platform.OS === "android" ? 185 : 170;
 
 const renderScene = (
   route: any,
@@ -142,7 +141,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         Math.max(clampedScrollValue.current + diff, 0),
         headerHeight
       );
-      if (clampedScrollValue.current === headerHeight) {
+      if (clampedScrollValue.current > 50) {
         setShowTitle(true);
       } else {
         setShowTitle(false);
@@ -160,11 +159,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     outputRange: [0, -headerHeight],
     extrapolate: "clamp",
   });
-  const bgBackground = clampedScroll.current.interpolate({
-    inputRange: [0, headerHeight],
-    outputRange: [colors.white, colors.bgBlue],
-    extrapolate: "clamp",
-  });
 
   function moveHeader(toValue: number) {
     if (headerSnap.current) {
@@ -174,7 +168,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     headerSnap.current = Animated.timing(offsetAnim.current, {
       toValue,
       duration: 350,
-      useNativeDriver: false,
+      useNativeDriver: true,
     });
 
     headerSnap.current.start();
@@ -208,7 +202,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           onMomentumScrollBegin,
           onScroll: Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollAnim.current } } }],
-            { useNativeDriver: false }
+            { useNativeDriver: true }
           ),
         },
         filter
@@ -243,12 +237,12 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             borderTopWidth: 0,
             shadowOpacity: 0,
             backgroundColor: colors.white,
-            paddingTop: 0,
             height: 45,
             elevation: 0,
             zIndex: 200,
             borderBottomColor: colors.borderColor,
             borderBottomWidth: 1,
+            paddingTop: 4,
           }}
           inactiveColor={colors.textColor}
           renderTabBarItem={(item) => {
@@ -263,7 +257,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               />
             );
           }}
-          tabStyle={{ zIndex: 300 }}
+          tabStyle={{ alignItems: "center", justifyContent: "flex-start" }}
           onTabPress={() => {
             if (clampedScrollValue.current !== 0) {
               moveHeader(offsetValue.current - headerHeight);
@@ -286,8 +280,8 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           common.headerContainer,
           {
             justifyContent: "space-between",
-            backgroundColor: bgBackground,
-            borderBottomColor: showTitle ? "transparent" : colors.borderColor,
+            backgroundColor: showTitle ? colors.bgBlue : colors.white,
+            borderBottomWidth: 0,
           },
         ]}
       >

@@ -83,6 +83,7 @@
     "react-native-status-bar-height": "^2.6.0",
     "react-native-tab-view": "^3.1.1",
     "react-native-tcp": "^3.3.2",
+    "react-native-text-size": "^4.0.0-rc.1",
     "react-native-toast-message": "^1.6.0",
     "react-native-udp": "^2.7.0",
     "react-native-unimodules": "~0.14.5",

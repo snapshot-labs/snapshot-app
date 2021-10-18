@@ -76,6 +76,7 @@ function CustomWalletScreen() {
                   routes: [{ name: HOME_SCREEN }],
                 });
               } else {
+                setLoading(false);
                 setError(i18n.t("unableToFindAssociatedAddress"));
               }
             } else {

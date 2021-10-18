@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   StyleSheet,
   useWindowDimensions,
@@ -8,7 +8,13 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import {
+  SceneMap,
+  TabBar,
+  TabBarIndicator,
+  TabView,
+} from "react-native-tab-view";
+import rnTextSize, { TSFontSpecs } from "react-native-text-size";
 import colors from "../constants/colors";
 import common from "../styles/common";
 import i18n from "i18n-js";
@@ -21,16 +27,9 @@ import { Space } from "../types/explore";
 import { Proposal } from "../types/proposal";
 import VoteList from "../components/proposal/VotesList";
 
-const { width } = Dimensions.get("screen");
+const { width: deviceWidth } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
-  indicatorStyle: {
-    fontFamily: "Calibre-Medium",
-    color: colors.textColor,
-    backgroundColor: colors.darkGray,
-    height: 5,
-    top: Platform.OS === "ios" ? 42 : 43,
-  },
   labelStyle: {
     fontFamily: "Calibre-Medium",
     color: colors.textColor,
@@ -44,6 +43,11 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "ios" ? 6 : 0,
   },
 });
+
+const fontSpecs: TSFontSpecs = {
+  fontFamily: "Calibre-Medium",
+  fontSize: 18,
+};
 
 const allVotesKey = "SHOW_ALL_VOTES_KEY_123";
 
@@ -68,8 +72,6 @@ const renderScene = (
         space={space}
         profiles={profiles}
         proposal={proposal}
-        route={route}
-        allVotesKey={allVotesKey}
       />
     );
 
@@ -109,6 +111,28 @@ function parseVotes(votes: any[], connectedAddress: string) {
   return votesMap;
 }
 
+async function getChoicesTextWidth(
+  routes: any[],
+  setChoicesTextWidth: (choicesTextWidth: any[]) => void
+) {
+  const choicesTextWidth = [];
+  for (let i = 0; i < routes.length; i++) {
+    const currentRoute = routes[i];
+    const size = await rnTextSize.measure({
+      text: currentRoute.title, // text to measure, can include symbols
+      width: deviceWidth, // max-width of the "virtual" container
+      ...fontSpecs, // RN font specification
+    });
+    choicesTextWidth.push({
+      key: currentRoute.key,
+      title: currentRoute.title,
+      width: size.width,
+    });
+  }
+
+  setChoicesTextWidth(choicesTextWidth);
+}
+
 type VotesScreenProps = {
   route: {
     params: {
@@ -132,6 +156,8 @@ function VotesScreen({ route }: VotesScreenProps) {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [currentAuthorIpfsHash, setCurrentAuthorIpfsHash] = useState("");
   const allVotes = [{ key: allVotesKey, title: i18n.t("all") }];
+  const [choicesTextWidth, setChoicesTextWidth] = useState<any>([]);
+  const scrollViewRef: any = useRef();
   const [routes] = React.useState(
     proposal.type === "quadratic" ||
       proposal.type === "ranked-choice" ||
@@ -145,6 +171,11 @@ function VotesScreen({ route }: VotesScreenProps) {
         )
   );
   const votesMap = parseVotes(votes, connectedAddress ?? "");
+  const [layoutList, setLayoutList] = useState<any>([]);
+
+  useEffect(() => {
+    getChoicesTextWidth(routes, setChoicesTextWidth);
+  }, []);
 
   const sceneMap = useMemo(
     () =>
@@ -162,36 +193,47 @@ function VotesScreen({ route }: VotesScreenProps) {
   );
 
   return (
-    <View style={common.screen}>
-      <View
-        style={[
-          common.headerContainer,
-          common.justifySpaceBetween,
-          { borderBottomWidth: 0 },
-        ]}
-      >
-        <Text style={[styles.headerTitle, common.containerHorizontalPadding]}>
-          {i18n.t("votes")}
-        </Text>
+    <View style={[common.screen, { paddingTop: insets.top }]}>
+      <View style={[common.headerContainer, common.justifySpaceBetween]}>
+        <Text style={common.screenHeaderTitle}>{i18n.t("votes")}</Text>
         <BackButton backIcon="close" containerStyle={{ paddingBottom: 0 }} />
       </View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={sceneMap}
-        onIndexChange={setIndex}
+        onIndexChange={(index) => {
+          setIndex(index);
+          if (scrollViewRef?.current?.scrollTo) {
+            let x = 0;
+            for (let i = 0; i < index; i++) {
+              const choicesTextSize = choicesTextWidth[i];
+              x += choicesTextSize.width + 24;
+            }
+            scrollViewRef?.current?.scrollTo({ x });
+          }
+        }}
         initialLayout={{ width: layout.width }}
         sceneContainerStyle={{
           height: 50,
         }}
         renderTabBar={(props) => {
-          const tabWidth = width / (choices.length + 1);
-          const tabStyle: { width: number } = {
-            width: tabWidth,
+          const tabWidth = deviceWidth / (choices.length + 1);
+          const totalTabWidth = choicesTextWidth.reduce(
+            (width: number, tab: any) => {
+              width += tab.width + 24;
+              return width;
+            },
+            0
+          );
+          const viewContainerWidth =
+            totalTabWidth <= deviceWidth ? deviceWidth : totalTabWidth;
+
+          const tabStyle: { width: string } = {
+            width: "auto",
           };
           let viewProps = {};
           let ScrollViewComponent = View;
-          if (tabWidth <= 80) {
-            tabStyle["width"] = 80;
+          if (totalTabWidth >= deviceWidth) {
             ScrollViewComponent = ScrollView;
             viewProps = {
               horizontal: true,
@@ -204,11 +246,11 @@ function VotesScreen({ route }: VotesScreenProps) {
                 width: "100%",
               }}
             >
-              <ScrollViewComponent {...viewProps}>
+              <ScrollViewComponent {...viewProps} ref={scrollViewRef}>
                 <View style={{ paddingBottom: 10 }}>
                   <View
                     style={{
-                      width: "100%",
+                      width: viewContainerWidth,
                       borderBottomColor: colors.borderColor,
                       borderBottomWidth: 1,
                     }}
@@ -216,10 +258,32 @@ function VotesScreen({ route }: VotesScreenProps) {
                     <TabBar
                       {...props}
                       labelStyle={styles.labelStyle}
-                      indicatorStyle={[
-                        styles.indicatorStyle,
-                        tabWidth <= 80 ? { top: 43 } : {},
-                      ]}
+                      indicatorStyle={[tabWidth <= 80 ? { top: 43 } : {}]}
+                      renderIndicator={(props) => {
+                        let width = 44;
+                        if (props) {
+                          const { navigationState } = props;
+                          const currentChoice =
+                            choicesTextWidth[navigationState.index];
+
+                          if (currentChoice) {
+                            width = currentChoice.width + 24;
+                          }
+                        }
+
+                        return (
+                          <TabBarIndicator
+                            {...props}
+                            width={width}
+                            style={{
+                              width,
+                              backgroundColor: colors.darkGray,
+                              top: Platform.OS === "ios" ? 42 : 43,
+                              height: 5,
+                            }}
+                          />
+                        );
+                      }}
                       activeColor={colors.textColor}
                       style={{
                         shadowColor: "transparent",
@@ -227,7 +291,6 @@ function VotesScreen({ route }: VotesScreenProps) {
                         shadowOpacity: 0,
                         backgroundColor: colors.white,
                         paddingTop: 0,
-                        marginTop: 16,
                         height: 45,
                         elevation: 0,
                         zIndex: 200,
@@ -236,13 +299,24 @@ function VotesScreen({ route }: VotesScreenProps) {
                       inactiveColor={colors.textColor}
                       renderLabel={(props) => {
                         return (
-                          <Text
-                            style={styles.labelStyle}
-                            ellipsizeMode="tail"
-                            numberOfLines={1}
+                          <View
+                            onLayout={(event) => {
+                              setLayoutList(
+                                layoutList.concat({
+                                  index: event.nativeEvent.layout,
+                                  key: props.route.key,
+                                })
+                              );
+                            }}
                           >
-                            {props.route.title}
-                          </Text>
+                            <Text
+                              style={styles.labelStyle}
+                              ellipsizeMode="tail"
+                              numberOfLines={1}
+                            >
+                              {props.route.title}
+                            </Text>
+                          </View>
                         );
                       }}
                     />
