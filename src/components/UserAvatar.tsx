@@ -18,7 +18,7 @@ function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
   const [useBlockie, setUseBlockie] = useState<string | null>(
     isEmpty(imgSrc) ? blockie : null
   );
-  let defaultImgSrc = { uri: imgSrc ? getUrl(imgSrc) : blockie };
+  let defaultImgSrc = { uri: isEmpty(imgSrc) ? blockie : getUrl(imgSrc) };
   if (useBlockie) {
     defaultImgSrc = { uri: useBlockie };
   }

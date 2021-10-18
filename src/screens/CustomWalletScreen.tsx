@@ -16,6 +16,7 @@ function CustomWalletScreen() {
   const insets = useSafeAreaInsets();
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const authDispatch = useAuthDispatch();
   const exploreDispatch = useExploreDispatch();
   const navigation: any = useNavigation();
@@ -47,6 +48,7 @@ function CustomWalletScreen() {
         <Button
           onPress={async () => {
             setError("");
+            setLoading(true);
             if (address.toLowerCase().includes("eth")) {
               const resolveName = await ethers
                 .getDefaultProvider()
@@ -68,6 +70,7 @@ function CustomWalletScreen() {
                     addToSavedWallets: true,
                   },
                 });
+                setLoading(false);
                 navigation.reset({
                   index: 0,
                   routes: [{ name: HOME_SCREEN }],
@@ -84,6 +87,7 @@ function CustomWalletScreen() {
                   addToSavedWallets: true,
                 },
               });
+              setLoading(false);
               navigation.reset({
                 index: 0,
                 routes: [{ name: HOME_SCREEN }],
@@ -92,6 +96,7 @@ function CustomWalletScreen() {
           }}
           title={i18n.t("loginWithThisAddress")}
           disabled={address.trim().length === 0}
+          loading={loading}
         />
         <View style={{ marginTop: 24 }}>
           <Button

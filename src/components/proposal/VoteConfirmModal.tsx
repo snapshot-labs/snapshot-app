@@ -18,6 +18,7 @@ import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 import { useAuthState } from "../../context/authContext";
 import client from "../../util/snapshotClient";
+import { useToastShowConfig } from "../../constants/toast";
 
 const { width } = Dimensions.get("screen");
 
@@ -100,6 +101,7 @@ function VoteConfirmModal({
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
   const { connectedAddress, wcConnector, isWalletConnect } = useAuthState();
   const [loading, setLoading] = useState<boolean>(false);
+  const toastShowConfig = useToastShowConfig();
 
   return (
     <Modal
@@ -244,6 +246,7 @@ function VoteConfirmModal({
                   Toast.show({
                     type: "customSuccess",
                     text1: i18n.t("yourVoteIsIn"),
+                    ...toastShowConfig,
                   });
 
                   getProposal();
@@ -254,6 +257,7 @@ function VoteConfirmModal({
                 Toast.show({
                   type: "customError",
                   text1: i18n.t("unableToCastVote"),
+                  ...toastShowConfig,
                 });
               }
 

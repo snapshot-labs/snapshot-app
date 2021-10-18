@@ -15,14 +15,14 @@ import { Space } from "../../types/explore";
 import common from "../../styles/common";
 import colors from "../../constants/colors";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
-import { n, shorten } from "../../util/miscUtils";
+import { n } from "../../util/miscUtils";
 import {
   useExploreDispatch,
   useExploreState,
 } from "../../context/exploreContext";
-import { setProfiles } from "../../util/profile";
-import SpaceAvatar from "../SpaceAvatar";
-import makeBlockie from "ethereum-blockies-base64";
+import { getUsername, setProfiles } from "../../util/profile";
+import UserAvatar from "../UserAvatar";
+import { useAuthState } from "../../context/authContext";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -57,6 +57,7 @@ function AboutSpace({
   scrollProps,
   headerHeight,
 }: AboutSpaceProps) {
+  const { connectedAddress } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const space = Object.assign(routeSpace, get(spaces, routeSpace.id ?? "", {}));
@@ -163,21 +164,21 @@ function AboutSpace({
             <Text style={styles.label}>{i18n.t("admins")}</Text>
             {space.admins.map((admin: string, i: number) => {
               const adminProfile = profiles[admin];
-              const adminName =
-                adminProfile && adminProfile.ens
-                  ? adminProfile.ens
-                  : shorten(admin);
-              const blockie = makeBlockie(admin);
+              const adminName = getUsername(
+                admin,
+                adminProfile,
+                connectedAddress ?? ""
+              );
               return (
                 <View
                   key={`${i}`}
                   style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <SpaceAvatar
-                    symbolIndex="space"
+                  <UserAvatar
                     size={20}
-                    space={space}
-                    initialBlockie={blockie}
+                    address={admin}
+                    imgSrc={adminProfile?.image}
+                    key={`${admin}${adminProfile?.image}`}
                   />
                   <Text
                     style={[
@@ -202,22 +203,22 @@ function AboutSpace({
             <Text style={styles.label}>{i18n.t("authors")}</Text>
             {space.members.map((member: string, i: number) => {
               const memberProfile = profiles[member];
-              const memberName =
-                memberProfile && memberProfile.ens
-                  ? memberProfile.ens
-                  : shorten(member);
-              const blockie = makeBlockie(member);
+              const memberName = getUsername(
+                member,
+                memberProfile,
+                connectedAddress ?? ""
+              );
 
               return (
                 <View
                   key={`${i}`}
                   style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <SpaceAvatar
-                    symbolIndex="space"
+                  <UserAvatar
+                    address={member}
                     size={20}
-                    space={space}
-                    initialBlockie={blockie}
+                    imgSrc={memberProfile?.image}
+                    key={`${member}${memberProfile?.image}`}
                   />
                   <Text
                     style={[

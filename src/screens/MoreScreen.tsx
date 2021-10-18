@@ -56,6 +56,7 @@ function MoreScreen() {
     const filteredArray = addressArray.filter((address) => {
       return !profilesArray.includes(address);
     });
+
     if (filteredArray.length > 0) {
       setProfiles(filteredArray, exploreDispatch);
     }
