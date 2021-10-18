@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import colors from "../constants/colors";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "./IconFont";
 import Input from "./Input";
 import i18n from "i18n-js";
 
@@ -43,7 +43,7 @@ function SearchInput({
 }: SearchInputProps) {
   return (
     <View style={styles.searchInputContainer}>
-      <FontAwesome5Icon name="search" size={18} color={colors.darkGray} />
+      <IconFont name="search" size={18} color={colors.darkGray} />
       <Input
         selectionColor={colors.textColor}
         style={styles.searchInput}

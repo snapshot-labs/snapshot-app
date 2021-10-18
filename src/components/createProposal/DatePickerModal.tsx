@@ -69,7 +69,7 @@ function DatePickerModal({
       >
         <Text style={common.screenHeaderTitle}>{title}</Text>
         <BackButton
-          backIcon="times"
+          backIcon="close"
           onPress={onCloseHandler}
           backIconStyle={{
             marginBottom: Platform.OS === "ios" ? 6 : 0,

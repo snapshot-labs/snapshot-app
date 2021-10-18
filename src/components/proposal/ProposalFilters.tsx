@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import i18n from "i18n-js";
 import proposal from "../../constants/proposal";
 import colors from "../../constants/colors";
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontSize: 18,
     fontFamily: "Calibre-Medium",
-    marginRight: 6,
   },
 });
 
@@ -98,8 +97,8 @@ function ProposalFilters({
     >
       <View style={[styles.filterContainer, filterContainerStyle]}>
         <Text style={[styles.filterText, filterTextStyle]}>{filter.text}</Text>
-        <FontAwesome5Icon
-          name="caret-down"
+        <IconFont
+          name="arrow-up"
           size={16}
           color={iconColor}
           style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}

@@ -10,7 +10,7 @@ import {
 import common from "../../styles/common";
 import Input from "../Input";
 import colors from "../../constants/colors";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 
 const { width } = Dimensions.get("screen");
 
@@ -72,8 +72,8 @@ function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
             setChoices(newChoices);
           }}
         >
-          <FontAwesome5Icon
-            name="times"
+          <IconFont
+            name="close"
             size={18}
             color={colors.textColor}
             style={{

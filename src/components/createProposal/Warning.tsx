@@ -4,7 +4,7 @@ import i18n from "i18n-js";
 import { Space } from "../../types/explore";
 import colors from "../../constants/colors";
 import common from "../../styles/common";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import { n } from "../../util/miscUtils";
 
 type WarningProps = {
@@ -41,8 +41,8 @@ function Warning({ space, passValidation }: WarningProps) {
         },
       ]}
     >
-      <FontAwesome5Icon
-        name="exclamation-circle"
+      <IconFont
+        name="warning"
         size={20}
         color={colors.darkGray}
       />

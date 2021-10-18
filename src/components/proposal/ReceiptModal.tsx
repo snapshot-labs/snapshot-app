@@ -10,7 +10,7 @@ import Modal from "react-native-modal";
 import i18n from "i18n-js";
 import common from "../../styles/common";
 import colors from "../../constants/colors";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import Button from "../Button";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 
@@ -74,8 +74,8 @@ function ReceiptModal({
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose}>
-            <FontAwesome5Icon
-              name="times"
+            <IconFont
+              name="close"
               style={{ marginLeft: "auto", paddingRight: 16 }}
               size={20}
               color={colors.darkGray}
@@ -95,10 +95,10 @@ function ReceiptModal({
           >
             <View style={styles.authorContainer}>
               <Text style={styles.author}>#{authorIpfsHash.slice(0, 7)}</Text>
-              <FontAwesome5Icon
-                name="external-link-alt"
+              <IconFont
+                name="external-link"
                 style={{ marginLeft: 8, marginBottom: 6 }}
-                size={14}
+                size={18}
                 color={colors.darkGray}
               />
             </View>
@@ -113,10 +113,10 @@ function ReceiptModal({
             light
             Icon={() => {
               return (
-                <FontAwesome5Icon
-                  name="external-link-alt"
-                  style={{ marginLeft: 8, marginBottom: 6 }}
-                  size={16}
+                <IconFont
+                  name="external-link"
+                  style={{ marginLeft: 4 }}
+                  size={20}
                   color={colors.darkGray}
                 />
               );

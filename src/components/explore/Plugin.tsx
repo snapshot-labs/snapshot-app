@@ -12,7 +12,7 @@ import i18n from "i18n-js";
 import colors from "../../constants/colors";
 import { n } from "../../util/miscUtils";
 import common from "../../styles/common";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 
 const isIOS = Platform.OS === "ios";
 
@@ -87,7 +87,7 @@ function Plugin({ plugin }: PluginProps) {
         }}
       >
         <View style={styles.authorContainer}>
-          <FontAwesome5Icon name="github" color={colors.darkGray} size={16} />
+          <IconFont name="mark-github" color={colors.darkGray} size={16} />
           <Text style={styles.authorText}>{plugin.author}</Text>
         </View>
       </TouchableOpacity>

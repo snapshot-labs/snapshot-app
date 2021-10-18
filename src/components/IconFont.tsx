@@ -14,9 +14,15 @@ type IconFontProps = {
   name: string | any;
   size: number;
   color: string;
+  style?: any;
 };
-function IconFont({ name, size, color = colors.textColor }: IconFontProps) {
-  return <CustomIcon name={name} size={size} color={color} />;
+function IconFont({
+  name,
+  size,
+  color = colors.textColor,
+  style = {},
+}: IconFontProps) {
+  return <CustomIcon name={name} size={size} color={color} style={style} />;
 }
 
 export default IconFont;

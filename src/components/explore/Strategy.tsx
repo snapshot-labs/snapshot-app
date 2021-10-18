@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import i18n from "i18n-js";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../constants/colors";
 import { n } from "../../util/miscUtils";
@@ -69,7 +69,7 @@ function StrategyComponent({
           <Text style={styles.version}>v{strategy.version}</Text>
         </View>
         <View style={styles.authorContainer}>
-          <FontAwesome5Icon name="github" color={colors.darkGray} size={16} />
+          <IconFont name="mark-github" color={colors.darkGray} size={16} />
           <Text style={styles.authorText}>{strategy.author}</Text>
         </View>
         <Text style={styles.text}>

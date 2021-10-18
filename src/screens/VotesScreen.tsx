@@ -173,7 +173,7 @@ function VotesScreen({ route }: VotesScreenProps) {
         <Text style={[styles.headerTitle, common.containerHorizontalPadding]}>
           {i18n.t("votes")}
         </Text>
-        <BackButton backIcon="times" containerStyle={{ paddingBottom: 0 }} />
+        <BackButton backIcon="close" containerStyle={{ paddingBottom: 0 }} />
       </View>
       <TabView
         navigationState={{ index, routes }}

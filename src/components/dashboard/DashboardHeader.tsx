@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
 import common from "../../styles/common";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import { SETTINGS_SCREEN } from "../../constants/navigation";
 
@@ -24,7 +24,7 @@ function DashboardHeader() {
             navigation.navigate(SETTINGS_SCREEN);
           }}
         >
-          <FontAwesome5Icon name="cog" size={20} color={colors.darkGray} />
+          <IconFont name="gear" size={40} color={colors.darkGray} />
         </TouchableOpacity>
       </View>
       <Text style={[common.subTitle, { marginTop: 16 }]}>

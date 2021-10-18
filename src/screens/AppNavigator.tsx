@@ -6,7 +6,6 @@ import {
 } from "@react-navigation/stack";
 import i18n from "i18n-js";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import { useAuthState } from "../context/authContext";
 import * as navigationConstants from "../constants/navigation";
 import { isOldIphone } from "../util/phoneUtils";
@@ -27,6 +26,7 @@ import SettingsScreen from "./SettingsScreen";
 import ConnectAccountScreen from "./ConnectAccountScreen";
 import VotesScreen from "./VotesScreen";
 import CreateProposalScreen from "./CreateProposalScreen";
+import IconFont from "../components/IconFont";
 
 const Stack = createStackNavigator();
 
@@ -65,8 +65,8 @@ function TabNavigator() {
         options={{
           title: i18n.t("home"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              name="home"
+            <IconFont
+              name="snapshot"
               color={color}
               size={ICON_SIZE}
               style={{ paddingBottom: BOTTOM_ICON_PADDING }}
@@ -85,8 +85,8 @@ function TabNavigator() {
         options={{
           title: i18n.t("feed"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              name="rss"
+            <IconFont
+              name="feed"
               color={color}
               size={ICON_SIZE}
               style={{ paddingBottom: BOTTOM_ICON_PADDING }}
@@ -105,8 +105,8 @@ function TabNavigator() {
         options={{
           title: i18n.t("explore"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              name="compass"
+            <IconFont
+              name="stars"
               color={color}
               size={ICON_SIZE}
               style={{ paddingBottom: BOTTOM_ICON_PADDING }}
@@ -125,8 +125,8 @@ function TabNavigator() {
         options={{
           title: i18n.t("profile"),
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              name="user"
+            <IconFont
+              name="people"
               color={color}
               size={ICON_SIZE}
               style={{ paddingBottom: BOTTOM_ICON_PADDING }}

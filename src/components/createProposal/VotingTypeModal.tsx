@@ -1,13 +1,10 @@
 import React from "react";
 import {
-  Linking,
   Platform,
   Text,
   TouchableHighlight,
-  TouchableOpacity,
   View,
 } from "react-native";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import colors from "../../constants/colors";
 import common from "../../styles/common";
 import i18n from "i18n-js";
@@ -55,7 +52,7 @@ function VotingTypeModal({
           {i18n.t("selectVotingSystem")}
         </Text>
         <BackButton
-          backIcon="times"
+          backIcon="close"
           onPress={onClose}
           backIconStyle={{
             marginBottom: Platform.OS === "ios" ? 6 : 0,

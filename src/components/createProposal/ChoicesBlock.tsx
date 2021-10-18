@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import { View } from "react-native";
 import i18n from "i18n-js";
 import Block from "../Block";
 import common from "../../styles/common";
-import Input from "../Input";
-import colors from "../../constants/colors";
 import Button from "../Button";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import VotingTypeModal from "./VotingTypeModal";
 import ChoiceInput from "./ChoiceInput";
-
-const { width } = Dimensions.get("screen");
 
 type ChoicesBlockProps = {
   choices: string[];

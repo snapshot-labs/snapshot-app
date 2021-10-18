@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, Dimensions, Text, TouchableOpacity } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
 import i18n from "i18n-js";
-import difference from "lodash/difference";
 import { getNumberWithOrdinal } from "../../util/numUtils";
 import Button from "../Button";
 import common from "../../styles/common";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 
 const { width } = Dimensions.get("screen");
@@ -117,8 +116,8 @@ function VotingRankedChoice({
                 }}
                 style={{ marginLeft: 6 }}
               >
-                <FontAwesome5Icon
-                  name="times"
+                <IconFont
+                  name="close"
                   color={colors.textColor}
                   size={20}
                 />
