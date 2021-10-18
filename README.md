@@ -4,7 +4,6 @@
 
 ```
 yarn
-rn-nodeify --install --hack
 ```
 
 ### Extra step to install for iOS
