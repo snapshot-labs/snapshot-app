@@ -24,7 +24,7 @@ function DashboardHeader() {
             navigation.navigate(SETTINGS_SCREEN);
           }}
         >
-          <IconFont name="gear" size={40} color={colors.darkGray} />
+          <IconFont name="gear" size={40} color={colors.textColor} />
         </TouchableOpacity>
       </View>
       <Text style={[common.subTitle, { marginTop: 16 }]}>

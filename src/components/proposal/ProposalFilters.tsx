@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   filterText: {
-    color: colors.darkGray,
+    color: colors.textColor,
     fontSize: 18,
     fontFamily: "Calibre-Medium",
   },
@@ -44,7 +44,7 @@ function ProposalFilters({
   containerStyle,
   filterTextStyle = {},
   filterContainerStyle = {},
-  iconColor = colors.darkGray,
+  iconColor = colors.textColor,
 }: ProposalFiltersProps) {
   const { showActionSheetWithOptions } = useActionSheet();
   return (

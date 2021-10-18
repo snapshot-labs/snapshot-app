@@ -94,7 +94,7 @@ function ExploreHeader({
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
                   style={{
-                    color: colors.darkGray,
+                    color: colors.textColor,
                     fontSize: 18,
                     fontFamily: "Calibre-Medium",
                   }}
@@ -104,7 +104,7 @@ function ExploreHeader({
                 <IconFont
                   name="arrow-up"
                   size={16}
-                  color={colors.darkGray}
+                  color={colors.textColor}
                   style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
                 />
               </View>

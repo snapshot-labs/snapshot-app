@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   backButtonTitle: {
-    color: colors.darkGray,
+    color: colors.textColor,
     fontFamily: "Calibre-Medium",
     fontSize: 24,
     marginLeft: 8,
@@ -69,7 +69,7 @@ function BackButton({
       <View style={[styles.backButton, containerStyle ?? {}]}>
         <IconFont
           name={backIcon}
-          color={iconColor ? iconColor : colors.darkGray}
+          color={iconColor ? iconColor : colors.textColor}
           size={
             backIcon === "close" ? setBackIconSize ?? 20 : setBackIconSize ?? 30
           }

@@ -7,7 +7,7 @@ const common = StyleSheet.create({
     backgroundColor: colors.white,
   },
   screenHeaderTitle: {
-    color: colors.darkGray,
+    color: colors.textColor,
     fontFamily: "Calibre-Medium",
     fontSize: 24,
     paddingLeft: 16,

@@ -12,8 +12,6 @@ type SceneListProps = {
   space: Space;
   profiles: any;
   proposal: Proposal;
-  route: { key: string; title: string };
-  allVotesKey: string;
 };
 
 function VoteList({
@@ -23,8 +21,6 @@ function VoteList({
   space,
   profiles,
   proposal,
-  route,
-  allVotesKey,
 }: SceneListProps) {
   return (
     <FlatList
@@ -39,15 +35,6 @@ function VoteList({
           proposal={proposal}
         />
       )}
-      ListHeaderComponent={
-        route.key !== allVotesKey ? (
-          <View style={{ padding: 16 }}>
-            <Text style={common.h3}>{route.title}</Text>
-          </View>
-        ) : (
-          <View />
-        )
-      }
       removeClippedSubviews
       ListFooterComponent={<View style={{ width: 100, height: 75 }} />}
     />
