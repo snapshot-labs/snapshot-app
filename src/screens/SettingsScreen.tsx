@@ -1,28 +1,10 @@
 import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  Platform,
-  TouchableOpacity,
-  Linking,
-} from "react-native";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { useNavigation } from "@react-navigation/native";
+import { Text, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LANDING_SCREEN } from "../constants/navigation";
 import common from "../styles/common";
-import Button from "../components/Button";
-import {
-  AUTH_ACTIONS,
-  useAuthDispatch,
-  useAuthState,
-} from "../context/authContext";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import { useAuthState } from "../context/authContext";
 import colors from "../constants/colors";
-import { explorerUrl, shorten } from "../util/miscUtils";
 import BackButton from "../components/BackButton";
 import packageJson from "../../package.json";
 

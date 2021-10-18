@@ -1,6 +1,6 @@
 import React from "react";
 import { Platform, TouchableOpacity } from "react-native";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import { Space } from "../../types/explore";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import i18n from "i18n-js";
@@ -119,9 +119,9 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
         );
       }}
     >
-      <FontAwesome5Icon
-        name="ellipsis-h"
-        size={20}
+      <IconFont
+        name="more"
+        size={40}
         color={colors.textColor}
         style={common.containerHorizontalPadding}
       />

@@ -13,7 +13,7 @@ import i18n from "i18n-js";
 import common from "../../styles/common";
 import Toast from "react-native-toast-message";
 import colors from "../../constants/colors";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
 import { useAuthState } from "../../context/authContext";
@@ -123,8 +123,8 @@ function VoteConfirmModal({
             }}
             style={{ marginLeft: "auto" }}
           >
-            <FontAwesome5Icon
-              name="times"
+            <IconFont
+              name="close"
               style={{ paddingRight: 16 }}
               size={20}
               color={colors.darkGray}
@@ -172,9 +172,9 @@ function VoteConfirmModal({
                 <Text style={styles.rowValue}>
                   {n(proposal.snapshot, "0,0")}
                 </Text>
-                <FontAwesome5Icon
-                  name="external-link-alt"
-                  size={16}
+                <IconFont
+                  name="external-link"
+                  size={18}
                   color={colors.darkGray}
                   style={{ marginLeft: 6 }}
                 />

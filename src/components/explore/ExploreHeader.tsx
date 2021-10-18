@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Platform } from "react-native";
 import i18n from "i18n-js";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import common from "../../styles/common";
 import SearchInput from "../SearchInput";
@@ -97,13 +97,12 @@ function ExploreHeader({
                     color: colors.darkGray,
                     fontSize: 18,
                     fontFamily: "Calibre-Medium",
-                    marginRight: 6,
                   }}
                 >
                   {currentExplore.text}
                 </Text>
-                <FontAwesome5Icon
-                  name="caret-down"
+                <IconFont
+                  name="arrow-up"
                   size={16}
                   color={colors.darkGray}
                   style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}

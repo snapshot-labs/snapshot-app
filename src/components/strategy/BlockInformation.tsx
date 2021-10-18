@@ -7,8 +7,7 @@ import {
   Linking,
 } from "react-native";
 import i18n from "i18n-js";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
+import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import Block from "../Block";
 import { Strategy } from "../../types/explore";
@@ -78,8 +77,8 @@ function BlockInformation({ strategy }: BlockInformationProps) {
                 }}
               >
                 <View style={styles.authorContainer}>
-                  <FontAwesome5Icon
-                    name="github"
+                  <IconFont
+                    name="mark-github"
                     color={colors.textColor}
                     size={16}
                   />
@@ -100,10 +99,10 @@ function BlockInformation({ strategy }: BlockInformationProps) {
               >
                 <View style={styles.authorContainer}>
                   <Text style={styles.rowValueText}>{strategy.version}</Text>
-                  <FontAwesome5Icon
+                  <IconFont
                     name="external-link-alt"
                     style={{ marginLeft: 8 }}
-                    size={12}
+                    size={20}
                     color={colors.darkGray}
                   />
                 </View>

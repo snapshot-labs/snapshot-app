@@ -1,15 +1,12 @@
-import React, { useMemo } from "react";
-import makeBlockie from "ethereum-blockies-base64";
+import React from "react";
 import {
-  Linking,
-  Platform,
   StyleSheet,
   Text,
   TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "./IconFont";
 import get from "lodash/get";
 import colors from "../constants/colors";
 import {
@@ -124,7 +121,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
           }}
           style={{ marginLeft: 8 }}
         >
-          <FontAwesome5Icon name="times" size={20} color={colors.textColor} />
+          <IconFont name="close" size={20} color={colors.textColor} />
         </TouchableOpacity>
       </View>
     </TouchableHighlight>

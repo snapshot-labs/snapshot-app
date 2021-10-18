@@ -7,7 +7,7 @@ import {
   Linking,
 } from "react-native";
 import i18n from "i18n-js";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import IconFont from "../IconFont";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import colors from "../../constants/colors";
 import { Proposal } from "../../types/proposal";
@@ -68,9 +68,13 @@ type BlockInformationProps = {
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
   const { profiles } = useExploreState();
-  const { connectedAddress } = useAuthState()
+  const { connectedAddress } = useAuthState();
   const authorProfile = profiles[proposal.author];
-  const authorName = getUsername(proposal.author, authorProfile, connectedAddress ?? "");
+  const authorName = getUsername(
+    proposal.author,
+    authorProfile,
+    connectedAddress ?? ""
+  );
   const proposalStart = useMemo(() => dateFormat(proposal.start), [proposal]);
   const proposalEnd = useMemo(() => dateFormat(proposal.end), [proposal]);
   const votingType = useMemo(() => getVotingType(proposal.type), [proposal]);
@@ -134,10 +138,9 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
                   <Text style={styles.rowValueText}>
                     #{proposal.id.slice(0, 7)}
                   </Text>
-                  <FontAwesome5Icon
-                    name="external-link-alt"
-                    style={{ marginLeft: 8 }}
-                    size={12}
+                  <IconFont
+                    name="external-link"
+                    size={20}
                     color={colors.darkGray}
                   />
                 </View>
@@ -181,10 +184,9 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
                   <Text style={styles.rowValueText}>
                     {n(proposal.snapshot, "0,0")}
                   </Text>
-                  <FontAwesome5Icon
-                    name="external-link-alt"
-                    style={{ marginLeft: 8 }}
-                    size={12}
+                  <IconFont
+                    name="external-link"
+                    size={20}
                     color={colors.darkGray}
                   />
                 </View>

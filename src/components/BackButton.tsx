@@ -8,8 +8,8 @@ import {
   Platform,
   TextStyle,
 } from "react-native";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import colors from "../constants/colors";
+import IconFont from "./IconFont";
 import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
@@ -45,11 +45,17 @@ function BackButton({
   onPress,
   titleStyle,
   iconColor,
-  backIcon = "long-arrow-alt-left",
-  backIconSize = 20,
+  backIcon = "back",
+  backIconSize,
   backIconStyle = {},
 }: BackButtonProps) {
   const navigation: any = useNavigation();
+  let setBackIconSize;
+
+  if (backIconSize === undefined) {
+    setBackIconSize = backIconSize;
+  }
+
   return (
     <TouchableOpacity
       onPress={
@@ -61,10 +67,12 @@ function BackButton({
       }
     >
       <View style={[styles.backButton, containerStyle ?? {}]}>
-        <FontAwesome5Icon
+        <IconFont
           name={backIcon}
           color={iconColor ? iconColor : colors.darkGray}
-          size={backIconSize}
+          size={
+            backIcon === "close" ? setBackIconSize ?? 20 : setBackIconSize ?? 30
+          }
           style={backIconStyle}
         />
         <Text style={[styles.backButtonTitle, titleStyle]}>{title ?? ""}</Text>
