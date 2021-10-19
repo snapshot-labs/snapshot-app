@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   StyleSheet,
   useWindowDimensions,
@@ -14,7 +14,6 @@ import {
   TabBarIndicator,
   TabView,
 } from "react-native-tab-view";
-import rnTextSize, { TSFontSpecs } from "react-native-text-size";
 import colors from "../constants/colors";
 import common from "../styles/common";
 import i18n from "i18n-js";
@@ -43,11 +42,6 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "ios" ? 6 : 0,
   },
 });
-
-const fontSpecs: TSFontSpecs = {
-  fontFamily: "Calibre-Medium",
-  fontSize: 18,
-};
 
 const allVotesKey = "SHOW_ALL_VOTES_KEY_123";
 
@@ -111,34 +105,13 @@ function parseVotes(votes: any[], connectedAddress: string) {
   return votesMap;
 }
 
-async function getChoicesTextWidth(
-  routes: any[],
-  setChoicesTextWidth: (choicesTextWidth: any[]) => void
-) {
-  const choicesTextWidth = [];
-  for (let i = 0; i < routes.length; i++) {
-    const currentRoute = routes[i];
-    const size = await rnTextSize.measure({
-      text: currentRoute.title, // text to measure, can include symbols
-      width: deviceWidth, // max-width of the "virtual" container
-      ...fontSpecs, // RN font specification
-    });
-    choicesTextWidth.push({
-      key: currentRoute.key,
-      title: currentRoute.title,
-      width: size.width,
-    });
-  }
-
-  setChoicesTextWidth(choicesTextWidth);
-}
-
 type VotesScreenProps = {
   route: {
     params: {
       space: Space;
       votes: any[];
       proposal: Proposal;
+      choicesTextWidth: { title: string; width: number }[];
     };
   };
 };
@@ -150,13 +123,14 @@ function VotesScreen({ route }: VotesScreenProps) {
   const space = route.params.space;
   const proposal: any = route.params.proposal;
   const votes: any[] = route.params.votes;
+  const choicesTextWidth: { title: string; width: number }[] =
+    route.params.choicesTextWidth;
   const choices = proposal.choices ?? [];
   const { profiles } = useExploreState();
   const [index, setIndex] = React.useState(0);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [currentAuthorIpfsHash, setCurrentAuthorIpfsHash] = useState("");
   const allVotes = [{ key: allVotesKey, title: i18n.t("all") }];
-  const [choicesTextWidth, setChoicesTextWidth] = useState<any>([]);
   const scrollViewRef: any = useRef();
   const [routes] = React.useState(
     proposal.type === "quadratic" ||
@@ -172,11 +146,6 @@ function VotesScreen({ route }: VotesScreenProps) {
   );
   const votesMap = parseVotes(votes, connectedAddress ?? "");
   const [layoutList, setLayoutList] = useState<any>([]);
-
-  useEffect(() => {
-    getChoicesTextWidth(routes, setChoicesTextWidth);
-  }, []);
-
   const sceneMap = useMemo(
     () =>
       renderScene(
@@ -209,6 +178,10 @@ function VotesScreen({ route }: VotesScreenProps) {
               const choicesTextSize = choicesTextWidth[i];
               x += choicesTextSize.width + 24;
             }
+
+            if (index !== 0) {
+              x -= 12;
+            }
             scrollViewRef?.current?.scrollTo({ x });
           }
         }}
@@ -226,7 +199,7 @@ function VotesScreen({ route }: VotesScreenProps) {
             0
           );
           const viewContainerWidth =
-            totalTabWidth <= deviceWidth ? deviceWidth : totalTabWidth;
+            totalTabWidth <= deviceWidth ? deviceWidth : totalTabWidth + 300;
 
           const tabStyle: { width: string } = {
             width: "auto",

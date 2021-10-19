@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   Dimensions,
   TouchableHighlight,
+  Platform,
 } from "react-native";
 import i18n from "i18n-js";
 import { Proposal } from "../../types/proposal";
@@ -21,37 +21,43 @@ import UserAvatar from "../UserAvatar";
 import common from "../../styles/common";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_VOTES_SCREEN } from "../../constants/navigation";
+import rnTextSize, { TSFontSpecs } from "react-native-text-size";
 
-const { width } = Dimensions.get("screen");
-const contentWidth = (width - 64) / 3;
+const fontSpecs: TSFontSpecs = {
+  fontFamily: "Calibre-Medium",
+  fontSize: 18,
+};
+async function getChoicesTextWidth(
+  proposal: Proposal,
+  setChoicesTextWidth: (
+    choicesTextWidth: {
+      title: string;
+      width: number;
+    }[]
+  ) => void
+) {
+  const choices = proposal?.choices ?? [];
+  const routes: string[] =
+    proposal.type === "quadratic" ||
+    proposal.type === "ranked-choice" ||
+    proposal.type === "weighted"
+      ? [i18n.t("all")]
+      : [i18n.t("all")].concat(choices);
+  const choicesTextWidth = [];
+  for (let i = 0; i < routes.length; i++) {
+    const size = await rnTextSize.measure({
+      text: routes[i],
+      width: undefined,
+      ...fontSpecs,
+    });
+    choicesTextWidth.push({
+      title: routes[i],
+      width: size.width,
+    });
+  }
 
-const styles = StyleSheet.create({
-  row: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderColor,
-  },
-  rowText: {
-    width: contentWidth,
-    fontSize: 18,
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-  },
-  seeAll: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  seeAllText: {
-    fontSize: 18,
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-  },
-});
+  setChoicesTextWidth(choicesTextWidth);
+}
 
 type BlockVotesProps = {
   proposal: Proposal;
@@ -69,6 +75,23 @@ function BlockVotes({
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const navigation: any = useNavigation();
+  const [choicesTextWidth, setChoicesTextWidth] = useState<
+    {
+      title: string;
+      width: number;
+    }[]
+  >([]);
+  const choicesTextWidthExpectedMinLength =
+    proposal.type === "quadratic" ||
+    proposal.type === "ranked-choice" ||
+    proposal.type === "weighted"
+      ? 1
+      : 2;
+
+  useEffect(() => {
+    getChoicesTextWidth(proposal, setChoicesTextWidth);
+  }, [proposal]);
+
   useEffect(() => {
     const profilesArray = Object.keys(profiles);
     const addressArray = votes.map((vote: any) => vote.voter);
@@ -87,13 +110,23 @@ function BlockVotes({
               votes,
               space,
               proposal,
+              choicesTextWidth,
             });
           }
         }}
         underlayColor={colors.highlightColor}
       >
-        <View style={[blockStyles.header, { borderBottomWidth: 0 }]}>
-          {resultsLoaded ? (
+        <View
+          style={[
+            blockStyles.header,
+            {
+              borderBottomWidth: 0,
+              alignItems: Platform.OS === "android" ? "flex-start" : "center",
+            },
+          ]}
+        >
+          {resultsLoaded &&
+          choicesTextWidth.length >= choicesTextWidthExpectedMinLength ? (
             <>
               <Text style={common.h4}>{i18n.t("votes")}</Text>
               <View style={blockStyles.countContainer}>
