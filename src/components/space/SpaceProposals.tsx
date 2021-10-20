@@ -43,7 +43,8 @@ async function getProposals(
   setProposals: (proposals: Proposal[]) => void,
   isInitial: boolean,
   setLoadingMore: (loadingMore: boolean) => void,
-  state: string
+  state: string,
+  setEndReached: (endReached: boolean) => void
 ) {
   const query = {
     query: PROPOSALS_QUERY,
@@ -63,7 +64,12 @@ async function getProposals(
     setProposals(newProposals);
     setLoadCount(loadCount + LOAD_BY);
   }
+
   setLoadingMore(false);
+
+  if (loadCount > proposals.length && proposalResult.length === 0) {
+    setEndReached(true);
+  }
 }
 
 async function getSpace(spaceId: string, exploreDispatch: ContextDispatch) {
@@ -101,6 +107,7 @@ function SpaceProposals({
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [endReached, setEndReached] = useState(false);
   const exploreDispatch = useExploreDispatch();
 
   const onRefresh = () => {
@@ -113,7 +120,8 @@ function SpaceProposals({
       setProposals,
       true,
       setLoadingMore,
-      filter.key
+      filter.key,
+      setEndReached
     );
   };
 
@@ -139,7 +147,8 @@ function SpaceProposals({
           setProposals,
           true,
           setLoadingMore,
-          newFilter
+          newFilter,
+          setEndReached
         );
       },
     };
@@ -155,7 +164,8 @@ function SpaceProposals({
       setProposals,
       true,
       setLoadingMore,
-      filter.key
+      filter.key,
+      setEndReached
     );
     getSpace(spaceId, exploreDispatch);
   }, [space]);
@@ -193,17 +203,20 @@ function SpaceProposals({
         }
         onEndReachedThreshold={0.1}
         onEndReached={() => {
-          setLoadingMore(true);
-          getProposals(
-            spaceId,
-            loadCount === 0 ? LOAD_BY : loadCount,
-            proposals,
-            setLoadCount,
-            setProposals,
-            false,
-            setLoadingMore,
-            filter.key
-          );
+          if (!endReached) {
+            setLoadingMore(true);
+            getProposals(
+              spaceId,
+              loadCount === 0 ? LOAD_BY : loadCount,
+              proposals,
+              setLoadCount,
+              setProposals,
+              false,
+              setLoadingMore,
+              filter.key,
+              setEndReached
+            );
+          }
         }}
         ListEmptyComponent={
           loadingMore ? (
@@ -235,7 +248,7 @@ function SpaceProposals({
               style={{
                 width: "100%",
                 height: headerHeight + 150,
-                backgroundColor: "white",
+                backgroundColor: colors.white,
               }}
             />
           )

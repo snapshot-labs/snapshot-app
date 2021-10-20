@@ -234,6 +234,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             return (
               <TabBarItem
                 {...item}
+                //@ts-ignore
                 PressableComponent={
                   Platform.OS === "android"
                     ? TabCustomTouchableNativeFeedback

@@ -5,13 +5,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import get from "lodash/get";
 import { useNavigation } from "@react-navigation/native";
 import SpaceAvatar from "../SpaceAvatar";
-import common from "../../styles/common";
+import common from "styles/common";
 import FollowButton from "../FollowButton";
-import { Space } from "../../types/explore";
-import { n } from "../../util/miscUtils";
-import colors from "../../constants/colors";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { CREATE_PROPOSAL_SCREEN } from "../../constants/navigation";
+import { Space } from "types/explore";
+import { n } from "util/miscUtils";
+import colors from "constants/colors";
+import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
+import IconFont from "components/IconFont";
 
 type SpaceHeader = {
   space: Space;
@@ -50,7 +50,7 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
               }}
             >
               <View style={{ marginTop: 16, alignSelf: "flex-end" }}>
-                <FontAwesome5Icon name="edit" size={30} color={colors.black} />
+                <IconFont name="plus" size={30} color={colors.black} />
               </View>
             </TouchableOpacity>
           </View>
