@@ -43,7 +43,7 @@ export async function getResults(space: any, proposal: any, votes: any) {
 
     return { votes, results };
   } catch (e) {
-    console.log("GET RESULTS ERROR", votes);
+    console.log("GET RESULTS ERROR", e);
     return e;
   }
 }
