@@ -7,18 +7,18 @@ import common from "../styles/common";
 import { useExploreState } from "../context/exploreContext";
 import { Space } from "../types/explore";
 import { PROPOSAL_VOTES_QUERY } from "../util/queries";
-import apolloClient from "../util/apolloClient";
-import StateBadge from "../components/StateBadge";
-import BlockInformation from "../components/proposal/BlockInformation";
+import apolloClient from "util/apolloClient";
+import StateBadge from "components/StateBadge";
+import BlockInformation from "components/proposal/BlockInformation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import BlockVotes from "../components/proposal/BlockVotes";
-import { getResults } from "../util/snapshot";
-import BackButton from "../components/BackButton";
-import BlockResults from "../components/proposal/BlockResults";
-import BlockCastVote from "../components/proposal/BlockCastVote";
+import BlockVotes from "components/proposal/BlockVotes";
+import { getResults } from "util/snapshot";
+import BackButton from "components/BackButton";
+import BlockResults from "components/proposal/BlockResults";
+import BlockCastVote from "components/proposal/BlockCastVote";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
-import ProposalMenu from "../components/proposal/ProposalMenu";
+import ProposalMenu from "components/proposal/ProposalMenu";
 
 type ProposalScreenProps = {
   route: {

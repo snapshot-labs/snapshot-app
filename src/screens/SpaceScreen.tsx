@@ -10,18 +10,18 @@ import {
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
-import colors from "../constants/colors";
-import common from "../styles/common";
-import { useAuthState } from "../context/authContext";
-import ProposalFilters from "../components/proposal/ProposalFilters";
-import BackButton from "../components/BackButton";
+import colors from "constants/colors";
+import common from "styles/common";
+import { useAuthState } from "context/authContext";
+import ProposalFilters from "components/proposal/ProposalFilters";
+import BackButton from "components/BackButton";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-import AboutSpace from "../components/space/AboutSpace";
-import SpaceHeader from "../components/space/SpaceHeader";
-import SpaceProposals from "../components/space/SpaceProposals";
-import TabBarItem from "../components/tabBar/TabBarItem";
-import { Space } from "../types/explore";
-import proposal from "../constants/proposal";
+import AboutSpace from "components/space/AboutSpace";
+import SpaceHeader from "components/space/SpaceHeader";
+import SpaceProposals from "components/space/SpaceProposals";
+import TabBarItem from "components/tabBar/TabBarItem";
+import { Space } from "types/explore";
+import proposal from "constants/proposal";
 
 const { width } = Dimensions.get("screen");
 
