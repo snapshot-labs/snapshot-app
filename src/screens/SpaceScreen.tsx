@@ -174,19 +174,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     headerSnap.current.start();
   }
 
-  function onMomentumScrollEnd() {
-    moveHeader(
-      scrollValue.current > headerHeight &&
-        clampedScrollValue.current > headerHeight / 2
-        ? offsetValue.current + headerHeight
-        : offsetValue.current - headerHeight
-    );
-  }
-
-  function onScrollEndDrag() {
-    scrollEndTimer.current = setTimeout(onMomentumScrollEnd, 250);
-  }
-
   function onMomentumScrollBegin() {
     clearTimeout(scrollEndTimer.current);
   }
@@ -197,8 +184,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         route,
         spaceScreenRef,
         {
-          onMomentumScrollEnd,
-          onScrollEndDrag,
           onMomentumScrollBegin,
           onScroll: Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollAnim.current } } }],

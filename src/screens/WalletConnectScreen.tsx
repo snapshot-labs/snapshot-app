@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
 import { CUSTOM_WALLET_SCREEN, HOME_SCREEN } from "../constants/navigation";
@@ -96,7 +95,6 @@ async function fetchWallets(
 function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
-  const connector = useWalletConnect();
   const [loading, setLoading] = useState<boolean>(true);
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
