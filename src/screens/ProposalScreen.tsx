@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import MarkdownBody from "../components/proposal/MarkdownBody";
+import MarkdownBody from "components/proposal/MarkdownBody";
 import { ScrollView, View, Text } from "react-native";
-import { Proposal } from "../types/proposal";
-import common from "../styles/common";
-import { useExploreState } from "../context/exploreContext";
-import { Space } from "../types/explore";
-import { PROPOSAL_VOTES_QUERY } from "../util/queries";
+import { Proposal } from "types/proposal";
+import common from "styles/common";
+import { useExploreState } from "context/exploreContext";
+import { Space } from "types/explore";
+import { PROPOSAL_VOTES_QUERY } from "util/queries";
 import apolloClient from "util/apolloClient";
 import StateBadge from "components/StateBadge";
 import BlockInformation from "components/proposal/BlockInformation";

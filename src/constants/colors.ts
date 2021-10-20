@@ -9,6 +9,7 @@ export default {
   bgGreen: "#21B66F",
   bgGray: "#6B7280",
   bgBlue: "#384aff",
+  bgWhite: "#fff",
   bgLightGray: "#f6f8fa",
   highlightColor: "rgba(208,215,222, .20)",
   red: "#d20000",

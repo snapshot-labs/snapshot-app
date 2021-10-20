@@ -6,10 +6,10 @@ import {
 } from "@react-navigation/stack";
 import i18n from "i18n-js";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useAuthState } from "../context/authContext";
-import * as navigationConstants from "../constants/navigation";
-import { isOldIphone } from "../util/phoneUtils";
+import { useAuthState } from "context/authContext";
+import { isOldIphone } from "util/phoneUtils";
 import FeedScreen from "./FeedScreen";
+import * as navigationConstants from "constants/navigation";
 import LandingScreen from "./LandingScreen";
 import ExploreScreen from "./ExploreScreen";
 import HomeScreen from "./HomeScreen";
@@ -21,7 +21,7 @@ import ProposalScreen from "./ProposalScreen";
 import CustomWalletScreen from "./CustomWalletScreen";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
-import colors from "../constants/colors";
+import colors from "constants/colors";
 import SettingsScreen from "./SettingsScreen";
 import ConnectAccountScreen from "./ConnectAccountScreen";
 import VotesScreen from "./VotesScreen";
@@ -31,7 +31,7 @@ import IconFont from "../components/IconFont";
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
-const ICON_SIZE = 20;
+const ICON_SIZE = 28;
 const BOTTOM_ICON_PADDING = Platform.OS === "android" ? 0 : 30;
 const BOTTOM_LABEL_PADDING = isOldIphone()
   ? 8

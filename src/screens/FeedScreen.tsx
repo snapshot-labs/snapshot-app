@@ -11,19 +11,19 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
-import apolloClient from "../util/apolloClient";
-import { PROPOSALS_QUERY } from "../util/queries";
-import ProposalPreview from "../components/ProposalPreview";
-import { Proposal } from "../types/proposal";
-import { useAuthState } from "../context/authContext";
-import common from "../styles/common";
+import apolloClient from "util/apolloClient";
+import { PROPOSALS_QUERY } from "util/queries";
+import ProposalPreview from "components/ProposalPreview";
+import { Proposal } from "types/proposal";
+import { useAuthState } from "context/authContext";
+import common from "styles/common";
 import i18n from "i18n-js";
-import colors from "../constants/colors";
-import TimelineHeader from "../components/timeline/TimelineHeader";
-import proposal from "../constants/proposal";
-import { TabView, SceneMap, TabBar, TabBarItem } from "react-native-tab-view";
-import { useExploreDispatch, useExploreState } from "../context/exploreContext";
-import { setProfiles } from "../util/profile";
+import colors from "constants/colors";
+import TimelineHeader from "components/timeline/TimelineHeader";
+import proposal from "constants/proposal";
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { useExploreDispatch, useExploreState } from "context/exploreContext";
+import { setProfiles } from "util/profile";
 
 const LOAD_BY = 6;
 
@@ -203,7 +203,11 @@ function FeedScreen({
           </View>
         ) : (
           <View
-            style={{ width: "100%", height: 150, backgroundColor: "white" }}
+            style={{
+              width: "100%",
+              height: 150,
+              backgroundColor: colors.white,
+            }}
           />
         )
       }
