@@ -25,7 +25,11 @@ import common from "../../styles/common";
 import ProposalPreview from "../ProposalPreview";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
-import {AUTH_ACTIONS, useAuthDispatch, useAuthState} from "../../context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "../../context/authContext";
 
 const LOAD_BY = 6;
 
@@ -87,7 +91,7 @@ function SpaceProposals({
   space,
   spaceScreenRef,
   scrollProps,
-  headerHeight,
+  headerHeight = 150,
   filter,
 }: SpaceProposalsProps) {
   const { refreshFeed } = useAuthState();
@@ -218,16 +222,21 @@ function SpaceProposals({
               style={{
                 width: "100%",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "flex-start",
+                marginTop: 24,
                 padding: 24,
-                height: 150,
+                height: headerHeight + 150,
               }}
             >
               <ActivityIndicator color={colors.textColor} size="large" />
             </View>
           ) : (
             <View
-              style={{ width: "100%", height: 150, backgroundColor: "white" }}
+              style={{
+                width: "100%",
+                height: headerHeight + 150,
+                backgroundColor: "white",
+              }}
             />
           )
         }

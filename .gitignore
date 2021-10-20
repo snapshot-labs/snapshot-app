@@ -39,6 +39,7 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 test.tsx
+todo.txt
 
 # Android/IntelliJ
 #
