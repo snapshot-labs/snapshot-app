@@ -81,7 +81,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
         <TouchableOpacity onPress={copyToClipboard}>
           <View style={tailwind(isEmpty(ens) ? "mt-4" : "mt-1")}>
             <Text
-              style={[styles.address, , { color: colors.textColor }]}
+              style={[styles.address, { color: colors.textColor }]}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
