@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import colors from "../constants/colors";
 import { Proposal } from "../types/proposal";
-import { getTimeAgo, shorten } from "../util/miscUtils";
+import { getTimeAgo, shorten } from "../helpers/miscUtils";
 import StateBadge from "./StateBadge";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "../constants/navigation";
@@ -19,7 +19,7 @@ import { useExploreState } from "../context/exploreContext";
 import SpaceAvatar from "./SpaceAvatar";
 import CoreBadge from "./CoreBadge";
 import { Space } from "../types/explore";
-import { getUsername } from "../util/profile";
+import { getUsername } from "../helpers/profile";
 import isEmpty from "lodash/isEmpty";
 import { useAuthState } from "../context/authContext";
 

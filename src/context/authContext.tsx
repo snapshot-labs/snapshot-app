@@ -1,12 +1,12 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "../types/context";
-import storage from "../util/storage";
+import storage from "../helpers/storage";
 import { Wallet } from "ethers";
 import WalletConnect from "@walletconnect/client";
 import {
   initialWalletConnectValues,
   setWalletConnectListeners,
-} from "../util/walletConnectUtils";
+} from "../helpers/walletConnectUtils";
 import colors, { getColorScheme } from "constants/colors";
 
 type AuthState = {

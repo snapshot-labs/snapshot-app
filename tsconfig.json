@@ -12,9 +12,9 @@
       "images/*": ["./images/*"],
       "screens/*": ["./screens/*"],
       "styles/*": ["./styles/*"],
-      "util/*": ["./util/*"],
       "types/*": ["./types/*"],
-      "i18n/*": ["./i18n/*"]
+      "i18n/*": ["./i18n/*"],
+      "helpers/*": ["./helpers/*"]
     },
     "typeRoots": ["./src/types"]
   }

@@ -6,7 +6,7 @@ import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import common from "../../styles/common";
 import SearchInput from "../SearchInput";
-import { n } from "../../util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 
 type ExploreHeaderProps = {

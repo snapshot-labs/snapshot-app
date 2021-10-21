@@ -13,7 +13,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import UserAvatar from "./UserAvatar";
-import { explorerUrl, shorten } from "util/miscUtils";
+import { explorerUrl, shorten } from "../helpers/miscUtils";
 import { useExploreState } from "context/exploreContext";
 import colors from "constants/colors";
 import { useToastShowConfig } from "constants/toast";

@@ -15,10 +15,10 @@ import {
   useAuthState,
 } from "../context/authContext";
 import UserAvatar from "./UserAvatar";
-import { shorten } from "../util/miscUtils";
-import storage from "../util/storage";
+import { shorten } from "../helpers/miscUtils";
+import storage from "../helpers/storage";
 import { useExploreState } from "../context/exploreContext";
-import { getAliasWallet } from "../util/aliasUtils";
+import { getAliasWallet } from "../helpers/aliasUtils";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {

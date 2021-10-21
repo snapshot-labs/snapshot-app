@@ -11,13 +11,13 @@ import IconFont from "../IconFont";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import colors from "../../constants/colors";
 import { Proposal } from "../../types/proposal";
-import { dateFormat, n, explorerUrl } from "../../util/miscUtils";
+import { dateFormat, n, explorerUrl } from "../../helpers/miscUtils";
 import Block from "../Block";
 import { Space } from "../../types/explore";
 import UserAvatar from "../UserAvatar";
 import SpaceAvatar from "../SpaceAvatar";
 import { useExploreState } from "../../context/exploreContext";
-import { getUsername } from "../../util/profile";
+import { getUsername } from "../../helpers/profile";
 import CoreBadge from "../CoreBadge";
 import { useAuthState } from "../../context/authContext";
 

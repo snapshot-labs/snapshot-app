@@ -9,14 +9,14 @@ import {
 } from "rn-placeholder";
 import get from "lodash/get";
 import i18n from "i18n-js";
-import apolloClient from "../util/apolloClient";
-import { FOLLOWS_QUERY } from "../util/queries";
+import apolloClient from "../helpers/apolloClient";
+import { FOLLOWS_QUERY } from "../helpers/queries";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
 } from "../context/authContext";
-import { defaultHeaders } from "../util/apiUtils";
+import { defaultHeaders } from "../helpers/apiUtils";
 import {
   EXPLORE_ACTIONS,
   useExploreDispatch,

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
-import { n } from "../../util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 
 const styles = StyleSheet.create({
   container: {

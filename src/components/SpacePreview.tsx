@@ -7,7 +7,7 @@ import { Space } from "../types/explore";
 import SpaceAvatar from "./SpaceAvatar";
 import colors from "../constants/colors";
 import { SPACE_SCREEN } from "../constants/navigation";
-import { n } from "../util/miscUtils";
+import { n } from "../helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({

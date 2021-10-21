@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import colors from "../../constants/colors";
-import { percentageOfTotal } from "../../util/voting/quadratic";
+import { percentageOfTotal } from "../../helpers/voting/quadratic";
 import { Proposal } from "../../types/proposal";
 
 const { width } = Dimensions.get("screen");

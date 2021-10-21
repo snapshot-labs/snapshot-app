@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import colors from "../../constants/colors";
 import { Proposal } from "../../types/proposal";
 import { Space } from "../../types/explore";
-import { getPower } from "../../util/snapshot";
+import { getPower } from "../../helpers/snapshot";
 import Button from "../Button";
 import VotingSingleChoice from "./VotingSingleChoice";
 import VotingRankedChoice from "./VotingRankedChoice";

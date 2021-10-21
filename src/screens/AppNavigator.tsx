@@ -7,7 +7,7 @@ import {
 import i18n from "i18n-js";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useAuthState } from "context/authContext";
-import { isOldIphone } from "util/phoneUtils";
+import { isOldIphone } from "helpers/phoneUtils";
 import FeedScreen from "./FeedScreen";
 import * as navigationConstants from "constants/navigation";
 import LandingScreen from "./LandingScreen";

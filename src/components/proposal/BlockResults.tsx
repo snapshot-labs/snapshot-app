@@ -5,7 +5,7 @@ import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import ProgressBar from "react-native-progress/Bar";
 import i18n from "i18n-js";
 import Block from "../Block";
-import { n } from "util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import { Space } from "types/explore";
 import { useAuthState } from "context/authContext";
 
