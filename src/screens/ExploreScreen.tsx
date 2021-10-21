@@ -15,7 +15,7 @@ import {
   getFilteredStrategies,
   getFilteredNetworks,
   geFilteredPlugins,
-} from "util/searchUtils";
+} from "helpers/searchUtils";
 import Strategy from "components/explore/Strategy";
 import { NetworkType } from "types/explore";
 import Network from "components/explore/Network";

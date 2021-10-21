@@ -8,8 +8,8 @@ import {
   View,
 } from "react-native";
 import { Proposal } from "../../types/proposal";
-import { PROPOSALS_QUERY, SPACES_QUERY } from "../../util/queries";
-import apolloClient from "../../util/apolloClient";
+import { PROPOSALS_QUERY, SPACES_QUERY } from "../../helpers/queries";
+import apolloClient from "../../helpers/apolloClient";
 import get from "lodash/get";
 import uniqBy from "lodash/uniqBy";
 import { ContextDispatch } from "../../types/context";
@@ -20,7 +20,7 @@ import {
 } from "../../context/exploreContext";
 import { Space } from "../../types/explore";
 import React, { useEffect, useState } from "react";
-import { setProfiles } from "../../util/profile";
+import { setProfiles } from "../../helpers/profile";
 import common from "../../styles/common";
 import ProposalPreview from "../ProposalPreview";
 import i18n from "i18n-js";

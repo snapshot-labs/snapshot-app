@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
-import { n } from "../../util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import { NetworkType, Space } from "../../types/explore";
 import common from "../../styles/common";
 import { useNavigation } from "@react-navigation/native";

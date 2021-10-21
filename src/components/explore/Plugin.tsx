@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import i18n from "i18n-js";
 import colors from "../../constants/colors";
-import { n } from "../../util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import common from "../../styles/common";
 import IconFont from "../IconFont";
 import { useAuthState } from "context/authContext";

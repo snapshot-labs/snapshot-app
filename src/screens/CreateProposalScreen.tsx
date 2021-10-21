@@ -20,7 +20,7 @@ import {
   useAuthState,
 } from "context/authContext";
 import Warning from "components/createProposal/Warning";
-import client from "util/snapshotClient";
+import client from "helpers/snapshotClient";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "constants/navigation";

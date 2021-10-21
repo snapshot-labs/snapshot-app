@@ -6,7 +6,7 @@ import SpacePreview from "../components/SpacePreview";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Space } from "../types/explore";
 import SearchInput from "../components/SearchInput";
-import { getFilteredSpaces } from "../util/searchUtils";
+import { getFilteredSpaces } from "../helpers/searchUtils";
 
 type NetworkScreenProps = {
   route: {

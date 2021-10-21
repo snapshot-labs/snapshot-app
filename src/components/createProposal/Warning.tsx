@@ -5,7 +5,7 @@ import { Space } from "../../types/explore";
 import colors from "../../constants/colors";
 import common from "../../styles/common";
 import IconFont from "../IconFont";
-import { n } from "../../util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 
 type WarningProps = {
   space: Space;

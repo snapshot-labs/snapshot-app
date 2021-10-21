@@ -11,7 +11,7 @@ import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import Block from "../Block";
 import { Strategy } from "../../types/explore";
-import { getUsername } from "../../util/profile";
+import { getUsername } from "../../helpers/profile";
 import { useExploreState } from "../../context/exploreContext";
 import { useAuthState } from "../../context/authContext";
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Dimensions, Text, TouchableOpacity } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
 import i18n from "i18n-js";
-import { getNumberWithOrdinal } from "../../util/numUtils";
+import { getNumberWithOrdinal } from "../../helpers/numUtils";
 import Button from "../Button";
 import common from "../../styles/common";
 import IconFont from "../IconFont";

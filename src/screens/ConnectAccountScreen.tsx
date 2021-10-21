@@ -14,23 +14,23 @@ import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
 import { CUSTOM_WALLET_SCREEN } from "../constants/navigation";
 import { MetaMask } from "../constants/wallets";
-import { defaultHeaders } from "../util/apiUtils";
+import { defaultHeaders } from "../helpers/apiUtils";
 import common from "../styles/common";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
 } from "../context/authContext";
-import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
+import { generateKey, convertArrayBufferToHex, uuid } from "../helpers/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
 import BackButton from "../components/BackButton";
-import storage from "../util/storage";
+import storage from "../helpers/storage";
 import WalletConnect from "@walletconnect/client";
 import {
   connectToWalletService,
   initialWalletConnectValues,
-} from "../util/walletConnectUtils";
+} from "../helpers/walletConnectUtils";
 
 const defaultWallets = [MetaMask];
 

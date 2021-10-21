@@ -12,7 +12,7 @@ import {
 import common, { actionSheetTextStyles } from "../../styles/common";
 import { Proposal } from "../../types/proposal";
 import { useNavigation } from "@react-navigation/native";
-import client from "../../util/snapshotClient";
+import client from "../../helpers/snapshotClient";
 import Toast from "react-native-toast-message";
 import { CREATE_PROPOSAL_SCREEN } from "../../constants/navigation";
 import { useToastShowConfig } from "../../constants/toast";

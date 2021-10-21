@@ -15,9 +15,9 @@ import { Space } from "types/explore";
 import common from "styles/common";
 import colors from "constants/colors";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
-import { n } from "util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import { getUsername, setProfiles } from "util/profile";
+import { getUsername, setProfiles } from "../../helpers/profile";
 import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
 

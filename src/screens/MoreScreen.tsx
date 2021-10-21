@@ -20,7 +20,7 @@ import {
   useAuthState,
 } from "context/authContext";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import { setProfiles } from "util/profile";
+import { setProfiles } from "helpers/profile";
 import ConnectedWallet from "components/ConnectedWallet";
 import ActiveAccount from "components/ActiveAccount";
 import tailwind from "tailwind-rn";

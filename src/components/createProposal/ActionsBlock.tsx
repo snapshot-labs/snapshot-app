@@ -6,7 +6,7 @@ import common from "../../styles/common";
 
 import Button from "../Button";
 import DatePickerModal from "./DatePickerModal";
-import { dateFormat } from "../../util/miscUtils";
+import { dateFormat } from "../../helpers/miscUtils";
 
 type ActionsBlockProps = {
   startTimestamp: number | undefined;

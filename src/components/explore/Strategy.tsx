@@ -4,7 +4,7 @@ import i18n from "i18n-js";
 import IconFont from "../IconFont";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../constants/colors";
-import { n } from "../../util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import { Strategy } from "../../types/explore";
 import common from "../../styles/common";
 import { STRATEGY_SCREEN } from "../../constants/navigation";

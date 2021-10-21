@@ -8,13 +8,13 @@ import {
   View,
 } from "react-native";
 import UserAvatar from "../UserAvatar";
-import { getChoiceString, n } from "util/miscUtils";
+import { getChoiceString, n } from "helpers/miscUtils";
 import i18n from "i18n-js";
 import colors from "constants/colors";
 import { Space } from "types/explore";
 import { Proposal } from "types/proposal";
 import { useAuthState } from "context/authContext";
-import { getUsername } from "util/profile";
+import { getUsername } from "helpers/profile";
 
 const { width } = Dimensions.get("screen");
 

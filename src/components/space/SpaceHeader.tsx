@@ -8,7 +8,7 @@ import SpaceAvatar from "../SpaceAvatar";
 import common from "styles/common";
 import FollowButton from "../FollowButton";
 import { Space } from "types/explore";
-import { n } from "util/miscUtils";
+import { n } from "../../helpers/miscUtils";
 import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";

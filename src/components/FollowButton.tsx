@@ -3,13 +3,13 @@ import Button from "./Button";
 import { useAuthDispatch, useAuthState } from "../context/authContext";
 import { Wallet } from "@ethersproject/wallet";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import signClient from "../util/signClient";
+import signClient from "../helpers/signClient";
 import "@ethersproject/shims";
-import { checkAlias, setAlias } from "../util/aliasUtils";
+import { checkAlias, setAlias } from "../helpers/aliasUtils";
 import find from "lodash/find";
 import i18n from "i18n-js";
 import get from "lodash/get";
-import { getFollows } from "../util/apiUtils";
+import { getFollows } from "../helpers/apiUtils";
 import { ContextDispatch } from "../types/context";
 import { Space } from "../types/explore";
 

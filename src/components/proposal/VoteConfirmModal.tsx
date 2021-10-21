@@ -15,9 +15,9 @@ import Toast from "react-native-toast-message";
 import colors from "constants/colors";
 import IconFont from "../IconFont";
 import { styles as buttonStyles } from "../Button";
-import { explorerUrl, getChoiceString, n, shorten } from "util/miscUtils";
+import { explorerUrl, getChoiceString, n, shorten } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
-import client from "util/snapshotClient";
+import client from "../../helpers/snapshotClient";
 import { useToastShowConfig } from "constants/toast";
 
 const { width } = Dimensions.get("screen");
