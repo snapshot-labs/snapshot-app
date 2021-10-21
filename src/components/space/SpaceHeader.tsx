@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Animated, Text, View } from "react-native";
 import i18n from "i18n-js";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import get from "lodash/get";
@@ -16,9 +16,14 @@ import { useAuthState } from "context/authContext";
 type SpaceHeader = {
   space: Space;
   isWalletConnect: boolean | undefined;
+  profileImageHeight: any;
 };
 
-function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
+function SpaceHeader({
+  space,
+  isWalletConnect,
+  profileImageHeight,
+}: SpaceHeader) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   return (
@@ -31,7 +36,18 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
     >
       <View style={{ flexDirection: "row" }}>
         <View>
-          <SpaceAvatar space={space} symbolIndex="space" size={60} />
+          <SpaceAvatar
+            space={space}
+            symbolIndex="space"
+            size={60}
+            isAnimated
+            animatedProps={{
+              style: {
+                height: profileImageHeight,
+                width: profileImageHeight,
+              },
+            }}
+          />
           <Text
             style={[
               { marginTop: 8 },

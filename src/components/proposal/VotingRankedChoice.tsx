@@ -6,7 +6,7 @@ import { getNumberWithOrdinal } from "../../helpers/numUtils";
 import Button from "../Button";
 import common from "../../styles/common";
 import IconFont from "../IconFont";
-import colors from "../../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -53,6 +53,7 @@ function VotingRankedChoice({
   setSelectedChoices,
   setScrollEnabled,
 }: VotingRankedChoiceProps) {
+  const { colors } = useAuthState();
   const [proposalChoices, setProposalChoices] = useState<any[]>([]);
   const [removedProposalChoices, setRemovedProposalChoices] = useState<any[]>(
     proposal.choices
@@ -96,7 +97,13 @@ function VotingRankedChoice({
         onClickItem={(data, item, index) => {}}
         renderItem={(item, index) => {
           return (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingBottom: 20,
+              }}
+            >
               <Button
                 title={`(${getNumberWithOrdinal(index + 1)}) ${item}`}
                 onPress={() => {}}
@@ -116,11 +123,7 @@ function VotingRankedChoice({
                 }}
                 style={{ marginLeft: 6 }}
               >
-                <IconFont
-                  name="close"
-                  color={colors.textColor}
-                  size={20}
-                />
+                <IconFont name="close" color={colors.textColor} size={20} />
               </TouchableOpacity>
             </View>
           );

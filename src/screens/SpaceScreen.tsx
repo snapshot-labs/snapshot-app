@@ -44,6 +44,11 @@ const styles = StyleSheet.create({
 
 export const headerHeight = Platform.OS === "android" ? 185 : 170;
 
+const HEADER_MAX_HEIGHT = Platform.OS === "android" ? 155 : 140;
+const HEADER_MIN_HEIGHT = 0;
+const PROFILE_IMAGE_MAX_HEIGHT = 60;
+const PROFILE_IMAGE_MIN_HEIGHT = 10;
+
 const renderScene = (
   route: any,
   spaceScreenRef: any,
@@ -97,30 +102,31 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
   const space = route.params.space;
+  const scrollY = useRef(new Animated.Value(0));
+  const headerHeight = scrollY.current.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT, HEADER_MAX_HEIGHT + 5],
+    outputRange: [-40, -15, 6],
+    extrapolate: "clamp",
+  });
+  const profileImageHeight = scrollY.current.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
+    outputRange: [PROFILE_IMAGE_MAX_HEIGHT, PROFILE_IMAGE_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
+  const headerZindex = scrollY.current.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  const headerTitleBottom = scrollY.current.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT],
+    outputRange: [0, -HEADER_MAX_HEIGHT],
+    extrapolate: "clamp",
+  });
   const spaceScreenRef: any = useRef(null);
-  const scrollAnim = useRef(new Animated.Value(0));
-  const offsetAnim = useRef(new Animated.Value(0));
   const scrollValue = useRef(0);
-  const offsetValue = useRef(0);
   const scrollEndTimer: any = useRef(-1);
-  const clampedScrollValue = useRef(0);
   const [isInitial, setIsInitial] = useState(true);
-  //@ts-ignore
-  const headerSnap = useRef(Animated.CompositeAnimation);
-  const clampedScroll = useRef(
-    Animated.diffClamp(
-      Animated.add(
-        scrollAnim.current.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-          extrapolateLeft: "clamp",
-        }),
-        offsetAnim.current
-      ),
-      0,
-      headerHeight
-    )
-  );
 
   useEffect(() => {
     if (!isInitial) {
@@ -131,51 +137,28 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   }, [index]);
 
   useEffect(() => {
-    offsetAnim.current.addListener(({ value }) => {
-      offsetValue.current = value;
-    });
-    scrollAnim.current.addListener(({ value }) => {
-      const diff = value - scrollValue.current;
+    scrollY.current.addListener(({ value }) => {
       scrollValue.current = value;
-      clampedScrollValue.current = Math.min(
-        Math.max(clampedScrollValue.current + diff, 0),
-        headerHeight
-      );
-      if (clampedScrollValue.current > 50) {
+
+      if (value >= HEADER_MAX_HEIGHT) {
         setShowTitle(true);
       } else {
         setShowTitle(false);
       }
     });
     return () => {
-      scrollAnim.current.removeAllListeners();
-      offsetAnim.current.removeAllListeners();
+      scrollY.current.removeAllListeners();
       clearTimeout(scrollEndTimer.current);
     };
   }, []);
 
-  const headerTranslation = clampedScroll.current.interpolate({
-    inputRange: [0, headerHeight],
-    outputRange: [0, -headerHeight],
-    extrapolate: "clamp",
-  });
-
-  function moveHeader(toValue: number) {
-    if (headerSnap.current) {
-      headerSnap.current.stop();
-    }
-
-    headerSnap.current = Animated.timing(offsetAnim.current, {
+  function resetHeader() {
+    const toValue = -HEADER_MAX_HEIGHT;
+    Animated.timing(scrollY.current, {
       toValue,
-      duration: 350,
-      useNativeDriver: true,
-    });
-
-    headerSnap.current.start();
-  }
-
-  function onMomentumScrollBegin() {
-    clearTimeout(scrollEndTimer.current);
+      duration: 1000,
+      useNativeDriver: false,
+    }).start();
   }
 
   const sceneMap = useMemo(
@@ -184,10 +167,9 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         route,
         spaceScreenRef,
         {
-          onMomentumScrollBegin,
           onScroll: Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollAnim.current } } }],
-            { useNativeDriver: true }
+            [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
+            { useNativeDriver: false }
           ),
         },
         filter
@@ -204,14 +186,18 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             top: 0,
             left: 0,
             zIndex: 1,
-            height: headerHeight,
+            height: HEADER_MAX_HEIGHT,
             backgroundColor: colors.bgDefault,
             width: "100%",
           },
-          [{ transform: [{ translateY: headerTranslation }] }],
+          [{ transform: [{ translateY: headerTitleBottom }] }],
         ]}
       >
-        <SpaceHeader space={space} isWalletConnect={isWalletConnect} />
+        <SpaceHeader
+          space={space}
+          isWalletConnect={isWalletConnect}
+          profileImageHeight={profileImageHeight}
+        />
         <TabBar
           {...props}
           labelStyle={styles.labelStyle}
@@ -248,10 +234,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           }}
           tabStyle={{ alignItems: "center", justifyContent: "flex-start" }}
           onTabPress={() => {
-            if (clampedScrollValue.current !== 0) {
-              moveHeader(offsetValue.current - headerHeight);
-              clampedScrollValue.current = 0;
-            }
+            resetHeader();
           }}
         />
       </Animated.View>
@@ -285,7 +268,17 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             color: showTitle ? colors.white : colors.textColor,
             overflow: "visible",
           }}
-          title={showTitle ? space.name : ""}
+          title={space.name}
+          isAnimated
+          animatedProps={{
+            style: {
+              position: "absolute",
+              bottom: headerHeight,
+              zIndex: headerZindex,
+              elevation: headerZindex,
+              left: 50,
+            },
+          }}
         />
         <View
           style={{
@@ -301,10 +294,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               setFilter={setFilter}
               onChangeFilter={(newFilter: string) => {
                 spaceScreenRef?.current?.onChangeFilter(newFilter);
-                if (clampedScrollValue.current !== 0) {
-                  moveHeader(offsetValue.current - headerHeight);
-                  clampedScrollValue.current = 0;
-                }
+                resetHeader();
               }}
               iconColor={showTitle ? colors.white : colors.textColor}
               filterTextStyle={{
@@ -325,10 +315,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
         onSwipeStart={() => {
-          if (clampedScrollValue.current !== 0) {
-            moveHeader(offsetValue.current - headerHeight);
-            clampedScrollValue.current = 0;
-          }
+          resetHeader();
         }}
       />
     </View>

@@ -7,6 +7,7 @@ import {
   Text,
   Platform,
   TextStyle,
+  Animated,
 } from "react-native";
 import colors from "../constants/colors";
 import IconFont from "./IconFont";
@@ -38,6 +39,8 @@ type BackButtonProps = {
   backIcon?: string;
   backIconSize?: number;
   backIconStyle?: object;
+  isAnimated?: boolean;
+  animatedProps?: any;
 };
 
 function BackButton({
@@ -49,13 +52,38 @@ function BackButton({
   backIcon = "back",
   backIconSize,
   backIconStyle = {},
+  isAnimated,
+  animatedProps,
 }: BackButtonProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   let setBackIconSize;
+  let TitleComponent = (
+    <Text
+      style={[styles.backButtonTitle, { color: colors.textColor }, titleStyle]}
+    >
+      {title ?? ""}
+    </Text>
+  );
 
   if (backIconSize === undefined) {
     setBackIconSize = backIconSize;
+  }
+
+  if (isAnimated) {
+    TitleComponent = (
+      <Animated.View {...animatedProps}>
+        <Text
+          style={[
+            styles.backButtonTitle,
+            { color: colors.textColor },
+            titleStyle,
+          ]}
+        >
+          {title ?? ""}
+        </Text>
+      </Animated.View>
+    );
   }
 
   return (
@@ -77,15 +105,7 @@ function BackButton({
           }
           style={backIconStyle}
         />
-        <Text
-          style={[
-            styles.backButtonTitle,
-            titleStyle,
-            { color: colors.textColor },
-          ]}
-        >
-          {title ?? ""}
-        </Text>
+        {TitleComponent}
       </View>
     </TouchableOpacity>
   );
