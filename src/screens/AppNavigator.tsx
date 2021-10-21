@@ -21,7 +21,6 @@ import ProposalScreen from "./ProposalScreen";
 import CustomWalletScreen from "./CustomWalletScreen";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
-import colors from "constants/colors";
 import SettingsScreen from "./SettingsScreen";
 import ConnectAccountScreen from "./ConnectAccountScreen";
 import VotesScreen from "./VotesScreen";
@@ -41,6 +40,8 @@ const BOTTOM_LABEL_PADDING = isOldIphone()
 const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
+  const { colors } = useAuthState();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -50,6 +51,7 @@ function TabNavigator() {
         headerShown: false,
         tabBarActiveTintColor: colors.textColor,
         tabBarStyle: {
+          backgroundColor: colors.bgDefault,
           padding: 16,
           shadowOpacity: 0,
           height: isOldIphone() ? 60 : Platform.OS === "android" ? 75 : 85,

@@ -11,18 +11,15 @@ import {
 import i18n from "i18n-js";
 import map from "lodash/map";
 import get from "lodash/get";
-import { Space } from "../../types/explore";
-import common from "../../styles/common";
-import colors from "../../constants/colors";
+import { Space } from "types/explore";
+import common from "styles/common";
+import colors from "constants/colors";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
-import { n } from "../../util/miscUtils";
-import {
-  useExploreDispatch,
-  useExploreState,
-} from "../../context/exploreContext";
-import { getUsername, setProfiles } from "../../util/profile";
+import { n } from "util/miscUtils";
+import { useExploreDispatch, useExploreState } from "context/exploreContext";
+import { getUsername, setProfiles } from "util/profile";
 import UserAvatar from "../UserAvatar";
-import { useAuthState } from "../../context/authContext";
+import { useAuthState } from "context/authContext";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -57,7 +54,7 @@ function AboutSpace({
   scrollProps,
   headerHeight,
 }: AboutSpaceProps) {
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const space = Object.assign(routeSpace, get(spaces, routeSpace.id ?? "", {}));
@@ -80,24 +77,33 @@ function AboutSpace({
       bounces={false}
       overScrollMode={"never"}
       scrollEventThrottle={1}
-      style={[common.screen, { paddingTop: headerHeight + 60 }]}
+      style={[
+        common.screen,
+        { paddingTop: headerHeight + 60, backgroundColor: colors.bgDefault },
+      ]}
       {...scrollProps}
     >
       <View style={styles.content}>
         {networkName && (
           <View style={styles.labelValueContainer}>
-            <Text style={styles.label}>{i18n.t("network")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("network")}
+            </Text>
             <Text style={styles.value}>{networkName}</Text>
           </View>
         )}
         <View style={styles.labelValueContainer}>
-          <Text style={styles.label}>{i18n.t("proposalValidation")}</Text>
+          <Text style={[styles.label, { color: colors.textColor }]}>
+            {i18n.t("proposalValidation")}
+          </Text>
           <Text style={styles.value}>{space.validation?.name || "basic"}</Text>
         </View>
         {(!space.validation || space.validation?.name === "basic") &&
         space.filters?.minScore ? (
           <View style={styles.labelValueContainer}>
-            <Text style={styles.label}>{i18n.t("proposalThreshold")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("proposalThreshold")}
+            </Text>
             <Text style={styles.value}>
               {n(space.filters?.minScore ?? 0)} {space.symbol}
             </Text>
@@ -107,7 +113,9 @@ function AboutSpace({
         )}
         {space.terms && (
           <View style={styles.labelValueContainer}>
-            <Text style={styles.label}>{i18n.t("terms")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("terms")}
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 if (space.terms) {
@@ -123,7 +131,9 @@ function AboutSpace({
         )}
         {space.strategies ? (
           <View style={styles.labelValueContainer}>
-            <Text style={styles.label}>{i18n.t("strategies")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("strategies")}
+            </Text>
             {map(space.strategies, (strategy: any, i: number) => (
               <Text
                 key={`${i}`}
@@ -141,7 +151,9 @@ function AboutSpace({
         )}
         {pluginsArray.length ? (
           <View style={styles.labelValueContainer}>
-            <Text style={styles.label}>{i18n.t("plugins")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("plugins")}
+            </Text>
             {pluginsArray.map((plugin, i) => {
               return (
                 <Text
@@ -161,7 +173,9 @@ function AboutSpace({
         )}
         {space.admins?.length ? (
           <View style={[styles.labelValueContainer, { marginTop: 24 }]}>
-            <Text style={styles.label}>{i18n.t("admins")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("admins")}
+            </Text>
             {space.admins.map((admin: string, i: number) => {
               const adminProfile = profiles[admin];
               const adminName = getUsername(
@@ -200,7 +214,9 @@ function AboutSpace({
         )}
         {space.members?.length ? (
           <View style={[styles.labelValueContainer, { marginTop: 24 }]}>
-            <Text style={styles.label}>{i18n.t("authors")}</Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("authors")}
+            </Text>
             {space.members.map((member: string, i: number) => {
               const memberProfile = profiles[member];
               const memberName = getUsername(

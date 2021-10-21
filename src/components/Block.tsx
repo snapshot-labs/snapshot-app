@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, Platform } from "react-native";
 import colors from "../constants/colors";
 import common from "../styles/common";
+import { useAuthState } from "context/authContext";
 
 export const styles = StyleSheet.create({
   block: {
@@ -58,6 +59,7 @@ function Block({
   hideHeaderBorder,
   hideHeader = false,
 }: BlockProps) {
+  const { colors } = useAuthState();
   return (
     <View style={styles.block}>
       {!hideHeader && (
@@ -68,7 +70,11 @@ function Block({
           ]}
         >
           {TitleComponent !== undefined && TitleComponent}
-          {title !== undefined && <Text style={[common.h4]}>{title}</Text>}
+          {title !== undefined && (
+            <Text style={[common.h4, { color: colors.textColor }]}>
+              {title}
+            </Text>
+          )}
           {count !== undefined && (
             <View style={styles.countContainer}>
               <Text style={styles.countText}>{count}</Text>

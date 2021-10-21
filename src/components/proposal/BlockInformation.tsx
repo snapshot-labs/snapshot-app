@@ -68,7 +68,7 @@ type BlockInformationProps = {
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
   const { profiles } = useExploreState();
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, colors } = useAuthState();
   const authorProfile = profiles[proposal.author];
   const authorName = getUsername(
     proposal.author,
@@ -118,7 +118,12 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
                   imgSrc={authorProfile?.image}
                   key={`${proposal.author}${authorProfile?.image}`}
                 />
-                <Text style={[styles.rowValueText, { marginLeft: 4 }]}>
+                <Text
+                  style={[
+                    styles.rowValueText,
+                    { marginLeft: 4, color: colors.textColor },
+                  ]}
+                >
                   {authorName}
                 </Text>
                 <CoreBadge address={proposal.author} members={space?.members} />
@@ -135,7 +140,9 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
                 }}
               >
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.rowValueText}>
+                  <Text
+                    style={[styles.rowValueText, { color: colors.textColor }]}
+                  >
                     #{proposal.id.slice(0, 7)}
                   </Text>
                   <IconFont
@@ -150,7 +157,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("votingSystem")}</Text>
             <View style={styles.rowValue}>
-              <Text style={styles.rowValueText}>
+              <Text style={[styles.rowValueText, { color: colors.textColor }]}>
                 {votingType === "" ? "" : i18n.t(votingType)}
               </Text>
             </View>
@@ -158,13 +165,17 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("start")}</Text>
             <View style={styles.rowValue}>
-              <Text style={styles.rowValueText}>{proposalStart}</Text>
+              <Text style={[styles.rowValueText, { color: colors.textColor }]}>
+                {proposalStart}
+              </Text>
             </View>
           </View>
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("end")}</Text>
             <View style={styles.rowValue}>
-              <Text style={styles.rowValueText}>{proposalEnd}</Text>
+              <Text style={[styles.rowValueText, { color: colors.textColor }]}>
+                {proposalEnd}
+              </Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -181,7 +192,9 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
                 }}
               >
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.rowValueText}>
+                  <Text
+                    style={[styles.rowValueText, { color: colors.textColor }]}
+                  >
                     {n(proposal.snapshot, "0,0")}
                   </Text>
                   <IconFont

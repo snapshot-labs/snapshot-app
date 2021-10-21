@@ -100,7 +100,7 @@ function SpaceProposals({
   headerHeight = 150,
   filter,
 }: SpaceProposalsProps) {
-  const { refreshFeed } = useAuthState();
+  const { refreshFeed, colors } = useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
   const spaceId: string = get(space, "id", "");
@@ -180,7 +180,7 @@ function SpaceProposals({
   }, [space, proposals]);
 
   return (
-    <View style={common.screen}>
+    <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
       <AnimatedFlatList
         scrollEventThrottle={1}
         bounces={false}
@@ -248,7 +248,7 @@ function SpaceProposals({
               style={{
                 width: "100%",
                 height: headerHeight + 150,
-                backgroundColor: colors.white,
+                backgroundColor: colors.bgDefault,
               }}
             />
           )

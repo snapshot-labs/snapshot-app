@@ -4,6 +4,7 @@ import colors from "../constants/colors";
 import IconFont from "./IconFont";
 import Input from "./Input";
 import i18n from "i18n-js";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   searchInputContainer: {
@@ -41,12 +42,13 @@ function SearchInput({
   onChangeText,
   value,
 }: SearchInputProps) {
+  const { colors } = useAuthState();
   return (
     <View style={styles.searchInputContainer}>
       <IconFont name="search" size={18} color={colors.darkGray} />
       <Input
         selectionColor={colors.textColor}
-        style={styles.searchInput}
+        style={[styles.searchInput, { color: colors.textColor }]}
         value={value}
         onChangeText={onChangeText}
         placeholder={i18n.t("search")}

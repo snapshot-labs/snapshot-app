@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Platform, View } from "react-native";
-import { useExploreState } from "../context/exploreContext";
+import { View } from "react-native";
+import { useExploreState } from "context/exploreContext";
 import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
 import orderBy from "lodash/orderBy";
-import common from "../styles/common";
-import SpacePreview from "../components/SpacePreview";
+import common from "styles/common";
+import SpacePreview from "components/SpacePreview";
 import i18n from "i18n-js";
-import ExploreHeader from "../components/explore/ExploreHeader";
+import ExploreHeader from "components/explore/ExploreHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
 import pluginsObj from "../../snapshot-plugins/src/plugins";
@@ -15,13 +15,15 @@ import {
   getFilteredStrategies,
   getFilteredNetworks,
   geFilteredPlugins,
-} from "../util/searchUtils";
-import Strategy from "../components/explore/Strategy";
-import { NetworkType } from "../types/explore";
-import Network from "../components/explore/Network";
-import Plugin from "../components/explore/Plugin";
+} from "util/searchUtils";
+import Strategy from "components/explore/Strategy";
+import { NetworkType } from "types/explore";
+import Network from "components/explore/Network";
+import Plugin from "components/explore/Plugin";
+import { useAuthState } from "context/authContext";
 
 function ExploreScreen() {
+  const { colors } = useAuthState();
   const { spaces, strategies, fullStrategies, networks, plugins } =
     useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
@@ -92,8 +94,10 @@ function ExploreScreen() {
   }, [spaces, currentExplore, searchValue]);
 
   return (
-    <SafeAreaView style={common.screen}>
-      <View style={[common.screen]}>
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    >
+      <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
         <CollapsibleHeaderFlatList
           data={filteredExplore}
           headerHeight={100}

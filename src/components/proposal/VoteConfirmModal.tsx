@@ -10,15 +10,15 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import i18n from "i18n-js";
-import common from "../../styles/common";
+import common from "styles/common";
 import Toast from "react-native-toast-message";
-import colors from "../../constants/colors";
+import colors from "constants/colors";
 import IconFont from "../IconFont";
 import { styles as buttonStyles } from "../Button";
-import { explorerUrl, getChoiceString, n, shorten } from "../../util/miscUtils";
-import { useAuthState } from "../../context/authContext";
-import client from "../../util/snapshotClient";
-import { useToastShowConfig } from "../../constants/toast";
+import { explorerUrl, getChoiceString, n, shorten } from "util/miscUtils";
+import { useAuthState } from "context/authContext";
+import client from "util/snapshotClient";
+import { useToastShowConfig } from "constants/toast";
 
 const { width } = Dimensions.get("screen");
 
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.bgDefault,
     borderRadius: 6,
   },
   header: {

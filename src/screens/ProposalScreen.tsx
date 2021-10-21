@@ -19,6 +19,7 @@ import BlockResults from "components/proposal/BlockResults";
 import BlockCastVote from "components/proposal/BlockCastVote";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import ProposalMenu from "components/proposal/ProposalMenu";
+import { useAuthState } from "context/authContext";
 
 type ProposalScreenProps = {
   route: {
@@ -92,6 +93,7 @@ async function getResultsObj(
 }
 
 function ProposalScreen({ route }: ProposalScreenProps) {
+  const { colors } = useAuthState();
   const [proposal, setProposal] = useState<Proposal>(
     route.params.proposal ?? {}
   );
@@ -135,7 +137,12 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   }, [loaded]);
 
   return (
-    <View style={[{ paddingTop: insets.top }, common.screen]}>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
       <View style={[common.headerContainer, common.justifySpaceBetween]}>
         <BackButton title={route.params.fromFeed ? null : space?.name} />
         {!proposalFullyLoading && (
@@ -168,7 +175,12 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       ) : (
         <ScrollView scrollEnabled={scrollEnabled}>
           <View style={{ paddingHorizontal: 16 }}>
-            <Text style={[common.h1, { marginBottom: 8, marginTop: 16 }]}>
+            <Text
+              style={[
+                common.h1,
+                { marginBottom: 8, marginTop: 16, color: colors.textColor },
+              ]}
+            >
               {proposal.title}
             </Text>
             <View style={{ alignSelf: "flex-start", marginBottom: 24 }}>

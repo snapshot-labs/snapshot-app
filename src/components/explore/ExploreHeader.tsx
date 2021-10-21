@@ -7,6 +7,7 @@ import colors from "../../constants/colors";
 import common from "../../styles/common";
 import SearchInput from "../SearchInput";
 import { n } from "../../util/miscUtils";
+import { useAuthState } from "context/authContext";
 
 type ExploreHeaderProps = {
   searchValue: string;
@@ -39,10 +40,11 @@ function ExploreHeader({
   setCurrentExplore,
   filteredExplore,
 }: ExploreHeaderProps) {
+  const { colors } = useAuthState();
   const { showActionSheetWithOptions } = useActionSheet();
   const currentExploreText = getCurrentExploreText(currentExplore);
   return (
-    <View>
+    <View style={{ backgroundColor: colors.bgDefault, paddingBottom: 8 }}>
       <SearchInput
         onChangeText={onChangeText}
         value={searchValue}
@@ -63,7 +65,12 @@ function ExploreHeader({
                   {
                     options,
                     cancelButtonIndex,
-                    textStyle: { fontFamily: "Calibre-Medium", fontSize: 20 },
+                    textStyle: {
+                      fontFamily: "Calibre-Medium",
+                      fontSize: 20,
+                      color: colors.textColor,
+                    },
+                    containerStyle: { backgroundColor: colors.bgDefault },
                   },
                   (buttonIndex) => {
                     if (buttonIndex === 0) {
@@ -120,7 +127,9 @@ function ExploreHeader({
           alignItems: "baseline",
         }}
       >
-        <Text style={common.headerTitle}>{i18n.t("explore")}</Text>
+        <Text style={[common.headerTitle, { color: colors.textColor }]}>
+          {i18n.t("explore")}
+        </Text>
         <Text style={[{ marginLeft: "auto" }, common.subTitle]}>
           {n(filteredExplore.length)} {currentExploreText}
         </Text>

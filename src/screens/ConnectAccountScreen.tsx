@@ -105,7 +105,7 @@ function ConnectAccountScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
-  const { savedWallets } = useAuthState();
+  const { savedWallets, colors } = useAuthState();
 
   useEffect(() => {
     fetchWallets(setWallets, setLoading);
@@ -117,12 +117,13 @@ function ConnectAccountScreen() {
         common.screen,
         {
           paddingTop: insets.top,
+          backgroundColor: colors.bgDefault,
         },
       ]}
     >
       <BackButton />
       <View style={{ paddingHorizontal: 16 }}>
-        <Text style={[{ marginTop: 24 }, common.headerTitle]}>
+        <Text style={[common.headerTitle, { color: colors.textColor }]}>
           {i18n.t("connectWallet")}
         </Text>
         {loading ? (
@@ -220,7 +221,7 @@ function ConnectAccountScreen() {
                         payload: {
                           newConnector: newConnector,
                           androidAppUrl: androidAppUrl,
-                          walletService: wallet
+                          walletService: wallet,
                         },
                       });
                       navigation.goBack();
@@ -258,9 +259,19 @@ function ConnectAccountScreen() {
                     source={{
                       uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
                     }}
-                    style={{ marginRight: 16, width: 50, height: 50 }}
+                    style={{
+                      marginRight: 16,
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                      backgroundColor: colors.bgDefault,
+                    }}
                   />
-                  <Text style={common.defaultText}>{wallet.name}</Text>
+                  <Text
+                    style={[common.defaultText, { color: colors.textColor }]}
+                  >
+                    {wallet.name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -288,10 +299,13 @@ function ConnectAccountScreen() {
                         width: 50,
                         height: 50,
                         borderRadius: 25,
+                        backgroundColor: colors.bgDefault,
                       }}
                       resizeMode="contain"
                     />
-                    <Text style={common.defaultText}>
+                    <Text
+                      style={[common.defaultText, { color: colors.textColor }]}
+                    >
                       {i18n.t("getWallet", { walletName: wallet.name })}
                     </Text>
                   </View>
@@ -307,7 +321,12 @@ function ConnectAccountScreen() {
                 }}
               >
                 <View>
-                  <Text style={[common.defaultText, { marginTop: 24 }]}>
+                  <Text
+                    style={[
+                      common.defaultText,
+                      { marginTop: 24, color: colors.textColor },
+                    ]}
+                  >
                     {i18n.t("customWalletReadOnly")}
                   </Text>
                 </View>

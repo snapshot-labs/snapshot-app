@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Dimensions,
-  TouchableHighlight,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableHighlight, Platform } from "react-native";
 import i18n from "i18n-js";
-import { Proposal } from "../../types/proposal";
+import { Proposal } from "types/proposal";
 import { styles as blockStyles } from "../Block";
-import colors from "../../constants/colors";
-import { Space } from "../../types/explore";
+import colors from "constants/colors";
+import { Space } from "types/explore";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
-import {
-  useExploreDispatch,
-  useExploreState,
-} from "../../context/exploreContext";
-import { setProfiles } from "../../util/profile";
+import { useExploreDispatch, useExploreState } from "context/exploreContext";
+import { setProfiles } from "util/profile";
 import UserAvatar from "../UserAvatar";
-import common from "../../styles/common";
+import common from "styles/common";
 import { useNavigation } from "@react-navigation/native";
-import { PROPOSAL_VOTES_SCREEN } from "../../constants/navigation";
+import { PROPOSAL_VOTES_SCREEN } from "constants/navigation";
 import rnTextSize, { TSFontSpecs } from "react-native-text-size";
+import { useAuthState } from "context/authContext";
 
 const fontSpecs: TSFontSpecs = {
   fontFamily: "Calibre-Medium",
@@ -72,6 +64,7 @@ function BlockVotes({
   space,
   resultsLoaded,
 }: BlockVotesProps) {
+  const { colors } = useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const navigation: any = useNavigation();
@@ -128,7 +121,9 @@ function BlockVotes({
           {resultsLoaded &&
           choicesTextWidth.length >= choicesTextWidthExpectedMinLength ? (
             <>
-              <Text style={common.h4}>{i18n.t("votes")}</Text>
+              <Text style={[common.h4, { color: colors.textColor }]}>
+                {i18n.t("votes")}
+              </Text>
               <View style={blockStyles.countContainer}>
                 <Text style={blockStyles.countText}>{votes.length}</Text>
               </View>

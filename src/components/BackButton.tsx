@@ -11,6 +11,7 @@ import {
 import colors from "../constants/colors";
 import IconFont from "./IconFont";
 import { useNavigation } from "@react-navigation/native";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   backButton: {
@@ -49,6 +50,7 @@ function BackButton({
   backIconSize,
   backIconStyle = {},
 }: BackButtonProps) {
+  const { colors } = useAuthState();
   const navigation: any = useNavigation();
   let setBackIconSize;
 
@@ -75,7 +77,15 @@ function BackButton({
           }
           style={backIconStyle}
         />
-        <Text style={[styles.backButtonTitle, titleStyle]}>{title ?? ""}</Text>
+        <Text
+          style={[
+            styles.backButtonTitle,
+            titleStyle,
+            { color: colors.textColor },
+          ]}
+        >
+          {title ?? ""}
+        </Text>
       </View>
     </TouchableOpacity>
   );

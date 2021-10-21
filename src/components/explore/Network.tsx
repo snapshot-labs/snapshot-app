@@ -14,6 +14,7 @@ import { NetworkType, Space } from "../../types/explore";
 import common from "../../styles/common";
 import { useNavigation } from "@react-navigation/native";
 import { NETWORK_SCREEN } from "../../constants/navigation";
+import { useAuthState } from "context/authContext";
 
 const isIOS = Platform.OS === "ios";
 
@@ -45,6 +46,7 @@ type NetworkProps = {
 
 function Network({ network, orderedSpaces }: NetworkProps) {
   const navigation: any = useNavigation();
+  const { colors } = useAuthState();
   return (
     <TouchableOpacity
       onPress={() => {
@@ -61,7 +63,12 @@ function Network({ network, orderedSpaces }: NetworkProps) {
             source={{ uri: getLogoUrl(network.key) }}
             style={{ width: 24, height: 24, borderRadius: 12, marginRight: 4 }}
           />
-          <Text style={[common.h4, { marginTop: isIOS ? 4 : 0 }]}>
+          <Text
+            style={[
+              common.h4,
+              { marginTop: isIOS ? 4 : 0, color: colors.textColor },
+            ]}
+          >
             {network.name}
           </Text>
           <Text

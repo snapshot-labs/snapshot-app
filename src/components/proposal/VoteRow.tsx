@@ -8,13 +8,13 @@ import {
   View,
 } from "react-native";
 import UserAvatar from "../UserAvatar";
-import { getChoiceString, n } from "../../util/miscUtils";
+import { getChoiceString, n } from "util/miscUtils";
 import i18n from "i18n-js";
-import colors from "../../constants/colors";
-import { Space } from "../../types/explore";
-import { Proposal } from "../../types/proposal";
-import { useAuthState } from "../../context/authContext";
-import { getUsername } from "../../util/profile";
+import colors from "constants/colors";
+import { Space } from "types/explore";
+import { Proposal } from "types/proposal";
+import { useAuthState } from "context/authContext";
+import { getUsername } from "util/profile";
 
 const { width } = Dimensions.get("screen");
 
@@ -33,18 +33,6 @@ const styles = StyleSheet.create({
   },
   rowText: {
     fontSize: 18,
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-  },
-  seeAll: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  seeAllText: {
-    fontSize: 18,
-    color: colors.textColor,
     fontFamily: "Calibre-Medium",
   },
 });
@@ -66,7 +54,7 @@ function VoteRow({
   setShowReceiptModal,
   proposal,
 }: VoteRowProps) {
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, colors } = useAuthState();
   const voterProfile = profiles[vote.voter];
   let voterName = getUsername(vote.voter, voterProfile, connectedAddress ?? "");
   if (connectedAddress === vote.voter) {
@@ -101,6 +89,7 @@ function VoteRow({
                   marginLeft: 6,
                   width: contentWidth,
                   marginTop: Platform.OS === "ios" ? 4 : 0,
+                  color: colors.textColor,
                 },
               ]}
               ellipsizeMode="tail"
@@ -116,6 +105,7 @@ function VoteRow({
                 textAlign: "right",
                 marginRight: 8,
                 width: contentWidth,
+                color: colors.textColor,
               },
             ]}
             ellipsizeMode="tail"

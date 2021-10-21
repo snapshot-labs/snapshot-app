@@ -1,9 +1,8 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
-import common from "../../styles/common";
 import i18n from "i18n-js";
-import colors from "../../constants/colors";
-import { useAuthState } from "../../context/authContext";
+import colors from "constants/colors";
+import { useAuthState } from "context/authContext";
 import ProposalFilters from "../proposal/ProposalFilters";
 
 const styles = StyleSheet.create({
@@ -52,10 +51,12 @@ function TimelineHeader({
   allSpacesFilter,
   currentIndex,
 }: TimelineHeaderProps) {
-  const { followedSpaces } = useAuthState();
+  const { followedSpaces, colors } = useAuthState();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{i18n.t("timeline")}</Text>
+      <Text style={[styles.title, { color: colors.textColor }]}>
+        {i18n.t("timeline")}
+      </Text>
       {currentIndex === 0 ? (
         followedSpaces.length > 0 ? (
           <ProposalFilters

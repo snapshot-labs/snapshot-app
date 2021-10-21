@@ -13,6 +13,7 @@ import colors from "../../constants/colors";
 import { n } from "../../util/miscUtils";
 import common from "../../styles/common";
 import IconFont from "../IconFont";
+import { useAuthState } from "context/authContext";
 
 const isIOS = Platform.OS === "ios";
 
@@ -54,6 +55,7 @@ type PluginProps = {
 };
 
 function Plugin({ plugin }: PluginProps) {
+  const { colors } = useAuthState();
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -68,7 +70,12 @@ function Plugin({ plugin }: PluginProps) {
             source={{ uri: getLogoUrl(plugin.key) }}
             style={{ width: 24, height: 24, borderRadius: 12, marginRight: 4 }}
           />
-          <Text style={[common.h4, { marginTop: isIOS ? 4 : 0 }]}>
+          <Text
+            style={[
+              common.h4,
+              { marginTop: isIOS ? 4 : 0, color: colors.textColor },
+            ]}
+          >
             {plugin.name}
           </Text>
           <Text

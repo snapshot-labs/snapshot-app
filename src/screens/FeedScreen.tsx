@@ -73,7 +73,7 @@ function FeedScreen({
   feedRef,
   filter,
 }: FeedScreenProps) {
-  const { followedSpaces } = useAuthState();
+  const { followedSpaces, colors } = useAuthState();
   const { profiles, spaces } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const [loadCount, setLoadCount] = useState<number>(0);
@@ -178,7 +178,7 @@ function FeedScreen({
           <View />
         ) : (
           <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-            <Text style={common.subTitle}>
+            <Text style={[common.subTitle, { color: colors.textColor }]}>
               {followedSpaces.length === 0
                 ? useFollowedSpaces
                   ? i18n.t("noSpacesJoinedYet")
@@ -206,7 +206,7 @@ function FeedScreen({
             style={{
               width: "100%",
               height: 150,
-              backgroundColor: colors.white,
+              backgroundColor: colors.bgDefault,
             }}
           />
         )
@@ -251,6 +251,7 @@ const renderScene = (
   });
 
 function FeedScreenTabView() {
+  const { colors } = useAuthState();
   const [index, setIndex] = React.useState(0);
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -281,11 +282,14 @@ function FeedScreenTabView() {
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}
-      labelStyle={styles.labelStyle}
-      indicatorStyle={styles.indicatorStyle}
+      labelStyle={[styles.labelStyle, { color: colors.textColor }]}
+      indicatorStyle={[
+        styles.indicatorStyle,
+        { color: colors.textColor, backgroundColor: colors.indicatorColor },
+      ]}
       activeColor={colors.textColor}
       style={{
-        backgroundColor: colors.white,
+        backgroundColor: colors.bgDefault,
         shadowOpacity: 0,
         elevation: 0,
         borderBottomColor: colors.borderColor,
@@ -296,7 +300,12 @@ function FeedScreenTabView() {
   );
 
   return (
-    <View style={[common.screen, { paddingTop: insets.top }]}>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
       <TimelineHeader
         joinedSpacesFilter={joinedSpacesFilter}
         allSpacesFilter={allSpacesFilter}

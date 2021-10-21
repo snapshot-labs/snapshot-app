@@ -93,7 +93,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const [index, setIndex] = React.useState(0);
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const { isWalletConnect } = useAuthState();
+  const { isWalletConnect, colors } = useAuthState();
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
   const space = route.params.space;
@@ -205,7 +205,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             left: 0,
             zIndex: 1,
             height: headerHeight,
-            backgroundColor: colors.white,
+            backgroundColor: colors.bgDefault,
             width: "100%",
           },
           [{ transform: [{ translateY: headerTranslation }] }],
@@ -215,13 +215,16 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         <TabBar
           {...props}
           labelStyle={styles.labelStyle}
-          indicatorStyle={styles.indicatorStyle}
+          indicatorStyle={[
+            styles.indicatorStyle,
+            { color: colors.textColor, backgroundColor: colors.indicatorColor },
+          ]}
           activeColor={colors.textColor}
           style={{
             shadowColor: "transparent",
             borderTopWidth: 0,
             shadowOpacity: 0,
-            backgroundColor: colors.white,
+            backgroundColor: colors.bgDefault,
             height: 45,
             elevation: 0,
             zIndex: 200,
@@ -260,13 +263,18 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     { key: "about", title: i18n.t("about") },
   ]);
   return (
-    <View style={[common.screen, { paddingTop: insets.top }]}>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
       <Animated.View
         style={[
           common.headerContainer,
           {
             justifyContent: "space-between",
-            backgroundColor: showTitle ? colors.bgBlue : colors.white,
+            backgroundColor: showTitle ? colors.bgBlue : colors.bgDefault,
             borderBottomWidth: 0,
           },
         ]}

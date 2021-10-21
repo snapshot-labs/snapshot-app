@@ -13,6 +13,7 @@ import IconFont from "../IconFont";
 import i18n from "i18n-js";
 import proposal from "../../constants/proposal";
 import colors from "../../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   filterContainer: {
@@ -44,9 +45,11 @@ function ProposalFilters({
   containerStyle,
   filterTextStyle = {},
   filterContainerStyle = {},
-  iconColor = colors.textColor,
+  iconColor,
 }: ProposalFiltersProps) {
+  const { colors } = useAuthState();
   const { showActionSheetWithOptions } = useActionSheet();
+  const setIconColor = iconColor ? iconColor : colors.textColor;
   return (
     <TouchableOpacity
       style={[{ marginLeft: "auto" }, containerStyle]}
@@ -73,7 +76,12 @@ function ProposalFilters({
           {
             options,
             cancelButtonIndex,
-            textStyle: { fontFamily: "Calibre-Medium", fontSize: 20 },
+            textStyle: {
+              fontFamily: "Calibre-Medium",
+              fontSize: 20,
+              color: colors.textColor,
+            },
+            containerStyle: { backgroundColor: colors.bgDefault },
           },
           (buttonIndex) => {
             if (buttonIndex !== 4) {
@@ -96,11 +104,19 @@ function ProposalFilters({
       }}
     >
       <View style={[styles.filterContainer, filterContainerStyle]}>
-        <Text style={[styles.filterText, filterTextStyle]}>{filter.text}</Text>
+        <Text
+          style={[
+            styles.filterText,
+            { color: colors.textColor },
+            filterTextStyle,
+          ]}
+        >
+          {filter.text}
+        </Text>
         <IconFont
           name="arrow-up"
           size={16}
-          color={iconColor}
+          color={setIconColor}
           style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
         />
       </View>

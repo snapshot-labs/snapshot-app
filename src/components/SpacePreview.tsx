@@ -8,6 +8,7 @@ import SpaceAvatar from "./SpaceAvatar";
 import colors from "../constants/colors";
 import { SPACE_SCREEN } from "../constants/navigation";
 import { n } from "../util/miscUtils";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   spacePreviewContainer: {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   spacePreviewTitle: {
-    color: colors.black,
+    color: colors.textColor,
     fontSize: 22,
     fontFamily: "Calibre-Semibold",
   },
@@ -38,6 +39,7 @@ type SpacePreviewProps = {
 };
 
 function SpacePreview({ space = {} }: SpacePreviewProps) {
+  const { colors } = useAuthState();
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
   return (
@@ -50,7 +52,9 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
       <View style={styles.spacePreviewContainer}>
         <SpaceAvatar space={space} symbolIndex="space" size={60} />
         <View style={styles.spacePreviewTitleContainer}>
-          <Text style={styles.spacePreviewTitle}>{get(space, "name")}</Text>
+          <Text style={[styles.spacePreviewTitle, { color: colors.textColor }]}>
+            {get(space, "name")}
+          </Text>
           {hasMembers ? (
             <Text style={styles.spacePreviewFollowerCount}>
               {n(get(space, "followers", 0))} {i18n.t("members")}

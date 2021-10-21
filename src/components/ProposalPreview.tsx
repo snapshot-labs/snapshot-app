@@ -107,7 +107,7 @@ function ProposalPreview({
   fromFeed = false,
 }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, colors } = useAuthState();
   const { profiles } = useExploreState();
   const formattedBody = useMemo(
     () => shorten(removeMd(proposal.body), 140).replace(/\r?\n|\r/g, " "),
@@ -173,15 +173,20 @@ function ProposalPreview({
           <Text
             style={[
               styles.title,
+              { color: colors.textColor },
               { marginBottom: isEmpty(formattedBody) ? 8 : 0 },
             ]}
           >
             {title}
           </Text>
           {!isEmpty(formattedBody) && (
-            <Text style={styles.body}>{formattedBody}</Text>
+            <Text style={[styles.body, { color: colors.secondaryTextColor }]}>
+              {formattedBody}
+            </Text>
           )}
-          <Text style={styles.period}>{period}</Text>
+          <Text style={[styles.period, { color: colors.secondaryTextColor }]}>
+            {period}
+          </Text>
         </View>
       </View>
     </TouchableHighlight>

@@ -13,10 +13,11 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import UserAvatar from "./UserAvatar";
-import { explorerUrl, shorten } from "../util/miscUtils";
-import { useExploreState } from "../context/exploreContext";
-import colors from "../constants/colors";
-import { useToastShowConfig } from "../constants/toast";
+import { explorerUrl, shorten } from "util/miscUtils";
+import { useExploreState } from "context/exploreContext";
+import colors from "constants/colors";
+import { useToastShowConfig } from "constants/toast";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -37,6 +38,7 @@ type ActiveAccountProps = {
 };
 
 function ActiveAccount({ address }: ActiveAccountProps) {
+  const { colors } = useAuthState();
   const { profiles } = useExploreState();
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
@@ -71,10 +73,18 @@ function ActiveAccount({ address }: ActiveAccountProps) {
         <View />
       )}
       <View style={tailwind("h-16 justify-center items-center")}>
-        {!isEmpty(ens) && <Text style={styles.connectedEns}>{ens}</Text>}
+        {!isEmpty(ens) && (
+          <Text style={[styles.connectedEns, { color: colors.textColor }]}>
+            {ens}
+          </Text>
+        )}
         <TouchableOpacity onPress={copyToClipboard}>
           <View style={tailwind(isEmpty(ens) ? "mt-4" : "mt-1")}>
-            <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              style={[styles.address, , { color: colors.textColor }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {shorten(address ?? "")}
             </Text>
           </View>

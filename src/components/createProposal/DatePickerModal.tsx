@@ -87,8 +87,8 @@ function DatePickerModal({
             setSelected(day.dateString);
           }}
           theme={{
-            backgroundColor: colors.white,
-            calendarBackground: colors.white,
+            backgroundColor: colors.bgDefault,
+            calendarBackground: colors.bgDefault,
             textSectionTitleColor: colors.textColor,
             textSectionTitleDisabledColor: colors.borderColor,
             selectedDayBackgroundColor: colors.textColor,

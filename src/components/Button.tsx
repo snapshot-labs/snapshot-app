@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import colors from "../constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useAuthState } from "context/authContext";
 
 export const styles = StyleSheet.create({
   button: {
@@ -19,9 +20,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "transparent",
   },
   lightButton: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.bgDefault,
     borderColor: colors.borderColor,
     borderWidth: 1,
   },
@@ -61,6 +64,7 @@ function Button({
   loading = false,
   onlyOneLine = false,
 }: ButtonProps) {
+  const { theme } = useAuthState();
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
     : TouchableOpacity;
@@ -72,6 +76,9 @@ function Button({
       <View
         style={[
           styles.button,
+          theme === "dark"
+            ? { borderColor: colors.borderColor, borderWidth: 1 }
+            : {},
           light ? styles.lightButton : {},
           disabled ? styles.disabled : {},
           buttonContainerStyle,
