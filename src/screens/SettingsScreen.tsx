@@ -1,22 +1,25 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableHighlight } from "react-native";
 import i18n from "i18n-js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import common from "styles/common";
-import { useAuthState } from "context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
 import colors from "constants/colors";
 import BackButton from "components/BackButton";
 import packageJson from "../../package.json";
+import IconFont from "components/IconFont";
 
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
     textAlignVertical: "center",
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderColor,
     paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   rowTitle: {
     color: colors.textColor,
@@ -32,7 +35,8 @@ const styles = StyleSheet.create({
 });
 
 function SettingsScreen() {
-  const { colors } = useAuthState();
+  const { colors, theme } = useAuthState();
+  const authDispatch = useAuthDispatch();
   const insets = useSafeAreaInsets();
 
   return (
@@ -42,24 +46,36 @@ function SettingsScreen() {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
-      <BackButton />
+      <BackButton title={i18n.t("settings")} />
       <View style={{ marginTop: 8, flex: 1 }}>
-        <Text
-          style={[
-            common.headerTitle,
-            { paddingHorizontal: 16, color: colors.textColor },
-          ]}
+        <TouchableHighlight
+          onPress={() => {
+            authDispatch({
+              type: AUTH_ACTIONS.SET_THEME,
+              payload: theme === "light" ? "dark" : "light",
+            });
+          }}
+          underlayColor={colors.highlightColor}
         >
-          {i18n.t("settings")}
-        </Text>
-        <View style={styles.row}>
-          <Text style={[styles.rowTitle, { color: colors.textColor }]}>
-            {i18n.t("appearance")}
-          </Text>
-          <Text style={[styles.rowValue, { color: colors.textColor }]}>
-            {i18n.t("light")}
-          </Text>
-        </View>
+          <View style={styles.row}>
+            <IconFont
+              name={theme === "light" ? "sun" : "moon"}
+              size={20}
+              color={colors.textColor}
+            />
+            <Text
+              style={[
+                styles.rowTitle,
+                { color: colors.textColor, marginLeft: 8 },
+              ]}
+            >
+              {i18n.t("appearance")}
+            </Text>
+            <Text style={styles.rowValue}>
+              {theme === "light" ? i18n.t("light") : i18n.t("dark")}
+            </Text>
+          </View>
+        </TouchableHighlight>
         <View style={styles.row}>
           <Text style={[styles.rowTitle, { color: colors.textColor }]}>
             {i18n.t("version")}

@@ -64,7 +64,7 @@ function Button({
   loading = false,
   onlyOneLine = false,
 }: ButtonProps) {
-  const { theme } = useAuthState();
+  const { theme, colors } = useAuthState();
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
     : TouchableOpacity;

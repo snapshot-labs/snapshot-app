@@ -1,5 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import colors from "../constants/colors";
+
+const { width: deviceWidth } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   container: {
@@ -10,6 +12,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 30,
     backgroundColor: colors.black,
+    width: deviceWidth - 32,
   },
   successContainer: { backgroundColor: colors.bgGreen },
   errorContainer: { backgroundColor: colors.red },

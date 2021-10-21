@@ -145,8 +145,30 @@ function TabNavigator() {
   );
 }
 
+const screenSettings =
+  Platform.OS === "android"
+    ? {
+        cardStyle: { backgroundColor: "transparent" },
+        cardStyleInterpolator: ({ current: { progress } }: any) => ({
+          cardStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 1],
+            }),
+          },
+          overlayStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 0.5],
+              extrapolate: "clamp",
+            }),
+          },
+        }),
+      }
+    : {};
+
 export default function () {
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, colors } = useAuthState();
   return (
     <Stack.Navigator
       initialRouteName={
@@ -161,57 +183,57 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.LANDING_SCREEN}
         component={LandingScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.HOME_SCREEN}
         component={TabNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.WALLET_CONNECT_SCREEN}
         component={WalletConnectScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.QR_CODE_SCANNER_SCREEN}
         component={QRCodeScannerScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.SPACE_SCREEN}
         component={SpaceScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.PROPOSAL_SCREEN}
         component={ProposalScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.CUSTOM_WALLET_SCREEN}
         component={CustomWalletScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.NETWORK_SCREEN}
         component={NetworkScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.STRATEGY_SCREEN}
         component={StrategyScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.SETTINGS_SCREEN}
         component={SettingsScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.CONNECT_ACCOUNT_SCREEN}
         component={ConnectAccountScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.PROPOSAL_VOTES_SCREEN}
@@ -224,7 +246,7 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.CREATE_PROPOSAL_SCREEN}
         component={CreateProposalScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>
   );

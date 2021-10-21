@@ -20,11 +20,11 @@ const light = {
 };
 
 const dark = {
-  borderColor: "#d0d7de",
+  borderColor: "rgb(229, 231, 235)",
   headingColor: defaultColors.white,
   textColor: defaultColors.white,
   secondaryTextColor: defaultColors.darkGray,
-  bgDefault: defaultColors.black,
+  bgDefault: "#121212",
   indicatorColor: defaultColors.white,
 };
 
