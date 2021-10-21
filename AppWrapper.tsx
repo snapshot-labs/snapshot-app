@@ -82,6 +82,13 @@ async function loadFromStorage(
         });
       }
     }
+    const theme = await storage.load(storage.KEYS.theme);
+    if (theme) {
+      authDispatch({
+        type: AUTH_ACTIONS.SET_THEME,
+        payload: theme,
+      });
+    }
   } catch (e) {}
   setLoading(false);
 }

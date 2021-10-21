@@ -4,28 +4,28 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import { getBlockNumber } from "@snapshot-labs/snapshot.js/src/utils/web3";
 import validations from "@snapshot-labs/snapshot.js/src/validations";
-import { Space } from "../types/explore";
+import { Space } from "types/explore";
 import i18n from "i18n-js";
-import Input from "../components/Input";
-import common from "../styles/common";
-import BackButton from "../components/BackButton";
-import colors from "../constants/colors";
-import ChoicesBlock from "../components/createProposal/ChoicesBlock";
-import ActionsBlock from "../components/createProposal/ActionsBlock";
-import proposal from "../constants/proposal";
-import MarkdownBody from "../components/proposal/MarkdownBody";
+import Input from "components/Input";
+import common from "styles/common";
+import BackButton from "components/BackButton";
+import colors from "constants/colors";
+import ChoicesBlock from "components/createProposal/ChoicesBlock";
+import ActionsBlock from "components/createProposal/ActionsBlock";
+import proposal from "constants/proposal";
+import MarkdownBody from "components/proposal/MarkdownBody";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
-} from "../context/authContext";
-import Warning from "../components/createProposal/Warning";
-import client from "../util/snapshotClient";
+} from "context/authContext";
+import Warning from "components/createProposal/Warning";
+import client from "util/snapshotClient";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
-import { PROPOSAL_SCREEN } from "../constants/navigation";
-import { Proposal } from "../types/proposal";
-import { useToastShowConfig } from "../constants/toast";
+import { PROPOSAL_SCREEN } from "constants/navigation";
+import { Proposal } from "types/proposal";
+import { useToastShowConfig } from "constants/toast";
 
 const bodyLimit = 6400;
 
@@ -117,7 +117,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const duplicateProposal = route.params.proposal;
   const authDispatch = useAuthDispatch();
   const allVotingTypes = proposal.getVotingTypes();
-  const { connectedAddress, wcConnector } = useAuthState();
+  const { connectedAddress, wcConnector, colors } = useAuthState();
   const [choices, setChoices] = useState(
     duplicateProposal && duplicateProposal?.choices
       ? duplicateProposal.choices
@@ -156,17 +156,26 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   }, []);
 
   return (
-    <SafeAreaView style={common.screen}>
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    >
       <View style={common.headerContainer}>
         <BackButton title={i18n.t("createProposal")} />
       </View>
-      <ScrollView style={common.screen}>
+      <ScrollView
+        style={[common.screen, , { backgroundColor: colors.bgDefault }]}
+      >
         {!passValidation[0] && (
           <Warning passValidation={passValidation} space={space} />
         )}
         <Input
           placeholder={i18n.t("question")}
-          style={[styles.input, styles.questionInput]}
+          style={[
+            styles.input,
+            styles.questionInput,
+            { color: colors.textColor },
+          ]}
+          placeholderTextColor={colors.textColor}
           value={question}
           onChangeText={(text: string) => {
             setQuestion(text);
@@ -176,12 +185,13 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
           placeholder={i18n.t("whatIsYourProposal")}
           multiline
           numberOfLines={4}
-          style={[styles.input, { minHeight: 200 }]}
+          style={[styles.input, { minHeight: 200, color: colors.textColor }]}
           textAlignVertical="top"
           value={proposalText}
           onChangeText={(text: string) => {
             setProposalText(text);
           }}
+          placeholderTextColor={colors.textColor}
         />
         {proposalText !== "" && (
           <View
@@ -190,7 +200,9 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
               common.containerVerticalPadding,
             ]}
           >
-            <Text style={[common.h4, { marginBottom: 6 }]}>
+            <Text
+              style={[common.h4, { marginBottom: 6, color: colors.textColor }]}
+            >
               {i18n.t("preview")}
             </Text>
             <MarkdownBody body={proposalText} />

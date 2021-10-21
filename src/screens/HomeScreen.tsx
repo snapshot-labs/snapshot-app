@@ -97,7 +97,7 @@ async function getStrategies(
 function HomeScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [isInitial, setIsInitial] = useState<boolean>(true);
-  const { followedSpaces, connectedAddress } = useAuthState();
+  const { followedSpaces, connectedAddress, colors } = useAuthState();
   const { spaces } = useExploreState();
   const authDispatch = useAuthDispatch();
   const exploreDispatch = useExploreDispatch();
@@ -117,7 +117,12 @@ function HomeScreen() {
   }, [connectedAddress]);
 
   return (
-    <View style={[common.screen, { paddingTop: insets.top }]}>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
       {loading ? (
         <>
           <DashboardHeader />
@@ -158,7 +163,9 @@ function HomeScreen() {
           onEndReachedThreshold={0.45}
           ListEmptyComponent={
             <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-              <Text style={common.subTitle}>{i18n.t("noSpacesJoinedYet")}</Text>
+              <Text style={[common.subTitle, { color: colors.textColor }]}>
+                {i18n.t("noSpacesJoinedYet")}
+              </Text>
             </View>
           }
           onEndReached={() => {}}

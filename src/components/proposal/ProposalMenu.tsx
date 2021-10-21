@@ -4,7 +4,6 @@ import IconFont from "../IconFont";
 import { Space } from "../../types/explore";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import i18n from "i18n-js";
-import colors from "../../constants/colors";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
@@ -32,7 +31,7 @@ type ProposalMenuProps = {
 
 function ProposalMenu({ proposal, space }: ProposalMenuProps) {
   const { showActionSheetWithOptions } = useActionSheet();
-  const { connectedAddress, wcConnector } = useAuthState();
+  const { connectedAddress, wcConnector, colors } = useAuthState();
   const authDispatch = useAuthDispatch();
   const navigation = useNavigation();
   const toastShowConfig = useToastShowConfig();
@@ -103,7 +102,12 @@ function ProposalMenu({ proposal, space }: ProposalMenuProps) {
             options,
             cancelButtonIndex,
             destructiveButtonIndex,
-            textStyle: actionSheetTextStyles,
+            textStyle: {
+              fontFamily: "Calibre-Medium",
+              fontSize: 20,
+              color: colors.textColor,
+            },
+            containerStyle: { backgroundColor: colors.bgDefault },
           },
           (buttonIndex) => {
             if (buttonIndex === 0) {

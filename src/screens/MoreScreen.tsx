@@ -11,22 +11,20 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  CONNECT_ACCOUNT_SCREEN,
-  LANDING_SCREEN,
-} from "../constants/navigation";
-import common from "../styles/common";
-import Button from "../components/Button";
+import { CONNECT_ACCOUNT_SCREEN, LANDING_SCREEN } from "constants/navigation";
+import common from "styles/common";
+import Button from "components/Button";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
-} from "../context/authContext";
-import { useExploreDispatch, useExploreState } from "../context/exploreContext";
-import { setProfiles } from "../util/profile";
-import ConnectedWallet from "../components/ConnectedWallet";
-import ActiveAccount from "../components/ActiveAccount";
+} from "context/authContext";
+import { useExploreDispatch, useExploreState } from "context/exploreContext";
+import { setProfiles } from "util/profile";
+import ConnectedWallet from "components/ConnectedWallet";
+import ActiveAccount from "components/ActiveAccount";
 import tailwind from "tailwind-rn";
+import IconFont from "components/IconFont";
 
 const { width } = Dimensions.get("screen");
 
@@ -40,7 +38,8 @@ const styles = StyleSheet.create({
 });
 
 function MoreScreen() {
-  const { connectedAddress, savedWallets, wcConnector }: any = useAuthState();
+  const { connectedAddress, savedWallets, wcConnector, theme, colors }: any =
+    useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const connector = useWalletConnect();
@@ -63,16 +62,31 @@ function MoreScreen() {
   }, [connectedAddress]);
 
   return (
-    <SafeAreaView style={tailwind("h-full bg-white")}>
-      <ScrollView style={{ marginTop: 24, flex: 1 }}>
-        <Text
-          style={[
-            common.headerTitle,
-            { marginBottom: 16, paddingHorizontal: 16 },
-          ]}
-        >
-          {i18n.t("account")}
-        </Text>
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    >
+      <ScrollView style={{ flex: 1 }}>
+        <View style={[common.headerContainer, { borderBottomWidth: 0 }]}>
+          <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+            {i18n.t("account")}
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              authDispatch({
+                type: AUTH_ACTIONS.SET_THEME,
+                payload: theme === "light" ? "dark" : "light",
+              });
+            }}
+            style={[{ marginLeft: "auto" }, common.containerHorizontalPadding]}
+          >
+            <IconFont
+              name={theme === "light" ? "moon" : "sun"}
+              size={30}
+              color={colors.textColor}
+            />
+          </TouchableOpacity>
+        </View>
         <ActiveAccount address={connectedAddress} />
         {savedWalletKeys.map((address: string) => {
           return <ConnectedWallet address={address} key={address} />;
@@ -83,7 +97,9 @@ function MoreScreen() {
           }}
         >
           <View style={tailwind("mt-6 pl-4")}>
-            <Text style={common.h4}>{i18n.t("addWallet")}</Text>
+            <Text style={[common.h4, { color: colors.textColor }]}>
+              {i18n.t("addWallet")}
+            </Text>
           </View>
         </TouchableOpacity>
       </ScrollView>

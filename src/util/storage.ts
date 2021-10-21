@@ -10,6 +10,7 @@ const KEYS = {
   aliases: "aliases",
   androidAppUrl: "androidAppUrl",
   savedWallets: "savedWallets",
+  theme: "theme"
 };
 
 export async function load(key: string) {

@@ -1,19 +1,19 @@
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
+// @ts-ignore
 import ProgressBar from "react-native-progress/Bar";
 import i18n from "i18n-js";
 import Block from "../Block";
-import colors from "../../constants/colors";
-import { n } from "../../util/miscUtils";
-import { Space } from "../../types/explore";
+import { n } from "util/miscUtils";
+import { Space } from "types/explore";
+import { useAuthState } from "context/authContext";
 
 const ts = (Date.now() / 1e3).toFixed();
 
 const styles = StyleSheet.create({
   choiceTitle: {
     fontSize: 18,
-    color: colors.textColor,
     fontFamily: "Calibre-Medium",
   },
 });
@@ -31,6 +31,7 @@ function BlockResults({
   proposal,
   space,
 }: BlockResultsProps) {
+  const { colors } = useAuthState();
   const choices = useMemo(() => {
     if (proposal && proposal.choices) {
       const choices = proposal.choices.map((choice: any, i: number) => ({
@@ -60,8 +61,15 @@ function BlockResults({
                 key={`${i}`}
                 style={{ marginBottom: i === choices.length - 1 ? 0 : 16 }}
               >
-                <Text style={styles.choiceTitle}>{choice.choice} </Text>
-                <Text style={[styles.choiceTitle, { marginTop: 4 }]}>
+                <Text style={[styles.choiceTitle, { color: colors.textColor }]}>
+                  {choice.choice}{" "}
+                </Text>
+                <Text
+                  style={[
+                    styles.choiceTitle,
+                    { marginTop: 4, color: colors.textColor },
+                  ]}
+                >
                   {n(
                     results && results.resultsByVoteBalance
                       ? results.resultsByVoteBalance[choice.i]
@@ -69,7 +77,12 @@ function BlockResults({
                   )}{" "}
                   {space.symbol}
                 </Text>
-                <Text style={[styles.choiceTitle, { marginTop: 4 }]}>
+                <Text
+                  style={[
+                    styles.choiceTitle,
+                    { marginTop: 4, color: colors.textColor },
+                  ]}
+                >
                   {n(
                     !results.sumOfResultsBalance
                       ? 0

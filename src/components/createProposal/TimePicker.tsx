@@ -16,7 +16,7 @@ for (let i = 0; i <= 59; i += 1) {
 
 const pickerStyle = {
   height: 150,
-  backgroundColor: colors.white,
+  backgroundColor: colors.bgDefault,
   marginTop: 0,
   paddingTop: 0,
 };
@@ -44,7 +44,7 @@ function TimePicker({
         <Picker
           style={pickerStyle}
           itemStyle={{
-            backgroundColor: colors.white,
+            backgroundColor: colors.bgDefault,
           }}
           selectedValue={selectedHour}
           pickerData={hours}
@@ -59,7 +59,7 @@ function TimePicker({
         <Picker
           style={pickerStyle}
           itemStyle={{
-            backgroundColor: colors.white,
+            backgroundColor: colors.bgDefault,
           }}
           selectedValue={selectedMinutes}
           pickerData={minutes}

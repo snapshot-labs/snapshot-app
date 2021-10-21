@@ -6,8 +6,10 @@ import common from "../../styles/common";
 import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import { SETTINGS_SCREEN } from "../../constants/navigation";
+import { useAuthState } from "context/authContext";
 
 function DashboardHeader() {
+  const { colors } = useAuthState();
   const navigation: any = useNavigation();
   return (
     <View style={{ paddingHorizontal: 16, paddingTop: 30 }}>
@@ -18,7 +20,9 @@ function DashboardHeader() {
           alignItems: "center",
         }}
       >
-        <Text style={common.headerTitle}>{i18n.t("dashboard")}</Text>
+        <Text style={[common.headerTitle, { color: colors.textColor }]}>
+          {i18n.t("dashboard")}
+        </Text>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate(SETTINGS_SCREEN);

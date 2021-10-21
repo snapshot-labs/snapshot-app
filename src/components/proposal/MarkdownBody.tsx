@@ -4,6 +4,7 @@ import { Remarkable } from "remarkable";
 import { linkify } from "remarkable/linkify";
 import HTML, { defaultSystemFonts } from "react-native-render-html";
 import colors from "../../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const systemFonts = [
   ...defaultSystemFonts,
@@ -11,7 +12,7 @@ const systemFonts = [
   "Calibre-Medium",
 ];
 
-const tagsStyles = {
+const tagsStyles = (colors: any) => ({
   a: {
     fontFamily: "Calibre-Semibold",
     color: colors.headingColor,
@@ -59,7 +60,7 @@ const tagsStyles = {
     backgroundColor: colors.bgLightGray,
     padding: 16,
   },
-};
+});
 
 const baseStyle = {
   fontSize: 22,
@@ -75,6 +76,7 @@ type MarkdownBodyProps = {
 };
 
 function MarkdownBody({ body }: MarkdownBodyProps) {
+  const { colors } = useAuthState();
   const { width } = useWindowDimensions();
   const [parsedBody, setParsedBody] = useState<any>("");
 
@@ -92,7 +94,7 @@ function MarkdownBody({ body }: MarkdownBodyProps) {
       <HTML
         source={{ html: parsedBody }}
         contentWidth={width}
-        tagsStyles={tagsStyles}
+        tagsStyles={tagsStyles(colors)}
         baseStyle={baseStyle}
         systemFonts={systemFonts}
       />

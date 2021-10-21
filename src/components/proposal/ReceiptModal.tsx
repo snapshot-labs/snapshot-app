@@ -16,7 +16,7 @@ import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.bgDefault,
     borderRadius: 6,
   },
   header: {

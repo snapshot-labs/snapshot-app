@@ -11,19 +11,23 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
-import { CUSTOM_WALLET_SCREEN, HOME_SCREEN } from "../constants/navigation";
-import { MetaMask } from "../constants/wallets";
-import { defaultHeaders } from "../util/apiUtils";
-import common from "../styles/common";
-import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
-import { generateKey, convertArrayBufferToHex, uuid } from "../util/miscUtils";
+import { CUSTOM_WALLET_SCREEN, HOME_SCREEN } from "constants/navigation";
+import { MetaMask } from "constants/wallets";
+import { defaultHeaders } from "util/apiUtils";
+import common from "styles/common";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
+import { generateKey, convertArrayBufferToHex, uuid } from "util/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
-import storage from "../util/storage";
+import storage from "util/storage";
 import {
   connectToWalletService,
   initialWalletConnectValues,
-} from "../util/walletConnectUtils";
+} from "util/walletConnectUtils";
 import WalletConnect from "@walletconnect/client";
 
 const defaultWallets = [MetaMask];
@@ -94,6 +98,7 @@ async function fetchWallets(
 
 function WalletConnectScreen() {
   const insets = useSafeAreaInsets();
+  const { colors } = useAuthState();
   const [wallets, setWallets] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigation: any = useNavigation();
@@ -110,10 +115,11 @@ function WalletConnectScreen() {
         {
           paddingTop: insets.top,
           paddingHorizontal: 16,
+          backgroundColor: colors.bgDefault
         },
       ]}
     >
-      <Text style={[{ marginTop: 30 }, common.headerTitle]}>
+      <Text style={[common.headerTitle, { marginTop: 30 }, ]}>
         {i18n.t("logIn")}
       </Text>
       <Text style={[common.subTitle, { marginTop: 16 }]}>

@@ -7,6 +7,7 @@ import {
   initialWalletConnectValues,
   setWalletConnectListeners,
 } from "../util/walletConnectUtils";
+import colors, { getColorScheme } from "constants/colors";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
@@ -18,6 +19,8 @@ type AuthState = {
   savedWallets: { [id: string]: { name: string; address: string } };
   wcConnector: WalletConnect;
   refreshFeed: null | { spaceId: string };
+  theme: string | "light" | "dark";
+  colors: any;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -37,6 +40,7 @@ const AUTH_ACTIONS = {
   SET_OVERWRITE_SAVED_WALLETS: "@auth/SET_OVERWRITE_SAVED_WALLETS",
   SET_WC_CONNECTOR: "@auth/SET_WC_CONNECTOR",
   SET_REFRESH_FEED: "@auth/SET_REFRESH_FEED",
+  SET_THEME: "@auth/SET_THEME",
 };
 
 const initialState = {
@@ -49,6 +53,8 @@ const initialState = {
   savedWallets: {},
   wcConnector: null,
   refreshFeed: null,
+  theme: "light",
+  colors,
 };
 
 function authReducer(state: AuthState, action: ContextAction) {
@@ -135,6 +141,10 @@ function authReducer(state: AuthState, action: ContextAction) {
       return { ...state, savedWallets: action.payload };
     case AUTH_ACTIONS.SET_REFRESH_FEED:
       return { ...state, refreshFeed: action.payload };
+    case AUTH_ACTIONS.SET_THEME:
+      const colors = getColorScheme(action.payload);
+      storage.save(storage.KEYS.theme, action.payload);
+      return { ...state, theme: action.payload, colors };
     case AUTH_ACTIONS.LOGOUT:
       storage.clearAll();
       return initialState;

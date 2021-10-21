@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import IconFont from "./IconFont";
 import get from "lodash/get";
-import colors from "../constants/colors";
+import colors, { getColors } from "../constants/colors";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
@@ -46,7 +46,7 @@ type ConnectedWalletProps = {
 };
 
 function ConnectedWallet({ address }: ConnectedWalletProps) {
-  const { savedWallets, aliases }: any = useAuthState();
+  const { savedWallets, aliases, colors }: any = useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
   const profile = profiles[address];
@@ -99,9 +99,15 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
         <View style={styles.connectedAddressContainer}>
           <View>
             {ens !== undefined && ens !== "" && (
-              <Text style={styles.ens}>{ens}</Text>
+              <Text style={[styles.ens, { color: colors.textColor }]}>
+                {ens}
+              </Text>
             )}
-            <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              style={[styles.address, { color: colors.textColor }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {shorten(address ?? "")}
             </Text>
           </View>

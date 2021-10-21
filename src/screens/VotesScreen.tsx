@@ -117,7 +117,7 @@ type VotesScreenProps = {
 };
 
 function VotesScreen({ route }: VotesScreenProps) {
-  const { connectedAddress } = useAuthState();
+  const { connectedAddress, colors } = useAuthState();
   const insets = useSafeAreaInsets();
   const layout = useWindowDimensions();
   const space = route.params.space;
@@ -162,9 +162,16 @@ function VotesScreen({ route }: VotesScreenProps) {
   );
 
   return (
-    <View style={[common.screen, { paddingTop: insets.top }]}>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
       <View style={[common.headerContainer, common.justifySpaceBetween]}>
-        <Text style={common.screenHeaderTitle}>{i18n.t("votes")}</Text>
+        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+          {i18n.t("votes")}
+        </Text>
         <BackButton backIcon="close" containerStyle={{ paddingBottom: 0 }} />
       </View>
       <TabView
@@ -217,20 +224,30 @@ function VotesScreen({ route }: VotesScreenProps) {
             <View
               style={{
                 width: "100%",
+                backgroundColor: colors.bgDefault,
               }}
             >
               <ScrollViewComponent {...viewProps} ref={scrollViewRef}>
-                <View style={{ paddingBottom: 10 }}>
+                <View
+                  style={{
+                    paddingBottom: 10,
+                    backgroundColor: colors.bgDefault,
+                  }}
+                >
                   <View
                     style={{
                       width: viewContainerWidth,
                       borderBottomColor: colors.borderColor,
                       borderBottomWidth: 1,
+                      backgroundColor: colors.bgDefault,
                     }}
                   >
                     <TabBar
                       {...props}
-                      labelStyle={styles.labelStyle}
+                      labelStyle={[
+                        styles.labelStyle,
+                        { color: colors.textColor },
+                      ]}
                       indicatorStyle={[tabWidth <= 80 ? { top: 43 } : {}]}
                       renderIndicator={(props) => {
                         let width = 44;
@@ -250,7 +267,7 @@ function VotesScreen({ route }: VotesScreenProps) {
                             width={width}
                             style={{
                               width,
-                              backgroundColor: colors.darkGray,
+                              backgroundColor: colors.indicatorColor,
                               top: Platform.OS === "ios" ? 42 : 43,
                               height: 5,
                             }}
@@ -262,7 +279,7 @@ function VotesScreen({ route }: VotesScreenProps) {
                         shadowColor: "transparent",
                         borderTopWidth: 0,
                         shadowOpacity: 0,
-                        backgroundColor: colors.white,
+                        backgroundColor: colors.bgDefault,
                         paddingTop: 0,
                         height: 45,
                         elevation: 0,
@@ -283,7 +300,10 @@ function VotesScreen({ route }: VotesScreenProps) {
                             }}
                           >
                             <Text
-                              style={styles.labelStyle}
+                              style={[
+                                styles.labelStyle,
+                                { color: colors.textColor },
+                              ]}
                               ellipsizeMode="tail"
                               numberOfLines={1}
                             >
