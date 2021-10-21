@@ -52,6 +52,7 @@ function SearchInput({
         value={value}
         onChangeText={onChangeText}
         placeholder={i18n.t("search")}
+        placeholderTextColor={colors.textColor}
       />
       {RightComponent !== undefined && <RightComponent />}
     </View>

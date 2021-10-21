@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Linking,
+  Dimensions,
 } from "react-native";
 import Modal from "react-native-modal";
 import i18n from "i18n-js";
@@ -15,16 +16,26 @@ import Button from "../Button";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { useAuthState } from "context/authContext";
 
+const { width } = Dimensions.get("screen");
+
 const styles = StyleSheet.create({
+  view: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
   container: {
     backgroundColor: colors.bgDefault,
     borderRadius: 6,
   },
   header: {
     paddingBottom: 16,
-    paddingTop: 24,
+    paddingTop: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderColor,
+    flexDirection: "row",
+    width,
+    paddingHorizontal: 16,
+    alignItems: "center",
   },
   mainContent: {
     marginTop: 24,
@@ -72,6 +83,7 @@ function ReceiptModal({
       backdropOpacity={0.3}
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
+      style={styles.view}
     >
       <View
         style={[
@@ -83,14 +95,6 @@ function ReceiptModal({
         ]}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={onClose}>
-            <IconFont
-              name="close"
-              style={{ marginLeft: "auto", paddingRight: 16 }}
-              size={20}
-              color={colors.darkGray}
-            />
-          </TouchableOpacity>
           <Text
             style={[
               common.h3,
@@ -99,6 +103,14 @@ function ReceiptModal({
           >
             {i18n.t("receipt")}
           </Text>
+          <TouchableOpacity onPress={onClose} style={{ marginLeft: "auto" }}>
+            <IconFont
+              name="close"
+              style={{ marginLeft: "auto", paddingRight: 16 }}
+              size={20}
+              color={colors.darkGray}
+            />
+          </TouchableOpacity>
         </View>
         <View style={styles.mainContent}>
           <Text style={[styles.authorTitle, { color: colors.textColor }]}>
