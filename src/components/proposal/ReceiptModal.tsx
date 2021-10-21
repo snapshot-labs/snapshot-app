@@ -13,6 +13,7 @@ import colors from "../../constants/colors";
 import IconFont from "../IconFont";
 import Button from "../Button";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -64,6 +65,7 @@ function ReceiptModal({
   onClose,
   authorIpfsHash = "",
 }: ReceiptModalProps) {
+  const { colors, theme } = useAuthState();
   return (
     <Modal
       isVisible={isVisible}
@@ -71,7 +73,15 @@ function ReceiptModal({
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
     >
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: colors.bgDefault },
+          theme === "dark"
+            ? { borderColor: colors.borderColor, borderWidth: 1 }
+            : {},
+        ]}
+      >
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose}>
             <IconFont
@@ -81,12 +91,19 @@ function ReceiptModal({
               color={colors.darkGray}
             />
           </TouchableOpacity>
-          <Text style={[common.h3, { textAlign: "center" }]}>
+          <Text
+            style={[
+              common.h3,
+              { textAlign: "center", color: colors.textColor },
+            ]}
+          >
             {i18n.t("receipt")}
           </Text>
         </View>
         <View style={styles.mainContent}>
-          <Text style={styles.authorTitle}>{i18n.t("author")}</Text>
+          <Text style={[styles.authorTitle, { color: colors.textColor }]}>
+            {i18n.t("author")}
+          </Text>
           <TouchableOpacity
             onPress={() => {
               Linking.openURL(getUrl(authorIpfsHash));
@@ -94,7 +111,9 @@ function ReceiptModal({
             style={{ marginLeft: "auto" }}
           >
             <View style={styles.authorContainer}>
-              <Text style={styles.author}>#{authorIpfsHash.slice(0, 7)}</Text>
+              <Text style={[styles.author, { color: colors.textColor }]}>
+                #{authorIpfsHash.slice(0, 7)}
+              </Text>
               <IconFont
                 name="external-link"
                 style={{ marginLeft: 8, marginBottom: 6 }}

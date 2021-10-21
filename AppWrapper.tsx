@@ -8,7 +8,11 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import { ExploreProvider } from "./src/context/exploreContext";
 import storage from "./src/util/storage";
-import { AUTH_ACTIONS, useAuthDispatch } from "./src/context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "./src/context/authContext";
 import { ContextDispatch } from "./src/types/context";
 import { getAliasWallet } from "./src/util/aliasUtils";
 
@@ -123,12 +127,16 @@ const WrappedMainApp = withWalletConnect(MainApp, {
 
 function AppWrapper() {
   const [loading, setLoading] = useState(true);
+  const { theme } = useAuthState();
   const authDispatch = useAuthDispatch();
 
   useEffect(() => {
     loadFromStorage(authDispatch, setLoading);
-    StatusBar.setBarStyle("dark-content", true);
   }, []);
+
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content", theme === "light");
+  }, [theme]);
 
   if (loading) {
     return <View />;

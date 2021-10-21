@@ -9,7 +9,7 @@ import { styles as buttonStyle } from "../Button";
 import common from "../../styles/common";
 import BackButton from "../BackButton";
 import TimePicker from "./TimePicker";
-import colors from "../../constants/colors";
+import { useAuthState } from "context/authContext";
 
 type DatePickerModalProps = {
   isVisible: boolean;
@@ -28,6 +28,7 @@ function DatePickerModal({
   timestamp = initialDate,
   setTimestamp,
 }: DatePickerModalProps) {
+  const { colors, theme } = useAuthState();
   const insets = useSafeAreaInsets();
   const momentTimestamp = moment(timestamp * 1e3);
   const [time, setTime] = useState<{ hour: number; minutes: number }>({
@@ -55,6 +56,7 @@ function DatePickerModal({
         common.fullScreenModal,
         {
           paddingTop: insets.top,
+          backgroundColor: colors.bgDefault,
         },
       ]}
       coverScreen
@@ -67,7 +69,9 @@ function DatePickerModal({
           },
         ]}
       >
-        <Text style={common.screenHeaderTitle}>{title}</Text>
+        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+          {title}
+        </Text>
         <BackButton
           backIcon="close"
           onPress={onCloseHandler}
@@ -92,7 +96,8 @@ function DatePickerModal({
             textSectionTitleColor: colors.textColor,
             textSectionTitleDisabledColor: colors.borderColor,
             selectedDayBackgroundColor: colors.textColor,
-            selectedDayTextColor: colors.white,
+            selectedDayTextColor:
+              theme === "dark" ? colors.black : colors.white,
             todayTextColor: colors.textColor,
             dayTextColor: colors.textColor,
             textDisabledColor: colors.borderColor,
@@ -169,7 +174,14 @@ function DatePickerModal({
             onCloseHandler();
           }}
         >
-          <View style={buttonStyle.button}>
+          <View
+            style={[
+              buttonStyle.button,
+              theme === "dark"
+                ? { borderColor: colors.borderColor, borderWidth: 1 }
+                : {},
+            ]}
+          >
             <Text style={buttonStyle.buttonTitle}>{i18n.t("select")}</Text>
           </View>
         </TouchableOpacity>

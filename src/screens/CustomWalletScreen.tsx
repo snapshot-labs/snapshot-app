@@ -3,17 +3,21 @@ import { Text, View } from "react-native";
 import i18n from "i18n-js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import common from "../styles/common";
-import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
-import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "../constants/navigation";
-import Button from "../components/Button";
-import Input from "../components/Input";
+import common from "styles/common";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
+import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "constants/navigation";
+import Button from "components/Button";
+import Input from "components/Input";
 import { ethers } from "ethers";
-import colors from "../constants/colors";
-import { EXPLORE_ACTIONS, useExploreDispatch } from "../context/exploreContext";
+import { EXPLORE_ACTIONS, useExploreDispatch } from "context/exploreContext";
 
 function CustomWalletScreen() {
   const insets = useSafeAreaInsets();
+  const { colors } = useAuthState();
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,11 +26,26 @@ function CustomWalletScreen() {
   const navigation: any = useNavigation();
 
   return (
-    <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <Text style={[{ paddingLeft: 16, marginTop: 30 }, common.headerTitle]}>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
+      <Text
+        style={[
+          common.headerTitle,
+          { paddingLeft: 16, marginTop: 30, color: colors.textColor },
+        ]}
+      >
         {i18n.t("customWalletReadOnly")}
       </Text>
-      <Text style={[common.subTitle, { marginTop: 24, paddingLeft: 16 }]}>
+      <Text
+        style={[
+          common.subTitle,
+          { marginTop: 24, paddingLeft: 16, color: colors.textColor },
+        ]}
+      >
         {i18n.t("enterWalletAddress")}
       </Text>
       <Input
