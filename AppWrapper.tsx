@@ -127,7 +127,7 @@ const WrappedMainApp = withWalletConnect(MainApp, {
 
 function AppWrapper() {
   const [loading, setLoading] = useState(true);
-  const { theme } = useAuthState();
+  const { theme, colors } = useAuthState();
   const authDispatch = useAuthDispatch();
 
   useEffect(() => {
@@ -135,7 +135,14 @@ function AppWrapper() {
   }, []);
 
   useEffect(() => {
-    StatusBar.setBarStyle("dark-content", theme === "light");
+    if (theme === "light") {
+      StatusBar.setBarStyle("dark-content");
+    } else {
+      StatusBar.setBarStyle("light-content");
+    }
+    if (Platform.OS === "android") {
+      StatusBar.setBackgroundColor(colors.bgDefault);
+    }
   }, [theme]);
 
   if (loading) {
