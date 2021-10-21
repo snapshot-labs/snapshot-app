@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Platform } from "react-native";
 import { Picker } from "react-native-wheel-datepicker";
 import common from "../../styles/common";
-import colors from "../../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const [hours, minutes]: number[][] = [[], []];
 
@@ -16,7 +16,6 @@ for (let i = 0; i <= 59; i += 1) {
 
 const pickerStyle = {
   height: 150,
-  backgroundColor: colors.bgDefault,
   marginTop: 0,
   paddingTop: 0,
 };
@@ -35,6 +34,7 @@ function TimePicker({
   onChange,
   time = { hour: 1, minutes: 0 },
 }: TimePickerProps) {
+  const { colors } = useAuthState();
   const [selectedHour, setSelectedHour] = useState(time.hour);
   const [selectedMinutes, setSelectedMinutes] = useState(time.minutes);
 
@@ -42,10 +42,14 @@ function TimePicker({
     <View style={[common.row, { alignItems: "center", height: 150 }]}>
       <View key="hour" style={common.flex1}>
         <Picker
-          style={pickerStyle}
+          style={{
+            ...pickerStyle,
+            backgroundColor: colors.bgDefault,
+          }}
           itemStyle={{
             backgroundColor: colors.bgDefault,
           }}
+          textColor={colors.textColor}
           selectedValue={selectedHour}
           pickerData={hours}
           onValueChange={(value: number) => {
@@ -57,10 +61,11 @@ function TimePicker({
       <Text style={[common.headerTitle, dividerStyle]}>:</Text>
       <View key="minute" style={[common.flex1]}>
         <Picker
-          style={pickerStyle}
+          style={{ ...pickerStyle, backgroundColor: colors.bgDefault }}
           itemStyle={{
             backgroundColor: colors.bgDefault,
           }}
+          textColor={colors.textColor}
           selectedValue={selectedMinutes}
           pickerData={minutes}
           onValueChange={(value: number) => {

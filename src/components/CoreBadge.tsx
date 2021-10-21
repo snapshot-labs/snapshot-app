@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import isEmpty from "lodash/isEmpty";
 import colors from "../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   badge: {
@@ -30,6 +31,7 @@ type CoreBadgeProps = {
 };
 
 function CoreBadge({ address, members = [] }: CoreBadgeProps) {
+  const { colors } = useAuthState();
   const isCore = useMemo(() => {
     if (isEmpty(members)) return false;
     let updatedMembers = members.map((address) => address.toLowerCase());
@@ -39,7 +41,9 @@ function CoreBadge({ address, members = [] }: CoreBadgeProps) {
   if (isCore) {
     return (
       <View style={styles.badge}>
-        <Text style={styles.badgeTitle}>{i18n.t("core")}</Text>
+        <Text style={[styles.badgeTitle, { color: colors.textColor }]}>
+          {i18n.t("core")}
+        </Text>
       </View>
     );
   }

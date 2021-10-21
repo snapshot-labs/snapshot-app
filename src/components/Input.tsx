@@ -1,6 +1,7 @@
 import React from "react";
 import { TextInput, TextInputProps, StyleSheet } from "react-native";
 import colors from "../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   input: {
@@ -15,13 +16,14 @@ const styles = StyleSheet.create({
 });
 
 const Input = (props: TextInputProps & { setRef?: any }) => {
+  const { colors } = useAuthState();
   let inputProps = { ...props };
   delete inputProps.setRef;
 
   return (
     <TextInput
       {...inputProps}
-      style={[styles.input, props.style ?? {}]}
+      style={[styles.input, { color: colors.textColor }, props.style ?? {}]}
       {...(props.setRef ? { ref: props.setRef } : {})}
     />
   );
