@@ -31,6 +31,7 @@ type BottomSheetModalProps = {
   options: string[];
   onPressOption: (index: number) => void;
   initialIndex: number;
+  destructiveButtonIndex?: number;
 };
 
 function BottomSheetModal({
@@ -39,6 +40,7 @@ function BottomSheetModal({
   options,
   onPressOption,
   initialIndex,
+  destructiveButtonIndex,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   return (
@@ -64,7 +66,17 @@ function BottomSheetModal({
             key={index}
           >
             <View style={styles.row}>
-              <Text style={[styles.rowTitle, { color: colors.textColor }]}>
+              <Text
+                style={[
+                  styles.rowTitle,
+                  { color: colors.textColor },
+                  destructiveButtonIndex === index
+                    ? {
+                        color: colors.red,
+                      }
+                    : {},
+                ]}
+              >
                 {option}
               </Text>
             </View>
