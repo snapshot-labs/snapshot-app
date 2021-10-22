@@ -172,7 +172,14 @@ function VotesScreen({ route }: VotesScreenProps) {
         <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
           {i18n.t("votes")}
         </Text>
-        <BackButton backIcon="close" containerStyle={{ paddingBottom: 0 }} />
+        <BackButton
+          backIcon="close"
+          containerStyle={{
+            paddingVertical: 0,
+            marginBottom: Platform.OS === "ios" ? 4 : 0,
+          }}
+          titleStyle={{ marginTop: 0 }}
+        />
       </View>
       <TabView
         navigationState={{ index, routes }}

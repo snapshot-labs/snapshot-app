@@ -100,6 +100,14 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { isWalletConnect, colors } = useAuthState();
+  const HEADER_MAX_HEIGHT =
+    Platform.OS === "android"
+      ? isWalletConnect
+        ? 155
+        : 140
+      : isWalletConnect
+      ? 140
+      : 130;
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
   const space = route.params.space;

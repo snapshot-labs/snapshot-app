@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import i18n from "i18n-js";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import get from "lodash/get";
@@ -8,7 +8,7 @@ import SpaceAvatar from "../SpaceAvatar";
 import common from "styles/common";
 import FollowButton from "../FollowButton";
 import { Space } from "types/explore";
-import { n } from "../../helpers/miscUtils";
+import { n } from "helpers/miscUtils";
 import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
