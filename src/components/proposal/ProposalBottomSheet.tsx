@@ -42,7 +42,6 @@ function ProposalBottomSheet({
       connectedAddress === proposal?.author
     ) {
       setOptions.push(i18n.t("deleteProposal"));
-      destructiveButtonIndex = 1;
     }
     return setOptions;
   }, [proposal, space]);
@@ -50,7 +49,7 @@ function ProposalBottomSheet({
   const snapPoints = ["5%", options.length > 1 ? 200 : 100, "30%"];
   const toastShowConfig = useToastShowConfig();
   const navigation: any = useNavigation();
-  let destructiveButtonIndex = 3;
+  const destructiveButtonIndex = options.length > 1 ? 1 : 3;
 
   const deleteProposal = async () => {
     try {
@@ -111,6 +110,7 @@ function ProposalBottomSheet({
         }
         onClose();
       }}
+      destructiveButtonIndex={destructiveButtonIndex}
       initialIndex={1}
     />
   );
