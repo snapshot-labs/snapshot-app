@@ -13,15 +13,16 @@ import i18n from "i18n-js";
 import colors from "constants/colors";
 import common from "styles/common";
 import { useAuthState } from "context/authContext";
-import ProposalFilters from "components/proposal/ProposalFilters";
 import BackButton from "components/BackButton";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import { Space } from "types/explore";
+import proposal from "constants/proposal";
+import ProposalFilters from "components/proposal/ProposalFilters";
 import AboutSpace from "components/space/AboutSpace";
 import SpaceHeader from "components/space/SpaceHeader";
 import SpaceProposals from "components/space/SpaceProposals";
 import TabBarItem from "components/tabBar/TabBarItem";
-import { Space } from "types/explore";
-import proposal from "constants/proposal";
+import ProposalFiltersBottomSheet from "components/proposal/ProposalFiltersBottomSheet";
 
 const { width } = Dimensions.get("screen");
 
@@ -127,6 +128,8 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const scrollValue = useRef(0);
   const scrollEndTimer: any = useRef(-1);
   const [isInitial, setIsInitial] = useState(true);
+  const bottomSheetRef: any = useRef();
+  const [showProposalFilters, setShowProposalFilters] = useState(false);
 
   useEffect(() => {
     if (!isInitial) {
@@ -291,10 +294,12 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           {index === 0 && (
             <ProposalFilters
               filter={filter}
-              setFilter={setFilter}
-              onChangeFilter={(newFilter: string) => {
-                spaceScreenRef?.current?.onChangeFilter(newFilter);
-                resetHeader();
+              showBottomSheetModal={() => {
+                if (bottomSheetRef.current) {
+                  bottomSheetRef.current.snapToIndex(1);
+                } else {
+                  setShowProposalFilters(!showProposalFilters);
+                }
               }}
               iconColor={showTitle ? colors.white : colors.textColor}
               filterTextStyle={{
@@ -318,6 +323,23 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           resetHeader();
         }}
       />
+      {showProposalFilters && (
+        <ProposalFiltersBottomSheet
+          bottomSheetRef={bottomSheetRef}
+          setFilter={setFilter}
+          onClose={() => {
+            if (bottomSheetRef.current) {
+              bottomSheetRef.current.close();
+            } else {
+              setShowProposalFilters(false);
+            }
+          }}
+          onChangeFilter={(newFilter: string) => {
+            spaceScreenRef?.current?.onChangeFilter(newFilter);
+            resetHeader();
+          }}
+        />
+      )}
     </View>
   );
 }

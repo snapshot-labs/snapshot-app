@@ -34,22 +34,16 @@ const styles = StyleSheet.create({
 type TimelineHeaderProps = {
   joinedSpacesFilter: { key: string; text: string };
   allSpacesFilter: { key: string; text: string };
-  setJoinedSpacesFilter: (filter: { key: string; text: string }) => void;
-  setAllSpacesFilter: (filter: { key: string; text: string }) => void;
-  onChangeJoinedSpacesFilter: (newFilter: string) => void;
-  onChangeAllSpacesFilter: (newFilter: string) => void;
   useFollowedSpaces: boolean;
   currentIndex: number;
+  showBottomSheetModal: (showBottomSheetModal: boolean) => void;
 };
 
 function TimelineHeader({
-  onChangeJoinedSpacesFilter,
-  onChangeAllSpacesFilter,
-  setJoinedSpacesFilter,
-  setAllSpacesFilter,
   joinedSpacesFilter,
   allSpacesFilter,
   currentIndex,
+  showBottomSheetModal,
 }: TimelineHeaderProps) {
   const { followedSpaces, colors } = useAuthState();
   return (
@@ -61,8 +55,7 @@ function TimelineHeader({
         followedSpaces.length > 0 ? (
           <ProposalFilters
             filter={joinedSpacesFilter}
-            setFilter={setJoinedSpacesFilter}
-            onChangeFilter={onChangeJoinedSpacesFilter}
+            showBottomSheetModal={showBottomSheetModal}
           />
         ) : (
           <View />
@@ -70,8 +63,7 @@ function TimelineHeader({
       ) : (
         <ProposalFilters
           filter={allSpacesFilter}
-          setFilter={setAllSpacesFilter}
-          onChangeFilter={onChangeAllSpacesFilter}
+          showBottomSheetModal={showBottomSheetModal}
         />
       )}
     </View>

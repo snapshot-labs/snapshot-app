@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { Remarkable } from "remarkable";
 import { linkify } from "remarkable/linkify";
@@ -79,6 +79,9 @@ function MarkdownBody({ body }: MarkdownBodyProps) {
   const { colors } = useAuthState();
   const { width } = useWindowDimensions();
   const [parsedBody, setParsedBody] = useState<any>("");
+  const tagStyles = useMemo(() => {
+    return tagsStyles(colors);
+  }, [colors]);
 
   useEffect(() => {
     const markedBody: any = remarkable.render(body);
@@ -94,7 +97,7 @@ function MarkdownBody({ body }: MarkdownBodyProps) {
       <HTML
         source={{ html: parsedBody }}
         contentWidth={width}
-        tagsStyles={tagsStyles(colors)}
+        tagsStyles={tagStyles}
         baseStyle={baseStyle}
         systemFonts={systemFonts}
       />

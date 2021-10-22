@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MarkdownBody from "components/proposal/MarkdownBody";
 import { ScrollView, View, Text } from "react-native";
@@ -20,6 +20,7 @@ import BlockCastVote from "components/proposal/BlockCastVote";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import ProposalMenu from "components/proposal/ProposalMenu";
 import { useAuthState } from "context/authContext";
+import ProposalBottomSheet from "components/proposal/ProposalBottomSheet";
 
 type ProposalScreenProps = {
   route: {
@@ -111,6 +112,8 @@ function ProposalScreen({ route }: ProposalScreenProps) {
     [spaces, proposal]
   );
   const insets = useSafeAreaInsets();
+  const bottomSheetRef: any = useRef();
+  const [showProposalBottomSheet, setShowProposalBottomSheet] = useState(false);
 
   useEffect(() => {
     getProposal(
@@ -146,7 +149,15 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       <View style={[common.headerContainer, common.justifySpaceBetween]}>
         <BackButton title={route.params.fromFeed ? null : space?.name} />
         {!proposalFullyLoading && (
-          <ProposalMenu proposal={proposal} space={space} />
+          <ProposalMenu
+            showBottomSheetModal={() => {
+              if (bottomSheetRef.current) {
+                bottomSheetRef.current.snapToIndex(1);
+              } else {
+                setShowProposalBottomSheet(!showProposalBottomSheet);
+              }
+            }}
+          />
         )}
       </View>
       {proposalFullyLoading ? (
@@ -236,6 +247,20 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           <BlockInformation proposal={proposal} space={space} />
           <View style={{ width: 10, height: 75 }} />
         </ScrollView>
+      )}
+      {showProposalBottomSheet && (
+        <ProposalBottomSheet
+          proposal={proposal}
+          space={space}
+          bottomSheetRef={bottomSheetRef}
+          onClose={() => {
+            if (bottomSheetRef.current) {
+              bottomSheetRef.current.close();
+            } else {
+              setShowProposalBottomSheet(false);
+            }
+          }}
+        />
       )}
     </View>
   );
