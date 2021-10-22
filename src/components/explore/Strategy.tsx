@@ -63,7 +63,9 @@ function StrategyComponent({
         });
       }}
     >
-      <View style={styles.container}>
+      <View
+        style={[styles.container, { borderBottomColor: colors.borderColor }]}
+      >
         <View style={styles.titleContainer}>
           <Text style={common.h4}>{strategy.key}</Text>
           <Text style={styles.version}>v{strategy.version}</Text>

@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  Platform,
-  Text,
-  TouchableHighlight,
-  View,
-} from "react-native";
-import colors from "../../constants/colors";
+import { Platform, Text, TouchableHighlight, View } from "react-native";
 import common from "../../styles/common";
 import i18n from "i18n-js";
 import Modal from "react-native-modal";
 import proposal from "../../constants/proposal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "../BackButton";
+import { useAuthState } from "context/authContext";
 
 type VotingTypeModalProps = {
   isVisible: boolean;
@@ -24,6 +19,7 @@ function VotingTypeModal({
   onClose,
   setVotingType,
 }: VotingTypeModalProps) {
+  const { colors } = useAuthState();
   const votingTypes = proposal.getVotingTypes();
   const insets = useSafeAreaInsets();
   return (

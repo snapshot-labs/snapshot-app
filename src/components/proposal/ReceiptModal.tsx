@@ -94,7 +94,7 @@ function ReceiptModal({
             : {},
         ]}
       >
-        <View style={styles.header}>
+        <View style={[styles.header, { borderBottomColor: colors.borderColor }]}>
           <Text
             style={[
               common.h3,
@@ -112,7 +112,7 @@ function ReceiptModal({
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.mainContent}>
+        <View style={[styles.mainContent, { borderColor: colors.borderColor }]}>
           <Text style={[styles.authorTitle, { color: colors.textColor }]}>
             {i18n.t("author")}
           </Text>

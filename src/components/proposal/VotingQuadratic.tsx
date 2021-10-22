@@ -10,6 +10,7 @@ import {
 import colors from "../../constants/colors";
 import { percentageOfTotal } from "../../helpers/voting/quadratic";
 import { Proposal } from "../../types/proposal";
+import { useAuthState } from "context/authContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -108,6 +109,7 @@ function VotingQuadratic({
   selectedChoices,
   setSelectedChoices,
 }: VotingQuadraticProps) {
+  const { colors } = useAuthState();
   useEffect(() => {
     if (selectedChoices.length === 0) {
       setSelectedChoices(new Array(proposal.choices.length + 1).fill(0));
@@ -118,7 +120,13 @@ function VotingQuadratic({
       {proposal.choices.map((choice: string, i: number) => {
         const selectedChoiceValue = selectedChoices[i + 1] ?? 0;
         return (
-          <View style={styles.buttonContainer} key={`${i}`}>
+          <View
+            style={[
+              styles.buttonContainer,
+              { borderColor: colors.borderColor },
+            ]}
+            key={`${i}`}
+          >
             <View style={styles.choiceContainer}>
               <Text
                 style={styles.choice}
@@ -136,7 +144,15 @@ function VotingQuadratic({
                   setSelectedChoices(newSelectedChoices);
                 }}
               >
-                <View style={styles.miniButton}>
+                <View
+                  style={[
+                    styles.miniButton,
+                    {
+                      borderRightColor: colors.borderColor,
+                      borderLeftColor: colors.borderColor,
+                    },
+                  ]}
+                >
                   <Text style={styles.miniButtonTitle}>-</Text>
                 </View>
               </TouchableOpacity>

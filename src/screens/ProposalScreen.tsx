@@ -146,7 +146,13 @@ function ProposalScreen({ route }: ProposalScreenProps) {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
-      <View style={[common.headerContainer, common.justifySpaceBetween]}>
+      <View
+        style={[
+          common.headerContainer,
+          common.justifySpaceBetween,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
         <BackButton title={route.params.fromFeed ? null : space?.name} />
         {!proposalFullyLoading && (
           <ProposalMenu

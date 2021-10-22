@@ -61,11 +61,12 @@ function Block({
 }: BlockProps) {
   const { colors } = useAuthState();
   return (
-    <View style={styles.block}>
+    <View style={[styles.block, { borderColor: colors.borderColor }]}>
       {!hideHeader && (
         <View
           style={[
             styles.header,
+            { borderColor: colors.borderColor },
             hideHeaderBorder ? { borderBottomWidth: 0 } : {},
           ]}
         >

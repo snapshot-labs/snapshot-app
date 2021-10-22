@@ -57,7 +57,7 @@ type PluginProps = {
 function Plugin({ plugin }: PluginProps) {
   const { colors } = useAuthState();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { borderBottomColor: colors.borderColor }]}>
       <TouchableOpacity
         onPress={() => {
           Linking.openURL(

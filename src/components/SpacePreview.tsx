@@ -49,7 +49,12 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
       }}
       underlayColor={colors.highlightColor}
     >
-      <View style={styles.spacePreviewContainer}>
+      <View
+        style={[
+          styles.spacePreviewContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
         <SpaceAvatar space={space} symbolIndex="space" size={60} />
         <View style={styles.spacePreviewTitleContainer}>
           <Text style={[styles.spacePreviewTitle, { color: colors.textColor }]}>

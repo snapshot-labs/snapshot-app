@@ -23,7 +23,7 @@ type SkinProps = {
 
 function Skin({ skin }: SkinProps) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { borderBottomColor: colors.borderColor }]}>
       <Text style={styles.title}>{skin.key}</Text>
       <Text style={styles.title}>
         {i18n.t("inSpaces", { spaceCount: n(skin.spaces) })}

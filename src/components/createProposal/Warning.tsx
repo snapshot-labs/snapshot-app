@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text } from "react-native";
 import i18n from "i18n-js";
-import { Space } from "../../types/explore";
-import colors from "../../constants/colors";
-import common from "../../styles/common";
+import { Space } from "types/explore";
+import common from "styles/common";
 import IconFont from "../IconFont";
-import { n } from "../../helpers/miscUtils";
+import { n } from "helpers/miscUtils";
+import { useAuthState } from "context/authContext";
 
 type WarningProps = {
   space: Space;
@@ -13,6 +13,7 @@ type WarningProps = {
 };
 
 function Warning({ space, passValidation }: WarningProps) {
+  const { colors } = useAuthState();
   let text;
 
   if (passValidation[1] === "basic") {
@@ -41,11 +42,7 @@ function Warning({ space, passValidation }: WarningProps) {
         },
       ]}
     >
-      <IconFont
-        name="warning"
-        size={20}
-        color={colors.darkGray}
-      />
+      <IconFont name="warning" size={20} color={colors.darkGray} />
       <Text style={[common.subTitle, { marginLeft: 8, paddingRight: 16 }]}>
         {text}
       </Text>

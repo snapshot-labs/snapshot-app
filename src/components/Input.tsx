@@ -1,6 +1,5 @@
 import React from "react";
 import { TextInput, TextInputProps, StyleSheet } from "react-native";
-import colors from "../constants/colors";
 import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
@@ -10,7 +9,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderRadius: 6,
-    borderColor: colors.borderColor,
     fontFamily: "Calibre-Medium",
   },
 });
@@ -23,7 +21,11 @@ const Input = (props: TextInputProps & { setRef?: any }) => {
   return (
     <TextInput
       {...inputProps}
-      style={[styles.input, { color: colors.textColor }, props.style ?? {}]}
+      style={[
+        styles.input,
+        { color: colors.textColor, borderColor: colors.borderColor },
+        props.style ?? {},
+      ]}
       {...(props.setRef ? { ref: props.setRef } : {})}
     />
   );

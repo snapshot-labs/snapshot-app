@@ -44,7 +44,12 @@ function SearchInput({
 }: SearchInputProps) {
   const { colors } = useAuthState();
   return (
-    <View style={styles.searchInputContainer}>
+    <View
+      style={[
+        styles.searchInputContainer,
+        { borderBottomColor: colors.borderColor },
+      ]}
+    >
       <IconFont name="search" size={18} color={colors.darkGray} />
       <Input
         selectionColor={colors.textColor}

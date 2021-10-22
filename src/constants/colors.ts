@@ -21,7 +21,7 @@ const light = {
 };
 
 const dark = {
-  borderColor: "rgb(229, 231, 235)",
+  borderColor: "rgb(66, 66, 66)",
   headingColor: defaultColors.white,
   textColor: defaultColors.white,
   secondaryTextColor: defaultColors.darkGray,
