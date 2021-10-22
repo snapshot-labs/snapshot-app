@@ -3,7 +3,6 @@ import { View, useWindowDimensions } from "react-native";
 import { Remarkable } from "remarkable";
 import { linkify } from "remarkable/linkify";
 import HTML, { defaultSystemFonts } from "react-native-render-html";
-import colors from "../../constants/colors";
 import { useAuthState } from "context/authContext";
 
 const systemFonts = [
@@ -29,14 +28,17 @@ const tagsStyles = (colors: any) => ({
   h1: {
     fontSize: 30,
     fontFamily: "Calibre-Semibold",
+    color: colors.textColor,
   },
   h2: {
     fontSize: 28,
     fontFamily: "Calibre-Semibold",
+    color: colors.textColor,
   },
   h3: {
     fontSize: 24,
     fontFamily: "Calibre-Semibold",
+    color: colors.textColor,
   },
   ul: {
     marginLeft: 30,

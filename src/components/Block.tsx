@@ -66,7 +66,7 @@ function Block({
         <View
           style={[
             styles.header,
-            { borderColor: colors.borderColor },
+            { borderBottomColor: colors.borderColor },
             hideHeaderBorder ? { borderBottomWidth: 0 } : {},
           ]}
         >

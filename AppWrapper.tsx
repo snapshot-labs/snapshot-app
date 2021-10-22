@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import AppNavigator from "./src/screens/AppNavigator";
+import AppNavigator from "screens/AppNavigator";
 import { withWalletConnect } from "@walletconnect/react-native-dapp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-
-import { ExploreProvider } from "./src/context/exploreContext";
-import storage from "./src/helpers/storage";
+import { ExploreProvider } from "context/exploreContext";
+import storage from "helpers/storage";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
-} from "./src/context/authContext";
-import { ContextDispatch } from "./src/types/context";
-import { getAliasWallet } from "./src/helpers/aliasUtils";
+} from "context/authContext";
+import { ContextDispatch } from "types/context";
+import { getAliasWallet } from "helpers/aliasUtils";
+import BottomSheetModal from "components/BottomSheetModal";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,

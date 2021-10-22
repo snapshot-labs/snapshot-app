@@ -69,11 +69,11 @@ type ExploreProviderProps = {
 };
 
 function ExploreProvider({ children }: ExploreProviderProps) {
-  const [auth, setAuth] = useReducer(exploreReducer, initialState);
+  const [explore, setExplore] = useReducer(exploreReducer, initialState);
 
   return (
-    <ExploreContext.Provider value={auth}>
-      <ExploreDispatchContext.Provider value={setAuth}>
+    <ExploreContext.Provider value={explore}>
+      <ExploreDispatchContext.Provider value={setExplore}>
         {children}
       </ExploreDispatchContext.Provider>
     </ExploreContext.Provider>
