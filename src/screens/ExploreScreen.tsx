@@ -7,7 +7,7 @@ import common from "styles/common";
 import SpacePreview from "components/SpacePreview";
 import i18n from "i18n-js";
 import ExploreHeader from "components/explore/ExploreHeader";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
 import pluginsObj from "../../snapshot-plugins/src/plugins";
 import {
@@ -24,6 +24,7 @@ import { useAuthState } from "context/authContext";
 
 function ExploreScreen() {
   const { colors } = useAuthState();
+  const insets = useSafeAreaInsets();
   const { spaces, strategies, fullStrategies, networks, plugins } =
     useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
@@ -94,50 +95,51 @@ function ExploreScreen() {
   }, [spaces, currentExplore, searchValue]);
 
   return (
-    <SafeAreaView
-      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    <View
+      style={[
+        common.screen,
+        { backgroundColor: colors.bgDefault, paddingTop: insets.top },
+      ]}
     >
-      <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
-        <CollapsibleHeaderFlatList
-          data={filteredExplore}
-          headerHeight={100}
-          CollapsibleHeaderComponent={
-            <ExploreHeader
-              searchValue={searchValue}
-              onChangeText={(text: string) => {
-                setSearchValue(text);
-              }}
-              currentExplore={currentExplore}
-              setCurrentExplore={setCurrentExplore}
-              filteredExplore={filteredExplore}
-            />
+      <CollapsibleHeaderFlatList
+        data={filteredExplore}
+        headerHeight={100}
+        CollapsibleHeaderComponent={
+          <ExploreHeader
+            searchValue={searchValue}
+            onChangeText={(text: string) => {
+              setSearchValue(text);
+            }}
+            currentExplore={currentExplore}
+            setCurrentExplore={setCurrentExplore}
+            filteredExplore={filteredExplore}
+          />
+        }
+        renderItem={(data) => {
+          if (currentExplore.key === "spaces") {
+            return <SpacePreview space={data.item} />;
+          } else if (currentExplore.key === "strategies") {
+            return (
+              <Strategy
+                strategy={data.item}
+                minifiedStrategiesArray={minifiedStrategiesArray}
+              />
+            );
+          } else if (currentExplore.key === "networks") {
+            return (
+              <Network network={data.item} orderedSpaces={orderedSpaces} />
+            );
+          } else if (currentExplore.key === "plugins") {
+            return <Plugin plugin={data.item} />;
           }
-          renderItem={(data) => {
-            if (currentExplore.key === "spaces") {
-              return <SpacePreview space={data.item} />;
-            } else if (currentExplore.key === "strategies") {
-              return (
-                <Strategy
-                  strategy={data.item}
-                  minifiedStrategiesArray={minifiedStrategiesArray}
-                />
-              );
-            } else if (currentExplore.key === "networks") {
-              return (
-                <Network network={data.item} orderedSpaces={orderedSpaces} />
-              );
-            } else if (currentExplore.key === "plugins") {
-              return <Plugin plugin={data.item} />;
-            }
-            return <View />;
-          }}
-          keyExtractor={(item, i) => `${item.id}${i}`}
-          onEndReachedThreshold={0.45}
-          onEndReached={() => {}}
-          clipHeader
-        />
-      </View>
-    </SafeAreaView>
+          return <View />;
+        }}
+        keyExtractor={(item, i) => `${item.id}${i}`}
+        onEndReachedThreshold={0.45}
+        onEndReached={() => {}}
+        clipHeader
+      />
+    </View>
   );
 }
 

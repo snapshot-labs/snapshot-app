@@ -56,7 +56,7 @@ function TabNavigator() {
           backgroundColor: colors.bgDefault,
           padding: 16,
           shadowOpacity: 0,
-          height: isOldIphone() ? 60 : Platform.OS === "android" ? 75 : 85,
+          height: isOldIphone() ? 60 : Platform.OS === "android" ? 75 : 95,
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
           elevation: 0,
