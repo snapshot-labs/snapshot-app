@@ -99,7 +99,6 @@
     "rn-placeholder": "^3.0.3",
     "stream-browserify": "^1.0.0",
     "string_decoder": "^0.10.31",
-    "tailwind-rn": "^3.0.1",
     "timeago.js": "^4.0.2",
     "timers-browserify": "^1.4.2",
     "tty-browserify": "0.0.0",
@@ -119,7 +118,6 @@
     "autoprefixer": "^10.3.7",
     "postcss": "^8.3.9",
     "prettier": "^2.4.0",
-    "tailwindcss": "^2.2.17",
     "typescript": "~4.0.0"
   },
   "private": true,

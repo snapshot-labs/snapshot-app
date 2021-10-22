@@ -6,18 +6,18 @@ import {
   StyleSheet,
   Linking,
 } from "react-native";
-import tailwind from "tailwind-rn";
 import i18n from "i18n-js";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import UserAvatar from "./UserAvatar";
-import { explorerUrl, shorten } from "../helpers/miscUtils";
+import { explorerUrl, shorten } from "helpers/miscUtils";
 import { useExploreState } from "context/exploreContext";
 import colors from "constants/colors";
 import { useToastShowConfig } from "constants/toast";
 import { useAuthState } from "context/authContext";
+import common from "styles/common";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -54,7 +54,13 @@ function ActiveAccount({ address }: ActiveAccountProps) {
   };
 
   return (
-    <View style={tailwind("justify-center items-center pb-6 h-32")}>
+    <View
+      style={[
+        common.justifyCenter,
+        common.alignItemsCenter,
+        { paddingBottom: 6, height: 32 },
+      ]}
+    >
       {address ? (
         <TouchableOpacity
           onPress={() => {
@@ -72,14 +78,20 @@ function ActiveAccount({ address }: ActiveAccountProps) {
       ) : (
         <View />
       )}
-      <View style={tailwind("h-16 justify-center items-center")}>
+      <View
+        style={[
+          common.containerHorizontalPadding,
+          common.justifyCenter,
+          common.alignItemsCenter,
+        ]}
+      >
         {!isEmpty(ens) && (
           <Text style={[styles.connectedEns, { color: colors.textColor }]}>
             {ens}
           </Text>
         )}
         <TouchableOpacity onPress={copyToClipboard}>
-          <View style={tailwind(isEmpty(ens) ? "mt-4" : "mt-1")}>
+          <View style={isEmpty(ens) ? { marginTop: 16 } : { marginTop: 8 }}>
             <Text
               style={[styles.address, { color: colors.textColor }]}
               numberOfLines={1}

@@ -23,7 +23,6 @@ import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import { setProfiles } from "helpers/profile";
 import ConnectedWallet from "components/ConnectedWallet";
 import ActiveAccount from "components/ActiveAccount";
-import tailwind from "tailwind-rn";
 import IconFont from "components/IconFont";
 
 const { width } = Dimensions.get("screen");
@@ -96,7 +95,7 @@ function MoreScreen() {
             navigation.navigate(CONNECT_ACCOUNT_SCREEN);
           }}
         >
-          <View style={tailwind("mt-6 pl-4")}>
+          <View style={{ marginTop: 24, paddingLeft: 16 }}>
             <Text style={[common.h4, { color: colors.textColor }]}>
               {i18n.t("addWallet")}
             </Text>

@@ -80,11 +80,12 @@ const common = StyleSheet.create({
   justifySpaceBetween: {
     justifyContent: "space-between",
   },
+  justifyCenter: {
+    justifyContent: "center"
+  },
+  alignItemsCenter: {
+    alignItems: "center"
+  }
 });
-
-export const actionSheetTextStyles = {
-  fontFamily: "Calibre-Medium",
-  fontSize: 20,
-};
 
 export default common;
