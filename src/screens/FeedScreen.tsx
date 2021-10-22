@@ -24,8 +24,11 @@ import proposal from "constants/proposal";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import { setProfiles } from "helpers/profile";
-import ProposalFiltersBottomSheet from "components/proposal/ProposalFiltersBottomSheet";
-import ProposalFilters from "components/proposal/ProposalFilters";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
 
 const LOAD_BY = 6;
 
@@ -260,10 +263,10 @@ function FeedScreenTabView() {
   const insets = useSafeAreaInsets();
   const joinedSpacesRef: any = useRef(null);
   const allSpacesRef: any = useRef(null);
-  const bottomSheetRef: any = useRef();
+  const bottomSheetModalRef = useBottomSheetModalRef();
   const [showProposalFilters, setShowProposalFilters] =
     useState<boolean>(false);
-
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const [routes] = React.useState([
     { key: "joinedSpaces", title: i18n.t("joinedSpaces") },
     { key: "allSpaces", title: i18n.t("allSpaces") },
@@ -317,11 +320,48 @@ function FeedScreenTabView() {
         allSpacesFilter={allSpacesFilter}
         currentIndex={index}
         showBottomSheetModal={() => {
-          if (bottomSheetRef.current) {
-            bottomSheetRef.current.snapToIndex(1);
-          } else {
-            setShowProposalFilters(!showProposalFilters);
-          }
+          const stateFilters = proposal.getStateFilters();
+          const allFilter = stateFilters[0];
+          const activeFilter = stateFilters[1];
+          const pendingFilter = stateFilters[2];
+          const closedFilter = stateFilters[3];
+          const options = [
+            allFilter.text,
+            activeFilter.text,
+            pendingFilter.text,
+            closedFilter.text,
+          ];
+          const setFilter =
+            index === 0 ? setJoinedSpacesFilter : setAllSpacesFilter;
+          const onChangeFilter =
+            index === 0
+              ? joinedSpacesRef.current?.onChangeFilter ?? function () {}
+              : allSpacesRef.current?.onChangeFilter ?? function () {};
+          bottomSheetModalDispatch({
+            type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+            payload: {
+              options,
+              snapPoints: [100, 250, "50%"],
+              show: true,
+              initialIndex: 1,
+              onPressOption: (index: number) => {
+                if (index === 0) {
+                  setFilter(allFilter);
+                  onChangeFilter(allFilter.key);
+                } else if (index === 1) {
+                  setFilter(activeFilter);
+                  onChangeFilter(activeFilter.key);
+                } else if (index === 2) {
+                  setFilter(pendingFilter);
+                  onChangeFilter(pendingFilter.key);
+                } else if (index === 3) {
+                  setFilter(closedFilter);
+                  onChangeFilter(closedFilter.key);
+                }
+                bottomSheetModalRef?.current?.close();
+              },
+            },
+          });
         }}
         useFollowedSpaces={index === 0}
       />
@@ -332,24 +372,6 @@ function FeedScreenTabView() {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
       />
-      {showProposalFilters && (
-        <ProposalFiltersBottomSheet
-          bottomSheetRef={bottomSheetRef}
-          setFilter={index === 0 ? setJoinedSpacesFilter : setAllSpacesFilter}
-          onChangeFilter={
-            index === 0
-              ? joinedSpacesRef.current?.onChangeFilter ?? function () {}
-              : allSpacesRef.current?.onChangeFilter ?? function () {}
-          }
-          onClose={() => {
-            if (bottomSheetRef.current) {
-              bottomSheetRef.current.close();
-            } else {
-              setShowProposalFilters(false);
-            }
-          }}
-        />
-      )}
     </View>
   );
 }

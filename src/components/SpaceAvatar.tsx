@@ -60,7 +60,7 @@ function SpaceAvatar({
       <Animated.View {...animatedProps}>
         <Image
           source={imgSrc}
-          style={{ flex: 1, width: null, height: null }}
+          style={{ flex: 1, width: null, height: null, borderRadius: size / 2 }}
           onError={() => {
             const blockie = makeBlockie(space?.id ?? "");
             setBlockie(blockie);
