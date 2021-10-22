@@ -40,7 +40,7 @@ function CoreBadge({ address, members = [] }: CoreBadgeProps) {
 
   if (isCore) {
     return (
-      <View style={styles.badge}>
+      <View style={[styles.badge, { borderColor: colors.borderColor }]}>
         <Text style={[styles.badgeTitle, { color: colors.textColor }]}>
           {i18n.t("core")}
         </Text>

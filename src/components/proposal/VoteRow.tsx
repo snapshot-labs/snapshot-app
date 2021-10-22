@@ -73,7 +73,10 @@ function VoteRow({
       }}
       underlayColor={colors.highlightColor}
     >
-      <View key={vote.id} style={[styles.row]}>
+      <View
+        key={vote.id}
+        style={[styles.row, { borderBottomColor: colors.borderColor }]}
+      >
         <View style={styles.rowValueContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <UserAvatar

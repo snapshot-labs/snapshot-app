@@ -113,7 +113,9 @@ function VoteConfirmModal({
       style={styles.view}
     >
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View
+          style={[styles.header, { borderBottomColor: colors.borderColor }]}
+        >
           <Text style={[common.h3, { textAlign: "center" }]}>
             {i18n.t("confirmVote")}
           </Text>
@@ -140,7 +142,7 @@ function VoteConfirmModal({
         <Text style={[common.h4, { paddingHorizontal: 16, paddingTop: 8 }]}>
           {i18n.t("thisActionCannotBeUndone")}
         </Text>
-        <View style={styles.mainContent}>
+        <View style={[styles.mainContent, { borderColor: colors.borderColor }]}>
           <View style={styles.row}>
             <Text style={[styles.rowTitle, { width: 100 }]}>
               {i18n.t("optionss")}

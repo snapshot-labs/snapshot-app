@@ -57,7 +57,7 @@ function Network({ network, orderedSpaces }: NetworkProps) {
         });
       }}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, { borderBottomColor: colors.borderColor}]}>
         <View style={styles.titleContainer}>
           <Image
             source={{ uri: getLogoUrl(network.key) }}

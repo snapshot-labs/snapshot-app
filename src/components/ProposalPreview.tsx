@@ -139,7 +139,12 @@ function ProposalPreview({
         navigation.navigate(PROPOSAL_SCREEN, { proposal, fromFeed });
       }}
     >
-      <View style={styles.proposalPreviewContainer}>
+      <View
+        style={[
+          styles.proposalPreviewContainer,
+          { borderColor: colors.borderColor },
+        ]}
+      >
         <View style={styles.header}>
           <SpaceAvatar symbolIndex="space" size={28} space={proposal.space} />
           <View
