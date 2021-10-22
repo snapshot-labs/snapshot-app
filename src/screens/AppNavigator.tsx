@@ -26,6 +26,8 @@ import ConnectAccountScreen from "./ConnectAccountScreen";
 import VotesScreen from "./VotesScreen";
 import CreateProposalScreen from "./CreateProposalScreen";
 import IconFont from "../components/IconFont";
+import AboutScreen from "screens/AboutScreen";
+import AdvancedSettingsScreen from "screens/AdvancedSettingsScreen";
 
 const Stack = createStackNavigator();
 
@@ -246,6 +248,16 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.CREATE_PROPOSAL_SCREEN}
         component={CreateProposalScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.ABOUT_SCREEN}
+        component={AboutScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.ADVANCED_SETTINGS_SCREEN}
+        component={AdvancedSettingsScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

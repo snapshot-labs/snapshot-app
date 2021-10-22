@@ -137,4 +137,6 @@ export default {
   deleteProposal: "Delete proposal",
   proposalDeleted: "Proposal deleted",
   unableToDeleteProposal: "Unable to delete proposal",
+  advanced: "Advanced",
+  snapshotHub: "Snapshot hub",
 };
