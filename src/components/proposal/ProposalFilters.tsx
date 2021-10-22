@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Platform,
   StyleSheet,
@@ -30,77 +30,29 @@ const styles = StyleSheet.create({
 
 type ProposalFiltersProps = {
   filter: { key: string; text: string };
-  setFilter: (filter: { key: string; text: string }) => void;
-  onChangeFilter: (newFilter: string) => void;
   containerStyle?: ViewStyle;
   filterTextStyle?: TextStyle;
   filterContainerStyle?: ViewStyle;
   iconColor?: string;
+  showBottomSheetModal: (showBottomSheetModal: boolean) => void;
 };
 
 function ProposalFilters({
   filter = { key: "all", text: i18n.t("all") },
-  setFilter,
-  onChangeFilter,
   containerStyle,
   filterTextStyle = {},
   filterContainerStyle = {},
   iconColor,
+  showBottomSheetModal,
 }: ProposalFiltersProps) {
   const { colors } = useAuthState();
-  const { showActionSheetWithOptions } = useActionSheet();
   const setIconColor = iconColor ? iconColor : colors.textColor;
+
   return (
     <TouchableOpacity
       style={[{ marginLeft: "auto" }, containerStyle]}
       onPress={() => {
-        const stateFilters = proposal.getStateFilters();
-        const allFilter = stateFilters[0];
-        const activeFilter = stateFilters[1];
-        const pendingFilter = stateFilters[2];
-        const closedFilter = stateFilters[3];
-        const options = [
-          allFilter.text,
-          activeFilter.text,
-          pendingFilter.text,
-          closedFilter.text,
-        ];
-
-        if (Platform.OS === "ios") {
-          options.push(i18n.t("cancel"));
-        }
-
-        const cancelButtonIndex = 4;
-
-        showActionSheetWithOptions(
-          {
-            options,
-            cancelButtonIndex,
-            textStyle: {
-              fontFamily: "Calibre-Medium",
-              fontSize: 20,
-              color: colors.textColor,
-            },
-            containerStyle: { backgroundColor: colors.bgDefault },
-          },
-          (buttonIndex) => {
-            if (buttonIndex !== 4) {
-              if (buttonIndex === 0) {
-                setFilter(allFilter);
-                onChangeFilter(allFilter.key);
-              } else if (buttonIndex === 1) {
-                setFilter(activeFilter);
-                onChangeFilter(activeFilter.key);
-              } else if (buttonIndex === 2) {
-                setFilter(pendingFilter);
-                onChangeFilter(pendingFilter.key);
-              } else if (buttonIndex === 3) {
-                setFilter(closedFilter);
-                onChangeFilter(closedFilter.key);
-              }
-            }
-          }
-        );
+        showBottomSheetModal(true);
       }}
     >
       <View style={[styles.filterContainer, filterContainerStyle]}>
