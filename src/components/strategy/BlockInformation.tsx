@@ -55,14 +55,9 @@ type BlockInformationProps = {
 };
 
 function BlockInformation({ strategy }: BlockInformationProps) {
-  const { profiles } = useExploreState();
-  const { connectedAddress } = useAuthState();
-  const authorProfile = profiles[strategy.author];
-  const authorName = getUsername(
-    strategy.author,
-    authorProfile,
-    connectedAddress ?? ""
-  );
+  const { colors } = useAuthState();
+  const authorName = strategy.author;
+
   return (
     <Block
       title={i18n.t("information")}
@@ -82,7 +77,11 @@ function BlockInformation({ strategy }: BlockInformationProps) {
                     color={colors.textColor}
                     size={16}
                   />
-                  <Text style={styles.authorText}>{authorName}</Text>
+                  <Text
+                    style={[styles.authorText, { color: colors.textColor }]}
+                  >
+                    {authorName}
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -98,9 +97,13 @@ function BlockInformation({ strategy }: BlockInformationProps) {
                 }}
               >
                 <View style={styles.authorContainer}>
-                  <Text style={styles.rowValueText}>{strategy.version}</Text>
+                  <Text
+                    style={[styles.rowValueText, { color: colors.textColor }]}
+                  >
+                    {strategy.version}
+                  </Text>
                   <IconFont
-                    name="external-link-alt"
+                    name="external-link"
                     style={{ marginLeft: 8 }}
                     size={20}
                     color={colors.darkGray}

@@ -3,11 +3,12 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import i18n from "i18n-js";
 import IconFont from "../IconFont";
 import { useNavigation } from "@react-navigation/native";
-import colors from "../../constants/colors";
-import { n } from "../../helpers/miscUtils";
-import { Strategy } from "../../types/explore";
-import common from "../../styles/common";
-import { STRATEGY_SCREEN } from "../../constants/navigation";
+import colors from "constants/colors";
+import { n } from "helpers/miscUtils";
+import { Strategy } from "types/explore";
+import common from "styles/common";
+import { STRATEGY_SCREEN } from "constants/navigation";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,13 +28,11 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Calibre-Medium",
-    color: colors.headingColor,
     fontSize: 18,
   },
   version: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
-    color: colors.headingColor,
     marginLeft: 4,
   },
   authorText: {
@@ -54,6 +53,7 @@ function StrategyComponent({
   minifiedStrategiesArray,
 }: StrategyComponentProps) {
   const navigation: any = useNavigation();
+  const { colors } = useAuthState();
   return (
     <TouchableOpacity
       onPress={() => {
@@ -67,14 +67,18 @@ function StrategyComponent({
         style={[styles.container, { borderBottomColor: colors.borderColor }]}
       >
         <View style={styles.titleContainer}>
-          <Text style={common.h4}>{strategy.key}</Text>
-          <Text style={styles.version}>v{strategy.version}</Text>
+          <Text style={[common.h4, { color: colors.textColor }]}>
+            {strategy.key}
+          </Text>
+          <Text style={[styles.version, { color: colors.textColor }]}>
+            v{strategy.version}
+          </Text>
         </View>
         <View style={styles.authorContainer}>
           <IconFont name="mark-github" color={colors.darkGray} size={16} />
           <Text style={styles.authorText}>{strategy.author}</Text>
         </View>
-        <Text style={styles.text}>
+        <Text style={[styles.text, { color: colors.textColor }]}>
           {i18n.t("inSpaces", { spaceCount: n(strategy.spaces) })}
         </Text>
       </View>

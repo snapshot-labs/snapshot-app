@@ -58,7 +58,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
       style={[
         common.justifyCenter,
         common.alignItemsCenter,
-        { paddingBottom: 6, height: 32 },
+        { paddingBottom: 6, marginTop: 0, height: 160 },
       ]}
     >
       {address ? (

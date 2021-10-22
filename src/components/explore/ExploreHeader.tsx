@@ -1,13 +1,16 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Platform } from "react-native";
 import i18n from "i18n-js";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 import IconFont from "../IconFont";
-import colors from "../../constants/colors";
 import common from "../../styles/common";
 import SearchInput from "../SearchInput";
 import { n } from "../../helpers/miscUtils";
 import { useAuthState } from "context/authContext";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
 
 type ExploreHeaderProps = {
   searchValue: string;
@@ -41,8 +44,9 @@ function ExploreHeader({
   filteredExplore,
 }: ExploreHeaderProps) {
   const { colors } = useAuthState();
-  const { showActionSheetWithOptions } = useActionSheet();
+  const bottomSheetModalRef = useBottomSheetModalRef();
   const currentExploreText = getCurrentExploreText(currentExplore);
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   return (
     <View style={{ backgroundColor: colors.bgDefault, paddingBottom: 8 }}>
       <SearchInput
@@ -57,45 +61,40 @@ function ExploreHeader({
                   i18n.t("networks"),
                   i18n.t("strategiess"),
                   i18n.t("plugins"),
-                  i18n.t("cancel"),
                 ];
-                const cancelButtonIndex = options.length - 1;
-
-                showActionSheetWithOptions(
-                  {
+                bottomSheetModalDispatch({
+                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                  payload: {
                     options,
-                    cancelButtonIndex,
-                    textStyle: {
-                      fontFamily: "Calibre-Medium",
-                      fontSize: 20,
-                      color: colors.textColor,
+                    snapPoints: ["10%", 275, "50%"],
+                    show: true,
+                    initialIndex: 1,
+                    onPressOption: (index: number) => {
+                      if (index === 0) {
+                        setCurrentExplore({
+                          key: "spaces",
+                          text: i18n.t("spaces"),
+                        });
+                      } else if (index === 1) {
+                        setCurrentExplore({
+                          key: "networks",
+                          text: i18n.t("networks"),
+                        });
+                      } else if (index === 2) {
+                        setCurrentExplore({
+                          key: "strategies",
+                          text: i18n.t("strategiess"),
+                        });
+                      } else if (index === 3) {
+                        setCurrentExplore({
+                          key: "plugins",
+                          text: i18n.t("plugins"),
+                        });
+                      }
+                      bottomSheetModalRef?.current?.close();
                     },
-                    containerStyle: { backgroundColor: colors.bgDefault },
                   },
-                  (buttonIndex) => {
-                    if (buttonIndex === 0) {
-                      setCurrentExplore({
-                        key: "spaces",
-                        text: i18n.t("spaces"),
-                      });
-                    } else if (buttonIndex === 1) {
-                      setCurrentExplore({
-                        key: "networks",
-                        text: i18n.t("networks"),
-                      });
-                    } else if (buttonIndex === 2) {
-                      setCurrentExplore({
-                        key: "strategies",
-                        text: i18n.t("strategiess"),
-                      });
-                    } else if (buttonIndex === 3) {
-                      setCurrentExplore({
-                        key: "plugins",
-                        text: i18n.t("plugins"),
-                      });
-                    }
-                  }
-                );
+                });
               }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
