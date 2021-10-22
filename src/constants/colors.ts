@@ -17,6 +17,7 @@ const light = {
   secondaryTextColor: defaultColors.darkGray,
   bgDefault: "#fff",
   indicatorColor: defaultColors.darkGray,
+  settingsIconBgColor: "rgba(0,0,0,.2)",
 };
 
 const dark = {
@@ -26,6 +27,7 @@ const dark = {
   secondaryTextColor: defaultColors.darkGray,
   bgDefault: "#121212",
   indicatorColor: defaultColors.white,
+  settingsIconBgColor: "rgba(255,255,255,.2)",
 };
 
 const colorScheme: any = { ...defaultColors, ...light };

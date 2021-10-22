@@ -105,7 +105,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const scrollY = useRef(new Animated.Value(0));
   const headerHeight = scrollY.current.interpolate({
     inputRange: [0, HEADER_MAX_HEIGHT - 40, HEADER_MAX_HEIGHT + 5],
-    outputRange: [-40, -15, 10],
+    outputRange: [-40, -15, Platform.OS === "android" ? 10 : 6],
     extrapolate: "clamp",
   });
   const profileImageHeight = scrollY.current.interpolate({

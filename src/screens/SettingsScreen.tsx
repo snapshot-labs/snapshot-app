@@ -1,5 +1,11 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableHighlight } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableHighlight,
+  Platform,
+} from "react-native";
 import i18n from "i18n-js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import common from "styles/common";
@@ -8,36 +14,18 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "context/authContext";
+import { ABOUT_SCREEN, ADVANCED_SETTINGS_SCREEN } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 import colors from "constants/colors";
 import BackButton from "components/BackButton";
-import packageJson from "../../package.json";
 import IconFont from "components/IconFont";
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    textAlignVertical: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  rowTitle: {
-    color: colors.textColor,
-    fontFamily: "Calibre-Semibold",
-    fontSize: 18,
-  },
-  rowValue: {
-    color: colors.darkGray,
-    fontFamily: "Calibre-Medium",
-    fontSize: 18,
-    marginLeft: "auto",
-  },
-});
+import styles from "styles/settings";
 
 function SettingsScreen() {
   const { colors, theme } = useAuthState();
   const authDispatch = useAuthDispatch();
   const insets = useSafeAreaInsets();
+  const navigation: any = useNavigation();
 
   return (
     <View
@@ -58,11 +46,18 @@ function SettingsScreen() {
           underlayColor={colors.highlightColor}
         >
           <View style={styles.row}>
-            <IconFont
-              name={theme === "light" ? "sun" : "moon"}
-              size={20}
-              color={colors.textColor}
-            />
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: colors.settingsIconBgColor },
+              ]}
+            >
+              <IconFont
+                name={theme === "light" ? "sun" : "moon"}
+                size={20}
+                color={colors.textColor}
+              />
+            </View>
             <Text
               style={[
                 styles.rowTitle,
@@ -76,12 +71,60 @@ function SettingsScreen() {
             </Text>
           </View>
         </TouchableHighlight>
-        <View style={styles.row}>
-          <Text style={[styles.rowTitle, { color: colors.textColor }]}>
-            {i18n.t("version")}
-          </Text>
-          <Text style={styles.rowValue}>{packageJson.version}</Text>
-        </View>
+        <TouchableHighlight
+          onPress={() => {
+            navigation.navigate(ADVANCED_SETTINGS_SCREEN);
+          }}
+          underlayColor={colors.highlightColor}
+        >
+          <View style={styles.row}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: colors.settingsIconBgColor },
+              ]}
+            >
+              <IconFont
+                name={"stealth_fill"}
+                size={20}
+                color={colors.textColor}
+              />
+            </View>
+            <Text
+              style={[
+                styles.rowTitle,
+                { color: colors.textColor, marginLeft: 8 },
+              ]}
+            >
+              {i18n.t("advanced")}
+            </Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => {
+            navigation.navigate(ABOUT_SCREEN);
+          }}
+          underlayColor={colors.highlightColor}
+        >
+          <View style={styles.row}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: colors.settingsIconBgColor },
+              ]}
+            >
+              <IconFont name={"info"} size={20} color={colors.textColor} />
+            </View>
+            <Text
+              style={[
+                styles.rowTitle,
+                { color: colors.textColor, marginLeft: 8 },
+              ]}
+            >
+              {i18n.t("about")}
+            </Text>
+          </View>
+        </TouchableHighlight>
       </View>
     </View>
   );
