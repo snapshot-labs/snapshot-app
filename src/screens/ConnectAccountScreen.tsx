@@ -126,10 +126,7 @@ function ConnectAccountScreen() {
       ]}
     >
       <View
-        style={[
-          common.headerContainer,
-          { borderBottomColor: colors.transparent },
-        ]}
+        style={[common.headerContainer, { borderBottomColor: "transparent" }]}
       >
         <BackButton />
       </View>

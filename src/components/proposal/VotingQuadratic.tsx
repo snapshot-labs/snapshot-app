@@ -123,20 +123,28 @@ function VotingQuadratic({
           <View
             style={[
               styles.buttonContainer,
-              { borderColor: colors.borderColor },
+              {
+                borderColor: colors.borderColor,
+                backgroundColor: colors.bgDefault,
+              },
             ]}
             key={`${i}`}
           >
             <View style={styles.choiceContainer}>
               <Text
-                style={styles.choice}
+                style={[styles.choice, { color: colors.textColor }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
                 {choice}
               </Text>
             </View>
-            <View style={styles.choiceValueContainer}>
+            <View
+              style={[
+                styles.choiceValueContainer,
+                { backgroundColor: "transparent" },
+              ]}
+            >
               <TouchableOpacity
                 onPress={() => {
                   const newSelectedChoices = [...selectedChoices];
@@ -153,7 +161,14 @@ function VotingQuadratic({
                     },
                   ]}
                 >
-                  <Text style={styles.miniButtonTitle}>-</Text>
+                  <Text
+                    style={[
+                      styles.miniButtonTitle,
+                      { color: colors.textColor },
+                    ]}
+                  >
+                    -
+                  </Text>
                 </View>
               </TouchableOpacity>
               <TextInput
@@ -184,11 +199,32 @@ function VotingQuadratic({
                   setSelectedChoices(newSelectedChoices);
                 }}
               >
-                <View style={styles.miniButton}>
-                  <Text style={styles.miniButtonTitle}>+</Text>
+                <View
+                  style={[
+                    styles.miniButton,
+                    {
+                      borderRightColor: colors.borderColor,
+                      borderLeftColor: colors.borderColor,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.miniButtonTitle,
+                      { color: colors.textColor },
+                    ]}
+                  >
+                    +
+                  </Text>
                 </View>
               </TouchableOpacity>
-              <Text style={[styles.miniButtonTitle, styles.percentage]}>
+              <Text
+                style={[
+                  styles.miniButtonTitle,
+                  styles.percentage,
+                  { color: colors.textColor },
+                ]}
+              >
                 {percentage(i, selectedChoices)}%
               </Text>
             </View>
