@@ -159,11 +159,16 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
     <SafeAreaView
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
-      <View style={common.headerContainer}>
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
         <BackButton title={i18n.t("createProposal")} />
       </View>
       <ScrollView
-        style={[common.screen, , { backgroundColor: colors.bgDefault }]}
+        style={[common.screen, { backgroundColor: colors.bgDefault }]}
       >
         {!passValidation[0] && (
           <Warning passValidation={passValidation} space={space} />
