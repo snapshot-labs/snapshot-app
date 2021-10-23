@@ -82,7 +82,7 @@ function VotingRankedChoice({
         dataSource={proposalChoices}
         parentWidth={width - 32}
         childrenWidth={width - 32}
-        childrenHeight={60}
+        childrenHeight={74}
         scaleStatus={"scaleY"}
         onDragStart={() => {
           setScrollEnabled(false);
@@ -94,38 +94,39 @@ function VotingRankedChoice({
           setSelectedChoicesIndex(proposal.choices, data, setSelectedChoices);
         }}
         keyExtractor={(item, index) => `${item}${index}`} // FlatList作用一样，优化
-        onClickItem={(data, item, index) => {}}
         renderItem={(item, index) => {
           return (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingBottom: 20,
-              }}
-            >
-              <Button
-                title={`(${getNumberWithOrdinal(index + 1)}) ${item}`}
-                onPress={() => {}}
-                onlyOneLine
-                buttonContainerStyle={{ width: width - 100 }}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  const copyArray = [...proposalChoices];
-                  copyArray.splice(index, 1);
-                  setProposalChoices(copyArray);
-                  setSelectedChoicesIndex(
-                    proposal.choices,
-                    copyArray,
-                    setSelectedChoices
-                  );
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingBottom: 20,
                 }}
-                style={{ marginLeft: 6 }}
               >
-                <IconFont name="close" color={colors.textColor} size={20} />
-              </TouchableOpacity>
-            </View>
+                <Button
+                  title={`(${getNumberWithOrdinal(index + 1)}) ${item}`}
+                  onPress={() => {}}
+                  onlyOneLine
+                  buttonContainerStyle={{ width: width - 100 }}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    const copyArray = [...proposalChoices];
+                    copyArray.splice(index, 1);
+                    setProposalChoices(copyArray);
+                    setSelectedChoicesIndex(
+                      proposal.choices,
+                      copyArray,
+                      setSelectedChoices
+                    );
+                  }}
+                  style={{ marginLeft: 6 }}
+                >
+                  <IconFont name="close" color={colors.textColor} size={20} />
+                </TouchableOpacity>
+              </View>
+            </>
           );
         }}
       />
@@ -135,7 +136,7 @@ function VotingRankedChoice({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginBottom: 6,
+              marginBottom: 20,
             }}
             key={index}
           >
