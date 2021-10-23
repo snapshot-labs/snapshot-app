@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Platform } from "react-native";
+import { Text, View } from "react-native";
 import i18n from "i18n-js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import common from "styles/common";
@@ -29,6 +29,25 @@ function AdvancedSettingsScreen() {
               { backgroundColor: colors.settingsIconBgColor },
             ]}
           >
+            <IconFont name={"upload"} size={20} color={colors.textColor} />
+          </View>
+          <Text
+            style={[
+              styles.rowTitle,
+              { color: colors.textColor, marginLeft: 8 },
+            ]}
+          >
+            {i18n.t("ipfsUrl")}
+          </Text>
+          <Text style={styles.rowValue}>cloudflare-ipfs.com</Text>
+        </View>
+        <View style={styles.row}>
+          <View
+            style={[
+              styles.iconContainer,
+              { backgroundColor: colors.settingsIconBgColor },
+            ]}
+          >
             <IconFont name={"snapshot"} size={20} color={colors.textColor} />
           </View>
           <Text
@@ -37,7 +56,7 @@ function AdvancedSettingsScreen() {
               { color: colors.textColor, marginLeft: 8 },
             ]}
           >
-            {i18n.t("snapshotHub")}
+            {i18n.t("hub")}
           </Text>
           <Text style={styles.rowValue}>{hubUrl}</Text>
         </View>

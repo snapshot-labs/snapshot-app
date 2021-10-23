@@ -48,6 +48,7 @@ function TimePicker({
           }}
           itemStyle={{
             backgroundColor: colors.bgDefault,
+            color: colors.textColor,
           }}
           textColor={colors.textColor}
           selectedValue={selectedHour}
@@ -64,6 +65,7 @@ function TimePicker({
           style={{ ...pickerStyle, backgroundColor: colors.bgDefault }}
           itemStyle={{
             backgroundColor: colors.bgDefault,
+            color: colors.textColor,
           }}
           textColor={colors.textColor}
           selectedValue={selectedMinutes}

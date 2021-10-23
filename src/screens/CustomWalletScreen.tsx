@@ -14,6 +14,7 @@ import Button from "components/Button";
 import Input from "components/Input";
 import { ethers } from "ethers";
 import { EXPLORE_ACTIONS, useExploreDispatch } from "context/exploreContext";
+import BackButton from "components/BackButton";
 
 function CustomWalletScreen() {
   const insets = useSafeAreaInsets();
@@ -32,10 +33,15 @@ function CustomWalletScreen() {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
+      <View
+        style={[common.headerContainer, { borderBottomColor: "transparent" }]}
+      >
+        <BackButton />
+      </View>
       <Text
         style={[
           common.headerTitle,
-          { paddingLeft: 16, marginTop: 30, color: colors.textColor },
+          { paddingLeft: 16, marginTop: 0, color: colors.textColor },
         ]}
       >
         {i18n.t("customWalletReadOnly")}

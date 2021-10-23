@@ -138,5 +138,6 @@ export default {
   proposalDeleted: "Proposal deleted",
   unableToDeleteProposal: "Unable to delete proposal",
   advanced: "Advanced",
-  snapshotHub: "Snapshot hub",
+  hub: "Hub",
+  ipfsUrl: "IPFS server",
 };

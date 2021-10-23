@@ -32,6 +32,7 @@ function VotingTypeModal({
         common.fullScreenModal,
         {
           paddingTop: insets.top,
+          backgroundColor: colors.bgDefault,
         },
       ]}
       coverScreen
@@ -41,10 +42,11 @@ function VotingTypeModal({
           common.headerContainer,
           {
             justifyContent: "space-between",
+            borderBottomColor: colors.borderColor,
           },
         ]}
       >
-        <Text style={common.screenHeaderTitle}>
+        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
           {i18n.t("selectVotingSystem")}
         </Text>
         <BackButton
@@ -72,8 +74,15 @@ function VotingTypeModal({
                 { borderBottomWidth: 1, borderBottomColor: colors.borderColor },
               ]}
             >
-              <Text style={common.headerTitle}>{votingType.text}</Text>
-              <Text style={[common.subTitle, { marginTop: 8 }]}>
+              <Text style={[common.headerTitle, { color: colors.textColor }]}>
+                {votingType.text}
+              </Text>
+              <Text
+                style={[
+                  common.subTitle,
+                  { marginTop: 8, color: colors.textColor },
+                ]}
+              >
                 {votingType.description}
               </Text>
             </View>
