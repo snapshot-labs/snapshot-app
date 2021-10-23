@@ -28,7 +28,7 @@ const { width } = Dimensions.get("screen");
 const previewPadding = 16;
 const avatarSize = 28;
 const stateBadgeMaxWidth = 80;
-const coreWidth = 42;
+const coreWidth = 46;
 const defaultAuthorTextWidth =
   width - 2 * previewPadding - avatarSize - stateBadgeMaxWidth - 8;
 

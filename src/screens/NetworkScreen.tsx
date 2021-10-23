@@ -7,6 +7,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Space } from "../types/explore";
 import SearchInput from "../components/SearchInput";
 import { getFilteredSpaces } from "../helpers/searchUtils";
+import { useAuthState } from "context/authContext";
+import BackButton from "components/BackButton";
 
 type NetworkScreenProps = {
   route: {
@@ -19,6 +21,7 @@ type NetworkScreenProps = {
 };
 
 function NetworkScreen({ route }: NetworkScreenProps) {
+  const { colors } = useAuthState();
   const networkId = route.params.networkId;
   const networkName = route.params.networkName;
   const orderedSpaces: Space[] = route.params.orderedSpaces.filter((space) => {
@@ -37,27 +40,24 @@ function NetworkScreen({ route }: NetworkScreenProps) {
   }, [searchText]);
 
   return (
-    <SafeAreaView style={common.screen}>
-      <View style={[common.screen]}>
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    >
+      <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
         <CollapsibleHeaderFlatList
           data={filteredSpaces}
-          headerHeight={116}
+          headerHeight={100}
           CollapsibleHeaderComponent={
-            <View style={{ paddingBottom: 16 }}>
+            <View
+              style={{ paddingBottom: 16, backgroundColor: colors.bgDefault }}
+            >
+              <BackButton title={networkName} />
               <SearchInput
                 onChangeText={(searchText) => {
                   setSearchText(searchText);
                 }}
                 value={searchText}
               />
-              <View
-                style={{
-                  paddingHorizontal: 16,
-                  paddingTop: 30,
-                }}
-              >
-                <Text style={common.headerTitle}>{networkName}</Text>
-              </View>
             </View>
           }
           renderItem={(data) => {
