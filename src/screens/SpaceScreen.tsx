@@ -107,7 +107,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         : 140
       : isWalletConnect
       ? 140
-      : 130;
+      : 120;
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
   const space = route.params.space;

@@ -66,6 +66,7 @@ function DatePickerModal({
           common.headerContainer,
           {
             justifyContent: "space-between",
+            borderBottomColor: colors.borderColor,
           },
         ]}
       >
@@ -138,7 +139,9 @@ function DatePickerModal({
         />
 
         <View style={{ marginTop: 8 }}>
-          <Text style={common.screenHeaderTitle}>{i18n.t("selectTime")}</Text>
+          <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+            {i18n.t("selectTime")}
+          </Text>
           <View>
             <TimePicker
               onChange={(value) => {

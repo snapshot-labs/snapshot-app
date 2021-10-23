@@ -168,7 +168,13 @@ function VotesScreen({ route }: VotesScreenProps) {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
-      <View style={[common.headerContainer, common.justifySpaceBetween]}>
+      <View
+        style={[
+          common.headerContainer,
+          common.justifySpaceBetween,
+          { borderBottomColor: "transparent" },
+        ]}
+      >
         <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
           {i18n.t("votes")}
         </Text>

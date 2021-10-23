@@ -94,7 +94,15 @@ function BlockVotes({
   }, [votes]);
 
   return (
-    <View style={blockStyles.block}>
+    <View
+      style={[
+        blockStyles.block,
+        {
+          borderTopColor: colors.borderColor,
+          borderBottomColor: colors.borderColor,
+        },
+      ]}
+    >
       <TouchableHighlight
         onPress={() => {
           if (resultsLoaded) {

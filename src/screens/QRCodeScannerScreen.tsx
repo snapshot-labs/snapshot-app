@@ -6,10 +6,16 @@ import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
 import common from "../styles/common";
 import Button from "../components/Button";
-import { AUTH_ACTIONS, useAuthDispatch } from "../context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "../context/authContext";
 import { HOME_SCREEN } from "../constants/navigation";
+import BackButton from "components/BackButton";
 
 function QRCodeScannerScreen() {
+  const { colors } = useAuthState();
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [data, setData] = useState("");
@@ -49,11 +55,17 @@ function QRCodeScannerScreen() {
     return (
       <View
         style={[
-          { paddingTop: insets.top, paddingHorizontal: 16 },
           common.screen,
+          {
+            paddingTop: insets.top,
+            paddingHorizontal: 16,
+            backgroundColor: colors.bgDefault,
+          },
         ]}
       >
-        <Text style={[common.subTitle, { marginTop: 24 }]}>
+        <Text
+          style={[common.subTitle, { marginTop: 24, color: colors.textColor }]}
+        >
           {i18n.t("noAccessToCamera")}
         </Text>
         <View style={{ marginTop: 50 }}>
@@ -70,14 +82,28 @@ function QRCodeScannerScreen() {
   }
 
   return (
-    <View style={[{ paddingTop: insets.top }, common.screen]}>
-      <Text style={[{ paddingLeft: 16, marginTop: 30 }, common.headerTitle]}>
-        {i18n.t("scanQRCode")}
-      </Text>
+    <View
+      style={[
+        common.screen,
+        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
+      ]}
+    >
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
+        <BackButton title={i18n.t("scanQRCode")} />
+      </View>
       {scanned ? (
         <View style={{ paddingHorizontal: 16, marginTop: 24 }}>
-          <Text style={common.subTitle}>{i18n.t("scannedAddress")}</Text>
-          <Text style={common.defaultText}>{data}</Text>
+          <Text style={[common.subTitle, { color: colors.textColor }]}>
+            {i18n.t("scannedAddress")}
+          </Text>
+          <Text style={[common.defaultText, { color: colors.textColor }]}>
+            {data}
+          </Text>
           <View style={{ marginTop: 24 }}>
             <Button
               title={i18n.t("loginWithThisAddress")}

@@ -21,7 +21,11 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "../context/authContext";
-import { generateKey, convertArrayBufferToHex, uuid } from "../helpers/miscUtils";
+import {
+  generateKey,
+  convertArrayBufferToHex,
+  uuid,
+} from "../helpers/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
 import BackButton from "../components/BackButton";
@@ -121,7 +125,14 @@ function ConnectAccountScreen() {
         },
       ]}
     >
-      <BackButton />
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.transparent },
+        ]}
+      >
+        <BackButton />
+      </View>
       <View style={{ paddingHorizontal: 16 }}>
         <Text style={[common.headerTitle, { color: colors.textColor }]}>
           {i18n.t("connectWallet")}

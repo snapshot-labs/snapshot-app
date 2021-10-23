@@ -118,7 +118,10 @@ function VoteRow({
           </Text>
         </View>
         {isQuadraticOrRankedChoice && (
-          <Text style={[styles.rowText, { marginTop: 8 }]} ellipsizeMode="clip">
+          <Text
+            style={[styles.rowText, { marginTop: 8, color: colors.textColor }]}
+            ellipsizeMode="clip"
+          >
             {getChoiceString(proposal, vote.choice)}
           </Text>
         )}

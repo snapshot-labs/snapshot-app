@@ -90,11 +90,18 @@ function ReceiptModal({
           styles.container,
           { backgroundColor: colors.bgDefault },
           theme === "dark"
-            ? { borderColor: colors.borderColor, borderWidth: 1 }
+            ? {
+                borderColor: colors.borderColor,
+                borderWidth: 1,
+                borderLeftWidth: 0,
+                borderRightWidth: 0,
+              }
             : {},
         ]}
       >
-        <View style={[styles.header, { borderBottomColor: colors.borderColor }]}>
+        <View
+          style={[styles.header, { borderBottomColor: colors.borderColor }]}
+        >
           <Text
             style={[
               common.h3,
