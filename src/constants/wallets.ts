@@ -27,3 +27,5 @@ export const MetaMask = {
     },
   },
 };
+
+export const CUSTOM_WALLET_NAME = "Custom Wallet";

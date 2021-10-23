@@ -2,29 +2,27 @@ import {
   ActivityIndicator,
   Animated,
   FlatList,
-  Platform,
   RefreshControl,
   Text,
   View,
 } from "react-native";
-import { Proposal } from "../../types/proposal";
-import { PROPOSALS_QUERY, SPACES_QUERY } from "../../helpers/queries";
-import apolloClient from "../../helpers/apolloClient";
+import { Proposal } from "types/proposal";
+import { PROPOSALS_QUERY, SPACES_QUERY } from "helpers/queries";
+import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import uniqBy from "lodash/uniqBy";
-import { ContextDispatch } from "../../types/context";
+import { ContextDispatch } from "types/context";
 import {
   EXPLORE_ACTIONS,
   useExploreDispatch,
   useExploreState,
-} from "../../context/exploreContext";
-import { Space } from "../../types/explore";
+} from "context/exploreContext";
+import { Space } from "types/explore";
 import React, { useEffect, useState } from "react";
-import { setProfiles } from "../../helpers/profile";
-import common from "../../styles/common";
+import { setProfiles } from "helpers/profile";
+import common from "styles/common";
 import ProposalPreview from "../ProposalPreview";
 import i18n from "i18n-js";
-import colors from "../../constants/colors";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,

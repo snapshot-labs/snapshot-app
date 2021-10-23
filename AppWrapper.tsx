@@ -14,7 +14,7 @@ import {
 } from "context/authContext";
 import { ContextDispatch } from "types/context";
 import { getAliasWallet } from "helpers/aliasUtils";
-import BottomSheetModal from "components/BottomSheetModal";
+import { CUSTOM_WALLET_NAME } from "constants/wallets";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
@@ -25,36 +25,9 @@ async function loadFromStorage(
       storage.KEYS.connectedAddress
     );
     if (connectedAddress) {
-      const isWalletConnect = await storage.load(storage.KEYS.isWalletConnect);
-      authDispatch({
-        type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
-        payload: {
-          connectedAddress,
-          addToStorage: false,
-          isWalletConnect: isWalletConnect === "true",
-        },
-      });
-      const aliases = await storage.load(storage.KEYS.aliases);
-
-      if (aliases) {
-        const parsedAliases = JSON.parse(aliases);
-        authDispatch({
-          type: AUTH_ACTIONS.SET_INITIAL_ALIASES,
-          payload: parsedAliases,
-        });
-        const alias: any = parsedAliases[connectedAddress];
-        if (alias) {
-          authDispatch({
-            type: AUTH_ACTIONS.SET_ALIAS_WALLET,
-            payload: getAliasWallet(alias),
-          });
-        }
-      }
-
       const savedWallets: any = await storage.load(storage.KEYS.savedWallets);
-
+      let parsedSavedWallets: any = {};
       if (savedWallets) {
-        let parsedSavedWallets: any = {};
         try {
           parsedSavedWallets = JSON.parse(savedWallets);
           authDispatch({
@@ -75,6 +48,32 @@ async function loadFromStorage(
             walletService,
           },
         });
+      }
+      authDispatch({
+        type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+        payload: {
+          connectedAddress,
+          addToStorage: false,
+          isWalletConnect:
+            parsedSavedWallets[connectedAddress]?.name !== CUSTOM_WALLET_NAME,
+        },
+      });
+
+      const aliases = await storage.load(storage.KEYS.aliases);
+
+      if (aliases) {
+        const parsedAliases = JSON.parse(aliases);
+        authDispatch({
+          type: AUTH_ACTIONS.SET_INITIAL_ALIASES,
+          payload: parsedAliases,
+        });
+        const alias: any = parsedAliases[connectedAddress];
+        if (alias) {
+          authDispatch({
+            type: AUTH_ACTIONS.SET_ALIAS_WALLET,
+            payload: getAliasWallet(alias),
+          });
+        }
       }
     }
     if (Platform.OS === "android") {

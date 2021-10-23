@@ -1,13 +1,14 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
-import { ContextAction, ContextDispatch } from "../types/context";
-import storage from "../helpers/storage";
+import { ContextAction, ContextDispatch } from "types/context";
+import storage from "helpers/storage";
 import { Wallet } from "ethers";
 import WalletConnect from "@walletconnect/client";
 import {
   initialWalletConnectValues,
   setWalletConnectListeners,
-} from "../helpers/walletConnectUtils";
+} from "helpers/walletConnectUtils";
 import colors, { getColorScheme } from "constants/colors";
+import { CUSTOM_WALLET_NAME } from "constants/wallets";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
@@ -73,7 +74,7 @@ function authReducer(state: AuthState, action: ContextAction) {
 
       if (action.payload.addToSavedWallets) {
         savedWallets[action.payload.connectedAddress] = {
-          name: "Custom Wallet",
+          name: CUSTOM_WALLET_NAME,
           address: connectedAddress,
         };
         storage.save(storage.KEYS.savedWallets, JSON.stringify(savedWallets));
