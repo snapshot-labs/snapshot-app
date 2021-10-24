@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import i18n from "i18n-js";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import Block from "../Block";
-import { useNavigation } from "@react-navigation/native";
-import colors from "../../constants/colors";
-import { Proposal } from "../../types/proposal";
-import { Space } from "../../types/explore";
-import { getPower } from "../../helpers/snapshot";
+import colors from "constants/colors";
+import { Proposal } from "types/proposal";
+import { Space } from "types/explore";
+import { getPower } from "helpers/snapshot";
 import Button from "../Button";
 import VotingSingleChoice from "./VotingSingleChoice";
 import VotingRankedChoice from "./VotingRankedChoice";
 import VoteConfirmModal from "./VoteConfirmModal";
-import { useAuthState } from "../../context/authContext";
+import { useAuthState } from "context/authContext";
 import VotingQuadratic from "./VotingQuadratic";
 import VotingApproval from "./VotingApproval";
 
@@ -62,7 +61,7 @@ function BlockCastVote({
 
   useEffect(() => {
     loadPower(connectedAddress ?? "", proposal, space, setTotalScore);
-  }, []);
+  }, [space]);
 
   if (VotesComponent) {
     return (
