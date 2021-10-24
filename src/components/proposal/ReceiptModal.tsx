@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.bgDefault,
-    borderRadius: 6,
   },
   header: {
     paddingBottom: 16,
@@ -80,7 +79,7 @@ function ReceiptModal({
   return (
     <Modal
       isVisible={isVisible}
-      backdropOpacity={0.3}
+      backdropOpacity={0.7}
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
       style={styles.view}

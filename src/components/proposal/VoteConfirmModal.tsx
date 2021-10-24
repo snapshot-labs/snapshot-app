@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.bgDefault,
-    borderRadius: 6,
   },
   header: {
     paddingBottom: 16,
@@ -100,23 +99,36 @@ function VoteConfirmModal({
   getProposal,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
-  const { connectedAddress, wcConnector, isWalletConnect } = useAuthState();
+  const { connectedAddress, wcConnector, isWalletConnect, colors, theme } =
+    useAuthState();
   const [loading, setLoading] = useState<boolean>(false);
   const toastShowConfig = useToastShowConfig();
 
   return (
     <Modal
       isVisible={isVisible}
-      backdropOpacity={0.3}
+      backdropOpacity={0.7}
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
       style={styles.view}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.bgDefault }]}>
         <View
-          style={[styles.header, { borderBottomColor: colors.borderColor }]}
+          style={[
+            styles.header,
+            {
+              borderBottomColor: colors.borderColor,
+              borderTopColor: colors.borderColor,
+              borderTopWidth: 1,
+            },
+          ]}
         >
-          <Text style={[common.h3, { textAlign: "center" }]}>
+          <Text
+            style={[
+              common.h3,
+              { textAlign: "center", color: colors.textColor },
+            ]}
+          >
             {i18n.t("confirmVote")}
           </Text>
           <TouchableOpacity
@@ -134,24 +146,40 @@ function VoteConfirmModal({
             />
           </TouchableOpacity>
         </View>
-        <Text style={[common.h4, { paddingHorizontal: 16, paddingTop: 16 }]}>
+        <Text
+          style={[
+            common.h4,
+            { paddingHorizontal: 16, paddingTop: 16, color: colors.textColor },
+          ]}
+        >
           {i18n.t("areYouSureYouWantToVote", {
             choice: shorten(formattedChoiceString, "choice"),
           })}
         </Text>
-        <Text style={[common.h4, { paddingHorizontal: 16, paddingTop: 8 }]}>
+        <Text
+          style={[
+            common.h4,
+            { paddingHorizontal: 16, paddingTop: 8, color: colors.textColor },
+          ]}
+        >
           {i18n.t("thisActionCannotBeUndone")}
         </Text>
         <View style={[styles.mainContent, { borderColor: colors.borderColor }]}>
           <View style={styles.row}>
-            <Text style={[styles.rowTitle, { width: 100 }]}>
+            <Text
+              style={[styles.rowTitle, { width: 100, color: colors.textColor }]}
+            >
               {i18n.t("optionss")}
             </Text>
             <View style={{ marginLeft: "auto" }}>
               <Text
                 style={[
                   styles.rowValue,
-                  { textAlign: "right", width: width / 2 },
+                  {
+                    textAlign: "right",
+                    width: width / 2,
+                    color: colors.textColor,
+                  },
                 ]}
               >
                 {formattedChoiceString}
@@ -172,7 +200,7 @@ function VoteConfirmModal({
               }}
             >
               <View style={styles.linkContainer}>
-                <Text style={styles.rowValue}>
+                <Text style={[styles.rowValue, { color: colors.textColor }]}>
                   {n(proposal.snapshot, "0,0")}
                 </Text>
                 <IconFont
@@ -186,7 +214,7 @@ function VoteConfirmModal({
           </View>
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("yourVotingPower")}</Text>
-            <Text style={styles.rowValue}>
+            <Text style={[styles.rowValue, { color: colors.textColor }]}>
               {n(totalScore)} {shorten(space.symbol, "symbol")}
             </Text>
           </View>
@@ -275,6 +303,8 @@ function VoteConfirmModal({
                   marginLeft: 16,
                   opacity:
                     !isWalletConnect || loading || totalScore === 0 ? 0.3 : 1,
+                  borderColor:
+                    theme === "dark" ? colors.borderColor : "transparent",
                 },
               ]}
             >
