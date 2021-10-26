@@ -50,7 +50,8 @@ const renderScene = (
   spaceScreenRef: any,
   scrollProps: any,
   filter: { key: string },
-  showTitleRef
+  showTitleRef: any,
+  scrollY: any
 ) =>
   SceneMap({
     proposals: () => (
@@ -68,6 +69,7 @@ const renderScene = (
         scrollProps={scrollProps}
         headerHeight={headerHeight}
         showTitle={showTitleRef}
+        scrollY={scrollY}
       />
     ),
   });
@@ -152,7 +154,8 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           ),
         },
         filter,
-        showTitleRef
+        showTitleRef,
+        scrollY
       ),
     [route, filter]
   );
