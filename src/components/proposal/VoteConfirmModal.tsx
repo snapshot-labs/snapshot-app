@@ -138,12 +138,7 @@ function VoteConfirmModal({
             }}
             style={{ marginLeft: "auto" }}
           >
-            <IconFont
-              name="close"
-              style={{ paddingRight: 16 }}
-              size={20}
-              color={colors.darkGray}
-            />
+            <IconFont name="close" size={20} color={colors.darkGray} />
           </TouchableOpacity>
         </View>
         <Text

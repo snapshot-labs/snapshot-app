@@ -6,13 +6,11 @@ const { width: deviceWidth } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   container: {
     height: 60,
-    borderRadius: 100,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 30,
     backgroundColor: colors.black,
-    width: deviceWidth - 32,
+    width: deviceWidth,
   },
   successContainer: { backgroundColor: colors.bgGreen },
   errorContainer: { backgroundColor: colors.red },

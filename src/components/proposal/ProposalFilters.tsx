@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   Platform,
   StyleSheet,
@@ -8,10 +8,8 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 import IconFont from "../IconFont";
 import i18n from "i18n-js";
-import proposal from "../../constants/proposal";
 import colors from "../../constants/colors";
 import { useAuthState } from "context/authContext";
 

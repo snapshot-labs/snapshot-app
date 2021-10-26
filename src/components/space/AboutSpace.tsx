@@ -53,6 +53,7 @@ function AboutSpace({
   routeSpace,
   scrollProps,
   headerHeight,
+  showTitle,
 }: AboutSpaceProps) {
   const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
@@ -79,7 +80,10 @@ function AboutSpace({
       scrollEventThrottle={1}
       style={[
         common.screen,
-        { paddingTop: headerHeight + 60, backgroundColor: colors.bgDefault },
+        {
+          paddingTop: 45,
+          backgroundColor: colors.bgDefault,
+        },
       ]}
       {...scrollProps}
     >

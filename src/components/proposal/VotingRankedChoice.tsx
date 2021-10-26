@@ -82,7 +82,7 @@ function VotingRankedChoice({
         dataSource={proposalChoices}
         parentWidth={width - 32}
         childrenWidth={width - 32}
-        childrenHeight={73}
+        childrenHeight={70}
         scaleStatus={"scaleY"}
         onDragStart={() => {
           setScrollEnabled(false);
