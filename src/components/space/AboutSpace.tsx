@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   ScrollView,
@@ -20,6 +20,7 @@ import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import { getUsername, setProfiles } from "../../helpers/profile";
 import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
+import { headerHeight } from "screens/SpaceScreen";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -47,6 +48,7 @@ type AboutSpaceProps = {
   routeSpace: Space;
   scrollProps: any;
   headerHeight: number;
+  scrollY: any;
 };
 
 function AboutSpace({
@@ -54,10 +56,13 @@ function AboutSpace({
   scrollProps,
   headerHeight,
   showTitle,
+  scrollY,
 }: AboutSpaceProps) {
   const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
+  const scrollRef = useRef();
+  const [showTitleState, setShowTitleState] = useState(showTitle.current);
   const space = Object.assign(routeSpace, get(spaces, routeSpace.id ?? "", {}));
   //@ts-ignore
   const network = networksJson[space.network] ?? {};
@@ -73,15 +78,32 @@ function AboutSpace({
     setProfiles(filteredArray, exploreDispatch);
   }, [space]);
 
+  useEffect(() => {
+    scrollY.current.addListener(({ value }) => {
+      if (value >= headerHeight) {
+        setShowTitleState(true);
+      } else {
+        setShowTitleState(false);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (showTitleState) {
+      scrollRef?.current?.scrollTo({ y: headerHeight });
+    }
+  }, [showTitleState]);
+
   return (
     <AnimatedScrollView
+      ref={scrollRef}
       bounces={false}
       overScrollMode={"never"}
       scrollEventThrottle={1}
       style={[
         common.screen,
         {
-          paddingTop: 45,
+          paddingTop: headerHeight + 45,
           backgroundColor: colors.bgDefault,
         },
       ]}
