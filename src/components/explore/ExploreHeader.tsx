@@ -66,7 +66,7 @@ function ExploreHeader({
                   type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                   payload: {
                     options,
-                    snapPoints: ["10%", 275, "50%"],
+                    snapPoints: [10, 275],
                     show: true,
                     initialIndex: 1,
                     onPressOption: (index: number) => {

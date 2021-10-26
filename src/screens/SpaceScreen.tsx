@@ -45,16 +45,12 @@ const styles = StyleSheet.create({
 
 export const headerHeight = Platform.OS === "android" ? 185 : 170;
 
-const HEADER_MAX_HEIGHT = Platform.OS === "android" ? 155 : 140;
-const HEADER_MIN_HEIGHT = 0;
-const PROFILE_IMAGE_MAX_HEIGHT = 60;
-const PROFILE_IMAGE_MIN_HEIGHT = 10;
-
 const renderScene = (
   route: any,
   spaceScreenRef: any,
   scrollProps: any,
-  filter: { key: string }
+  filter: { key: string },
+  showTitleRef
 ) =>
   SceneMap({
     proposals: () => (
@@ -62,8 +58,8 @@ const renderScene = (
         space={route.params.space}
         spaceScreenRef={spaceScreenRef}
         scrollProps={scrollProps}
-        headerHeight={headerHeight + 40}
         filter={filter}
+        headerHeight={headerHeight}
       />
     ),
     about: () => (
@@ -71,6 +67,7 @@ const renderScene = (
         routeSpace={route.params.space}
         scrollProps={scrollProps}
         headerHeight={headerHeight}
+        showTitle={showTitleRef}
       />
     ),
   });
@@ -100,61 +97,32 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { isWalletConnect, colors } = useAuthState();
-  const HEADER_MAX_HEIGHT =
-    Platform.OS === "android"
-      ? isWalletConnect
-        ? 155
-        : 140
-      : isWalletConnect
-      ? 140
-      : 120;
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
+  const showTitleRef = useRef(false);
   const space = route.params.space;
   const scrollY = useRef(new Animated.Value(0));
-  const headerHeight = scrollY.current.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT - 40, HEADER_MAX_HEIGHT + 5],
-    outputRange: [-40, -15, Platform.OS === "android" ? 10 : 6],
-    extrapolate: "clamp",
-  });
-  const profileImageHeight = scrollY.current.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
-    outputRange: [PROFILE_IMAGE_MAX_HEIGHT, PROFILE_IMAGE_MIN_HEIGHT],
-    extrapolate: "clamp",
-  });
-  const headerZindex = scrollY.current.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
   const headerTitleBottom = scrollY.current.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT],
-    outputRange: [0, -HEADER_MAX_HEIGHT],
+    inputRange: [0, headerHeight],
+    outputRange: [0, -headerHeight],
     extrapolate: "clamp",
   });
   const spaceScreenRef: any = useRef(null);
   const scrollValue = useRef(0);
   const scrollEndTimer: any = useRef(-1);
-  const [isInitial, setIsInitial] = useState(true);
   const bottomSheetRef: any = useRef();
   const [showProposalFilters, setShowProposalFilters] = useState(false);
-
-  useEffect(() => {
-    if (!isInitial) {
-      setShowTitle(false);
-    }
-
-    setIsInitial(false);
-  }, [index]);
 
   useEffect(() => {
     scrollY.current.addListener(({ value }) => {
       scrollValue.current = value;
 
-      if (value >= HEADER_MAX_HEIGHT) {
+      if (value >= headerHeight) {
         setShowTitle(true);
+        showTitleRef.current = true;
       } else {
         setShowTitle(false);
+        showTitleRef.current = false;
       }
     });
     return () => {
@@ -164,7 +132,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   }, []);
 
   function resetHeader() {
-    const toValue = -HEADER_MAX_HEIGHT;
+    const toValue = -headerHeight;
     Animated.timing(scrollY.current, {
       toValue,
       duration: 1000,
@@ -180,10 +148,11 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         {
           onScroll: Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
-            { useNativeDriver: false }
+            { useNativeDriver: true }
           ),
         },
-        filter
+        filter,
+        showTitleRef
       ),
     [route, filter]
   );
@@ -193,22 +162,22 @@ function SpaceScreen({ route }: SpaceScreenProps) {
       <Animated.View
         style={[
           {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            zIndex: 1,
-            height: HEADER_MAX_HEIGHT,
             backgroundColor: colors.bgDefault,
             width: "100%",
+            height: headerHeight,
+            top: 0,
+            left: 0,
+            position: "absolute",
+            zIndex: 200,
           },
-          [{ transform: [{ translateY: headerTitleBottom }] }],
+          [
+            {
+              transform: [{ translateY: headerTitleBottom }],
+            },
+          ],
         ]}
       >
-        <SpaceHeader
-          space={space}
-          isWalletConnect={isWalletConnect}
-          profileImageHeight={profileImageHeight}
-        />
+        <SpaceHeader space={space} isWalletConnect={isWalletConnect} />
         <TabBar
           {...props}
           labelStyle={styles.labelStyle}
@@ -224,7 +193,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             backgroundColor: colors.bgDefault,
             height: 45,
             elevation: 0,
-            zIndex: 200,
             borderBottomColor: colors.borderColor,
             borderBottomWidth: 1,
             paddingTop: 4,
@@ -244,9 +212,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             );
           }}
           tabStyle={{ alignItems: "center", justifyContent: "flex-start" }}
-          onTabPress={() => {
-            resetHeader();
-          }}
         />
       </Animated.View>
     </>
@@ -279,17 +244,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             color: showTitle ? colors.white : colors.textColor,
             overflow: "visible",
           }}
-          title={space.name}
-          isAnimated
-          animatedProps={{
-            style: {
-              position: "absolute",
-              bottom: headerHeight,
-              zIndex: headerZindex,
-              elevation: headerZindex,
-              left: 50,
-            },
-          }}
+          title={showTitle ? space.name : ""}
         />
         <View
           style={{
@@ -312,7 +267,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
               iconColor={showTitle ? colors.white : colors.textColor}
               filterTextStyle={{
                 color: showTitle ? colors.white : colors.textColor,
-                fontSize: 24,
               }}
               filterContainerStyle={{
                 marginTop: 6,
@@ -327,9 +281,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
-        onSwipeStart={() => {
-          resetHeader();
-        }}
       />
       {showProposalFilters && (
         <ProposalFiltersBottomSheet

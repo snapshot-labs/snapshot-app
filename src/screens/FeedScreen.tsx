@@ -341,7 +341,7 @@ function FeedScreenTabView() {
             type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
             payload: {
               options,
-              snapPoints: [100, 250, "50%"],
+              snapPoints: [10, 250],
               show: true,
               initialIndex: 1,
               onPressOption: (index: number) => {

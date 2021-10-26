@@ -16,7 +16,7 @@ function ProposalFiltersBottomSheet({
   onChangeFilter,
   onClose,
 }: ProposalFiltersBottomSheetProps) {
-  const snapPoints = [100, 250, "50%"];
+  const snapPoints = [10, 250];
   const stateFilters = proposal.getStateFilters();
   const allFilter = stateFilters[0];
   const activeFilter = stateFilters[1];

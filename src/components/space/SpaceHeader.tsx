@@ -16,14 +16,9 @@ import { useAuthState } from "context/authContext";
 type SpaceHeader = {
   space: Space;
   isWalletConnect: boolean | undefined;
-  profileImageHeight: any;
 };
 
-function SpaceHeader({
-  space,
-  isWalletConnect,
-  profileImageHeight,
-}: SpaceHeader) {
+function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   return (
@@ -36,18 +31,7 @@ function SpaceHeader({
     >
       <View style={{ flexDirection: "row" }}>
         <View>
-          <SpaceAvatar
-            space={space}
-            symbolIndex="space"
-            size={60}
-            isAnimated
-            animatedProps={{
-              style: {
-                height: profileImageHeight,
-                width: profileImageHeight,
-              },
-            }}
-          />
+          <SpaceAvatar space={space} symbolIndex="space" size={60} />
           <Text
             style={[
               { marginTop: 8 },

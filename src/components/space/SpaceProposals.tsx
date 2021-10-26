@@ -97,6 +97,7 @@ function SpaceProposals({
   scrollProps,
   headerHeight = 150,
   filter,
+  headerTitleBottom,
 }: SpaceProposalsProps) {
   const { refreshFeed, colors } = useAuthState();
   const { profiles } = useExploreState();
@@ -182,8 +183,8 @@ function SpaceProposals({
       <AnimatedFlatList
         scrollEventThrottle={1}
         bounces={false}
+        contentContainerStyle={{ marginTop: headerHeight + 32 }}
         overScrollMode={"never"}
-        contentContainerStyle={{ marginTop: headerHeight }}
         data={proposals}
         keyExtractor={(item: Proposal, i) => item.id}
         renderItem={(data: { item: Proposal }) => {
