@@ -50,8 +50,11 @@ const renderScene = (
   spaceScreenRef: any,
   scrollProps: any,
   filter: { key: string },
-  showTitleRef: any,
-  scrollY: any
+  scrollY: any,
+  spaceAboutRef,
+  spaceProposalsRef,
+  spaceAboutCurrentScrollRef,
+  spaceProposalsCurrentScrollRef
 ) =>
   SceneMap({
     proposals: () => (
@@ -61,6 +64,10 @@ const renderScene = (
         scrollProps={scrollProps}
         filter={filter}
         headerHeight={headerHeight}
+        spaceProposalsRef={spaceProposalsRef}
+        spaceProposalsCurrentScrollRef={spaceProposalsCurrentScrollRef}
+        spaceAboutRef={spaceAboutRef}
+        spaceAboutCurrentScrollRef={spaceAboutCurrentScrollRef}
       />
     ),
     about: () => (
@@ -68,8 +75,11 @@ const renderScene = (
         routeSpace={route.params.space}
         scrollProps={scrollProps}
         headerHeight={headerHeight}
-        showTitle={showTitleRef}
         scrollY={scrollY}
+        spaceAboutRef={spaceAboutRef}
+        spaceAboutCurrentScrollRef={spaceAboutCurrentScrollRef}
+        spaceProposalsRef={spaceProposalsRef}
+        spaceProposalsCurrentScrollRef={spaceProposalsCurrentScrollRef}
       />
     ),
   });
@@ -101,7 +111,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const { isWalletConnect, colors } = useAuthState();
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
-  const showTitleRef = useRef(false);
   const space = route.params.space;
   const scrollY = useRef(new Animated.Value(0));
   const headerTitleBottom = scrollY.current.interpolate({
@@ -114,17 +123,20 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const scrollEndTimer: any = useRef(-1);
   const bottomSheetRef: any = useRef();
   const [showProposalFilters, setShowProposalFilters] = useState(false);
+  const spaceAboutCurrentScrollRef = useRef(0);
+  const spaceProposalsCurrentScrollRef = useRef(0);
+  const spaceAboutRef = useRef();
+  const spaceProposalsRef = useRef();
 
   useEffect(() => {
     scrollY.current.addListener(({ value }) => {
       scrollValue.current = value;
-
       if (value >= headerHeight) {
-        setShowTitle(true);
-        showTitleRef.current = true;
+        if (!showTitle) {
+          setShowTitle(true);
+        }
       } else {
         setShowTitle(false);
-        showTitleRef.current = false;
       }
     });
     return () => {
@@ -154,8 +166,11 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           ),
         },
         filter,
-        showTitleRef,
-        scrollY
+        scrollY,
+        spaceAboutRef,
+        spaceProposalsRef,
+        spaceAboutCurrentScrollRef,
+        spaceProposalsCurrentScrollRef
       ),
     [route, filter]
   );

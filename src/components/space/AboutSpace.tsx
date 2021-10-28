@@ -49,20 +49,22 @@ type AboutSpaceProps = {
   scrollProps: any;
   headerHeight: number;
   scrollY: any;
+  spaceAboutRef: any;
+  spaceAboutCurrentScrollRef: any;
 };
 
 function AboutSpace({
   routeSpace,
   scrollProps,
   headerHeight,
-  showTitle,
-  scrollY,
+  spaceAboutRef,
+  spaceAboutCurrentScrollRef,
+  spaceProposalsRef,
+  spaceProposalsCurrentScrollRef,
 }: AboutSpaceProps) {
   const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
-  const scrollRef = useRef();
-  const [showTitleState, setShowTitleState] = useState(showTitle.current);
   const space = Object.assign(routeSpace, get(spaces, routeSpace.id ?? "", {}));
   //@ts-ignore
   const network = networksJson[space.network] ?? {};
@@ -78,25 +80,9 @@ function AboutSpace({
     setProfiles(filteredArray, exploreDispatch);
   }, [space]);
 
-  useEffect(() => {
-    scrollY.current.addListener(({ value }) => {
-      if (value >= headerHeight) {
-        setShowTitleState(true);
-      } else {
-        setShowTitleState(false);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (showTitleState) {
-      scrollRef?.current?.scrollTo({ y: headerHeight });
-    }
-  }, [showTitleState]);
-
   return (
     <AnimatedScrollView
-      ref={scrollRef}
+      ref={spaceAboutRef}
       bounces={false}
       overScrollMode={"never"}
       scrollEventThrottle={1}
@@ -107,6 +93,17 @@ function AboutSpace({
           backgroundColor: colors.bgDefault,
         },
       ]}
+      onScrollEndDrag={(event) => {
+        spaceAboutCurrentScrollRef.current = event.nativeEvent.contentOffset.y;
+
+        if (
+          event.nativeEvent.contentOffset.y > 0 &&
+          spaceProposalsCurrentScrollRef.current < headerHeight
+        ) {
+          spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
+          spaceProposalsCurrentScrollRef.current = headerHeight;
+        }
+      }}
       {...scrollProps}
     >
       <View style={styles.content}>
@@ -280,7 +277,7 @@ function AboutSpace({
         ) : (
           <View />
         )}
-        <View style={{ width: 200, height: 300 }} />
+        <View style={{ width: 200, height: 500 }} />
       </View>
     </AnimatedScrollView>
   );

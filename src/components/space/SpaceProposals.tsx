@@ -18,7 +18,7 @@ import {
   useExploreState,
 } from "context/exploreContext";
 import { Space } from "types/explore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { setProfiles } from "helpers/profile";
 import common from "styles/common";
 import ProposalPreview from "../ProposalPreview";
@@ -90,6 +90,8 @@ type SpaceProposalsProps = {
   scrollProps: any;
   headerHeight?: number;
   filter: { key: string };
+  spaceProposalsRef: any;
+  spaceProposalsCurrentScrollRef: any;
 };
 function SpaceProposals({
   space,
@@ -97,7 +99,10 @@ function SpaceProposals({
   scrollProps,
   headerHeight = 150,
   filter,
-  headerTitleBottom,
+  spaceProposalsRef,
+  spaceProposalsCurrentScrollRef,
+  spaceAboutRef,
+  spaceAboutCurrentScrollRef,
 }: SpaceProposalsProps) {
   const { refreshFeed, colors } = useAuthState();
   const { profiles } = useExploreState();
@@ -182,6 +187,7 @@ function SpaceProposals({
     <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
       <AnimatedFlatList
         scrollEventThrottle={1}
+        ref={spaceProposalsRef}
         bounces={false}
         contentContainerStyle={{ marginTop: headerHeight + 32 }}
         overScrollMode={"never"}
@@ -252,6 +258,18 @@ function SpaceProposals({
             />
           )
         }
+        onScrollEndDrag={(event) => {
+          spaceProposalsCurrentScrollRef.current =
+            event.nativeEvent.contentOffset.y;
+
+          if (
+            event.nativeEvent.contentOffset.y > 0 &&
+            spaceAboutCurrentScrollRef.current < headerHeight
+          ) {
+            spaceAboutRef.current?.scrollTo({ y: headerHeight });
+            spaceAboutCurrentScrollRef = headerHeight;
+          }
+        }}
         {...scrollProps}
       />
     </View>
