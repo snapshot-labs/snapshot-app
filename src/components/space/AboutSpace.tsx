@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Linking,
+  Dimensions,
 } from "react-native";
 import i18n from "i18n-js";
 import map from "lodash/map";
@@ -20,7 +21,8 @@ import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import { getUsername, setProfiles } from "../../helpers/profile";
 import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
-import { headerHeight } from "screens/SpaceScreen";
+
+const { height: deviceHeight } = Dimensions.get("screen");
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -277,7 +279,7 @@ function AboutSpace({
         ) : (
           <View />
         )}
-        <View style={{ width: 200, height: 500 }} />
+        <View style={{ width: 200, height: deviceHeight }} />
       </View>
     </AnimatedScrollView>
   );
