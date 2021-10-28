@@ -29,6 +29,7 @@ import {
   initialWalletConnectValues,
 } from "helpers/walletConnectUtils";
 import WalletConnect from "@walletconnect/client";
+import BackButton from "components/BackButton";
 
 const defaultWallets = [MetaMask];
 
@@ -114,15 +115,31 @@ function WalletConnectScreen() {
         common.screen,
         {
           paddingTop: insets.top,
-          paddingHorizontal: 16,
-          backgroundColor: colors.bgDefault
+          backgroundColor: colors.bgDefault,
         },
       ]}
     >
-      <Text style={[common.headerTitle, { marginTop: 30 }, ]}>
+      <View
+        style={[common.headerContainer, { borderBottomColor: "transparent" }]}
+      >
+        <BackButton />
+      </View>
+      <Text
+        style={[
+          common.headerTitle,
+          common.containerHorizontalPadding,
+          { color: colors.textColor },
+        ]}
+      >
         {i18n.t("logIn")}
       </Text>
-      <Text style={[common.subTitle, { marginTop: 16 }]}>
+      <Text
+        style={[
+          common.subTitle,
+          common.containerHorizontalPadding,
+          { marginTop: 16 },
+        ]}
+      >
         {i18n.t("connectWallet")}
       </Text>
       {loading ? (
@@ -253,15 +270,24 @@ function WalletConnectScreen() {
                   flexDirection: "row",
                   alignItems: "center",
                   marginTop: 16,
+                  marginLeft: 16,
                 }}
               >
                 <Image
                   source={{
                     uri: `https://registry.walletconnect.org/logo/md/${wallet.id}.jpeg`,
                   }}
-                  style={{ marginRight: 16, width: 50, height: 50 }}
+                  style={{
+                    marginRight: 16,
+                    width: 50,
+                    height: 50,
+                    borderRadius: 25,
+                    backgroundColor: colors.white,
+                  }}
                 />
-                <Text style={common.defaultText}>{wallet.name}</Text>
+                <Text style={[common.defaultText, { color: colors.textColor }]}>
+                  {wallet.name}
+                </Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -278,6 +304,7 @@ function WalletConnectScreen() {
                     flexDirection: "row",
                     alignItems: "center",
                     marginTop: 16,
+                    marginLeft: 16,
                   }}
                 >
                   <Image
@@ -289,6 +316,7 @@ function WalletConnectScreen() {
                       width: 50,
                       height: 50,
                       borderRadius: 25,
+                      backgroundColor: colors.white,
                     }}
                     resizeMode="contain"
                   />
@@ -298,7 +326,7 @@ function WalletConnectScreen() {
                 </View>
               </TouchableOpacity>
             ))}
-          <View style={{ marginTop: 24 }}>
+          <View style={{ marginTop: 24, marginLeft: 16 }}>
             <Text style={common.subTitle}>{i18n.t("orUseACustomWallet")}</Text>
             <TouchableOpacity
               onPress={() => {

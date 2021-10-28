@@ -211,7 +211,11 @@ function VoteConfirmModal({
               { width: buttonWidth, borderColor: colors.borderColor },
             ]}
           >
-            <Text style={[buttonStyles.buttonTitle]}>{i18n.t("cancel")}</Text>
+            <Text
+              style={[buttonStyles.buttonTitle, { color: colors.textColor }]}
+            >
+              {i18n.t("cancel")}
+            </Text>
           </View>
         </TouchableOpacity>
 
