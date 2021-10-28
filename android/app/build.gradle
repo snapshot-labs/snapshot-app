@@ -135,8 +135,8 @@ android {
         applicationId 'org.snapshot'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 27
-        versionName "0.2.7"
+        versionCode 28
+        versionName "0.2.8"
     }
     splits {
         abi {
