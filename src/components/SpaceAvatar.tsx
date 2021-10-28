@@ -4,6 +4,7 @@ import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { Image } from "react-native";
 import { Space } from "../types/explore";
 import makeBlockie from "ethereum-blockies-base64";
+import colors from "constants/colors";
 import isEmpty from "lodash/isEmpty";
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
@@ -73,7 +74,12 @@ function SpaceAvatar({
   return (
     <Image
       source={imgSrc}
-      style={{ width: size, height: size, borderRadius: size / 2 }}
+      style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        backgroundColor: colors.white,
+      }}
       onError={() => {
         const blockie = makeBlockie(space?.id ?? "");
         setBlockie(blockie);

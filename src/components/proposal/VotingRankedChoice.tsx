@@ -109,6 +109,7 @@ function VotingRankedChoice({
                   onPress={() => {}}
                   onlyOneLine
                   buttonContainerStyle={{ width: width - 100 }}
+                  selected
                 />
                 <TouchableOpacity
                   onPress={() => {
@@ -154,7 +155,6 @@ function VotingRankedChoice({
                 );
               }}
               buttonContainerStyle={{ width: width - 100 }}
-              light
             />
           </View>
         );

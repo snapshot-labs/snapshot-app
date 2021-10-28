@@ -15,13 +15,13 @@ import { useAuthState } from "context/authContext";
 export const styles = StyleSheet.create({
   button: {
     padding: 16,
-    backgroundColor: colors.black,
+    backgroundColor: "transparent",
     borderRadius: 60,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: colors.borderColor,
   },
   lightButton: {
     backgroundColor: colors.bgDefault,
@@ -51,6 +51,7 @@ type ButtonProps = {
   Icon?: React.FC | undefined;
   loading?: boolean;
   onlyOneLine?: boolean;
+  selected?: boolean;
 };
 
 function Button({
@@ -63,6 +64,7 @@ function Button({
   Icon = undefined,
   loading = false,
   onlyOneLine = false,
+  selected = false,
 }: ButtonProps) {
   const { theme, colors } = useAuthState();
   const ButtonContainerComponent = disabled
@@ -81,6 +83,7 @@ function Button({
             : {},
           light ? styles.lightButton : {},
           disabled ? styles.disabled : {},
+          selected ? { borderColor: colors.textColor } : {},
           buttonContainerStyle,
         ]}
       >
@@ -94,6 +97,7 @@ function Button({
                 : {})}
               style={[
                 styles.buttonTitle,
+                { color: colors.textColor },
                 light ? styles.lightButtonTitle : {},
                 buttonTitleStyle,
               ]}

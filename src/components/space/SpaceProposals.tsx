@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -5,6 +6,7 @@ import {
   RefreshControl,
   Text,
   View,
+  Dimensions,
 } from "react-native";
 import { Proposal } from "types/proposal";
 import { PROPOSALS_QUERY, SPACES_QUERY } from "helpers/queries";
@@ -18,7 +20,6 @@ import {
   useExploreState,
 } from "context/exploreContext";
 import { Space } from "types/explore";
-import React, { useEffect, useRef, useState } from "react";
 import { setProfiles } from "helpers/profile";
 import common from "styles/common";
 import ProposalPreview from "../ProposalPreview";
@@ -28,6 +29,8 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "../../context/authContext";
+
+const { height: screenHeight } = Dimensions.get("screen");
 
 const LOAD_BY = 6;
 
@@ -252,7 +255,7 @@ function SpaceProposals({
             <View
               style={{
                 width: "100%",
-                height: headerHeight + 150,
+                height: screenHeight,
                 backgroundColor: colors.bgDefault,
               }}
             />

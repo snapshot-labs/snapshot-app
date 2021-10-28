@@ -119,6 +119,7 @@ function VotingQuadratic({
     <View>
       {proposal.choices.map((choice: string, i: number) => {
         const selectedChoiceValue = selectedChoices[i + 1] ?? 0;
+        const selected = selectedChoiceValue > 0;
         return (
           <View
             style={[
@@ -127,6 +128,7 @@ function VotingQuadratic({
                 borderColor: colors.borderColor,
                 backgroundColor: colors.bgDefault,
               },
+              selected ? { borderColor: colors.textColor } : {},
             ]}
             key={`${i}`}
           >
@@ -156,8 +158,12 @@ function VotingQuadratic({
                   style={[
                     styles.miniButton,
                     {
-                      borderRightColor: colors.borderColor,
-                      borderLeftColor: colors.borderColor,
+                      borderRightColor: selected
+                        ? colors.textColor
+                        : colors.borderColor,
+                      borderLeftColor: selected
+                        ? colors.textColor
+                        : colors.borderColor,
                     },
                   ]}
                 >
@@ -203,8 +209,12 @@ function VotingQuadratic({
                   style={[
                     styles.miniButton,
                     {
-                      borderRightColor: colors.borderColor,
-                      borderLeftColor: colors.borderColor,
+                      borderRightColor: selected
+                        ? colors.textColor
+                        : colors.borderColor,
+                      borderLeftColor: selected
+                        ? colors.textColor
+                        : colors.borderColor,
                     },
                   ]}
                 >
