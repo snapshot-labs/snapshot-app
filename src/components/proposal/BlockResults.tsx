@@ -61,37 +61,43 @@ function BlockResults({
                 key={`${i}`}
                 style={{ marginBottom: i === choices.length - 1 ? 0 : 16 }}
               >
-                <Text style={[styles.choiceTitle, { color: colors.textColor }]}>
-                  {choice.choice}{" "}
-                </Text>
-                <Text
-                  style={[
-                    styles.choiceTitle,
-                    { marginTop: 4, color: colors.textColor },
-                  ]}
-                >
-                  {n(
-                    results && results.resultsByVoteBalance
-                      ? results.resultsByVoteBalance[choice.i]
-                      : 0
-                  )}{" "}
-                  {space.symbol}
-                </Text>
-                <Text
-                  style={[
-                    styles.choiceTitle,
-                    { marginTop: 4, color: colors.textColor },
-                  ]}
-                >
-                  {n(
-                    !results.sumOfResultsBalance
-                      ? 0
-                      : ((100 / results.sumOfResultsBalance) *
-                          results.resultsByVoteBalance[choice.i]) /
-                          1e2,
-                    "0.[00]%"
-                  )}
-                </Text>
+                <View>
+                  <Text
+                    style={[styles.choiceTitle, { color: colors.textColor }]}
+                  >
+                    {choice.choice}{" "}
+                  </Text>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text
+                      style={[styles.choiceTitle, { color: colors.textColor }]}
+                    >
+                      {n(
+                        results && results.resultsByVoteBalance
+                          ? results.resultsByVoteBalance[choice.i]
+                          : 0
+                      )}{" "}
+                      {space.symbol}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.choiceTitle,
+                        {
+                          color: colors.textColor,
+                          marginLeft: "auto",
+                        },
+                      ]}
+                    >
+                      {n(
+                        !results.sumOfResultsBalance
+                          ? 0
+                          : ((100 / results.sumOfResultsBalance) *
+                              results.resultsByVoteBalance[choice.i]) /
+                              1e2,
+                        "0.[00]%"
+                      )}
+                    </Text>
+                  </View>
+                </View>
                 <ProgressBar
                   progress={
                     !results.sumOfResultsBalance

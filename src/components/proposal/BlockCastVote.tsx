@@ -14,6 +14,11 @@ import VoteConfirmModal from "./VoteConfirmModal";
 import { useAuthState } from "context/authContext";
 import VotingQuadratic from "./VotingQuadratic";
 import VotingApproval from "./VotingApproval";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
 
 type BlockCastVoteProps = {
   proposal: Proposal;
@@ -45,7 +50,9 @@ function BlockCastVote({
 }: BlockCastVoteProps) {
   const { connectedAddress, isWalletConnect } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+
   const [totalScore, setTotalScore] = useState(0);
   let VotesComponent;
 
@@ -99,26 +106,44 @@ function BlockCastVote({
               <Button
                 title={i18n.t("vote")}
                 onPress={() => {
-                  setModalVisible(true);
+                  bottomSheetModalDispatch({
+                    type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                    payload: {
+                      options: [],
+                      snapPoints: [
+                        10,
+                        selectedChoices.length > 2
+                          ? 400 + selectedChoices.length * 20
+                          : 400,
+                      ],
+                      show: true,
+                      initialIndex: 1,
+                      ModalContent: () => (
+                        <VoteConfirmModal
+                          onClose={() => {
+                            bottomSheetModalRef?.current?.close();
+                          }}
+                          proposal={proposal}
+                          selectedChoices={selectedChoices}
+                          space={space}
+                          totalScore={totalScore}
+                          getProposal={getProposal}
+                        />
+                      ),
+                    },
+                  });
                 }}
                 disabled={!isWalletConnect || selectedChoices.length === 0}
                 buttonContainerStyle={{
                   backgroundColor: colors.bgBlue,
+                  borderColor: colors.bgBlue,
+                }}
+                buttonTitleStyle={{
+                  color: colors.white,
                 }}
               />
             </View>
           }
-        />
-        <VoteConfirmModal
-          isVisible={modalVisible}
-          onClose={() => {
-            setModalVisible(false);
-          }}
-          proposal={proposal}
-          selectedChoices={selectedChoices}
-          space={space}
-          totalScore={totalScore}
-          getProposal={getProposal}
         />
       </>
     );

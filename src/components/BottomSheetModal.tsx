@@ -32,6 +32,7 @@ type BottomSheetModalProps = {
   onPressOption: (index: number) => void;
   initialIndex: number;
   destructiveButtonIndex?: number;
+  ModalContent?: React.FunctionComponent | undefined;
 };
 
 function BottomSheetModal({
@@ -41,6 +42,7 @@ function BottomSheetModal({
   onPressOption,
   initialIndex,
   destructiveButtonIndex,
+  ModalContent,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   return (
@@ -57,6 +59,7 @@ function BottomSheetModal({
       handleIndicatorStyle={{ backgroundColor: colors.textColor }}
     >
       <BottomSheetView>
+        {ModalContent !== undefined && <ModalContent />}
         {options.map((option: string, index: number) => (
           <TouchableHighlight
             underlayColor={colors.highlightColor}

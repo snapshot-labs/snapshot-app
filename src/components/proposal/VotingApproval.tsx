@@ -36,7 +36,7 @@ function VotingApproval({
                 selectChoice(i + 1, selectedChoices, setSelectedChoices);
               }}
               title={choice}
-              light={!selectedChoices.includes(i + 1)}
+              selected={!selectedChoices.includes(i + 1)}
             />
           </View>
         );

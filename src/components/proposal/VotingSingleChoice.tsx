@@ -23,7 +23,7 @@ function VotingSingleChoice({
                 setSelectedChoices([i + 1]);
               }}
               title={choice}
-              light={selectedChoices[0] !== i + 1}
+              selected={selectedChoices[0] === i + 1}
             />
           </View>
         );

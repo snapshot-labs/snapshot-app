@@ -15,6 +15,13 @@ import { Space } from "types/explore";
 import { Proposal } from "types/proposal";
 import { useAuthState } from "context/authContext";
 import { getUsername } from "helpers/profile";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import VoteConfirmModal from "components/proposal/VoteConfirmModal";
+import ReceiptModal from "components/proposal/ReceiptModal";
 
 const { width } = Dimensions.get("screen");
 
@@ -41,21 +48,14 @@ type VoteRowProps = {
   vote: any;
   profiles: any;
   space: Space;
-  setCurrentAuthorIpfsHash: (ipfsHash: string) => void;
-  setShowReceiptModal: (showModal: boolean) => void;
   proposal: Proposal;
 };
 
-function VoteRow({
-  vote,
-  profiles,
-  space,
-  setCurrentAuthorIpfsHash,
-  setShowReceiptModal,
-  proposal,
-}: VoteRowProps) {
+function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
   const { connectedAddress, colors } = useAuthState();
   const voterProfile = profiles[vote.voter];
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetModalRef = useBottomSheetModalRef();
   let voterName = getUsername(vote.voter, voterProfile, connectedAddress ?? "");
   if (connectedAddress === vote.voter) {
     voterName = i18n.t("you");
@@ -68,8 +68,23 @@ function VoteRow({
   return (
     <TouchableHighlight
       onPress={() => {
-        setCurrentAuthorIpfsHash(vote.id);
-        setShowReceiptModal(true);
+        bottomSheetModalDispatch({
+          type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+          payload: {
+            options: [],
+            snapPoints: [10, 300],
+            show: true,
+            initialIndex: 1,
+            ModalContent: () => (
+              <ReceiptModal
+                onClose={() => {
+                  bottomSheetModalRef?.current?.close();
+                }}
+                authorIpfsHash={vote.id}
+              />
+            ),
+          },
+        });
       }}
       underlayColor={colors.highlightColor}
     >

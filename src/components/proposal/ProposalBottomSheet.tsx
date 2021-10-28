@@ -46,7 +46,7 @@ function ProposalBottomSheet({
     return setOptions;
   }, [proposal, space]);
   const authDispatch = useAuthDispatch();
-  const snapPoints = ["5%", options.length > 1 ? 200 : 100, "30%"];
+  const snapPoints = [10, options.length > 1 ? 200 : 100];
   const toastShowConfig = useToastShowConfig();
   const navigation: any = useNavigation();
   const destructiveButtonIndex = options.length > 1 ? 1 : 3;

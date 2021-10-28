@@ -35,6 +35,7 @@ const initialState = {
   options: [],
   snapPoints: [],
   initialIndex: 1,
+  ModalContent: undefined,
   show: false,
 };
 
@@ -44,7 +45,11 @@ function bottomSheetModalReducer(
 ) {
   switch (action.type) {
     case BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL:
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+        ModalContent: action?.payload?.ModalContent ?? undefined,
+      };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }
@@ -82,6 +87,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
               options={bottomSheetModal.options}
               snapPoints={bottomSheetModal.snapPoints}
               initialIndex={bottomSheetModal.initialIndex}
+              ModalContent={bottomSheetModal.ModalContent}
               {...bottomSheetModal}
             />
           )}

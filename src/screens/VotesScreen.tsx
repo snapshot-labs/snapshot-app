@@ -25,6 +25,10 @@ import { useAuthState } from "../context/authContext";
 import { Space } from "../types/explore";
 import { Proposal } from "../types/proposal";
 import VoteList from "../components/proposal/VotesList";
+import {
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
 
 const { width: deviceWidth } = Dimensions.get("screen");
 
@@ -50,8 +54,6 @@ const renderScene = (
   votes: any[],
   space: Space,
   profiles: any,
-  setShowReceiptModal: (showModal: boolean) => void,
-  setCurrentAuthorIpfsHash: (authorHash: string) => void,
   votesMap: any,
   proposal: Proposal
 ) => {
@@ -61,8 +63,6 @@ const renderScene = (
     allRoutes[route.key] = () => (
       <VoteList
         allData={allData}
-        setShowReceiptModal={setShowReceiptModal}
-        setCurrentAuthorIpfsHash={setCurrentAuthorIpfsHash}
         space={space}
         profiles={profiles}
         proposal={proposal}
@@ -128,8 +128,6 @@ function VotesScreen({ route }: VotesScreenProps) {
   const choices = proposal.choices ?? [];
   const { profiles } = useExploreState();
   const [index, setIndex] = React.useState(0);
-  const [showReceiptModal, setShowReceiptModal] = useState(false);
-  const [currentAuthorIpfsHash, setCurrentAuthorIpfsHash] = useState("");
   const allVotes = [{ key: allVotesKey, title: i18n.t("all") }];
   const scrollViewRef: any = useRef();
   const [routes] = React.useState(
@@ -147,17 +145,7 @@ function VotesScreen({ route }: VotesScreenProps) {
   const votesMap = parseVotes(votes, connectedAddress ?? "");
   const [layoutList, setLayoutList] = useState<any>([]);
   const sceneMap = useMemo(
-    () =>
-      renderScene(
-        routes,
-        votes,
-        space,
-        profiles,
-        setShowReceiptModal,
-        setCurrentAuthorIpfsHash,
-        votesMap,
-        proposal
-      ),
+    () => renderScene(routes, votes, space, profiles, votesMap, proposal),
     [route]
   );
 
@@ -332,13 +320,6 @@ function VotesScreen({ route }: VotesScreenProps) {
             </View>
           );
         }}
-      />
-      <ReceiptModal
-        isVisible={showReceiptModal}
-        onClose={() => {
-          setShowReceiptModal(false);
-        }}
-        authorIpfsHash={currentAuthorIpfsHash}
       />
     </View>
   );

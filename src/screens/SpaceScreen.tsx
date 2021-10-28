@@ -150,7 +150,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     Animated.timing(scrollY.current, {
       toValue,
       duration: 1000,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
   }
 
