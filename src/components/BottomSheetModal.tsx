@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import BottomSheet, {
   BottomSheetView,
+  BottomSheetScrollView,
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import colors from "constants/colors";
@@ -33,6 +34,7 @@ type BottomSheetModalProps = {
   initialIndex: number;
   destructiveButtonIndex?: number;
   ModalContent?: React.FunctionComponent | undefined;
+  scroll?: boolean;
 };
 
 function BottomSheetModal({
@@ -43,8 +45,14 @@ function BottomSheetModal({
   initialIndex,
   destructiveButtonIndex,
   ModalContent,
+  scroll = false,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
+  let BottomSheetViewComponent: any = BottomSheetView;
+  if (scroll) {
+    BottomSheetViewComponent = BottomSheetScrollView;
+  }
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -58,7 +66,7 @@ function BottomSheetModal({
       index={initialIndex}
       handleIndicatorStyle={{ backgroundColor: colors.textColor }}
     >
-      <BottomSheetView>
+      <BottomSheetViewComponent>
         {ModalContent !== undefined && <ModalContent />}
         {options.map((option: string, index: number) => (
           <TouchableHighlight
@@ -85,7 +93,7 @@ function BottomSheetModal({
             </View>
           </TouchableHighlight>
         ))}
-      </BottomSheetView>
+      </BottomSheetViewComponent>
     </BottomSheet>
   );
 }

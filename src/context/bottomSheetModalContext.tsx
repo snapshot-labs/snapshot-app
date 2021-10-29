@@ -16,6 +16,8 @@ type BottomSheetModalState = {
   options: string[];
   snapPoints: any[];
   show: boolean;
+  scroll: boolean;
+  ModalContent: any;
 };
 
 const BottomSheetModalContext = createContext<
@@ -37,6 +39,7 @@ const initialState = {
   initialIndex: 1,
   ModalContent: undefined,
   show: false,
+  scroll: false,
 };
 
 function bottomSheetModalReducer(
@@ -49,6 +52,7 @@ function bottomSheetModalReducer(
         ...state,
         ...action.payload,
         ModalContent: action?.payload?.ModalContent ?? undefined,
+        scroll: action?.payload?.scroll ?? false,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -88,6 +92,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
               snapPoints={bottomSheetModal.snapPoints}
               initialIndex={bottomSheetModal.initialIndex}
               ModalContent={bottomSheetModal.ModalContent}
+              scroll={bottomSheetModal.scroll}
               {...bottomSheetModal}
             />
           )}

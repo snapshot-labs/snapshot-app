@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MarkdownBody from "components/proposal/MarkdownBody";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { Proposal } from "types/proposal";
 import common from "styles/common";
 import { useExploreState } from "context/exploreContext";
@@ -21,6 +21,9 @@ import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import ProposalMenu from "components/proposal/ProposalMenu";
 import { useAuthState } from "context/authContext";
 import ProposalBottomSheet from "components/proposal/ProposalBottomSheet";
+import SpaceAvatar from "components/SpaceAvatar";
+import { SPACE_SCREEN } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 type ProposalScreenProps = {
   route: {
@@ -103,6 +106,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
     isEmpty(proposal)
   );
   const [votes, setVotes] = useState<any[]>([]);
+  const navigation = useNavigation();
   const [results, setResults] = useState({});
   const [resultsLoaded, setResultsLoaded] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState<boolean>(true);
@@ -153,7 +157,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           { borderBottomColor: colors.borderColor },
         ]}
       >
-        <BackButton title={route.params.fromFeed ? null : space?.name} />
+        <BackButton />
         {!proposalFullyLoading && (
           <ProposalMenu
             showBottomSheetModal={() => {
@@ -192,6 +196,29 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       ) : (
         <ScrollView scrollEnabled={scrollEnabled}>
           <View style={{ paddingHorizontal: 16 }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(SPACE_SCREEN, { space, showHeader: true });
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 16,
+                }}
+              >
+                <SpaceAvatar symbolIndex="space" size={28} space={space} />
+                <Text
+                  style={[
+                    common.h3,
+                    { color: colors.textColor, marginLeft: 8 },
+                  ]}
+                >
+                  {proposal?.space?.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
             <Text
               style={[
                 common.h1,
