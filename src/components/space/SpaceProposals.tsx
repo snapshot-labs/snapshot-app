@@ -270,7 +270,10 @@ function SpaceProposals({
             spaceAboutCurrentScrollRef.current < headerHeight
           ) {
             spaceAboutRef.current?.scrollTo({ y: headerHeight });
-            spaceAboutCurrentScrollRef = headerHeight;
+            spaceAboutCurrentScrollRef.current = headerHeight;
+          } else if (event.nativeEvent.contentOffset.y === 0) {
+            spaceAboutRef.current?.scrollTo({ y: 0 });
+            spaceAboutCurrentScrollRef.current = 0;
           }
         }}
         {...scrollProps}

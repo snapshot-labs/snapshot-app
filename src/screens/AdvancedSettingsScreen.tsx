@@ -7,7 +7,7 @@ import { useAuthState } from "context/authContext";
 import BackButton from "components/BackButton";
 import IconFont from "components/IconFont";
 import { hubUrl } from "helpers/snapshotClient";
-import styles from "styles/settings";
+import styles, { ICON_SIZE } from "styles/settings";
 
 function AdvancedSettingsScreen() {
   const { colors } = useAuthState();
@@ -29,7 +29,11 @@ function AdvancedSettingsScreen() {
               { backgroundColor: colors.settingsIconBgColor },
             ]}
           >
-            <IconFont name={"upload"} size={20} color={colors.textColor} />
+            <IconFont
+              name={"upload"}
+              size={ICON_SIZE}
+              color={colors.textColor}
+            />
           </View>
           <Text
             style={[
@@ -48,7 +52,11 @@ function AdvancedSettingsScreen() {
               { backgroundColor: colors.settingsIconBgColor },
             ]}
           >
-            <IconFont name={"snapshot"} size={20} color={colors.textColor} />
+            <IconFont
+              name={"snapshot"}
+              size={ICON_SIZE}
+              color={colors.textColor}
+            />
           </View>
           <Text
             style={[

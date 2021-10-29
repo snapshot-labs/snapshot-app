@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableHighlight,
-  Platform,
-} from "react-native";
+import { Text, View, TouchableHighlight } from "react-native";
 import i18n from "i18n-js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import common from "styles/common";
@@ -16,10 +10,9 @@ import {
 } from "context/authContext";
 import { ABOUT_SCREEN, ADVANCED_SETTINGS_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
-import colors from "constants/colors";
 import BackButton from "components/BackButton";
 import IconFont from "components/IconFont";
-import styles from "styles/settings";
+import styles, { ICON_SIZE } from "styles/settings";
 
 function SettingsScreen() {
   const { colors, theme } = useAuthState();
@@ -54,7 +47,7 @@ function SettingsScreen() {
             >
               <IconFont
                 name={theme === "light" ? "sun" : "moon"}
-                size={20}
+                size={ICON_SIZE}
                 color={colors.textColor}
               />
             </View>
@@ -86,7 +79,7 @@ function SettingsScreen() {
             >
               <IconFont
                 name={"stealth_fill"}
-                size={20}
+                size={ICON_SIZE}
                 color={colors.textColor}
               />
             </View>
@@ -113,7 +106,11 @@ function SettingsScreen() {
                 { backgroundColor: colors.settingsIconBgColor },
               ]}
             >
-              <IconFont name={"info"} size={20} color={colors.textColor} />
+              <IconFont
+                name={"info"}
+                size={ICON_SIZE}
+                color={colors.textColor}
+              />
             </View>
             <Text
               style={[
