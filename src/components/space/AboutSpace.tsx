@@ -104,6 +104,9 @@ function AboutSpace({
         ) {
           spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
           spaceProposalsCurrentScrollRef.current = headerHeight;
+        } else if (event.nativeEvent.contentOffset.y === 0) {
+          spaceProposalsRef?.current?.scrollToOffset({ offset: 0 });
+          spaceProposalsCurrentScrollRef.current = 0;
         }
       }}
       {...scrollProps}

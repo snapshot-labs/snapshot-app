@@ -12,23 +12,25 @@ const styles = StyleSheet.create({
   rowTitle: {
     color: colors.textColor,
     fontFamily: "Calibre-Semibold",
-    fontSize: 18,
+    fontSize: 22,
   },
   rowValue: {
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
-    fontSize: 18,
+    fontSize: 22,
     marginLeft: "auto",
   },
   iconContainer: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: colors.settingsIconBgColor,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: Platform.OS === "ios" ? 4 : 0,
   },
 });
+
+export const ICON_SIZE = 28;
 
 export default styles;
