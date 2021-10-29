@@ -115,8 +115,10 @@ function BlockCastVote({
                         selectedChoices.length > 2
                           ? 400 + selectedChoices.length * 20
                           : 400,
+                        "100%",
                       ],
                       show: true,
+                      scroll: true,
                       initialIndex: 1,
                       ModalContent: () => (
                         <VoteConfirmModal

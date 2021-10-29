@@ -88,6 +88,7 @@ type SpaceScreenProps = {
   route: {
     params: {
       space: Space;
+      showHeader?: boolean;
     };
   };
 };
@@ -128,6 +129,21 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const spaceAboutRef = useRef();
   const spaceProposalsRef = useRef();
 
+  function resetHeader() {
+    const toValue = -headerHeight;
+    Animated.timing(scrollY.current, {
+      toValue,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  useEffect(() => {
+    if (route?.params?.showHeader) {
+      resetHeader();
+    }
+  }, [route.params]);
+
   useEffect(() => {
     scrollY.current.addListener(({ value }) => {
       scrollValue.current = value;
@@ -144,15 +160,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
       clearTimeout(scrollEndTimer.current);
     };
   }, []);
-
-  function resetHeader() {
-    const toValue = -headerHeight;
-    Animated.timing(scrollY.current, {
-      toValue,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }
 
   const sceneMap = useMemo(
     () =>
