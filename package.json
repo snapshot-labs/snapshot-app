@@ -21,7 +21,7 @@
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/stack": "^6.0.7",
     "@snapshot-labs/lock": "github:snapshot-labs/lock#master",
-    "@snapshot-labs/snapshot.js": "^0.2.9",
+    "@snapshot-labs/snapshot.js": "^0.3.0",
     "@tradle/react-native-http": "^2.0.1",
     "@walletconnect/client": "^1.6.5",
     "@walletconnect/qrcode-modal": "^1.6.5",

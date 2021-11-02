@@ -1,5 +1,4 @@
 import { getScores } from "@snapshot-labs/snapshot.js/src/utils";
-import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import voting from "./voting";
 import { Space } from "../types/explore";
 import { Proposal } from "../types/proposal";
@@ -7,7 +6,6 @@ import { Proposal } from "../types/proposal";
 export async function getResults(space: any, proposal: any, votes: any) {
   try {
     const voters = votes.map((vote: any) => vote.voter);
-    const provider = getProvider(space.network);
     const strategies = proposal.strategies ?? space.strategies;
     /* Get scores */
     if (proposal.state !== "pending") {
@@ -15,7 +13,6 @@ export async function getResults(space: any, proposal: any, votes: any) {
         space.id,
         strategies,
         space.network,
-        provider,
         voters,
         parseInt(proposal.snapshot)
       );
@@ -59,7 +56,6 @@ export async function getPower(
       space.id ?? "",
       strategies,
       space.network,
-      getProvider(space.network),
       [address],
       parseInt(proposal.snapshot)
     );
