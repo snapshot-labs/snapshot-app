@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { View, Text } from "react-native";
 import i18n from "i18n-js";
-import { View } from "react-native";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import Block from "../Block";
 import colors from "constants/colors";
@@ -19,6 +19,7 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
+import common from "styles/common";
 
 type BlockCastVoteProps = {
   proposal: Proposal;
@@ -48,6 +49,7 @@ function BlockCastVote({
   space,
   getProposal,
 }: BlockCastVoteProps) {
+  const { colors } = useAuthState();
   const { connectedAddress, isWalletConnect } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
@@ -74,7 +76,15 @@ function BlockCastVote({
     return (
       <>
         <Block
-          title={i18n.t("castYourVote")}
+          title={i18n.t("vote")}
+          headerStyle={{
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            borderBottomWidth: 0,
+            paddingTop: 0,
+          }}
+          blockStyle={{ borderWidth: 0 }}
           Content={
             <View
               style={{
@@ -150,7 +160,15 @@ function BlockCastVote({
       </>
     );
   }
-  return <View />;
+  return (
+    <View
+      style={[common.alignItemsCenter, common.justifyCenter, { width: "100%" }]}
+    >
+      <Text style={[common.h4, { color: colors.textColor }]}>
+        {i18n.t("vote")}
+      </Text>
+    </View>
+  );
 }
 
 export default BlockCastVote;

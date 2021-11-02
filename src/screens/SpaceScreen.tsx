@@ -112,6 +112,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const { isWalletConnect, colors } = useAuthState();
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
+  const showTitleRef = useRef(false);
   const space = route.params.space;
   const scrollY = useRef(new Animated.Value(0));
   const headerTitleBottom = scrollY.current.interpolate({
@@ -136,6 +137,8 @@ function SpaceScreen({ route }: SpaceScreenProps) {
       duration: 1000,
       useNativeDriver: true,
     }).start();
+    spaceAboutCurrentScrollRef.current = 0;
+    spaceProposalsCurrentScrollRef.current = 0;
   }
 
   useEffect(() => {
@@ -148,11 +151,13 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     scrollY.current.addListener(({ value }) => {
       scrollValue.current = value;
       if (value >= headerHeight) {
-        if (!showTitle) {
+        if (!showTitleRef.current) {
           setShowTitle(true);
+          showTitleRef.current = true;
         }
       } else {
         setShowTitle(false);
+        showTitleRef.current = false;
       }
     });
     return () => {
