@@ -1,7 +1,13 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MarkdownBody from "components/proposal/MarkdownBody";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { Proposal } from "types/proposal";
 import common from "styles/common";
 import { useExploreState } from "context/exploreContext";
@@ -24,6 +30,7 @@ import ProposalBottomSheet from "components/proposal/ProposalBottomSheet";
 import SpaceAvatar from "components/SpaceAvatar";
 import { SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
+import ProposalVoteBottomSheet from "components/proposal/ProposalVoteBottomSheet";
 
 type ProposalScreenProps = {
   route: {
@@ -212,7 +219,11 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                 <Text
                   style={[
                     common.h3,
-                    { color: colors.textColor, marginLeft: 8 },
+                    {
+                      color: colors.textColor,
+                      marginLeft: 8,
+                      marginTop: Platform.OS === "ios" ? 6 : 0,
+                    },
                   ]}
                 >
                   {proposal?.space?.name}
@@ -233,36 +244,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             <MarkdownBody body={proposal.body} />
           </View>
           <View style={{ width: 10, height: 30 }} />
-          {proposal?.state === "active" && (
-            <>
-              <BlockCastVote
-                proposal={proposal}
-                resultsLoaded={resultsLoaded}
-                setScrollEnabled={setScrollEnabled}
-                space={space}
-                getProposal={async () => {
-                  const proposalResponse = await getProposal(
-                    proposal,
-                    setProposal,
-                    setLoaded,
-                    setVotes,
-                    setProposalFullyLoading
-                  );
-
-                  getResultsObj(
-                    space,
-                    proposalResponse?.proposal,
-                    proposalResponse?.votes,
-                    setVotes,
-                    setResults,
-                    setResultsLoaded
-                  );
-                }}
-              />
-              <View style={{ width: 10, height: 10 }} />
-            </>
-          )}
-
           <BlockVotes
             proposal={proposal}
             votes={votes}
@@ -280,6 +261,32 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           <BlockInformation proposal={proposal} space={space} />
           <View style={{ width: 10, height: 75 }} />
         </ScrollView>
+      )}
+      {proposal?.state === "active" && (
+        <ProposalVoteBottomSheet
+          proposal={proposal}
+          resultsLoaded={resultsLoaded}
+          setScrollEnabled={setScrollEnabled}
+          space={space}
+          getProposal={async () => {
+            const proposalResponse = await getProposal(
+              proposal,
+              setProposal,
+              setLoaded,
+              setVotes,
+              setProposalFullyLoading
+            );
+
+            getResultsObj(
+              space,
+              proposalResponse?.proposal,
+              proposalResponse?.votes,
+              setVotes,
+              setResults,
+              setResultsLoaded
+            );
+          }}
+        />
       )}
       {showProposalBottomSheet && (
         <ProposalBottomSheet

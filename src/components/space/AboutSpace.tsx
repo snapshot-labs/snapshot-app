@@ -100,7 +100,7 @@ function AboutSpace({
 
         if (
           event.nativeEvent.contentOffset.y > 0 &&
-          spaceProposalsCurrentScrollRef.current < headerHeight
+          spaceProposalsCurrentScrollRef.current <= 300
         ) {
           spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
           spaceProposalsCurrentScrollRef.current = headerHeight;

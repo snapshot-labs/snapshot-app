@@ -35,6 +35,8 @@ type BottomSheetModalProps = {
   destructiveButtonIndex?: number;
   ModalContent?: React.FunctionComponent | undefined;
   scroll?: boolean;
+  enablePanDownToClose?: boolean;
+  BackDropRenderer?: any;
 };
 
 function BottomSheetModal({
@@ -46,6 +48,8 @@ function BottomSheetModal({
   destructiveButtonIndex,
   ModalContent,
   scroll = false,
+  enablePanDownToClose = true,
+  BackDropRenderer = undefined,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   let BottomSheetViewComponent: any = BottomSheetView;
@@ -57,12 +61,14 @@ function BottomSheetModal({
     <BottomSheet
       ref={bottomSheetRef}
       snapPoints={snapPoints}
-      enablePanDownToClose
+      enablePanDownToClose={enablePanDownToClose}
       animateOnMount
       backgroundStyle={{
         backgroundColor: colors.bgDefault,
       }}
-      backdropComponent={renderBackdrop}
+      backdropComponent={
+        BackDropRenderer !== undefined ? BackDropRenderer : renderBackdrop
+      }
       index={initialIndex}
       handleIndicatorStyle={{ backgroundColor: colors.textColor }}
     >

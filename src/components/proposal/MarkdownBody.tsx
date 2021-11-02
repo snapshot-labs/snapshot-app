@@ -40,6 +40,11 @@ const tagsStyles = (colors: any) => ({
     fontFamily: "Calibre-Semibold",
     color: colors.textColor,
   },
+  h4: {
+    fontSize: 20,
+    fontFamily: "Calibre-Semibold",
+    color: colors.textColor,
+  },
   ul: {
     marginLeft: 30,
     marginTop: 0,

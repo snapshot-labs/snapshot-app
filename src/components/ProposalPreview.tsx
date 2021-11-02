@@ -136,7 +136,7 @@ function ProposalPreview({
     <TouchableHighlight
       underlayColor={colors.highlightColor}
       onPress={() => {
-        navigation.navigate(PROPOSAL_SCREEN, { proposal, fromFeed });
+        navigation.push(PROPOSAL_SCREEN, { proposal, fromFeed });
       }}
     >
       <View

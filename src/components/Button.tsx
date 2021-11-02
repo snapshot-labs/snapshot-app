@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   buttonTitle: {
     color: colors.white,
     fontSize: 20,
-    fontFamily: "Calibre-Semibold",
+    fontFamily: "Calibre-Medium",
   },
   lightButtonTitle: {
     color: colors.textColor,

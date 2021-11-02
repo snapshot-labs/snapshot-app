@@ -264,10 +264,9 @@ function SpaceProposals({
         onScrollEndDrag={(event) => {
           spaceProposalsCurrentScrollRef.current =
             event.nativeEvent.contentOffset.y;
-
           if (
             event.nativeEvent.contentOffset.y > 0 &&
-            spaceAboutCurrentScrollRef.current < headerHeight
+            spaceAboutCurrentScrollRef.current <= 300
           ) {
             spaceAboutRef.current?.scrollTo({ y: headerHeight });
             spaceAboutCurrentScrollRef.current = headerHeight;

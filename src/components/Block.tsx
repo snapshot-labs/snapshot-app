@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 12,
+    paddingBottom: Platform.OS === "android" ? 16 : 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderColor,
     flexDirection: "row",
@@ -48,6 +48,9 @@ type BlockProps = {
   hideHeader?: boolean;
   TitleComponent?: React.ReactElement;
   TitleRightComponent?: React.ReactElement;
+  titleStyle?: any;
+  headerStyle?: any;
+  blockStyle?: any;
 };
 
 function Block({
@@ -58,21 +61,27 @@ function Block({
   count,
   hideHeaderBorder,
   hideHeader = false,
+  titleStyle = {},
+  headerStyle = {},
+  blockStyle = {},
 }: BlockProps) {
   const { colors } = useAuthState();
   return (
-    <View style={[styles.block, { borderColor: colors.borderColor }]}>
+    <View
+      style={[styles.block, { borderColor: colors.borderColor }, blockStyle]}
+    >
       {!hideHeader && (
         <View
           style={[
             styles.header,
             { borderBottomColor: colors.borderColor },
             hideHeaderBorder ? { borderBottomWidth: 0 } : {},
+            headerStyle,
           ]}
         >
           {TitleComponent !== undefined && TitleComponent}
           {title !== undefined && (
-            <Text style={[common.h4, { color: colors.textColor }]}>
+            <Text style={[common.h4, { color: colors.textColor }, titleStyle]}>
               {title}
             </Text>
           )}
