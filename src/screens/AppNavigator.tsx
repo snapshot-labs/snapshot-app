@@ -28,6 +28,7 @@ import CreateProposalScreen from "./CreateProposalScreen";
 import IconFont from "../components/IconFont";
 import AboutScreen from "screens/AboutScreen";
 import AdvancedSettingsScreen from "screens/AdvancedSettingsScreen";
+import SpaceSettingsScreen from "screens/SpaceSettingsScreen";
 
 const Stack = createStackNavigator();
 
@@ -258,6 +259,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.ADVANCED_SETTINGS_SCREEN}
         component={AdvancedSettingsScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.SPACE_SETTINGS_SCREEN}
+        component={SpaceSettingsScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

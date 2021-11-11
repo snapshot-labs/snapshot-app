@@ -127,7 +127,7 @@ function BlockVotes({
         >
           {resultsLoaded &&
           choicesTextWidth.length >= choicesTextWidthExpectedMinLength ? (
-            <>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={[common.h4, { color: colors.textColor }]}>
                 {i18n.t("votes")}
               </Text>
@@ -135,7 +135,11 @@ function BlockVotes({
                 <Text style={blockStyles.countText}>{votes.length}</Text>
               </View>
               <View
-                style={{ flexDirection: "row", marginLeft: 8, marginBottom: 6 }}
+                style={{
+                  flexDirection: "row",
+                  marginLeft: 2,
+                  marginBottom: 6,
+                }}
               >
                 {votes.slice(0, 5).map((vote, i) => {
                   const voterProfile = profiles[vote.voter];
@@ -158,7 +162,7 @@ function BlockVotes({
                   );
                 })}
               </View>
-            </>
+            </View>
           ) : (
             <Placeholder
               style={{

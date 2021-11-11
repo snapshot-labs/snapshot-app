@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
   countContainer: {
     backgroundColor: colors.darkGray,
-    borderRadius: 24,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 4,
@@ -31,6 +31,7 @@ export const styles = StyleSheet.create({
     marginLeft: 4,
     marginBottom: 4,
     minWidth: 30,
+    height: 30,
   },
   countText: {
     color: colors.white,

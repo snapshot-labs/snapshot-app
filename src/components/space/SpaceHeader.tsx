@@ -9,7 +9,10 @@ import common from "styles/common";
 import FollowButton from "../FollowButton";
 import { Space } from "types/explore";
 import { n } from "helpers/miscUtils";
-import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
+import {
+  CREATE_PROPOSAL_SCREEN,
+  SPACE_SETTINGS_SCREEN,
+} from "constants/navigation";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
 
@@ -49,7 +52,16 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
           </Text>
         </View>
         {isWalletConnect && (
-          <View style={{ marginLeft: "auto", marginTop: 20 }}>
+          <View style={{ marginLeft: "auto", marginTop: 16 }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(SPACE_SETTINGS_SCREEN, { space });
+              }}
+            >
+              <View style={{ alignSelf: "flex-end", marginBottom: 8 }}>
+                <IconFont name="gear" size={30} color={colors.textColor} />
+              </View>
+            </TouchableOpacity>
             <FollowButton space={space} />
             <TouchableOpacity
               onPress={() => {

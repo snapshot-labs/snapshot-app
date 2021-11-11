@@ -255,7 +255,7 @@ function SpaceProposals({
             <View
               style={{
                 width: "100%",
-                height: proposals.length > 4 ? 400 : screenHeight,
+                height: proposals.length > 4 ? 400 : screenHeight / 2,
                 backgroundColor: colors.bgDefault,
               }}
             />
