@@ -147,8 +147,14 @@ function BlockCastVote({
                 }}
                 disabled={!isWalletConnect || selectedChoices.length === 0}
                 buttonContainerStyle={{
-                  backgroundColor: colors.bgBlue,
-                  borderColor: colors.bgBlue,
+                  backgroundColor:
+                    !isWalletConnect || selectedChoices.length === 0
+                      ? colors.borderColor
+                      : colors.bgBlue,
+                  borderColor:
+                    !isWalletConnect || selectedChoices.length === 0
+                      ? colors.borderColor
+                      : colors.bgBlue,
                 }}
                 buttonTitleStyle={{
                   color: colors.white,

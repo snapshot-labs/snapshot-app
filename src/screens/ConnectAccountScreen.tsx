@@ -48,10 +48,15 @@ async function fetchWallets(
       ...defaultHeaders,
     },
   };
-  const response = await fetch(
-    "https://registry.walletconnect.org/data/wallets.json",
-    options
-  );
+  let response;
+  try {
+    response = await fetch(
+      "https://registry.walletconnect.org/data/wallets.json",
+      options
+    );
+  } catch (e) {
+    console.log("FAILED", e);
+  }
   const walletsMap = await response.json();
   const walletKeys = Object.keys(walletsMap);
   const wallets = [];
@@ -105,7 +110,6 @@ async function fetchWallets(
 function ConnectAccountScreen() {
   const insets = useSafeAreaInsets();
   const [wallets, setWallets] = useState<any[]>([]);
-  const connector = useWalletConnect();
   const [loading, setLoading] = useState<boolean>(true);
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();

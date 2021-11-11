@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statusContainer: {
-    marginLeft: "auto",
+    paddingVertical: 8,
+    flexDirection: "row",
   },
   title: {
     color: colors.headingColor,
@@ -170,9 +171,6 @@ function ProposalPreview({
               key={proposal.id}
             />
           </View>
-          <View style={styles.statusContainer}>
-            <StateBadge state={proposal.state} />
-          </View>
         </View>
         <View>
           <Text
@@ -189,8 +187,11 @@ function ProposalPreview({
               {formattedBody}
             </Text>
           )}
+        </View>
+        <View style={styles.statusContainer}>
+          <StateBadge state={proposal.state} />
           <Text style={[styles.period, { color: colors.secondaryTextColor }]}>
-            {period}
+            , {period}
           </Text>
         </View>
       </View>

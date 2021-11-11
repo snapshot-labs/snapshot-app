@@ -276,9 +276,14 @@ function VoteConfirmModal({
               {
                 width: buttonWidth,
                 marginLeft: 16,
-                opacity:
-                  !isWalletConnect || loading || totalScore === 0 ? 0.3 : 1,
-                borderColor: colors.textColor,
+                backgroundColor:
+                  !isWalletConnect || loading || totalScore === 0
+                    ? colors.borderColor
+                    : "transparent",
+                borderColor:
+                  !isWalletConnect || loading || totalScore === 0
+                    ? colors.borderColor
+                    : colors.textColor,
               },
             ]}
           >
@@ -286,7 +291,15 @@ function VoteConfirmModal({
               <ActivityIndicator size="small" color={colors.textColor} />
             ) : (
               <Text
-                style={[buttonStyles.buttonTitle, { color: colors.textColor }]}
+                style={[
+                  buttonStyles.buttonTitle,
+                  {
+                    color:
+                      !isWalletConnect || loading || totalScore === 0
+                        ? colors.white
+                        : colors.textColor,
+                  },
+                ]}
               >
                 {i18n.t("vote")}
               </Text>

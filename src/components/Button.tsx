@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
   },
   disabled: {
-    opacity: 0.3,
+    backgroundColor: colors.borderColor,
   },
   buttonTitle: {
     color: colors.white,

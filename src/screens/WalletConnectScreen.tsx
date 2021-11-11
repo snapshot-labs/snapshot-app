@@ -37,61 +37,63 @@ async function fetchWallets(
   setWallets: (wallets: any[]) => void,
   setLoading: (loading: boolean) => void
 ) {
-  const options: { [key: string]: any } = {
-    method: "get",
-    headers: {
-      ...defaultHeaders,
-    },
-  };
-  const response = await fetch(
-    "https://registry.walletconnect.org/data/wallets.json",
-    options
-  );
-  const walletsMap = await response.json();
-  const walletKeys = Object.keys(walletsMap);
   const wallets = [];
-  for (let i = 0; i < walletKeys.length; i++) {
-    const currentWalletKey = walletKeys[i];
-    const currentWallet = walletsMap[currentWalletKey];
-    if (currentWallet.mobile.native !== "") {
-      if (Platform.OS === "android") {
-        if (currentWallet.name && currentWallet.name.includes("Rainbow")) {
-          continue;
-        }
-        const androidAppArray = get(currentWallet, "app.android", "").split(
-          "id="
-        );
-        const androidAppUrl = get(androidAppArray, 1, undefined);
-
-        if (androidAppUrl) {
-          const isAppInstalled = await SendIntentAndroid.isAppInstalled(
-            androidAppUrl
+  try {
+    const options: { [key: string]: any } = {
+      method: "get",
+      headers: {
+        ...defaultHeaders,
+      },
+    };
+    const response = await fetch(
+      "https://registry.walletconnect.org/data/wallets.json",
+      options
+    );
+    const walletsMap = await response.json();
+    const walletKeys = Object.keys(walletsMap);
+    for (let i = 0; i < walletKeys.length; i++) {
+      const currentWalletKey = walletKeys[i];
+      const currentWallet = walletsMap[currentWalletKey];
+      if (currentWallet.mobile.native !== "") {
+        if (Platform.OS === "android") {
+          if (currentWallet.name && currentWallet.name.includes("Rainbow")) {
+            continue;
+          }
+          const androidAppArray = get(currentWallet, "app.android", "").split(
+            "id="
           );
-          if (isAppInstalled) {
-            wallets.push(currentWallet);
+          const androidAppUrl = get(androidAppArray, 1, undefined);
+
+          if (androidAppUrl) {
+            const isAppInstalled = await SendIntentAndroid.isAppInstalled(
+              androidAppUrl
+            );
+            if (isAppInstalled) {
+              wallets.push(currentWallet);
+            }
+          } else {
+            const isAppInstalled = await Linking.canOpenURL(
+              currentWallet.mobile.native
+            );
+
+            if (isAppInstalled) {
+              wallets.push(currentWallet);
+            }
           }
         } else {
-          const isAppInstalled = await Linking.canOpenURL(
-            currentWallet.mobile.native
-          );
+          try {
+            const isAppInstalled = await Linking.canOpenURL(
+              currentWallet.mobile.native
+            );
 
-          if (isAppInstalled) {
-            wallets.push(currentWallet);
-          }
+            if (isAppInstalled) {
+              wallets.push(currentWallet);
+            }
+          } catch (e) {}
         }
-      } else {
-        try {
-          const isAppInstalled = await Linking.canOpenURL(
-            currentWallet.mobile.native
-          );
-
-          if (isAppInstalled) {
-            wallets.push(currentWallet);
-          }
-        } catch (e) {}
       }
     }
-  }
+  } catch (e) {}
 
   setWallets(wallets);
   setLoading(false);
@@ -147,7 +149,11 @@ function WalletConnectScreen() {
           Left={(props) => (
             <PlaceholderMedia isRound={true} style={props.style} size={50} />
           )}
-          style={{ alignItems: "center" }}
+          style={{
+            alignItems: "center",
+            paddingHorizontal: 16,
+            paddingVertical: 16,
+          }}
         >
           <PlaceholderLine width={80} />
         </Placeholder>

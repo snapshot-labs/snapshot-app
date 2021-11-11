@@ -282,7 +282,7 @@ function AboutSpace({
         ) : (
           <View />
         )}
-        <View style={{ width: 200, height: deviceHeight }} />
+        <View style={{ width: 200, height: deviceHeight / 2 }} />
       </View>
     </AnimatedScrollView>
   );

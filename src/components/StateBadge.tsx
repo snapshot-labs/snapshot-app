@@ -1,14 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
+import i18n from "i18n-js";
 import colors from "../constants/colors";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
-  badge: {
-    height: 28,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
+  container: {
+    flexDirection: "row",
   },
   badgeTitle: {
     fontSize: 16,
@@ -20,13 +18,22 @@ const styles = StyleSheet.create({
     marginBottom: Platform.OS === "android" ? 4 : 0,
   },
   purpleBg: {
-    backgroundColor: colors.bgPurple,
+    color: colors.bgPurple,
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
   },
   greenBg: {
-    backgroundColor: colors.bgGreen,
+    color: colors.bgGreen,
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
   },
   grayBg: {
-    backgroundColor: colors.bgGray,
+    color: colors.bgGray,
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    textTransform: "capitalize",
   },
 });
 
@@ -42,8 +49,8 @@ function getStateStyle(state: string) {
 
 function StateBadge({ state }: StateBadgeProps) {
   return (
-    <View style={[styles.badge, getStateStyle(state)]}>
-      <Text style={styles.badgeTitle}>{state}</Text>
+    <View style={styles.container}>
+      <Text style={getStateStyle(state)}>{state}</Text>
     </View>
   );
 }
