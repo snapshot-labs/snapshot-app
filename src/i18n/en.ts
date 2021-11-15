@@ -154,4 +154,5 @@ export default {
   github: "Github",
   any: "Any",
   save: "Save",
+  unableToEditSpace: "Unable to edit space",
 };

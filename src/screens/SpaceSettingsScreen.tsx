@@ -3,16 +3,16 @@ import common from "styles/common";
 import { ScrollView, View, StyleSheet, Text } from "react-native";
 import { useAuthState } from "context/authContext";
 import i18n from "i18n-js";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import BackButton from "components/BackButton";
 import InputRound from "components/InputRound";
 import Button from "components/Button";
 import VotingTypeModal from "components/createProposal/VotingTypeModal";
+
 import { calcFromSeconds } from "helpers/miscUtils";
 import client from "helpers/snapshotClient";
+import { useToastShowConfig } from "constants/toast";
 
 const styles = StyleSheet.create({
   separator: {
@@ -59,6 +59,8 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
       ? { key: space.voting.type, text: space.voting.type }
       : { key: "any", text: i18n.t("any") }
   );
+  const toastShowConfig = useToastShowConfig();
+
   return (
     <SafeAreaView
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
@@ -208,14 +210,21 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
                 period: parsedVotingPeriod,
               },
             };
-
-            const sign = await client.broadcast(
-              wcConnector,
-              connectedAddress,
-              space.id,
-              "settings",
-              form
-            );
+            try {
+              const sign = await client.broadcast(
+                wcConnector,
+                connectedAddress,
+                space.id,
+                "settings",
+                form
+              );
+            } catch (e) {
+              Toast.show({
+                type: "customError",
+                text1: i18n.t("unableToEditSpace"),
+                ...toastShowConfig,
+              });
+            }
           }}
         />
         <View style={styles.footer} />
