@@ -36,6 +36,11 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "Calibre-Medium",
   },
+  label: {
+    fontSize: 18,
+    fontFamily: "Calibre-Medium",
+    color: colors.darkGray,
+  },
   lightButtonTitle: {
     color: colors.textColor,
   },
@@ -52,6 +57,7 @@ type ButtonProps = {
   loading?: boolean;
   onlyOneLine?: boolean;
   selected?: boolean;
+  label?: string;
 };
 
 function Button({
@@ -65,6 +71,7 @@ function Button({
   loading = false,
   onlyOneLine = false,
   selected = false,
+  label = undefined,
 }: ButtonProps) {
   const { theme, colors } = useAuthState();
   const ButtonContainerComponent = disabled
@@ -84,9 +91,11 @@ function Button({
           light ? styles.lightButton : {},
           disabled ? styles.disabled : {},
           selected ? { borderColor: colors.textColor } : {},
+          label !== undefined ? { justifyContent: "flex-start" } : {},
           buttonContainerStyle,
         ]}
       >
+        {label !== undefined && <Text style={styles.label}>{label}</Text>}
         {loading ? (
           <ActivityIndicator size="small" color={colors.white} />
         ) : (

@@ -100,3 +100,8 @@ export function safeJsonStringify(value: any): string {
         typeof value === "undefined" ? null : value
       );
 }
+
+export function calcFromSeconds(value, unit) {
+  if (unit === "h") return Math.floor(value / (60 * 60));
+  if (unit === "d") return Math.floor(value / (60 * 60 * 24));
+}
