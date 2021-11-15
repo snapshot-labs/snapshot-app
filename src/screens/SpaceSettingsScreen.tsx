@@ -3,9 +3,16 @@ import common from "styles/common";
 import { ScrollView, View, StyleSheet, Text } from "react-native";
 import { useAuthState } from "context/authContext";
 import i18n from "i18n-js";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import BackButton from "components/BackButton";
 import InputRound from "components/InputRound";
+import Button from "components/Button";
+import VotingTypeModal from "components/createProposal/VotingTypeModal";
+import { calcFromSeconds } from "helpers/miscUtils";
+import client from "helpers/snapshotClient";
 
 const styles = StyleSheet.create({
   separator: {
@@ -33,8 +40,7 @@ type SpaceSettingsScreenProps = {
 
 function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
   const space = route.params.space;
-  const { colors } = useAuthState();
-  const insets = useSafeAreaInsets();
+  const { colors, wcConnector, connectedAddress } = useAuthState();
   const [name, setName] = useState(space.name);
   const [about, setAbout] = useState(space.about);
   const [avatar, setAvatar] = useState(space.avatar);
@@ -47,18 +53,26 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
   const [terms, setTerms] = useState(space.terms);
   const [twitter, setTwitter] = useState(space.twitter);
   const [github, setGithub] = useState(space.github);
-
+  const [showVotingTypeModal, setShowVotingTypeModal] = useState(false);
+  const [votingType, setVotingType] = useState<{ key: string; text: string }>(
+    space.voting?.type
+      ? { key: space.voting.type, text: space.voting.type }
+      : { key: "any", text: i18n.t("any") }
+  );
   return (
-    <View
-      style={[
-        common.screen,
-        { paddingTop: insets.top, backgroundColor: colors.bgDefault },
-      ]}
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
       <View style={common.headerContainer}>
         <BackButton title={i18n.t("spaceSettings")} />
       </View>
-      <ScrollView contentContainerStyle={[common.screen, { padding: 16 }]}>
+      <ScrollView
+        style={common.screen}
+        contentContainerStyle={{
+          padding: 16,
+          backgroundColor: colors.bgDefault,
+        }}
+      >
         <Text style={[styles.heading, { color: colors.textColor }]}>
           {i18n.t("profile")}
         </Text>
@@ -91,6 +105,24 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
           value={symbol}
           onChangeText={(text: string) => {
             setSymbol(text);
+          }}
+        />
+        <View style={styles.separator} />
+        <InputRound
+          title={i18n.t("twitter")}
+          icon="twitter"
+          value={twitter}
+          onChangeText={(text: string) => {
+            setTwitter(text);
+          }}
+        />
+        <View style={styles.separator} />
+        <InputRound
+          title={i18n.t("github")}
+          icon="mark-github"
+          value={github}
+          onChangeText={(text: string) => {
+            setGithub(text);
           }}
         />
         <View style={styles.separator} />
@@ -129,6 +161,15 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
           onChangeRightValue={setVotingPeriodUnit}
         />
         <View style={styles.separator} />
+        <Button
+          label={i18n.t("type")}
+          title={votingType.text}
+          buttonTitleStyle={{ marginLeft: 8, fontSize: 18 }}
+          onPress={() => {
+            setShowVotingTypeModal(true);
+          }}
+          buttonContainerStyle={{ marginBottom: 8 }}
+        />
         <InputRound
           title={i18n.t("quorum")}
           value={quorum}
@@ -137,10 +178,57 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
           }}
           keyboardType="number-pad"
         />
+        <View style={styles.separator} />
+        <Button
+          title={i18n.t("save")}
+          onPress={async () => {
+            const parsedVotingDelay = calcFromSeconds(
+              parseInt(votingDelay, 16),
+              votingDelayUnit === "hours" ? "h" : "d"
+            );
+            const parsedVotingPeriod = calcFromSeconds(
+              parseInt(votingPeriod, 16),
+              votingPeriodUnit === "hours" ? "h" : "d"
+            );
+            //@ts-ignore
+            wcConnector.send = async (type, params) => {
+              return await wcConnector.signPersonalMessage(params);
+            };
 
+            const form = {
+              name,
+              about,
+              avatar,
+              symbol,
+              twitter,
+              github,
+              terms,
+              voting: {
+                delay: parsedVotingDelay,
+                period: parsedVotingPeriod,
+              },
+            };
+
+            const sign = await client.broadcast(
+              wcConnector,
+              connectedAddress,
+              space.id,
+              "settings",
+              form
+            );
+          }}
+        />
         <View style={styles.footer} />
+        <VotingTypeModal
+          isVisible={showVotingTypeModal}
+          setVotingType={setVotingType}
+          onClose={() => {
+            setShowVotingTypeModal(false);
+          }}
+          addAny
+        />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

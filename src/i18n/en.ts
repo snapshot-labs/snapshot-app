@@ -150,4 +150,8 @@ export default {
   avatar: "Avatar",
   voting: "Voting",
   symbol: "Symbol",
+  twitter: "Twitter",
+  github: "Github",
+  any: "Any",
+  save: "Save",
 };

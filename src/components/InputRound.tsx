@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardType,
   Dimensions,
+  Platform,
 } from "react-native";
 import Input from "components/Input";
 import colors from "constants/colors";
@@ -22,18 +23,18 @@ const { width } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    borderRadius: 24,
+    borderRadius: 60,
     flexDirection: "row",
     borderWidth: 1,
     borderColor: colors.borderColor,
     alignItems: "center",
-    height: 48,
+    height: 55,
   },
   title: {
     fontFamily: "Calibre-Medium",
     color: colors.darkGray,
     fontSize: 18,
-    lineHeight: 48,
+    zIndex: 100,
   },
   inputStyle: {
     borderLeftWidth: 0,
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
   rightValue: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
+    color: colors.darkGray,
   },
   rightValueContainer: {
     marginLeft: "auto",
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
 
 type InputRoundProps = {
   title: string;
+  icon?: string;
   value: string;
   onChangeText: (text: string) => void;
   rightValue?: string;
@@ -71,6 +74,7 @@ type InputRoundProps = {
 
 function InputRound({
   title,
+  icon = undefined,
   value,
   onChangeText,
   rightValue,
@@ -95,7 +99,13 @@ function InputRound({
           isFocused ? { borderColor: colors.textColor } : {},
         ]}
       >
-        <Text style={styles.title}>{title}</Text>
+        {icon === undefined ? (
+          <Text style={[styles.title, { color: colors.darkGray }]}>
+            {title}
+          </Text>
+        ) : (
+          <IconFont name={icon} size={16} color={colors.darkGray} />
+        )}
         <Input
           setRef={textInputRef}
           style={[
@@ -119,7 +129,7 @@ function InputRound({
                 type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                 payload: {
                   options: rightValueOptions,
-                  snapPoints: [10, 250],
+                  snapPoints: [10, 150],
                   show: true,
                   initialIndex: 1,
                   onPressOption: (index: number) => {
@@ -137,7 +147,7 @@ function InputRound({
                 name="arrow-up"
                 size={18}
                 color={colors.darkGray}
-                style={{ marginTop: 4 }}
+                style={{ marginTop: Platform.OS === "android" ? 4 : -4 }}
               />
             </View>
           </TouchableWithoutFeedback>

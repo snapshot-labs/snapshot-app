@@ -12,16 +12,28 @@ type VotingTypeModalProps = {
   isVisible: boolean;
   onClose: () => void;
   setVotingType: (votingType: { key: string; text: string }) => void;
+  addAny?: boolean;
 };
 
 function VotingTypeModal({
   isVisible,
   onClose,
   setVotingType,
+  addAny = false,
 }: VotingTypeModalProps) {
   const { colors } = useAuthState();
   const votingTypes = proposal.getVotingTypes();
+  const anyVotingType = {
+    key: "any",
+    text: i18n.t("any"),
+    description: "",
+  };
   const insets = useSafeAreaInsets();
+
+  if (addAny) {
+    votingTypes.unshift(anyVotingType);
+  }
+
   return (
     <Modal
       isVisible={isVisible}
@@ -77,14 +89,16 @@ function VotingTypeModal({
               <Text style={[common.headerTitle, { color: colors.textColor }]}>
                 {votingType.text}
               </Text>
-              <Text
-                style={[
-                  common.subTitle,
-                  { marginTop: 8, color: colors.textColor },
-                ]}
-              >
-                {votingType.description}
-              </Text>
+              {votingType.description !== "" && (
+                <Text
+                  style={[
+                    common.subTitle,
+                    { marginTop: 8, color: colors.textColor },
+                  ]}
+                >
+                  {votingType.description}
+                </Text>
+              )}
             </View>
           </TouchableHighlight>
         );
