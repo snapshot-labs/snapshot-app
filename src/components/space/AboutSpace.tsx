@@ -104,7 +104,21 @@ function AboutSpace({
         ) {
           spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
           spaceProposalsCurrentScrollRef.current = headerHeight;
-        } else if (event.nativeEvent.contentOffset.y === 0) {
+        } else if (event.nativeEvent.contentOffset.y <= 180) {
+          spaceProposalsRef?.current?.scrollToOffset({ offset: 0 });
+          spaceProposalsCurrentScrollRef.current = 0;
+        }
+      }}
+      onMomentumScrollEnd={(event) => {
+        spaceAboutCurrentScrollRef.current = event.nativeEvent.contentOffset.y;
+
+        if (
+          event.nativeEvent.contentOffset.y > 0 &&
+          spaceProposalsCurrentScrollRef.current <= 300
+        ) {
+          spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
+          spaceProposalsCurrentScrollRef.current = headerHeight;
+        } else if (event.nativeEvent.contentOffset.y <= 180) {
           spaceProposalsRef?.current?.scrollToOffset({ offset: 0 });
           spaceProposalsCurrentScrollRef.current = 0;
         }
