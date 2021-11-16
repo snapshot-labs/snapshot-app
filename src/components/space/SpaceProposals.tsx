@@ -270,7 +270,21 @@ function SpaceProposals({
           ) {
             spaceAboutRef.current?.scrollTo({ y: headerHeight });
             spaceAboutCurrentScrollRef.current = headerHeight;
-          } else if (event.nativeEvent.contentOffset.y === 0) {
+          } else if (event.nativeEvent.contentOffset.y <= 180) {
+            spaceAboutRef.current?.scrollTo({ y: 0 });
+            spaceAboutCurrentScrollRef.current = 0;
+          }
+        }}
+        onMomentumScrollEnd={(event) => {
+          spaceProposalsCurrentScrollRef.current =
+            event.nativeEvent.contentOffset.y;
+          if (
+            event.nativeEvent.contentOffset.y > 0 &&
+            spaceAboutCurrentScrollRef.current <= 300
+          ) {
+            spaceAboutRef.current?.scrollTo({ y: headerHeight });
+            spaceAboutCurrentScrollRef.current = headerHeight;
+          } else if (event.nativeEvent.contentOffset.y <= 180) {
             spaceAboutRef.current?.scrollTo({ y: 0 });
             spaceAboutCurrentScrollRef.current = 0;
           }
