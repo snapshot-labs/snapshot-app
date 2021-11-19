@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -41,7 +40,6 @@ function MoreScreen() {
     useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
-  const connector = useWalletConnect();
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
   const savedWalletKeys = Object.keys(savedWallets).filter(
@@ -105,9 +103,6 @@ function MoreScreen() {
       <View style={styles.bottomButton}>
         <Button
           onPress={async () => {
-            try {
-              await connector.killSession();
-            } catch (e) {}
             try {
               await wcConnector.killSession();
             } catch (e) {}

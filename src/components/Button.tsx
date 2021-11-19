@@ -97,7 +97,7 @@ function Button({
       >
         {label !== undefined && <Text style={styles.label}>{label}</Text>}
         {loading ? (
-          <ActivityIndicator size="small" color={colors.white} />
+          <ActivityIndicator size="small" color={colors.textColor} />
         ) : (
           <>
             <Text
