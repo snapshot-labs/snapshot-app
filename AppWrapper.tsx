@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "screens/AppNavigator";
-import { withWalletConnect } from "@walletconnect/react-native-dapp";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ExploreProvider } from "context/exploreContext";
 import storage from "helpers/storage";
@@ -108,22 +106,6 @@ function MainApp() {
   );
 }
 
-const WrappedMainApp = withWalletConnect(MainApp, {
-  redirectUrl: "org.snapshot",
-  clientMeta: {
-    description: "Snapshot Mobile App",
-    url: "https://snapshot.org",
-    icons: [
-      "https://raw.githubusercontent.com/snapshot-labs/brand/master/avatar/avatar.png",
-    ],
-    name: "snapshot",
-  },
-  storageOptions: {
-    //@ts-ignore
-    asyncStorage: AsyncStorage,
-  },
-});
-
 function AppWrapper() {
   const [loading, setLoading] = useState(true);
   const { theme, colors } = useAuthState();
@@ -148,7 +130,7 @@ function AppWrapper() {
     return <View />;
   }
 
-  return <WrappedMainApp />;
+  return <MainApp />;
 }
 
 export default AppWrapper;

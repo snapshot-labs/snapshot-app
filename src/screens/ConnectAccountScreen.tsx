@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
 import { CUSTOM_WALLET_SCREEN } from "../constants/navigation";

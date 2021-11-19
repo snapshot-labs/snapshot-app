@@ -1,5 +1,4 @@
 import fetch from "cross-fetch";
-import { Web3Provider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import {
   Space,
@@ -77,7 +76,10 @@ class Client {
       try {
         console.log(JSON.stringify(wcData));
         console.log("START WALLET CONNECT SIGN");
-        sig = await wcConnector.signTypedData([address, wcData]);
+        sig = await wcConnector.signTypedData([
+          address,
+          JSON.stringify(wcData),
+        ]);
       } catch (e) {
         console.log("WALLET CONNECT FAILED", e.message);
       }
