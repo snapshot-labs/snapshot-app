@@ -114,18 +114,13 @@ function authReducer(state: AuthState, action: ContextAction) {
           action.payload.walletService
         );
       } else {
+        console.log("SET WC CONNECTOR");
         if (action.payload.session) {
-          wcConnector = new WalletConnect({
-            ...initialWalletConnectValues,
-            session: action.payload.session,
-          });
-          setWalletConnectListeners(
-            wcConnector,
-            action.payload.androidAppUrl,
-            action.payload.walletService
-          );
+          wcConnector = action.payload.session;
         }
       }
+
+      console.log("SET WC CONNECTOR");
 
       if (wcConnector) {
         wcConnector.send = async (type: string, params: any) => {

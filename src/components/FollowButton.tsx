@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { useAuthDispatch, useAuthState } from "../context/authContext";
 import { Wallet } from "@ethersproject/wallet";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import signClient from "../helpers/signClient";
 import "@ethersproject/shims";
 import { checkAlias, setAlias } from "../helpers/aliasUtils";

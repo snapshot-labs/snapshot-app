@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Platform, StatusBar, View } from "react-native";
+import { AsyncStorage, Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "screens/AppNavigator";
-import { withWalletConnect } from "@walletconnect/react-native-dapp";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ExploreProvider } from "context/exploreContext";
 import storage from "helpers/storage";
@@ -15,6 +13,12 @@ import {
 import { ContextDispatch } from "types/context";
 import { getAliasWallet } from "helpers/aliasUtils";
 import { CUSTOM_WALLET_NAME } from "constants/wallets";
+import WalletConnect from "@walletconnect/client";
+import {
+  initialWalletConnectValues,
+  setWalletConnectListeners,
+} from "helpers/walletConnectUtils";
+import ENV from "constants/env";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
@@ -40,10 +44,22 @@ async function loadFromStorage(
           parsedSavedWallets[connectedAddress]?.androidAppUrl;
         const walletService =
           parsedSavedWallets[connectedAddress]?.walletService;
+
+        const wcConnector = await WalletConnect.init({
+          relayProvider: "wss://relay.walletconnect.org",
+          storageOptions: {
+            asyncStorage: AsyncStorage,
+          },
+          metadata: initialWalletConnectValues.clientMeta,
+          apiKey: ENV.WALLET_CONNECT_API_KEY,
+          logger: "debug",
+        });
+
+        setWalletConnectListeners(wcConnector, androidAppUrl, walletService);
         authDispatch({
           type: AUTH_ACTIONS.SET_WC_CONNECTOR,
           payload: {
-            session,
+            session: wcConnector,
             androidAppUrl,
             walletService,
           },
@@ -108,22 +124,6 @@ function MainApp() {
   );
 }
 
-const WrappedMainApp = withWalletConnect(MainApp, {
-  redirectUrl: "org.snapshot",
-  clientMeta: {
-    description: "Snapshot Mobile App",
-    url: "https://snapshot.org",
-    icons: [
-      "https://raw.githubusercontent.com/snapshot-labs/brand/master/avatar/avatar.png",
-    ],
-    name: "snapshot",
-  },
-  storageOptions: {
-    //@ts-ignore
-    asyncStorage: AsyncStorage,
-  },
-});
-
 function AppWrapper() {
   const [loading, setLoading] = useState(true);
   const { theme, colors } = useAuthState();
@@ -148,7 +148,7 @@ function AppWrapper() {
     return <View />;
   }
 
-  return <WrappedMainApp />;
+  return <MainApp />;
 }
 
 export default AppWrapper;

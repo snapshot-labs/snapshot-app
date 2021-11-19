@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  AsyncStorage,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
@@ -28,7 +29,8 @@ import {
   connectToWalletService,
   initialWalletConnectValues,
 } from "helpers/walletConnectUtils";
-import WalletConnect from "@walletconnect/client";
+import WalletConnect, { CLIENT_EVENTS } from "@walletconnect/client";
+import ENV from "constants/env";
 import BackButton from "components/BackButton";
 
 const defaultWallets = [MetaMask];
@@ -163,112 +165,114 @@ function WalletConnectScreen() {
             <TouchableOpacity
               key={wallet.id}
               onPress={async () => {
-                const newConnector: any = new WalletConnect({
-                  ...initialWalletConnectValues,
-                  session: undefined,
-                });
-                const bridge = encodeURIComponent(newConnector.bridge);
-                const arrayBufferKey = await generateKey();
-                const key = convertArrayBufferToHex(arrayBufferKey, true);
-                const handshakeTopic = uuid();
-                const createdUri = `wc:${handshakeTopic}@1`;
-                newConnector._key = arrayBufferKey;
-                const request = newConnector._formatRequest({
-                  method: "wc_sessionRequest",
-                  params: [
-                    {
-                      peerId: newConnector.clientId,
-                      peerMeta: newConnector.clientMeta,
-                      chainId: null,
-                    },
-                  ],
-                });
-                newConnector.handshakeId = request.id;
-                newConnector.handshakeTopic = handshakeTopic;
-                newConnector._sendSessionRequest(
-                  request,
-                  "Session update rejected",
-                  {
-                    topic: handshakeTopic,
-                  }
-                );
-                const formattedUri = `${createdUri}?bridge=${bridge}&key=${key}`;
-
-                newConnector.on("connect", async (error: any, payload: any) => {
-                  if (!error) {
-                    const params = payload.params[0];
-                    const address = params ? params.accounts[0] : "";
-                    const androidAppArray = get(
-                      wallet,
-                      "app.android",
-                      ""
-                    ).split("id=");
-
-                    let androidAppUrl = get(androidAppArray, 1, undefined);
-                    const connectedWallet = {
-                      name: wallet.name,
-                      address,
-                      androidAppUrl,
-                      mobile: wallet.mobile.native,
-                      walletService: wallet,
-                      session: newConnector.session,
-                    };
-
-                    storage.save(
-                      storage.KEYS.savedWallets,
-                      JSON.stringify({
-                        [address]: connectedWallet,
-                      })
-                    );
-                    authDispatch({
-                      type: AUTH_ACTIONS.SET_SAVED_WALLETS,
-                      payload: {
-                        [address]: connectedWallet,
-                      },
-                    });
-                    authDispatch({
-                      type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
-                      payload: {
-                        connectedAddress: address,
-                        isWalletConnect: true,
-                        addToStorage: true,
-                      },
-                    });
-                    authDispatch({
-                      type: AUTH_ACTIONS.SET_WC_CONNECTOR,
-                      payload: {
-                        newConnector: newConnector,
-                        androidAppUrl: androidAppUrl,
-                        walletService: wallet,
-                      },
-                    });
-                    navigation.reset({
-                      index: 0,
-                      routes: [{ name: HOME_SCREEN }],
-                    });
-                  }
+                const newConnector: any = await WalletConnect.init({
+                  relayProvider: "wss://relay.walletconnect.org",
+                  storageOptions: {
+                    asyncStorage: AsyncStorage,
+                  },
+                  metadata: initialWalletConnectValues.clientMeta,
+                  apiKey: ENV.WALLET_CONNECT_API_KEY,
+                  logger: "debug",
                 });
 
-                if (Platform.OS === "android") {
-                  const androidAppArray = get(wallet, "app.android", "").split(
-                    "id="
-                  );
+                newConnector.on(
+                  CLIENT_EVENTS.pairing.proposal,
+                  async (proposal: any) => {
+                    // uri should be shared with the Wallet either through QR Code scanning or mobile deep linking
+                    const { uri } = proposal.signal.params;
 
-                  let androidAppUrl = get(androidAppArray, 1, undefined);
+                    console.log({ uri });
 
-                  if (wallet.name.includes("Rainbow")) {
-                    Linking.openURL(wallet.mobile.native);
-                  } else {
-                    if (androidAppUrl) {
-                      SendIntentAndroid.openAppWithData(
-                        androidAppUrl,
-                        formattedUri
-                      );
+                    if (Platform.OS === "android") {
+                      const androidAppArray = get(
+                        wallet,
+                        "app.android",
+                        ""
+                      ).split("id=");
+
+                      let androidAppUrl = get(androidAppArray, 1, undefined);
+
+                      if (wallet.name.includes("Rainbow")) {
+                        Linking.openURL(wallet.mobile.native);
+                      } else {
+                        if (androidAppUrl) {
+                          SendIntentAndroid.openAppWithData(androidAppUrl, uri);
+                        }
+                      }
+                    } else {
+                      connectToWalletService(wallet, uri);
                     }
                   }
-                } else {
-                  connectToWalletService(wallet, formattedUri);
-                }
+                );
+
+                const session = await newConnector.connect({
+                  permissions: {
+                    blockchain: {
+                      chains: ["eip155:1"],
+                    },
+                    jsonrpc: {
+                      methods: [
+                        "eth_sendTransaction",
+                        "personal_sign",
+                        "eth_signTypedData",
+                      ],
+                    },
+                  },
+                });
+                // newConnector.on("connect", async (error: any, payload: any) => {
+                //   if (!error) {
+                //     const params = payload.params[0];
+                //     const address = params ? params.accounts[0] : "";
+                //     const androidAppArray = get(
+                //       wallet,
+                //       "app.android",
+                //       ""
+                //     ).split("id=");
+                //
+                //     let androidAppUrl = get(androidAppArray, 1, undefined);
+                //     const connectedWallet = {
+                //       name: wallet.name,
+                //       address,
+                //       androidAppUrl,
+                //       mobile: wallet.mobile.native,
+                //       walletService: wallet,
+                //       session: newConnector.session,
+                //     };
+                //
+                //     storage.save(
+                //       storage.KEYS.savedWallets,
+                //       JSON.stringify({
+                //         [address]: connectedWallet,
+                //       })
+                //     );
+                //     authDispatch({
+                //       type: AUTH_ACTIONS.SET_SAVED_WALLETS,
+                //       payload: {
+                //         [address]: connectedWallet,
+                //       },
+                //     });
+                //     authDispatch({
+                //       type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+                //       payload: {
+                //         connectedAddress: address,
+                //         isWalletConnect: true,
+                //         addToStorage: true,
+                //       },
+                //     });
+                //     authDispatch({
+                //       type: AUTH_ACTIONS.SET_WC_CONNECTOR,
+                //       payload: {
+                //         newConnector: newConnector,
+                //         androidAppUrl: androidAppUrl,
+                //         walletService: wallet,
+                //       },
+                //     });
+                //     navigation.reset({
+                //       index: 0,
+                //       routes: [{ name: HOME_SCREEN }],
+                //     });
+                //   }
+                // });
               }}
             >
               <View

@@ -1,15 +1,16 @@
 import { Linking, Platform } from "react-native";
 import WalletConnect from "@walletconnect/client";
 import SendIntentAndroid from "react-native-send-intent";
-import {
-  formatWalletServiceUrl,
-  WalletService,
-} from "@walletconnect/react-native-dapp";
+
+function formatWalletServiceUrl(walletService) {
+  console.log({ walletService });
+  return walletService.mobile.native;
+}
 
 export function setWalletConnectListeners(
   wcConnector: WalletConnect,
   androidAppUrl: string,
-  walletService: WalletService
+  walletService: any
 ) {
   wcConnector.off("call_request_sent");
   wcConnector.on("call_request_sent", async (error) => {
@@ -49,10 +50,7 @@ function formatProviderUrl(walletService: {
   return `${universalLink}`;
 }
 
-export async function connectToWalletService(
-  walletService: WalletService,
-  uri: string
-) {
+export async function connectToWalletService(walletService: any, uri: string) {
   if (typeof uri !== "string" || !uri.length) {
     return Promise.reject(new Error("Invalid uri."));
   }
@@ -61,7 +59,7 @@ export async function connectToWalletService(
   )}`;
   const connectionUrl = `${formatWalletServiceUrl(
     walletService
-  )}/wc?uri=${encodeURIComponent(uri)}${maybeRedirectUrl}`;
+  )}/wc?uri=${uri}`;
   if (await Linking.canOpenURL(connectionUrl)) {
     return await Linking.openURL(connectionUrl);
   }
