@@ -16,8 +16,8 @@ import IconFont from "../IconFont";
 import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
-import client from "../../helpers/snapshotClient";
 import { useToastShowConfig } from "constants/toast";
+import { sendEIP712 } from "helpers/EIP712";
 
 const { width } = Dimensions.get("screen");
 
@@ -95,7 +95,7 @@ function VoteConfirmModal({
   getProposal,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
-  const { connectedAddress, wcConnector, isWalletConnect, colors, theme } =
+  const { connectedAddress, wcConnector, isWalletConnect, colors } =
     useAuthState();
   const [loading, setLoading] = useState<boolean>(false);
   const toastShowConfig = useToastShowConfig();
@@ -225,11 +225,6 @@ function VoteConfirmModal({
 
             setLoading(true);
 
-            //@ts-ignore
-            wcConnector.send = async (type, params) => {
-              return await wcConnector.signPersonalMessage(params);
-            };
-
             let formattedSelectedChoices = selectedChoices;
 
             if (proposal.type === "single-choice") {
@@ -237,17 +232,20 @@ function VoteConfirmModal({
             }
 
             try {
-              const sign = await client.broadcast(
+              const sign = await sendEIP712(
                 wcConnector,
                 connectedAddress,
-                space.id,
+                space,
                 "vote",
                 {
-                  proposal: proposal.id,
+                  proposal: {
+                    id: proposal.id,
+                    type: proposal.type,
+                  },
                   choice: formattedSelectedChoices,
-                  metadata: {},
                 }
               );
+
               if (sign) {
                 Toast.show({
                   type: "customSuccess",

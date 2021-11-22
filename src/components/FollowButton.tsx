@@ -19,30 +19,34 @@ async function followSpace(
   authDispatch: ContextDispatch,
   space: Space
 ) {
-  if (isFollowingSpace) {
-    const unfollow: any = await signClient.unfollow(
-      aliasWallet,
-      aliasWallet.address,
-      {
-        from: connectedAddress ?? "",
-        space: space.id ?? "",
+  try {
+    if (isFollowingSpace) {
+      const unfollow: any = await signClient.unfollow(
+        aliasWallet,
+        aliasWallet.address,
+        {
+          from: connectedAddress ?? "",
+          space: space.id ?? "",
+        }
+      );
+      if (unfollow && unfollow.id) {
+        await getFollows(connectedAddress, authDispatch);
       }
-    );
-    if (unfollow && unfollow.id) {
-      await getFollows(connectedAddress, authDispatch);
-    }
-  } else {
-    const follows: any = await signClient.follow(
-      aliasWallet,
-      aliasWallet.address,
-      {
-        from: connectedAddress ?? "",
-        space: space.id ?? "",
+    } else {
+      const follows: any = await signClient.follow(
+        aliasWallet,
+        aliasWallet.address,
+        {
+          from: connectedAddress ?? "",
+          space: space.id ?? "",
+        }
+      );
+      if (follows && follows.id) {
+        await getFollows(connectedAddress, authDispatch);
       }
-    );
-    if (follows && follows.id) {
-      await getFollows(connectedAddress, authDispatch);
     }
+  } catch (e) {
+    console.log("FOLLOW SPACE ERROR", e);
   }
 }
 
@@ -126,7 +130,7 @@ function FollowButton({ space }: FollowButtonProps) {
             }
           }
         } catch (e) {
-          console.log(e);
+          console.log("FOLLOW BUTTON ERROR", e);
         }
 
         setButtonLoading(false);

@@ -95,13 +95,13 @@ export async function signWithAliasCheck(
   connectedAddress: string,
   connector: WalletConnect,
   authDispatch: ContextDispatch,
-  signAction: () => void
-) {
+  signAction: (aliasWallet: Wallet) => void
+): Promise<any> {
   try {
     if (aliasWallet) {
       const isValidAlias = await checkAlias(aliasWallet, connectedAddress);
       if (isValidAlias) {
-        signAction();
+        return await signAction(aliasWallet);
       } else {
         const aliasWallet = await setAlias(
           connectedAddress,
@@ -113,7 +113,7 @@ export async function signWithAliasCheck(
           const isValidAlias = await checkAlias(aliasWallet, connectedAddress);
 
           if (isValidAlias) {
-            signAction();
+            return await signAction(aliasWallet);
           }
         }
       }
@@ -128,11 +128,12 @@ export async function signWithAliasCheck(
         const isValidAlias = await checkAlias(aliasWallet, connectedAddress);
 
         if (isValidAlias) {
-          signAction();
+          return await signAction(aliasWallet);
         }
       }
     }
   } catch (e) {
     console.log(e);
+    return null;
   }
 }

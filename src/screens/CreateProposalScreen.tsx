@@ -26,6 +26,8 @@ import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "constants/navigation";
 import { Proposal } from "types/proposal";
 import { useToastShowConfig } from "constants/toast";
+import { sendEIP712 } from "helpers/EIP712";
+import { signWithAliasCheck } from "helpers/aliasUtils";
 
 const bodyLimit = 6400;
 
@@ -117,7 +119,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const duplicateProposal = route.params.proposal;
   const authDispatch = useAuthDispatch();
   const allVotingTypes = proposal.getVotingTypes();
-  const { connectedAddress, wcConnector, colors } = useAuthState();
+  const { connectedAddress, wcConnector, colors, aliasWallet } = useAuthState();
   const [choices, setChoices] = useState(
     duplicateProposal && duplicateProposal?.choices
       ? duplicateProposal.choices
@@ -250,26 +252,26 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
               metadata: {
                 network: space.network,
                 strategies: space.strategies,
+                plugins: {},
               },
             };
 
             try {
-              const sign: any = await client.broadcast(
-                //@ts-ignore
+              const sign = await sendEIP712(
                 wcConnector,
                 connectedAddress,
-                space.id,
+                space,
                 "proposal",
                 form
               );
-              const { ipfsHash } = sign;
-
-              navigation.replace(PROPOSAL_SCREEN, {
-                proposalId: ipfsHash,
-                spaceId: space.id,
-              });
 
               if (sign) {
+                console.log("SIGN", JSON.stringify(sign));
+
+                navigation.replace(PROPOSAL_SCREEN, {
+                  proposalId: sign.id,
+                  spaceId: space.id,
+                });
                 Toast.show({
                   type: "customSuccess",
                   text1: i18n.t("proposalCreated"),

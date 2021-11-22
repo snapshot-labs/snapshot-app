@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 import i18n from "i18n-js";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import Block from "../Block";
-import colors from "constants/colors";
 import { Proposal } from "types/proposal";
 import { Space } from "types/explore";
 import { getPower } from "helpers/snapshot";
@@ -27,6 +26,7 @@ type BlockCastVoteProps = {
   setScrollEnabled: (scrollEnabled: boolean) => void;
   space: Space;
   getProposal: () => void;
+  onClose: () => void;
 };
 
 async function loadPower(
@@ -48,6 +48,7 @@ function BlockCastVote({
   setScrollEnabled,
   space,
   getProposal,
+  onClose,
 }: BlockCastVoteProps) {
   const { colors } = useAuthState();
   const { connectedAddress, isWalletConnect } = useAuthState();
@@ -133,7 +134,8 @@ function BlockCastVote({
                       ModalContent: () => (
                         <VoteConfirmModal
                           onClose={() => {
-                            bottomSheetModalRef?.current?.close();
+                            onClose();
+                            bottomSheetModalRef.current.close();
                           }}
                           proposal={proposal}
                           selectedChoices={selectedChoices}

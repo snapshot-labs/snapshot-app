@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Space } from "types/explore";
 import BottomSheetModal from "components/BottomSheetModal";
 import { Proposal } from "types/proposal";
@@ -19,22 +19,20 @@ const renderBackdrop = (props: any) => (
 type ProposalVoteBottomSheetProps = {
   proposal: Proposal;
   space: Space;
-  bottomSheetRef: any;
-  onClose: () => void;
   resultsLoaded: any;
   getProposal: () => void;
   setScrollEnabled: (scrollEnabled: boolean) => void;
 };
 
 function ProposalVoteBottomSheet({
-  bottomSheetRef,
   proposal,
   space,
   getProposal,
   resultsLoaded,
   setScrollEnabled,
 }: ProposalVoteBottomSheetProps) {
-  const snapPoints = [65, "50%", "100%"];
+  const snapPoints = [65, "50%", "75%", "100%"];
+  const bottomSheetRef = useRef();
 
   return (
     <BottomSheetModal
@@ -52,6 +50,10 @@ function ProposalVoteBottomSheet({
             setScrollEnabled={setScrollEnabled}
             space={space}
             getProposal={getProposal}
+            onClose={() => {
+              //@ts-ignore
+              bottomSheetRef.current?.snapToIndex(0);
+            }}
           />
         );
       }}

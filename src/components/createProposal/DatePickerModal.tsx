@@ -185,7 +185,11 @@ function DatePickerModal({
                 : {},
             ]}
           >
-            <Text style={buttonStyle.buttonTitle}>{i18n.t("select")}</Text>
+            <Text
+              style={[buttonStyle.buttonTitle, { color: colors.textColor }]}
+            >
+              {i18n.t("select")}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
