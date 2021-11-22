@@ -106,8 +106,9 @@ class Client {
     return new Promise((resolve, reject) => {
       fetch(url, init)
         .then((res) => {
-          console.log("RES RESPONSE", { res });
+          console.log("RES RESPONSE", res.ok);
           if (res.ok) return resolve(res.json());
+
           throw res;
         })
         .catch((e) => {

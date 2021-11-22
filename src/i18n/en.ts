@@ -155,4 +155,5 @@ export default {
   any: "Any",
   save: "Save",
   unableToEditSpace: "Unable to edit space",
+  unableToFindProposal: "Unable to find proposal.",
 };

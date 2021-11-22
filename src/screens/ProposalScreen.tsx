@@ -9,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { Proposal } from "types/proposal";
+import i18n from "i18n-js";
 import common from "styles/common";
 import { useExploreState } from "context/exploreContext";
 import { Space } from "types/explore";
@@ -22,7 +23,6 @@ import BlockVotes from "components/proposal/BlockVotes";
 import { getResults } from "helpers/snapshot";
 import BackButton from "components/BackButton";
 import BlockResults from "components/proposal/BlockResults";
-import BlockCastVote from "components/proposal/BlockCastVote";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import ProposalMenu from "components/proposal/ProposalMenu";
 import { useAuthState } from "context/authContext";
@@ -66,25 +66,36 @@ async function getProposal(
   setLoaded: (loaded: boolean) => void,
   setVotes: (votes: any) => void,
   setProposalFullyLoading: (loading: boolean) => void,
+  setProposalError: (proposalError: boolean) => void,
   proposalId?: string
 ) {
-  const result = await apolloClient.query({
-    query: PROPOSAL_VOTES_QUERY,
-    variables: {
-      id: proposal.id ?? proposalId,
-    },
-  });
-  const votes = get(result, "data.votes", []);
-  const updatedProposal = {
-    ...proposal,
-    ...get(result, "data.proposal", {}),
-    votes: votes,
-  };
-  setProposal(updatedProposal);
-  setVotes(votes);
-  setLoaded(true);
-  setProposalFullyLoading(false);
-  return { proposal: updatedProposal, votes };
+  try {
+    const result = await apolloClient.query({
+      query: PROPOSAL_VOTES_QUERY,
+      variables: {
+        id: proposal.id ?? proposalId,
+      },
+    });
+    if (isEmpty(result?.data.proposal)) {
+      setProposalError(true);
+      setLoaded(true);
+      setProposalFullyLoading(false);
+    } else {
+      const votes = get(result, "data.votes", []);
+      const updatedProposal = {
+        ...proposal,
+        ...get(result, "data.proposal", {}),
+        votes: votes,
+      };
+      setProposal(updatedProposal);
+      setVotes(votes);
+      setLoaded(true);
+      setProposalFullyLoading(false);
+      return { proposal: updatedProposal, votes };
+    }
+  } catch (e) {
+    setProposalError(true);
+  }
 }
 
 async function getResultsObj(
@@ -115,8 +126,9 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const [votes, setVotes] = useState<any[]>([]);
   const navigation = useNavigation();
   const [results, setResults] = useState({});
-  const [resultsLoaded, setResultsLoaded] = useState(false);
+  const [resultsLoaded, setResultsLoaded] = useState<boolean>(false);
   const [scrollEnabled, setScrollEnabled] = useState<boolean>(true);
+  const [proposalError, setProposalError] = useState<boolean>(false);
   const { spaces } = useExploreState();
   const space: any = useMemo(
     () => getSpace(spaces, proposal, route.params.spaceId),
@@ -133,6 +145,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       setLoaded,
       setVotes,
       setProposalFullyLoading,
+      setProposalError,
       route.params.proposalId
     );
   }, []);
@@ -199,6 +212,18 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             <PlaceholderLine width={100} />
             <PlaceholderLine width={100} />
           </Placeholder>
+        </View>
+      ) : proposalError ? (
+        <View
+          style={[
+            common.justifyCenter,
+            common.alignItemsCenter,
+            { marginTop: 50 },
+          ]}
+        >
+          <Text style={[common.h4, { color: colors.darkGray }]}>
+            {i18n.t("unableToFindProposal")}
+          </Text>
         </View>
       ) : (
         <ScrollView scrollEnabled={scrollEnabled}>
@@ -274,7 +299,8 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               setProposal,
               setLoaded,
               setVotes,
-              setProposalFullyLoading
+              setProposalFullyLoading,
+              setProposalError
             );
 
             getResultsObj(

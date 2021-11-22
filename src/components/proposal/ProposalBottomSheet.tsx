@@ -13,6 +13,7 @@ import client from "helpers/snapshotClient";
 import { useToastShowConfig } from "constants/toast";
 import { Proposal } from "types/proposal";
 import { useNavigation } from "@react-navigation/native";
+import { sendEIP712 } from "helpers/EIP712";
 
 const isAdmin = (connectedAddress: string, space: Space) => {
   const admins = (space.admins || []).map((admin: string) =>
@@ -53,14 +54,15 @@ function ProposalBottomSheet({
 
   const deleteProposal = async () => {
     try {
-      const sign = await client.broadcast(
-        //@ts-ignore
+      const sign = await sendEIP712(
         wcConnector,
         connectedAddress,
-        space.id,
+        space,
         "delete-proposal",
         {
-          proposal: proposal.id,
+          proposal: {
+            id: proposal.id,
+          },
         }
       );
 

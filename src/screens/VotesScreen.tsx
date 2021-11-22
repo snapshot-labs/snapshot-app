@@ -17,7 +17,6 @@ import {
 import colors from "../constants/colors";
 import common from "../styles/common";
 import i18n from "i18n-js";
-import ReceiptModal from "../components/proposal/ReceiptModal";
 import { useExploreState } from "../context/exploreContext";
 import BackButton from "../components/BackButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,10 +24,6 @@ import { useAuthState } from "../context/authContext";
 import { Space } from "../types/explore";
 import { Proposal } from "../types/proposal";
 import VoteList from "../components/proposal/VotesList";
-import {
-  useBottomSheetModalDispatch,
-  useBottomSheetModalRef,
-} from "context/bottomSheetModalContext";
 
 const { width: deviceWidth } = Dimensions.get("screen");
 
