@@ -20,7 +20,6 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import VoteConfirmModal from "components/proposal/VoteConfirmModal";
 import ReceiptModal from "components/proposal/ReceiptModal";
 
 const { width } = Dimensions.get("screen");

@@ -19,6 +19,7 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import common from "styles/common";
+import { useNavigation } from "@react-navigation/core";
 
 type BlockCastVoteProps = {
   proposal: Proposal;
@@ -55,6 +56,7 @@ function BlockCastVote({
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const navigation = useNavigation();
 
   const [totalScore, setTotalScore] = useState(0);
   let VotesComponent;
@@ -142,6 +144,7 @@ function BlockCastVote({
                           space={space}
                           totalScore={totalScore}
                           getProposal={getProposal}
+                          navigation={navigation}
                         />
                       ),
                     },

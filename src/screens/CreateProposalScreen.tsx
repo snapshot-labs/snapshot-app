@@ -29,6 +29,12 @@ import { useToastShowConfig } from "constants/toast";
 import { sendEIP712 } from "helpers/EIP712";
 import { signWithAliasCheck } from "helpers/aliasUtils";
 import { parseErrorMessage } from "helpers/apiUtils";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
 
 const bodyLimit = 6400;
 
@@ -120,7 +126,8 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const duplicateProposal = route.params.proposal;
   const authDispatch = useAuthDispatch();
   const allVotingTypes = proposal.getVotingTypes();
-  const { connectedAddress, wcConnector, colors, aliasWallet } = useAuthState();
+  const { connectedAddress, wcConnector, colors, savedWallets, aliases } =
+    useAuthState();
   const [choices, setChoices] = useState(
     duplicateProposal && duplicateProposal?.choices
       ? duplicateProposal.choices
@@ -152,6 +159,17 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   ]);
   const navigation: any = useNavigation();
   const toastShowConfig = useToastShowConfig();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetWCErrorConfig = createBottomSheetParamsForWalletConnectError(
+    colors,
+    bottomSheetModalRef,
+    authDispatch,
+    navigation,
+    savedWallets,
+    aliases,
+    connectedAddress ?? ""
+  );
 
   useEffect(() => {
     fetchBlockNumber(space, setSnapshot);
@@ -296,6 +314,12 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
                 type: "customError",
                 text1: parseErrorMessage(e, i18n.t("unableToCreateProposal")),
                 ...toastShowConfig,
+              });
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  ...bottomSheetWCErrorConfig,
+                },
               });
             }
 

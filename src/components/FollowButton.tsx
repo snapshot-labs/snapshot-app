@@ -13,6 +13,13 @@ import get from "lodash/get";
 import { getFollows, parseErrorMessage } from "helpers/apiUtils";
 import { ContextDispatch } from "types/context";
 import { Space } from "types/explore";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
+import { useNavigation } from "@react-navigation/native";
 
 async function followSpace(
   isFollowingSpace: any,
@@ -20,7 +27,8 @@ async function followSpace(
   connectedAddress: string,
   authDispatch: ContextDispatch,
   space: Space,
-  toastShowConfig: any
+  toastShowConfig: any,
+  showBottomSheetWCErrorModal: () => void
 ) {
   try {
     if (isFollowingSpace) {
@@ -49,11 +57,13 @@ async function followSpace(
       }
     }
   } catch (e) {
+    console.log(e);
     Toast.show({
       type: "customError",
       text1: parseErrorMessage(e, i18n.t("unableToJoinSpace")),
       ...toastShowConfig,
     });
+    showBottomSheetWCErrorModal();
   }
 }
 
@@ -63,13 +73,33 @@ type FollowButtonProps = {
 
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-  const { wcConnector } = useAuthState();
+  const { wcConnector, colors, savedWallets, aliases } = useAuthState();
   const authDispatch = useAuthDispatch();
   const { aliasWallet, followedSpaces, connectedAddress } = useAuthState();
+  const navigation = useNavigation();
   const isFollowingSpace = find(followedSpaces, (followedSpace) => {
     return get(followedSpace, "space.id") === space.id;
   });
   const toastShowConfig = useToastShowConfig();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetWCErrorConfig = createBottomSheetParamsForWalletConnectError(
+    colors,
+    bottomSheetModalRef,
+    authDispatch,
+    navigation,
+    savedWallets,
+    aliases,
+    connectedAddress ?? ""
+  );
+  const showBottomSheetWCErrorModal = () => {
+    bottomSheetModalDispatch({
+      type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+      payload: {
+        ...bottomSheetWCErrorConfig,
+      },
+    });
+  };
 
   return (
     <Button
@@ -88,7 +118,8 @@ function FollowButton({ space }: FollowButtonProps) {
                 connectedAddress ?? "",
                 authDispatch,
                 space,
-                toastShowConfig
+                toastShowConfig,
+                showBottomSheetWCErrorModal
               );
             } else {
               const aliasWallet = await setAlias(
@@ -110,7 +141,8 @@ function FollowButton({ space }: FollowButtonProps) {
                     connectedAddress ?? "",
                     authDispatch,
                     space,
-                    toastShowConfig
+                    toastShowConfig,
+                    showBottomSheetWCErrorModal
                   );
                 }
               }
@@ -135,7 +167,8 @@ function FollowButton({ space }: FollowButtonProps) {
                   connectedAddress ?? "",
                   authDispatch,
                   space,
-                  toastShowConfig
+                  toastShowConfig,
+                  showBottomSheetWCErrorModal
                 );
               }
             }

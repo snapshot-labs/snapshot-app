@@ -1,11 +1,5 @@
 import React, { useRef } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  findNodeHandle,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 import { styles as buttonStyles } from "components/Button";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
@@ -71,7 +65,6 @@ function CategoriesScrollView({
               for (let j = 0; j < i; j++) {
                 const result: any = await measureComponent(nodesRef.current[i]);
                 xPos += result?.width ?? 0;
-                console.log({ xPos });
               }
               scrollViewRef.current?.scrollTo({
                 x: xPos !== 0 ? xPos - 24 : xPos,

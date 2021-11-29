@@ -187,23 +187,25 @@ function FeedScreen({
         <RefreshControl
           refreshing={refreshing}
           onRefresh={() => {
-            setLoadCount(0);
-            setRefreshing(true);
-            getProposals(
-              followedSpaces,
-              0,
-              proposals,
-              setLoadCount,
-              setProposals,
-              true,
-              setRefreshing,
-              filter.key,
-              useFollowedSpaces
-            );
+            if (followedSpaces.length > 0 || !useFollowedSpaces) {
+              setLoadCount(0);
+              setRefreshing(true);
+              getProposals(
+                followedSpaces,
+                0,
+                proposals,
+                setLoadCount,
+                setProposals,
+                true,
+                setRefreshing,
+                filter.key,
+                useFollowedSpaces
+              );
+            }
           }}
         />
       }
-      data={proposals}
+      data={followedSpaces.length > 0 || !useFollowedSpaces ? proposals : []}
       renderItem={(data) => {
         return (
           <ProposalPreview
