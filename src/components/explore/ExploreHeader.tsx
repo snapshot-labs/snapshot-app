@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Platform } from "react-native";
 import i18n from "i18n-js";
 import IconFont from "../IconFont";
@@ -6,11 +6,7 @@ import common from "../../styles/common";
 import SearchInput from "../SearchInput";
 import { n } from "../../helpers/miscUtils";
 import { useAuthState } from "context/authContext";
-import {
-  BOTTOM_SHEET_MODAL_ACTIONS,
-  useBottomSheetModalDispatch,
-  useBottomSheetModalRef,
-} from "context/bottomSheetModalContext";
+import CategoriesScrollView from "components/CategoriesScrollView";
 
 type ExploreHeaderProps = {
   searchValue: string;
@@ -18,6 +14,8 @@ type ExploreHeaderProps = {
   currentExplore: { key: string; text: string };
   setCurrentExplore: (explore: { key: string; text: string }) => void;
   filteredExplore: any[];
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
 };
 
 function getCurrentExploreText(currentExplore: { key: string; text: string }) {
@@ -40,99 +38,86 @@ function ExploreHeader({
   searchValue,
   onChangeText,
   currentExplore,
-  setCurrentExplore,
   filteredExplore,
+  selectedCategory,
+  setSelectedCategory,
 }: ExploreHeaderProps) {
   const { colors } = useAuthState();
-  const bottomSheetModalRef = useBottomSheetModalRef();
+  const [showSearch, setShowSearch] = useState(false);
   const currentExploreText = getCurrentExploreText(currentExplore);
-  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const searchRef: any = useRef(null);
+
+  useEffect(() => {
+    if (showSearch) {
+      searchRef?.current?.focus();
+    }
+  }, [showSearch]);
+
   return (
     <View style={{ backgroundColor: colors.bgDefault, paddingBottom: 8 }}>
-      <SearchInput
-        onChangeText={onChangeText}
-        value={searchValue}
-        RightComponent={() => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                const options = [
-                  i18n.t("spaces"),
-                  i18n.t("networks"),
-                  i18n.t("strategiess"),
-                  i18n.t("plugins"),
-                ];
-                bottomSheetModalDispatch({
-                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                  payload: {
-                    options,
-                    snapPoints: [10, 275],
-                    show: true,
-                    initialIndex: 1,
-                    onPressOption: (index: number) => {
-                      if (index === 0) {
-                        setCurrentExplore({
-                          key: "spaces",
-                          text: i18n.t("spaces"),
-                        });
-                      } else if (index === 1) {
-                        setCurrentExplore({
-                          key: "networks",
-                          text: i18n.t("networks"),
-                        });
-                      } else if (index === 2) {
-                        setCurrentExplore({
-                          key: "strategies",
-                          text: i18n.t("strategiess"),
-                        });
-                      } else if (index === 3) {
-                        setCurrentExplore({
-                          key: "plugins",
-                          text: i18n.t("plugins"),
-                        });
-                      }
-                      bottomSheetModalRef?.current?.close();
-                    },
-                  },
-                });
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{
-                    color: colors.textColor,
-                    fontSize: 18,
-                    fontFamily: "Calibre-Medium",
-                  }}
-                >
-                  {currentExplore.text}
-                </Text>
+      {showSearch ? (
+        <SearchInput
+          onChangeText={onChangeText}
+          value={searchValue}
+          searchRef={searchRef}
+          RightComponent={() => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  setShowSearch(false);
+                  onChangeText("");
+                }}
+              >
                 <IconFont
-                  name="arrow-up"
+                  name="close"
                   size={16}
                   color={colors.textColor}
                   style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
                 />
-              </View>
-            </TouchableOpacity>
-          );
-        }}
+              </TouchableOpacity>
+            );
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            paddingHorizontal: 16,
+            flexDirection: "row",
+            alignItems: "baseline",
+            paddingTop: 12,
+            height: 41.1,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.textColor,
+              fontSize: 18,
+              fontFamily: "Calibre-Semibold",
+            }}
+          >
+            {i18n.t("explore")}
+          </Text>
+          <Text
+            style={[
+              common.subTitle,
+              { marginLeft: "auto", fontSize: 18, marginRight: 6 },
+            ]}
+          >
+            {n(filteredExplore.length)} {currentExploreText}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              setShowSearch(true);
+            }}
+          >
+            <IconFont name="search" size={20} color={colors.textColor} />
+          </TouchableOpacity>
+        </View>
+      )}
+      <CategoriesScrollView
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
       />
-      <View
-        style={{
-          paddingHorizontal: 16,
-          paddingTop: 24,
-          flexDirection: "row",
-          alignItems: "baseline",
-        }}
-      >
-        <Text style={[common.headerTitle, { color: colors.textColor }]}>
-          {i18n.t("explore")}
-        </Text>
-        <Text style={[{ marginLeft: "auto" }, common.subTitle]}>
-          {n(filteredExplore.length)} {currentExploreText}
-        </Text>
-      </View>
     </View>
   );
 }

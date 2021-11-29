@@ -48,6 +48,7 @@ export const PROPOSALS_QUERY = gql`
       }
     ) {
       id
+      ipfs
       title
       body
       start
@@ -55,12 +56,18 @@ export const PROPOSALS_QUERY = gql`
       state
       author
       created
+      choices
       space {
         id
         name
         members
         avatar
+        symbol
       }
+      scores_state
+      scores_total
+      scores
+      votes
     }
   }
 `;

@@ -8,18 +8,7 @@ import SpacePreview from "components/SpacePreview";
 import i18n from "i18n-js";
 import ExploreHeader from "components/explore/ExploreHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
-import pluginsObj from "../../snapshot-plugins/src/plugins";
-import {
-  getFilteredSpaces,
-  getFilteredStrategies,
-  getFilteredNetworks,
-  geFilteredPlugins,
-} from "helpers/searchUtils";
-import Strategy from "components/explore/Strategy";
-import { NetworkType } from "types/explore";
-import Network from "components/explore/Network";
-import Plugin from "components/explore/Plugin";
+import { getFilteredSpaces } from "helpers/searchUtils";
 import { useAuthState } from "context/authContext";
 
 function ExploreScreen() {
@@ -36,6 +25,7 @@ function ExploreScreen() {
     key: "spaces",
     text: i18n.t("spaces"),
   });
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const orderedSpaces = useMemo(() => {
     const list = Object.keys(spaces)
       .map((key) => {
@@ -49,50 +39,14 @@ function ExploreScreen() {
       .filter((space) => !space.private);
     return orderBy(list, ["following", "followers"], ["desc", "desc"]);
   }, [spaces]);
-  const minifiedStrategiesArray = useMemo(() => {
-    return Object.keys(fullStrategies).map((s) => ({
-      //@ts-ignore
-      spaces: strategies[s] ?? 0,
-      ...(fullStrategies[s] ?? {}),
-    }));
-  }, [strategies, fullStrategies]);
-
-  const minifiedNetworksArray: NetworkType[] = useMemo(
-    () =>
-      Object.keys(networksJson).map((n) => ({
-        spaces: networks[n] ?? 0,
-        //@ts-ignore
-        ...(networksJson[n] ?? {}),
-      })),
-    [networks]
-  );
-  const minifiedPluginsArray = useMemo(
-    () =>
-      Object.entries(pluginsObj).map(([key, pluginClass]: any) => {
-        const plugin = new pluginClass();
-        plugin.key = key;
-        //@ts-ignore
-        plugin.spaces = plugins[key] ?? 0;
-        return plugin;
-      }),
-    [plugins]
-  );
 
   useEffect(() => {
     if (currentExplore.key === "spaces") {
-      setFilteredExplore(getFilteredSpaces(orderedSpaces, searchValue));
-    } else if (currentExplore.key === "strategies") {
       setFilteredExplore(
-        getFilteredStrategies(minifiedStrategiesArray, searchValue)
+        getFilteredSpaces(orderedSpaces, searchValue, selectedCategory)
       );
-    } else if (currentExplore.key === "networks") {
-      setFilteredExplore(
-        getFilteredNetworks(minifiedNetworksArray, searchValue)
-      );
-    } else if (currentExplore.key === "plugins") {
-      setFilteredExplore(geFilteredPlugins(minifiedPluginsArray, searchValue));
     }
-  }, [spaces, currentExplore, searchValue]);
+  }, [spaces, currentExplore, searchValue, selectedCategory]);
 
   return (
     <View
@@ -103,7 +57,7 @@ function ExploreScreen() {
     >
       <CollapsibleHeaderFlatList
         data={filteredExplore}
-        headerHeight={100}
+        headerHeight={110}
         CollapsibleHeaderComponent={
           <ExploreHeader
             searchValue={searchValue}
@@ -112,25 +66,14 @@ function ExploreScreen() {
             }}
             currentExplore={currentExplore}
             setCurrentExplore={setCurrentExplore}
-            filteredExplore={filteredExplore}
+            filteredExplore={orderedSpaces}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
           />
         }
         renderItem={(data) => {
           if (currentExplore.key === "spaces") {
             return <SpacePreview space={data.item} />;
-          } else if (currentExplore.key === "strategies") {
-            return (
-              <Strategy
-                strategy={data.item}
-                minifiedStrategiesArray={minifiedStrategiesArray}
-              />
-            );
-          } else if (currentExplore.key === "networks") {
-            return (
-              <Network network={data.item} orderedSpaces={orderedSpaces} />
-            );
-          } else if (currentExplore.key === "plugins") {
-            return <Plugin plugin={data.item} />;
           }
           return <View />;
         }}

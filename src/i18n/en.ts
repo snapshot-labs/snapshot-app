@@ -23,8 +23,8 @@ export default {
   decisions: "decisions",
   getMade: "get made",
   startIn: "start {{timeAgo}}",
-  endIn: "end {{timeAgo}}",
-  endedAgo: "ended {{timeAgo}}",
+  endLeft: "{{timeAgo}} left",
+  countVotes: "{{votes}} votes",
   information: "Information",
   strategies: "Strategie(s)",
   author: "Author",
@@ -156,4 +156,5 @@ export default {
   save: "Save",
   unableToEditSpace: "Unable to edit space",
   unableToFindProposal: "Unable to find proposal.",
+  unableToJoinSpace: "Unable to join or leave space."
 };

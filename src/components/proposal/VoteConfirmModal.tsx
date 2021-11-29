@@ -18,6 +18,7 @@ import { explorerUrl, getChoiceString, n, shorten } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 import { useToastShowConfig } from "constants/toast";
 import { sendEIP712 } from "helpers/EIP712";
+import { parseErrorMessage } from "helpers/apiUtils";
 
 const { width } = Dimensions.get("screen");
 
@@ -260,7 +261,7 @@ function VoteConfirmModal({
               console.log(e);
               Toast.show({
                 type: "customError",
-                text1: i18n.t("unableToCastVote"),
+                text1: parseErrorMessage(e, i18n.t("unableToCastVote")),
                 ...toastShowConfig,
               });
             }

@@ -26,6 +26,7 @@ export type Space = {
   plugins?: any;
   admins?: any;
   members?: any;
+  categories: string[];
 };
 
 type StrategyExample = {

@@ -7,21 +7,22 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import colors from "../constants/colors";
-import { Proposal } from "../types/proposal";
-import { getTimeAgo, shorten } from "../helpers/miscUtils";
-import StateBadge from "./StateBadge";
+import colors from "constants/colors";
+import { Proposal } from "types/proposal";
+import { shorten, toNow } from "helpers/miscUtils";
 import { useNavigation } from "@react-navigation/native";
-import { PROPOSAL_SCREEN } from "../constants/navigation";
+import { PROPOSAL_SCREEN } from "constants/navigation";
 import removeMd from "remove-markdown";
 import i18n from "i18n-js";
-import { useExploreState } from "../context/exploreContext";
+import { useExploreState } from "context/exploreContext";
+import { Space } from "types/explore";
+import { getUsername } from "helpers/profile";
+import isEmpty from "lodash/isEmpty";
+import { useAuthState } from "context/authContext";
 import SpaceAvatar from "./SpaceAvatar";
 import CoreBadge from "./CoreBadge";
-import { Space } from "../types/explore";
-import { getUsername } from "../helpers/profile";
-import isEmpty from "lodash/isEmpty";
-import { useAuthState } from "../context/authContext";
+import StateBadge from "./StateBadge";
+import ProposalPreviewFinalScores from "./ProposalPreviewFinalScores";
 
 const { width } = Dimensions.get("screen");
 
@@ -87,13 +88,18 @@ const styles = StyleSheet.create({
   },
 });
 
-function getPeriod(state: string, start: number, end: number) {
+function getPeriod(
+  state: string,
+  start: number,
+  end: number,
+  proposal: Proposal
+) {
   if (state === "closed") {
-    return i18n.t("endedAgo", { timeAgo: getTimeAgo(end) });
+    return i18n.t("countVotes", { votes: proposal.votes });
   } else if (state === "active") {
-    return i18n.t("endIn", { timeAgo: getTimeAgo(end) });
+    return i18n.t("endLeft", { timeAgo: toNow(end) });
   }
-  return i18n.t("startIn", { timeAgo: getTimeAgo(start) });
+  return i18n.t("startIn", { timeAgo: toNow(start) });
 }
 
 type ProposalPreviewProps = {
@@ -116,7 +122,7 @@ function ProposalPreview({
   );
   const title = useMemo(() => shorten(proposal.title, 124), [proposal]);
   const period = useMemo(
-    () => getPeriod(proposal.state, proposal.start, proposal.end),
+    () => getPeriod(proposal.state, proposal.start, proposal.end, proposal),
     [proposal]
   );
   const authorProfile = profiles[proposal.author];
@@ -188,6 +194,13 @@ function ProposalPreview({
             </Text>
           )}
         </View>
+        {proposal.scores_state === "final" &&
+          proposal.votes > 0 &&
+          proposal.choices?.length <= 6 && (
+            <View>
+              <ProposalPreviewFinalScores proposal={proposal} />
+            </View>
+          )}
         <View style={styles.statusContainer}>
           <StateBadge state={proposal.state} />
           <Text style={[styles.period, { color: colors.secondaryTextColor }]}>

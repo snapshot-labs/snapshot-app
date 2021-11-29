@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
     borderBottomWidth: 1,
+    paddingRight: 16,
     borderBottomColor: colors.borderColor,
   },
   searchInput: {
@@ -35,12 +35,14 @@ type SearchInputProps = {
   onChangeText: (text: string) => void;
   value: string;
   RightComponent?: React.FC | undefined;
+  searchRef: any;
 };
 
 function SearchInput({
   RightComponent = undefined,
   onChangeText,
   value,
+  searchRef,
 }: SearchInputProps) {
   const { colors } = useAuthState();
   return (
@@ -50,7 +52,6 @@ function SearchInput({
         { borderBottomColor: colors.borderColor },
       ]}
     >
-      <IconFont name="search" size={18} color={colors.darkGray} />
       <Input
         selectionColor={colors.textColor}
         style={[styles.searchInput, { color: colors.textColor }]}
@@ -58,6 +59,7 @@ function SearchInput({
         onChangeText={onChangeText}
         placeholder={i18n.t("search")}
         placeholderTextColor={colors.textColor}
+        setRef={searchRef}
       />
       {RightComponent !== undefined && <RightComponent />}
     </View>
