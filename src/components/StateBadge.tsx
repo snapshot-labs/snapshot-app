@@ -7,6 +7,7 @@ import { useAuthState } from "context/authContext";
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    alignItems: "center",
   },
   badgeTitle: {
     fontSize: 16,
@@ -35,22 +36,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textTransform: "capitalize",
   },
+  circle: {
+    height: 12,
+    width: 12,
+    borderRadius: 6,
+    marginRight: 6,
+    marginBottom: Platform.OS === "ios" ? 4 : 0,
+  },
 });
 
 type StateBadgeProps = {
   state: string;
 };
 
-function getStateStyle(state: string) {
-  if (state === "closed") return styles.purpleBg;
-  if (state === "active") return styles.greenBg;
-  return styles.grayBg;
+function getStateBg(state: string) {
+  if (state === "closed") return colors.bgPurple;
+  if (state === "active") return colors.bgGreen;
+  return colors.bgGray;
 }
 
 function StateBadge({ state }: StateBadgeProps) {
   return (
     <View style={styles.container}>
-      <Text style={getStateStyle(state)}>{state}</Text>
+      <View style={[styles.circle, { backgroundColor: getStateBg(state) }]} />
+      <Text style={styles.grayBg}>{state}</Text>
     </View>
   );
 }

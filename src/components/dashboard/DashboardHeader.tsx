@@ -12,7 +12,7 @@ function DashboardHeader() {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   return (
-    <View style={{ paddingHorizontal: 16, paddingTop: 30 }}>
+    <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
       <View
         style={{
           flexDirection: "row",
@@ -20,7 +20,15 @@ function DashboardHeader() {
           alignItems: "center",
         }}
       >
-        <Text style={[common.headerTitle, { color: colors.textColor }]}>
+        <Text
+          style={[
+            {
+              fontFamily: "Calibre-Semibold",
+              fontSize: 18,
+              color: colors.textColor,
+            },
+          ]}
+        >
           {i18n.t("dashboard")}
         </Text>
         <TouchableOpacity
@@ -28,7 +36,7 @@ function DashboardHeader() {
             navigation.navigate(SETTINGS_SCREEN);
           }}
         >
-          <IconFont name="gear" size={40} color={colors.textColor} />
+          <IconFont name="gear" size={26} color={colors.textColor} />
         </TouchableOpacity>
       </View>
       <Text style={[common.subTitle, { marginTop: 16 }]}>

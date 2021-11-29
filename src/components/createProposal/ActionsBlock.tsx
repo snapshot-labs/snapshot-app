@@ -29,6 +29,7 @@ function ActionsBlock({
 }: ActionsBlockProps) {
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
   const [datePickerProps, setDatePickerProps] = useState({});
+  const [loading, setLoading] = useState(false);
   return (
     <>
       <Block
@@ -82,7 +83,12 @@ function ActionsBlock({
             <Button
               title={i18n.t("publish")}
               disabled={!isValid}
-              onPress={onSubmit}
+              loading={loading}
+              onPress={async () => {
+                setLoading(true);
+                await onSubmit();
+                setLoading(false);
+              }}
             />
           </View>
         }

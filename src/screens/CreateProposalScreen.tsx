@@ -28,6 +28,7 @@ import { Proposal } from "types/proposal";
 import { useToastShowConfig } from "constants/toast";
 import { sendEIP712 } from "helpers/EIP712";
 import { signWithAliasCheck } from "helpers/aliasUtils";
+import { parseErrorMessage } from "helpers/apiUtils";
 
 const bodyLimit = 6400;
 
@@ -291,13 +292,14 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
                 });
               }
             } catch (e) {
-              console.log(e);
               Toast.show({
                 type: "customError",
-                text1: i18n.t("unableToCreateProposal"),
+                text1: parseErrorMessage(e, i18n.t("unableToCreateProposal")),
                 ...toastShowConfig,
               });
             }
+
+            return true;
           }}
         />
       </ScrollView>

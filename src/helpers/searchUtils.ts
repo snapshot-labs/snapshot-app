@@ -1,9 +1,22 @@
-import { Space, Strategy } from "../types/explore";
+import { Space, Strategy } from "types/explore";
+import isEmpty from "lodash/isEmpty";
 
-export function getFilteredSpaces(orderedSpaces: Space[], q: string) {
-  return orderedSpaces.filter((space) =>
-    JSON.stringify(space).toLowerCase().includes(q.toLowerCase())
-  );
+export function getFilteredSpaces(
+  orderedSpaces: Space[],
+  q: string,
+  category: string
+) {
+  return orderedSpaces.filter((space) => {
+    const matchesString = isEmpty(q)
+      ? true
+      : JSON.stringify(space).toLowerCase().includes(q.toLowerCase());
+    if (category === "") {
+      return matchesString;
+    }
+
+    const matchesCategory = space.categories?.includes(category.toLowerCase());
+    return matchesString && matchesCategory;
+  });
 }
 
 export function getFilteredSkins(minifiedSkinsArray: any, q: string) {

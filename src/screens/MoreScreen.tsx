@@ -63,11 +63,21 @@ function MoreScreen() {
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
       <ScrollView style={{ flex: 1 }}>
-        <View style={[common.headerContainer, { borderBottomWidth: 0 }]}>
-          <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+        <View
+          style={[
+            { flexDirection: "row", borderBottomWidth: 0, paddingTop: 16 },
+          ]}
+        >
+          <Text
+            style={{
+              color: colors.textColor,
+              fontFamily: "Calibre-Semibold",
+              fontSize: 18,
+              paddingLeft: 16,
+            }}
+          >
             {i18n.t("account")}
           </Text>
-
           <TouchableOpacity
             onPress={() => {
               authDispatch({
@@ -79,7 +89,7 @@ function MoreScreen() {
           >
             <IconFont
               name={theme === "light" ? "moon" : "sun"}
-              size={30}
+              size={24}
               color={colors.textColor}
             />
           </TouchableOpacity>

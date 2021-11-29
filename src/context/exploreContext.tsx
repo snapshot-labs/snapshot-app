@@ -10,6 +10,7 @@ type ExploreState = {
   fullStrategies: { [id: string]: Strategy };
   spaces: { [id: string]: Space };
   profiles: { [id: string]: any };
+  categories: { [id: string]: number };
 };
 
 const ExploreContext = createContext<ExploreState | undefined>(undefined);
@@ -32,12 +33,24 @@ const initialState = {
   spaces: {},
   fullStrategies: {},
   profiles: {},
+  categories: {},
 };
 
 function exploreReducer(state: ExploreState, action: ContextAction) {
   switch (action.type) {
     case EXPLORE_ACTIONS.SET_EXPLORE:
-      return { ...state, ...action.payload };
+      const categories: any = {};
+      for (let key in action.payload?.spaces) {
+        action.payload.spaces[key]?.categories?.forEach((category: string) => {
+          if (categories[category] !== undefined) {
+            categories[category] = categories[category] + 1;
+          } else {
+            categories[category] = 1;
+          }
+        });
+      }
+
+      return { ...state, ...action.payload, categories };
     case EXPLORE_ACTIONS.UPDATE_SPACES:
       const newSpaces = { ...state.spaces };
       if (Array.isArray(action.payload)) {

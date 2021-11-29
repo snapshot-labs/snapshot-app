@@ -36,4 +36,11 @@ export async function getFollows(
   }
 }
 
+export function parseErrorMessage(e: any, defaultErrorMessage: string) {
+  let errorMessage = defaultErrorMessage;
+  if (e.error && e.error_description) {
+    errorMessage = `${e.error}: ${e.error_description}`;
+  }
 
+  return errorMessage;
+}

@@ -1,23 +1,26 @@
 import React, { useState } from "react";
 import Button from "./Button";
-import { useAuthDispatch, useAuthState } from "../context/authContext";
+import { useAuthDispatch, useAuthState } from "context/authContext";
 import { Wallet } from "@ethersproject/wallet";
-import signClient from "../helpers/signClient";
+import signClient from "helpers/signClient";
 import "@ethersproject/shims";
-import { checkAlias, setAlias } from "../helpers/aliasUtils";
+import { checkAlias, setAlias } from "helpers/aliasUtils";
 import find from "lodash/find";
 import i18n from "i18n-js";
+import { useToastShowConfig } from "constants/toast";
+import Toast from "react-native-toast-message";
 import get from "lodash/get";
-import { getFollows } from "../helpers/apiUtils";
-import { ContextDispatch } from "../types/context";
-import { Space } from "../types/explore";
+import { getFollows, parseErrorMessage } from "helpers/apiUtils";
+import { ContextDispatch } from "types/context";
+import { Space } from "types/explore";
 
 async function followSpace(
   isFollowingSpace: any,
   aliasWallet: Wallet,
   connectedAddress: string,
   authDispatch: ContextDispatch,
-  space: Space
+  space: Space,
+  toastShowConfig: any
 ) {
   try {
     if (isFollowingSpace) {
@@ -46,7 +49,11 @@ async function followSpace(
       }
     }
   } catch (e) {
-    console.log("FOLLOW SPACE ERROR", e);
+    Toast.show({
+      type: "customError",
+      text1: parseErrorMessage(e, i18n.t("unableToJoinSpace")),
+      ...toastShowConfig,
+    });
   }
 }
 
@@ -62,6 +69,7 @@ function FollowButton({ space }: FollowButtonProps) {
   const isFollowingSpace = find(followedSpaces, (followedSpace) => {
     return get(followedSpace, "space.id") === space.id;
   });
+  const toastShowConfig = useToastShowConfig();
 
   return (
     <Button
@@ -79,7 +87,8 @@ function FollowButton({ space }: FollowButtonProps) {
                 aliasWallet,
                 connectedAddress ?? "",
                 authDispatch,
-                space
+                space,
+                toastShowConfig
               );
             } else {
               const aliasWallet = await setAlias(
@@ -100,7 +109,8 @@ function FollowButton({ space }: FollowButtonProps) {
                     aliasWallet,
                     connectedAddress ?? "",
                     authDispatch,
-                    space
+                    space,
+                    toastShowConfig
                   );
                 }
               }
@@ -124,7 +134,8 @@ function FollowButton({ space }: FollowButtonProps) {
                   aliasWallet,
                   connectedAddress ?? "",
                   authDispatch,
-                  space
+                  space,
+                  toastShowConfig
                 );
               }
             }

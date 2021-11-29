@@ -1,11 +1,18 @@
 // @ts-nocheck
 import * as crypto from "@walletconnect/crypto";
 import * as encoding from "@walletconnect/encoding";
-import { format } from "timeago.js";
 import moment from "moment-timezone";
 import numeral from "numeral";
 import networks from "@snapshot-labs/snapshot.js/src/networks.json";
 import voting from "./voting";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
+
+export function toNow(period: number) {
+  return dayjs(period * 1e3).toNow(true);
+}
 
 export function uuid() {
   const result = ((a, b) => {
@@ -57,10 +64,6 @@ export function shorten(str: string, key?: any): string {
   }
 
   return shortenAddress(str);
-}
-
-export function getTimeAgo(number) {
-  return format(number * 1e3);
 }
 
 export function dateFormat(number, format?: string | undefined) {
