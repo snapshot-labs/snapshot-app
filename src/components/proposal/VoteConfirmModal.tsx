@@ -15,10 +15,17 @@ import colors from "constants/colors";
 import IconFont from "../IconFont";
 import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "helpers/miscUtils";
-import { useAuthState } from "context/authContext";
+import { useAuthDispatch, useAuthState } from "context/authContext";
 import { useToastShowConfig } from "constants/toast";
 import { sendEIP712 } from "helpers/EIP712";
 import { parseErrorMessage } from "helpers/apiUtils";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("screen");
 
@@ -85,6 +92,7 @@ type VoteConfirmModalProps = {
   space: any;
   totalScore: number;
   getProposal: () => void;
+  navigation: any;
 };
 
 function VoteConfirmModal({
@@ -94,12 +102,31 @@ function VoteConfirmModal({
   space,
   totalScore,
   getProposal,
+  navigation,
 }: VoteConfirmModalProps) {
   const formattedChoiceString = getChoiceString(proposal, selectedChoices);
-  const { connectedAddress, wcConnector, isWalletConnect, colors } =
-    useAuthState();
+  const {
+    connectedAddress,
+    wcConnector,
+    isWalletConnect,
+    colors,
+    aliases,
+    savedWallets,
+  } = useAuthState();
+  const authDispatch = useAuthDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const toastShowConfig = useToastShowConfig();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetWCErrorConfig = createBottomSheetParamsForWalletConnectError(
+    colors,
+    bottomSheetModalRef,
+    authDispatch,
+    navigation,
+    savedWallets,
+    aliases,
+    connectedAddress ?? ""
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.bgDefault }]}>
@@ -263,6 +290,12 @@ function VoteConfirmModal({
                 type: "customError",
                 text1: parseErrorMessage(e, i18n.t("unableToCastVote")),
                 ...toastShowConfig,
+              });
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  ...bottomSheetWCErrorConfig,
+                },
               });
             }
 

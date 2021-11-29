@@ -90,7 +90,14 @@ function ProposalPreviewFinalScores({
               >
                 {choice}
               </Text>
-              <Text style={[styles.scoreSymbol, { color: colors.darkGray }]}>
+              <Text
+                style={[
+                  styles.scoreSymbol,
+                  { color: colors.darkGray, maxWidth: "39%" },
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {scoreSymbol}
               </Text>
               <Text style={[styles.score, { color: colors.textColor }]}>

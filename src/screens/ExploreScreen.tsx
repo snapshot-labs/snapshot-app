@@ -14,8 +14,7 @@ import { useAuthState } from "context/authContext";
 function ExploreScreen() {
   const { colors } = useAuthState();
   const insets = useSafeAreaInsets();
-  const { spaces, strategies, fullStrategies, networks, plugins } =
-    useExploreState();
+  const { spaces } = useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [currentExplore, setCurrentExplore] = useState<{
