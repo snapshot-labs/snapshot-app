@@ -65,13 +65,13 @@ function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Feed"
+        component={FeedScreen}
         options={{
-          title: i18n.t("home"),
+          title: i18n.t("feed"),
           tabBarIcon: ({ color }) => (
             <IconFont
-              name="snapshot"
+              name="feed"
               color={color}
               size={ICON_SIZE}
               style={{ paddingBottom: BOTTOM_ICON_PADDING }}
@@ -85,13 +85,13 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Feed"
-        component={FeedScreen}
+        name="Home"
+        component={HomeScreen}
         options={{
-          title: i18n.t("feed"),
+          title: i18n.t("home"),
           tabBarIcon: ({ color }) => (
             <IconFont
-              name="feed"
+              name="snapshot"
               color={color}
               size={ICON_SIZE}
               style={{ paddingBottom: BOTTOM_ICON_PADDING }}
