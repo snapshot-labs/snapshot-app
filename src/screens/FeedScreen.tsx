@@ -12,23 +12,33 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
 import apolloClient from "helpers/apolloClient";
-import { PROPOSALS_QUERY } from "helpers/queries";
+import { FOLLOWS_QUERY, PROPOSALS_QUERY } from "helpers/queries";
 import ProposalPreview from "components/ProposalPreview";
 import { Proposal } from "types/proposal";
-import { useAuthState } from "context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";
 import colors from "constants/colors";
 import TimelineHeader from "components/timeline/TimelineHeader";
 import proposal from "constants/proposal";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useExploreDispatch, useExploreState } from "context/exploreContext";
+import {
+  EXPLORE_ACTIONS,
+  useExploreDispatch,
+  useExploreState,
+} from "context/exploreContext";
 import { setProfiles } from "helpers/profile";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
+import { ContextDispatch } from "types/context";
+import { defaultHeaders } from "helpers/apiUtils";
 
 const LOAD_BY = 6;
 
@@ -65,6 +75,46 @@ async function getProposals(
     setLoadCount(loadCount + LOAD_BY);
   }
   setLoadingMore(false);
+}
+
+async function getFollows(
+  accountId: string | null | undefined,
+  authDispatch: ContextDispatch
+) {
+  if (accountId) {
+    const query = {
+      query: FOLLOWS_QUERY,
+      variables: {
+        follower_in: accountId,
+      },
+    };
+    const result = await apolloClient.query(query);
+    const followedSpaces = get(result, "data.follows", []);
+    authDispatch({
+      type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
+      payload: followedSpaces,
+    });
+  }
+}
+
+async function getExplore(exploreDispatch: ContextDispatch) {
+  try {
+    const options: { [key: string]: any } = {
+      method: "get",
+      headers: {
+        ...defaultHeaders,
+      },
+    };
+    const response = await fetch(
+      "https://hub.snapshot.org/api/explore",
+      options
+    );
+    const explore = await response.json();
+    exploreDispatch({
+      type: EXPLORE_ACTIONS.SET_EXPLORE,
+      payload: explore,
+    });
+  } catch (e) {}
 }
 
 type FeedScreenProps = {
@@ -257,15 +307,15 @@ const renderScene = (
   });
 
 function FeedScreenTabView() {
-  const { colors } = useAuthState();
+  const { colors, connectedAddress } = useAuthState();
+  const authDispatch = useAuthDispatch();
+  const exploreDispatch = useExploreDispatch();
   const [index, setIndex] = React.useState(0);
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const joinedSpacesRef: any = useRef(null);
   const allSpacesRef: any = useRef(null);
   const bottomSheetModalRef = useBottomSheetModalRef();
-  const [showProposalFilters, setShowProposalFilters] =
-    useState<boolean>(false);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const [routes] = React.useState([
     { key: "joinedSpaces", title: i18n.t("joinedSpaces") },
@@ -277,6 +327,7 @@ function FeedScreenTabView() {
   const [allSpacesFilter, setAllSpacesFilter] = useState(
     proposal.getStateFilters()[0]
   );
+  const [isInitial, setIsInitial] = useState<boolean>(true);
   const sceneMap = useMemo(
     () =>
       renderScene(
@@ -307,6 +358,18 @@ function FeedScreenTabView() {
       inactiveColor={colors.textColor}
     />
   );
+
+  useEffect(() => {
+    getExplore(exploreDispatch);
+    getFollows(connectedAddress, authDispatch);
+    setIsInitial(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitial) {
+      getFollows(connectedAddress, authDispatch);
+    }
+  }, [connectedAddress]);
 
   return (
     <View
