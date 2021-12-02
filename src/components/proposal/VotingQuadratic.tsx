@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import colors from "../../constants/colors";
-import { percentageOfTotal } from "../../helpers/voting/quadratic";
-import { Proposal } from "../../types/proposal";
+import colors from "constants/colors";
+import { percentageOfTotal } from "helpers/voting/quadratic";
+import { Proposal } from "types/proposal";
 import { useAuthState } from "context/authContext";
+import isEmpty from "lodash/isEmpty";
 
 const { width } = Dimensions.get("screen");
 
@@ -19,20 +20,13 @@ const miniButtonWidth = 40;
 const percentageWidth = 60;
 const blockPadding = 46;
 
-function percentage(i: number, selectedChoices: number[]) {
-  const newSelectedChoices = selectedChoices.map((choice) => {
-    if (choice) {
-      return choice;
-    }
-    return 0;
-  });
-
+function percentage(i: number, selectedChoices: { [index: number]: number }) {
   return (
     Math.round(
       percentageOfTotal(
         i + 1,
-        newSelectedChoices,
-        Object.values(newSelectedChoices)
+        selectedChoices,
+        Object.values(selectedChoices)
       ) * 10
     ) / 10
   );
@@ -89,19 +83,19 @@ const styles = StyleSheet.create({
   },
 });
 
-function addVote(i: number, selectedChoices: number[]) {
+function addVote(i: number, selectedChoices: { [index: number]: number }) {
   selectedChoices[i] = selectedChoices[i] ? (selectedChoices[i] += 1) : 1;
 }
 
-function removeVote(i: number, selectedChoices: number[]) {
+function removeVote(i: number, selectedChoices: { [index: number]: number }) {
   if (selectedChoices[i])
     selectedChoices[i] = selectedChoices[i] < 1 ? 0 : (selectedChoices[i] -= 1);
 }
 
 type VotingQuadraticProps = {
   proposal: Proposal | any;
-  selectedChoices: number[];
-  setSelectedChoices: (selectedChoices: number[]) => void;
+  selectedChoices: { [index: number]: number };
+  setSelectedChoices: (selectedChoices: { [index: number]: number }) => void;
 };
 
 function VotingQuadratic({
@@ -111,8 +105,8 @@ function VotingQuadratic({
 }: VotingQuadraticProps) {
   const { colors } = useAuthState();
   useEffect(() => {
-    if (selectedChoices.length === 0) {
-      setSelectedChoices(new Array(proposal.choices.length + 1).fill(0));
+    if (isEmpty(selectedChoices)) {
+      setSelectedChoices({});
     }
   }, []);
   return (
@@ -149,7 +143,7 @@ function VotingQuadratic({
             >
               <TouchableOpacity
                 onPress={() => {
-                  const newSelectedChoices = [...selectedChoices];
+                  const newSelectedChoices = { ...selectedChoices };
                   removeVote(i + 1, newSelectedChoices);
                   setSelectedChoices(newSelectedChoices);
                 }}
@@ -189,7 +183,7 @@ function VotingQuadratic({
                 keyboardType="number-pad"
                 onChangeText={(text) => {
                   const parsedInt = parseInt(text);
-                  const newSelectedChoices = [...selectedChoices];
+                  const newSelectedChoices = { ...selectedChoices };
                   if (isNaN(parsedInt)) {
                     newSelectedChoices[i + 1] = 0;
                   } else {
@@ -200,7 +194,7 @@ function VotingQuadratic({
               />
               <TouchableOpacity
                 onPress={() => {
-                  const newSelectedChoices = [...selectedChoices];
+                  const newSelectedChoices = { ...selectedChoices };
                   addVote(i + 1, newSelectedChoices);
                   setSelectedChoices(newSelectedChoices);
                 }}

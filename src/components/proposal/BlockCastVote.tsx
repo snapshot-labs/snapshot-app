@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import i18n from "i18n-js";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import Block from "../Block";
@@ -20,6 +20,9 @@ import {
 } from "context/bottomSheetModalContext";
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/core";
+import size from "lodash/size";
+
+const { height: deviceHeight } = Dimensions.get("screen");
 
 type BlockCastVoteProps = {
   proposal: Proposal;
@@ -119,17 +122,19 @@ function BlockCastVote({
               <Button
                 title={i18n.t("vote")}
                 onPress={() => {
+                  let initialSnapPoint: number | string =
+                    selectedChoices.length > 2
+                      ? deviceHeight / 2 + size(selectedChoices) * 20
+                      : deviceHeight / 2;
+                  if (initialSnapPoint >= deviceHeight) {
+                    initialSnapPoint = "100%";
+                  }
+
                   bottomSheetModalDispatch({
                     type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                     payload: {
                       options: [],
-                      snapPoints: [
-                        10,
-                        selectedChoices.length > 2
-                          ? 400 + selectedChoices.length * 20
-                          : 400,
-                        "100%",
-                      ],
+                      snapPoints: [10, initialSnapPoint, "100%"],
                       show: true,
                       scroll: true,
                       initialIndex: 1,
