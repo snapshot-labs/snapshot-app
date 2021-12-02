@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
@@ -126,6 +126,16 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const duplicateProposal = route.params.proposal;
   const authDispatch = useAuthDispatch();
   const allVotingTypes = proposal.getVotingTypes();
+  const dateStart = useMemo(() => {
+    return space.voting?.delay
+      ? parseInt((Date.now() / 1e3).toFixed()) + space.voting.delay
+      : undefined;
+  }, [space]);
+  const dateEnd = useMemo(() => {
+    return space.voting?.period && dateStart
+      ? dateStart + space.voting.period
+      : undefined;
+  }, [space]);
   const { connectedAddress, wcConnector, colors, savedWallets, aliases } =
     useAuthState();
   const [choices, setChoices] = useState(
@@ -147,10 +157,10 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
     duplicateProposal ? duplicateProposal.body : ""
   );
   const [startTimestamp, setStartTimestamp] = useState<number | undefined>(
-    duplicateProposal?.start ?? undefined
+    duplicateProposal?.start ?? dateStart
   );
   const [endTimestamp, setEndTimestamp] = useState<number | undefined>(
-    duplicateProposal?.end ?? undefined
+    duplicateProposal?.end ?? dateEnd
   );
   const [snapshot, setSnapshot] = useState<number | string>(0);
   const [passValidation, setPassValidation] = useState<[boolean, string]>([
@@ -242,6 +252,7 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
         />
         <View style={{ height: 10, width: 10 }} />
         <ActionsBlock
+          space={space}
           startTimestamp={startTimestamp}
           endTimestamp={endTimestamp}
           setStartTimestamp={setStartTimestamp}

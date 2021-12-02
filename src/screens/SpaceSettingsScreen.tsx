@@ -141,7 +141,7 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
         </Text>
         <InputRound
           title={i18n.t("votingDelay")}
-          value={votingDelay}
+          value={`${votingDelay}`}
           onChangeText={(text: string) => {
             setVotingDelay(text);
           }}
@@ -153,7 +153,7 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
         <View style={styles.separator} />
         <InputRound
           title={i18n.t("votingPeriod")}
-          value={votingPeriod}
+          value={`${votingPeriod}`}
           onChangeText={(text: string) => {
             setVotingPeriod(text);
           }}

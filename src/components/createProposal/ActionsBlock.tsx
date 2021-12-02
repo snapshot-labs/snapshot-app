@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import i18n from "i18n-js";
+import common from "styles/common";
+import { dateFormat } from "helpers/miscUtils";
+import { Space } from "types/explore";
 import Block from "../Block";
-import common from "../../styles/common";
-
 import Button from "../Button";
 import DatePickerModal from "./DatePickerModal";
-import { dateFormat } from "../../helpers/miscUtils";
 
 type ActionsBlockProps = {
   startTimestamp: number | undefined;
@@ -16,6 +16,7 @@ type ActionsBlockProps = {
   isValid: boolean;
   snapshot: number | string;
   onSubmit: () => void;
+  space: Space;
 };
 
 function ActionsBlock({
@@ -26,10 +27,18 @@ function ActionsBlock({
   isValid,
   snapshot,
   onSubmit,
+  space,
 }: ActionsBlockProps) {
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
   const [datePickerProps, setDatePickerProps] = useState({});
   const [loading, setLoading] = useState(false);
+  const dateEnd = useMemo(() => {
+    return space.voting?.period && startTimestamp
+      ? startTimestamp + space.voting.period
+      : undefined;
+  }, [space, startTimestamp]);
+  const disabledEndDate =
+    Number.isInteger(space.voting?.period) || dateEnd !== undefined;
   return (
     <>
       <Block
@@ -47,11 +56,17 @@ function ActionsBlock({
                   ? i18n.t("selectStartDate")
                   : dateFormat(startTimestamp)
               }
+              disabled={Number.isInteger(space.voting?.delay)}
               onPress={() => {
                 setDatePickerProps({
                   title: i18n.t("selectStartDate"),
                   timestamp: startTimestamp,
-                  setTimestamp: setStartTimestamp,
+                  setTimestamp: (timestamp: number) => {
+                    setStartTimestamp(timestamp);
+                    if (disabledEndDate) {
+                      setEndTimestamp(timestamp + space.voting.period);
+                    }
+                  },
                   key: Math.random().toString(),
                 });
                 setShowDatePickerModal(true);
@@ -64,6 +79,7 @@ function ActionsBlock({
                   ? i18n.t("selectEndDate")
                   : dateFormat(endTimestamp)
               }
+              disabled={disabledEndDate}
               onPress={() => {
                 setDatePickerProps({
                   title: i18n.t("selectEndDate"),

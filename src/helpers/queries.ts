@@ -141,17 +141,30 @@ export const SPACES_QUERY = gql`
       avatar
       twitter
       github
+      private
+      domain
+      members
+      admins
+      categories
+      plugins
+      voting {
+        delay
+        period
+        type
+        quorum
+      }
       strategies {
         name
         params
       }
-      admins
-      members
+      validation {
+        name
+        params
+      }
       filters {
         minScore
         onlyMembers
       }
-      plugins
     }
   }
 `;

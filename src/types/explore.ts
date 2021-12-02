@@ -27,6 +27,10 @@ export type Space = {
   admins?: any;
   members?: any;
   categories: string[];
+  voting: {
+    delay: number,
+    period: number
+  }
 };
 
 type StrategyExample = {
