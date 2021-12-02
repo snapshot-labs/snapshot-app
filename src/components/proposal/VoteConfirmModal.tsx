@@ -283,9 +283,15 @@ function VoteConfirmModal({
 
                 getProposal();
                 onClose();
+              } else {
+                Toast.show({
+                  type: "customError",
+                  text1: i18n.t("unableToCastVote"),
+                  ...toastShowConfig,
+                });
               }
             } catch (e) {
-              console.log(e);
+              console.log("FAILED TO VOTE");
               Toast.show({
                 type: "customError",
                 text1: parseErrorMessage(e, i18n.t("unableToCastVote")),

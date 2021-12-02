@@ -112,10 +112,16 @@ class Client {
           throw res;
         })
         .catch((e) => {
+          console.log("HUB RESPONSE ERROR");
           if (e.json) {
-            e.json().then((json) => reject(json));
+            e.json()
+              .then((json) => {
+                reject(json);
+              })
+              .catch((e) => {
+                reject(e);
+              });
           } else {
-            console.log("CLIENT ERROR", e);
             reject(e);
           }
         });
