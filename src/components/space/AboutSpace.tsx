@@ -50,9 +50,7 @@ type AboutSpaceProps = {
   routeSpace: Space;
   scrollProps: any;
   headerHeight: number;
-  scrollY: any;
   spaceAboutRef: any;
-  spaceAboutCurrentScrollRef: any;
 };
 
 function AboutSpace({
@@ -60,9 +58,6 @@ function AboutSpace({
   scrollProps,
   headerHeight,
   spaceAboutRef,
-  spaceAboutCurrentScrollRef,
-  spaceProposalsRef,
-  spaceProposalsCurrentScrollRef,
 }: AboutSpaceProps) {
   const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
@@ -95,34 +90,6 @@ function AboutSpace({
           backgroundColor: colors.bgDefault,
         },
       ]}
-      onScrollEndDrag={(event) => {
-        spaceAboutCurrentScrollRef.current = event.nativeEvent.contentOffset.y;
-
-        if (
-          event.nativeEvent.contentOffset.y > 0 &&
-          spaceProposalsCurrentScrollRef.current <= 300
-        ) {
-          spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
-          spaceProposalsCurrentScrollRef.current = headerHeight;
-        } else if (event.nativeEvent.contentOffset.y <= 180) {
-          spaceProposalsRef?.current?.scrollToOffset({ offset: 0 });
-          spaceProposalsCurrentScrollRef.current = 0;
-        }
-      }}
-      onMomentumScrollEnd={(event) => {
-        spaceAboutCurrentScrollRef.current = event.nativeEvent.contentOffset.y;
-
-        if (
-          event.nativeEvent.contentOffset.y > 0 &&
-          spaceProposalsCurrentScrollRef.current <= 300
-        ) {
-          spaceProposalsRef?.current?.scrollToOffset({ offset: headerHeight });
-          spaceProposalsCurrentScrollRef.current = headerHeight;
-        } else if (event.nativeEvent.contentOffset.y <= 180) {
-          spaceProposalsRef?.current?.scrollToOffset({ offset: 0 });
-          spaceProposalsCurrentScrollRef.current = 0;
-        }
-      }}
       {...scrollProps}
     >
       <View style={styles.content}>
@@ -296,7 +263,7 @@ function AboutSpace({
         ) : (
           <View />
         )}
-        <View style={{ width: 200, height: deviceHeight / 2 }} />
+        <View style={{ width: 200, height: deviceHeight / 1.5 }} />
       </View>
     </AnimatedScrollView>
   );
