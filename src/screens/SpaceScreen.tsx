@@ -48,38 +48,29 @@ export const headerHeight = Platform.OS === "android" ? 185 : 170;
 const renderScene = (
   route: any,
   spaceScreenRef: any,
-  scrollProps: any,
+  scrollPropsProposals: any,
+  scrollPropsAbout: any,
   filter: { key: string },
-  scrollY: any,
-  spaceAboutRef,
-  spaceProposalsRef,
-  spaceAboutCurrentScrollRef,
-  spaceProposalsCurrentScrollRef
+  spaceAboutRef: any,
+  spaceProposalsRef: any
 ) =>
   SceneMap({
     proposals: () => (
       <SpaceProposals
         space={route.params.space}
         spaceScreenRef={spaceScreenRef}
-        scrollProps={scrollProps}
+        scrollProps={scrollPropsProposals}
         filter={filter}
         headerHeight={headerHeight}
         spaceProposalsRef={spaceProposalsRef}
-        spaceProposalsCurrentScrollRef={spaceProposalsCurrentScrollRef}
-        spaceAboutRef={spaceAboutRef}
-        spaceAboutCurrentScrollRef={spaceAboutCurrentScrollRef}
       />
     ),
     about: () => (
       <AboutSpace
         routeSpace={route.params.space}
-        scrollProps={scrollProps}
+        scrollProps={scrollPropsAbout}
         headerHeight={headerHeight}
-        scrollY={scrollY}
         spaceAboutRef={spaceAboutRef}
-        spaceAboutCurrentScrollRef={spaceAboutCurrentScrollRef}
-        spaceProposalsRef={spaceProposalsRef}
-        spaceProposalsCurrentScrollRef={spaceProposalsCurrentScrollRef}
       />
     ),
   });
@@ -114,25 +105,30 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const [showTitle, setShowTitle] = useState(false);
   const showTitleRef = useRef(false);
   const space = route.params.space;
-  const scrollY = useRef(new Animated.Value(0));
-  const headerTitleBottom = scrollY.current.interpolate({
+  const scrollProposals = useRef(new Animated.Value(0));
+  const scrollAbout = useRef(new Animated.Value(0));
+  const headerProposals = scrollProposals.current.interpolate({
+    inputRange: [0, headerHeight],
+    outputRange: [0, -headerHeight],
+    extrapolate: "clamp",
+  });
+  const headerAbout = scrollAbout.current.interpolate({
     inputRange: [0, headerHeight],
     outputRange: [0, -headerHeight],
     extrapolate: "clamp",
   });
   const spaceScreenRef: any = useRef(null);
-  const scrollValue = useRef(0);
-  const scrollEndTimer: any = useRef(-1);
   const bottomSheetRef: any = useRef();
   const [showProposalFilters, setShowProposalFilters] = useState(false);
   const spaceAboutCurrentScrollRef = useRef(0);
   const spaceProposalsCurrentScrollRef = useRef(0);
   const spaceAboutRef = useRef();
   const spaceProposalsRef = useRef();
+  const showingProposals = useRef(true);
 
   function resetHeader() {
     const toValue = -headerHeight;
-    Animated.timing(scrollY.current, {
+    Animated.timing(scrollProposals.current, {
       toValue,
       duration: 1000,
       useNativeDriver: true,
@@ -148,22 +144,50 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   }, [route.params]);
 
   useEffect(() => {
-    scrollY.current.addListener(({ value }) => {
-      scrollValue.current = value;
-      if (value >= headerHeight) {
-        if (!showTitleRef.current) {
-          setShowTitle(true);
-          showTitleRef.current = true;
+    if (index === 0) {
+      showingProposals.current = true;
+    } else {
+      showingProposals.current = false;
+    }
+  }, [index]);
+
+  useEffect(() => {
+    scrollProposals.current.addListener(({ value }) => {
+      if (showingProposals.current) {
+        if (value > 0 && spaceAboutCurrentScrollRef.current <= 300) {
+          scrollAbout.current.setValue(value);
+          if (spaceAboutCurrentScrollRef.current !== headerHeight) {
+            spaceAboutRef.current?.scrollTo({ y: headerHeight });
+          }
+          spaceAboutCurrentScrollRef.current = headerHeight;
+        } else if (value <= headerHeight) {
+          scrollAbout.current.setValue(value);
+          if (spaceAboutCurrentScrollRef.current !== 0) {
+            spaceAboutRef.current?.scrollTo({ y: 0 });
+          }
+          spaceAboutCurrentScrollRef.current = 0;
         }
-      } else {
-        setShowTitle(false);
-        showTitleRef.current = false;
       }
     });
-    return () => {
-      scrollY.current.removeAllListeners();
-      clearTimeout(scrollEndTimer.current);
-    };
+    scrollAbout.current.addListener(({ value }) => {
+      if (!showingProposals.current) {
+        if (value > 0 && spaceProposalsCurrentScrollRef.current <= 300) {
+          scrollProposals.current.setValue(value);
+          if (spaceProposalsCurrentScrollRef.current !== headerHeight) {
+            spaceProposalsRef?.current?.scrollToOffset({
+              offset: headerHeight,
+            });
+          }
+          spaceProposalsCurrentScrollRef.current = headerHeight;
+        } else if (value <= headerHeight) {
+          scrollProposals.current.setValue(value);
+          if (spaceProposalsCurrentScrollRef.current !== 0) {
+            spaceProposalsRef.current?.scrollToOffset({ offset: 0 });
+          }
+          spaceProposalsCurrentScrollRef.current = 0;
+        }
+      }
+    });
   }, []);
 
   const sceneMap = useMemo(
@@ -173,19 +197,59 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         spaceScreenRef,
         {
           onScroll: Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
-            { useNativeDriver: true }
+            [
+              {
+                nativeEvent: { contentOffset: { y: scrollProposals.current } },
+              },
+            ],
+            {
+              useNativeDriver: true,
+              listener: (event) => {
+                if (showingProposals.current) {
+                  const offsetY = event.nativeEvent.contentOffset.y;
+                  if (offsetY >= headerHeight) {
+                    if (!showTitleRef.current) {
+                      setShowTitle(true);
+                      showTitleRef.current = true;
+                    }
+                  } else {
+                    setShowTitle(false);
+                    showTitleRef.current = false;
+                  }
+                }
+              },
+            }
+          ),
+        },
+        {
+          onScroll: Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollAbout.current } } }],
+            {
+              useNativeDriver: true,
+              listener: (event) => {
+                if (!showingProposals.current) {
+                  const offsetY = event.nativeEvent.contentOffset.y;
+                  if (offsetY >= headerHeight) {
+                    if (!showTitleRef.current) {
+                      setShowTitle(true);
+                      showTitleRef.current = true;
+                    }
+                  } else {
+                    setShowTitle(false);
+                    showTitleRef.current = false;
+                  }
+                }
+              },
+            }
           ),
         },
         filter,
-        scrollY,
         spaceAboutRef,
-        spaceProposalsRef,
-        spaceAboutCurrentScrollRef,
-        spaceProposalsCurrentScrollRef
+        spaceProposalsRef
       ),
     [route, filter]
   );
+  const headerTranslate = index === 0 ? headerProposals : headerAbout;
 
   const renderTabBar = (props: any) => (
     <>
@@ -202,7 +266,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           },
           [
             {
-              transform: [{ translateY: headerTitleBottom }],
+              transform: [{ translateY: headerTranslate }],
             },
           ],
         ]}

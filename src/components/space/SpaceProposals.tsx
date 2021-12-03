@@ -94,7 +94,6 @@ type SpaceProposalsProps = {
   headerHeight?: number;
   filter: { key: string };
   spaceProposalsRef: any;
-  spaceProposalsCurrentScrollRef: any;
 };
 function SpaceProposals({
   space,
@@ -103,9 +102,6 @@ function SpaceProposals({
   headerHeight = 150,
   filter,
   spaceProposalsRef,
-  spaceProposalsCurrentScrollRef,
-  spaceAboutRef,
-  spaceAboutCurrentScrollRef,
 }: SpaceProposalsProps) {
   const { refreshFeed, colors } = useAuthState();
   const { profiles } = useExploreState();
@@ -189,7 +185,7 @@ function SpaceProposals({
   return (
     <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
       <AnimatedFlatList
-        scrollEventThrottle={1}
+        scrollEventThrottle={16}
         ref={spaceProposalsRef}
         bounces={false}
         contentContainerStyle={{ marginTop: headerHeight + 32 }}
@@ -261,34 +257,6 @@ function SpaceProposals({
             />
           )
         }
-        onScrollEndDrag={(event) => {
-          spaceProposalsCurrentScrollRef.current =
-            event.nativeEvent.contentOffset.y;
-          if (
-            event.nativeEvent.contentOffset.y > 0 &&
-            spaceAboutCurrentScrollRef.current <= 300
-          ) {
-            spaceAboutRef.current?.scrollTo({ y: headerHeight });
-            spaceAboutCurrentScrollRef.current = headerHeight;
-          } else if (event.nativeEvent.contentOffset.y <= 180) {
-            spaceAboutRef.current?.scrollTo({ y: 0 });
-            spaceAboutCurrentScrollRef.current = 0;
-          }
-        }}
-        onMomentumScrollEnd={(event) => {
-          spaceProposalsCurrentScrollRef.current =
-            event.nativeEvent.contentOffset.y;
-          if (
-            event.nativeEvent.contentOffset.y > 0 &&
-            spaceAboutCurrentScrollRef.current <= 300
-          ) {
-            spaceAboutRef.current?.scrollTo({ y: headerHeight });
-            spaceAboutCurrentScrollRef.current = headerHeight;
-          } else if (event.nativeEvent.contentOffset.y <= 180) {
-            spaceAboutRef.current?.scrollTo({ y: 0 });
-            spaceAboutCurrentScrollRef.current = 0;
-          }
-        }}
         {...scrollProps}
       />
     </View>
