@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Platform } from "react-native";
 import i18n from "i18n-js";
 import IconFont from "../IconFont";
-import common from "../../styles/common";
+import common from "styles/common";
 import SearchInput from "../SearchInput";
-import { n } from "../../helpers/miscUtils";
+import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 import CategoriesScrollView from "components/CategoriesScrollView";
 
@@ -54,7 +54,12 @@ function ExploreHeader({
   }, [showSearch]);
 
   return (
-    <View style={{ backgroundColor: colors.bgDefault, paddingBottom: 8 }}>
+    <View
+      style={{
+        backgroundColor: colors.bgDefault,
+        paddingBottom: 8,
+      }}
+    >
       {showSearch ? (
         <SearchInput
           onChangeText={onChangeText}
@@ -70,7 +75,7 @@ function ExploreHeader({
               >
                 <IconFont
                   name="close"
-                  size={16}
+                  size={21}
                   color={colors.textColor}
                   style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
                 />
@@ -80,19 +85,14 @@ function ExploreHeader({
         />
       ) : (
         <View
-          style={{
-            paddingHorizontal: 16,
-            flexDirection: "row",
-            alignItems: "baseline",
-            paddingTop: 12,
-            height: 41.1,
-          }}
+          style={[common.headerContainer, common.containerHorizontalPadding]}
         >
           <Text
             style={{
               color: colors.textColor,
-              fontSize: 18,
-              fontFamily: "Calibre-Semibold",
+              fontSize: 21,
+              fontFamily: "Calibre-Medium",
+              lineHeight: 21,
             }}
           >
             {i18n.t("explore")}
@@ -100,7 +100,12 @@ function ExploreHeader({
           <Text
             style={[
               common.subTitle,
-              { marginLeft: "auto", fontSize: 18, marginRight: 6 },
+              {
+                marginLeft: "auto",
+                fontSize: 21,
+                marginRight: 6,
+                lineHeight: 21,
+              },
             ]}
           >
             {n(filteredExplore.length)} {currentExploreText}
@@ -110,7 +115,14 @@ function ExploreHeader({
               setShowSearch(true);
             }}
           >
-            <IconFont name="search" size={20} color={colors.textColor} />
+            <IconFont
+              name="search"
+              size={22}
+              color={colors.textColor}
+              style={{
+                marginBottom: Platform.OS === "android" ? 0 : 8,
+              }}
+            />
           </TouchableOpacity>
         </View>
       )}

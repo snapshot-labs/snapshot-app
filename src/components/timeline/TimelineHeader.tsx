@@ -4,67 +4,50 @@ import i18n from "i18n-js";
 import colors from "constants/colors";
 import { useAuthState } from "context/authContext";
 import ProposalFilters from "../proposal/ProposalFilters";
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    height: 35,
-  },
-  filterContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: "auto",
-  },
-  filterText: {
-    color: colors.darkGray,
-    fontSize: 18,
-    fontFamily: "Calibre-Medium",
-    marginRight: 6,
-  },
-  title: {
-    color: colors.textColor,
-    fontSize: 18,
-    fontFamily: "Calibre-Semibold",
-  },
-});
+import common from "styles/common";
+import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
 
 type TimelineHeaderProps = {
   joinedSpacesFilter: { key: string; text: string };
-  allSpacesFilter: { key: string; text: string };
-  useFollowedSpaces: boolean;
-  currentIndex: number;
   showBottomSheetModal: (showBottomSheetModal: boolean) => void;
 };
 
 function TimelineHeader({
   joinedSpacesFilter,
-  allSpacesFilter,
-  currentIndex,
   showBottomSheetModal,
 }: TimelineHeaderProps) {
   const { followedSpaces, colors } = useAuthState();
   return (
-    <View style={styles.container}>
-      <Text style={[styles.title, { color: colors.textColor }]}>
-        {i18n.t("timeline")}
-      </Text>
-      {currentIndex === 0 ? (
-        followedSpaces.length > 0 ? (
+    <View
+      style={{
+        backgroundColor: colors.bgDefault,
+        zIndex: 9999,
+      }}
+    >
+      <View style={common.headerContainer}>
+        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+          {i18n.t("timeline")}
+        </Text>
+      </View>
+      {followedSpaces.length > 0 && <JoinedSpacesScrollView />}
+      {followedSpaces.length > 0 ? (
+        <View
+          style={{
+            paddingRight: 16,
+            paddingTop: 6,
+            paddingBottom: 6,
+            zIndex: 9999,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.borderColor,
+          }}
+        >
           <ProposalFilters
             filter={joinedSpacesFilter}
             showBottomSheetModal={showBottomSheetModal}
           />
-        ) : (
-          <View />
-        )
+        </View>
       ) : (
-        <ProposalFilters
-          filter={allSpacesFilter}
-          showBottomSheetModal={showBottomSheetModal}
-        />
+        <View />
       )}
     </View>
   );

@@ -9,8 +9,9 @@ const common = StyleSheet.create({
   screenHeaderTitle: {
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
-    fontSize: 24,
+    fontSize: 21,
     paddingLeft: 16,
+    lineHeight: 21,
   },
   headerTitle: {
     color: colors.headingColor,
@@ -43,7 +44,7 @@ const common = StyleSheet.create({
   headerContainer: {
     borderBottomColor: colors.borderColor,
     borderBottomWidth: 1,
-    height: 60,
+    height: 50,
     alignItems: "center",
     flexDirection: "row",
     width: "100%",
@@ -81,11 +82,11 @@ const common = StyleSheet.create({
     justifyContent: "space-between",
   },
   justifyCenter: {
-    justifyContent: "center"
+    justifyContent: "center",
   },
   alignItemsCenter: {
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });
 
 export default common;

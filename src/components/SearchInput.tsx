@@ -22,12 +22,16 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingLeft: 0,
     marginBottom: 0,
+    paddingBottom: 0,
+    paddingTop: 0,
+    marginLeft: 16,
     marginTop: 0,
-    fontSize: 18,
+    fontSize: 21,
     fontFamily: "Calibre-Medium",
-    height: 40,
-    lineHeight: 20,
+    height: 49,
+    lineHeight: 21,
     color: colors.textColor,
+    textAlignVertical: "center",
   },
 });
 
@@ -53,13 +57,15 @@ function SearchInput({
       ]}
     >
       <Input
-        selectionColor={colors.textColor}
+        selectionColor={colors.darkGray}
         style={[styles.searchInput, { color: colors.textColor }]}
         value={value}
         onChangeText={onChangeText}
         placeholder={i18n.t("search")}
-        placeholderTextColor={colors.textColor}
+        placeholderTextColor={colors.borderColor}
         setRef={searchRef}
+        textAlign="left"
+        textAlignVertical="center"
       />
       {RightComponent !== undefined && <RightComponent />}
     </View>

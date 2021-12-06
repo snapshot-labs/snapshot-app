@@ -29,6 +29,8 @@ import IconFont from "../components/IconFont";
 import AboutScreen from "screens/AboutScreen";
 import AdvancedSettingsScreen from "screens/AdvancedSettingsScreen";
 import SpaceSettingsScreen from "screens/SpaceSettingsScreen";
+import NotificationScreen from "screens/NotificationScreen";
+import UserAvatar from "components/UserAvatar";
 
 const Stack = createStackNavigator();
 
@@ -43,7 +45,7 @@ const BOTTOM_LABEL_PADDING = isOldIphone()
 const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
-  const { colors } = useAuthState();
+  const { colors, connectedAddress } = useAuthState();
 
   return (
     <Tab.Navigator
@@ -55,12 +57,12 @@ function TabNavigator() {
         tabBarActiveTintColor: colors.textColor,
         tabBarStyle: {
           backgroundColor: colors.bgDefault,
-          padding: 16,
           shadowOpacity: 0,
-          height: isOldIphone() ? 60 : Platform.OS === "android" ? 75 : 95,
+          height: isOldIphone() ? 60 : Platform.OS === "android" ? 68 : 90,
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
           elevation: 0,
+          paddingTop: 18,
         },
       }}
     >
@@ -68,39 +70,13 @@ function TabNavigator() {
         name="Feed"
         component={FeedScreen}
         options={{
-          title: i18n.t("feed"),
+          title: "",
           tabBarIcon: ({ color }) => (
-            <IconFont
-              name="feed"
-              color={color}
-              size={ICON_SIZE}
-              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
-            />
+            <IconFont name="home" color={color} size={ICON_SIZE} />
           ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
             fontSize: TAB_LABEL_FONT_SIZE,
-            paddingBottom: BOTTOM_LABEL_PADDING,
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: i18n.t("home"),
-          tabBarIcon: ({ color }) => (
-            <IconFont
-              name="snapshot"
-              color={color}
-              size={ICON_SIZE}
-              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
-            />
-          ),
-          tabBarLabelStyle: {
-            fontFamily: "Calibre-Medium",
-            fontSize: TAB_LABEL_FONT_SIZE,
-            paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}
       />
@@ -108,19 +84,31 @@ function TabNavigator() {
         name="Explore"
         component={ExploreScreen}
         options={{
-          title: i18n.t("explore"),
+          title: "",
+          tabBarIcon: ({ color }) => (
+            <IconFont name="search" color={color} size={ICON_SIZE} />
+          ),
+          tabBarLabelStyle: {
+            fontFamily: "Calibre-Medium",
+            fontSize: TAB_LABEL_FONT_SIZE,
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{
+          title: "",
           tabBarIcon: ({ color }) => (
             <IconFont
-              name="stars"
+              name="notifications-none"
               color={color}
               size={ICON_SIZE}
-              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
             />
           ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
             fontSize: TAB_LABEL_FONT_SIZE,
-            paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}
       />
@@ -128,19 +116,16 @@ function TabNavigator() {
         name="More"
         component={MoreScreen}
         options={{
-          title: i18n.t("profile"),
-          tabBarIcon: ({ color }) => (
-            <IconFont
-              name="people"
-              color={color}
-              size={ICON_SIZE}
-              style={{ paddingBottom: BOTTOM_ICON_PADDING }}
-            />
-          ),
+          title: "",
+          tabBarIcon: ({ color }) =>
+            connectedAddress ? (
+              <UserAvatar size={24} address={connectedAddress} />
+            ) : (
+              <IconFont name="people" color={color} size={ICON_SIZE} />
+            ),
           tabBarLabelStyle: {
             fontFamily: "Calibre-Medium",
             fontSize: TAB_LABEL_FONT_SIZE,
-            paddingBottom: BOTTOM_LABEL_PADDING,
           },
         }}
       />
