@@ -9,6 +9,7 @@ const defaultColors = {
   bgLightGray: "#f6f8fa",
   highlightColor: "rgba(208,215,222, .20)",
   red: "#d20000",
+  categoriesBgColor: "#eef2f5",
 };
 const light = {
   borderColor: "#d0d7de",
@@ -18,6 +19,7 @@ const light = {
   bgDefault: "#fff",
   indicatorColor: defaultColors.darkGray,
   settingsIconBgColor: "rgba(0,0,0,.2)",
+  categoriesBgColor: "#eef2f5",
 };
 
 const dark = {
@@ -28,6 +30,7 @@ const dark = {
   bgDefault: "#121212",
   indicatorColor: defaultColors.white,
   settingsIconBgColor: "rgba(255,255,255,.2)",
+  categoriesBgColor: "#eef2f5",
 };
 
 const colorScheme: any = { ...defaultColors, ...light };

@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   choice: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
+    lineHeight: 18,
     zIndex: 1,
     paddingTop: Platform.OS === "ios" ? 4 : 0,
   },
@@ -34,12 +35,14 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 18,
     marginLeft: "auto",
+    lineHeight: 18,
     zIndex: 1,
     paddingTop: Platform.OS === "ios" ? 4 : 0,
   },
   scoreSymbol: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
+    lineHeight: 18,
     marginLeft: 6,
     paddingTop: Platform.OS === "ios" ? 4 : 0,
   },

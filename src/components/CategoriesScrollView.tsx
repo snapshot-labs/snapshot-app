@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
-import { View, ScrollView, TouchableOpacity, Text } from "react-native";
-import { styles as buttonStyles } from "components/Button";
+import React from "react";
+import { View, ScrollView, Platform, TouchableOpacity } from "react-native";
+import Category from "components/proposal/Category";
+import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
-import { useExploreState } from "context/exploreContext";
 
 const allCategories = [
   "protocol",
@@ -15,23 +15,6 @@ const allCategories = [
   "collector",
 ];
 
-async function measureComponent(component: any) {
-  return new Promise((resolve, reject) => {
-    component.measure(
-      (
-        x: number,
-        y: number,
-        width: number,
-        height: number,
-        pageX: number,
-        pageY: number
-      ) => {
-        resolve({ x, y, width, height, pageX, pageY });
-      }
-    );
-  });
-}
-
 type CategoriesScrollViewProps = {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
@@ -42,79 +25,65 @@ function CategoriesScrollView({
   setSelectedCategory,
 }: CategoriesScrollViewProps) {
   const { colors } = useAuthState();
-  const { categories } = useExploreState();
-  const nodesRef: any = useRef([]);
-  const scrollViewRef: any = useRef(null);
 
   return (
-    <ScrollView
-      horizontal
-      style={{ marginTop: 7, paddingHorizontal: 16 }}
-      showsHorizontalScrollIndicator={false}
-      ref={scrollViewRef}
+    <View
+      style={{
+        marginTop: 8,
+        paddingHorizontal: 16,
+        borderBottomWidth: 1,
+        paddingBottom: 8,
+        borderBottomColor: colors.borderColor,
+      }}
     >
-      {allCategories.map((category, i) => (
-        <TouchableOpacity
-          key={i}
-          onPress={async () => {
-            if (selectedCategory === category) {
-              setSelectedCategory("");
-            } else {
-              setSelectedCategory(category);
-              let xPos = 0;
-              for (let j = 0; j < i; j++) {
-                const result: any = await measureComponent(nodesRef.current[i]);
-                xPos += result?.width ?? 0;
-              }
-              scrollViewRef.current?.scrollTo({
-                x: xPos !== 0 ? xPos - 24 : xPos,
-              });
-            }
-          }}
-        >
-          <View
-            style={[
-              buttonStyles.button,
-              {
-                borderColor:
-                  selectedCategory === category
-                    ? colors.textColor
-                    : colors.borderColor,
+      {selectedCategory === "" ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {allCategories.map((category, i) => (
+            <Category
+              key={i}
+              onPress={(category) => {
+                if (selectedCategory === category) {
+                  setSelectedCategory("");
+                } else {
+                  setSelectedCategory(category);
+                }
+              }}
+              buttonContainerStyle={{
                 marginRight: i === allCategories.length - 1 ? 24 : 8,
-              },
-            ]}
-            ref={(ref) => {
-              nodesRef.current.push(ref);
+              }}
+              category={category}
+              isSelected={selectedCategory === category}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedCategory("");
             }}
           >
-            <Text
-              style={[
-                buttonStyles.buttonTitle,
-                {
-                  color:
-                    selectedCategory === category
-                      ? colors.textColor
-                      : colors.darkGray,
-                  textTransform: "capitalize",
-                },
-              ]}
-            >
-              {category}
-            </Text>
-            <Text
-              style={{
-                fontFamily: "Calibre-Medium",
-                color: colors.borderColor,
-                fontSize: 18,
-                marginLeft: 6,
-              }}
-            >
-              {categories[category]}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+            <IconFont
+              name="close"
+              size={21}
+              color={colors.textColor}
+              style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
+            />
+          </TouchableOpacity>
+          <Category
+            onPress={(category) => {
+              if (selectedCategory === category) {
+                setSelectedCategory("");
+              } else {
+                setSelectedCategory(category);
+              }
+            }}
+            category={selectedCategory}
+            isSelected
+          />
+        </View>
+      )}
+    </View>
   );
 }
 

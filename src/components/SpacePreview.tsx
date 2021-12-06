@@ -1,14 +1,30 @@
-import React from "react";
-import { View, StyleSheet, Text, TouchableHighlight } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  Dimensions,
+} from "react-native";
 import get from "lodash/get";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
-import { Space } from "../types/explore";
+import { Space } from "types/explore";
 import SpaceAvatar from "./SpaceAvatar";
-import colors from "../constants/colors";
-import { SPACE_SCREEN } from "../constants/navigation";
-import { n } from "../helpers/miscUtils";
+import colors from "constants/colors";
+import { SPACE_SCREEN } from "constants/navigation";
+import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
+import FollowButton from "components/FollowButton";
+
+const { width: deviceWidth } = Dimensions.get("screen");
+
+const basePadding = 16;
+const spaceAvatarWidth = 60;
+const spacePreviewTitleContainerMargin = 10;
+const buttonWidth = 120;
+const spaceNameWidth =
+  deviceWidth - spaceAvatarWidth - basePadding - buttonWidth - basePadding - 16;
 
 const styles = StyleSheet.create({
   spacePreviewContainer: {
@@ -20,7 +36,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderColor,
   },
   spacePreviewTitleContainer: {
-    marginLeft: 10,
+    marginLeft: spacePreviewTitleContainerMargin,
   },
   spacePreviewTitle: {
     color: colors.textColor,
@@ -42,34 +58,70 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
+  const [showUnderlay, setShowUnderlay] = useState(false);
   return (
-    <TouchableHighlight
-      onPress={() => {
-        navigation.navigate(SPACE_SCREEN, { space });
-      }}
-      underlayColor={colors.highlightColor}
+    <View
+      style={[
+        styles.spacePreviewContainer,
+        {
+          borderBottomColor: colors.borderColor,
+          backgroundColor: showUnderlay
+            ? colors.highlightColor
+            : colors.bgDefault,
+        },
+      ]}
     >
-      <View
-        style={[
-          styles.spacePreviewContainer,
-          { borderBottomColor: colors.borderColor },
-        ]}
+      <TouchableHighlight
+        onPress={() => {
+          navigation.navigate(SPACE_SCREEN, { space });
+        }}
+        onShowUnderlay={() => setShowUnderlay(true)}
+        onHideUnderlay={() => setShowUnderlay(false)}
+        underlayColor="transparent"
       >
-        <SpaceAvatar space={space} symbolIndex="space" size={60} />
-        <View style={styles.spacePreviewTitleContainer}>
-          <Text style={[styles.spacePreviewTitle, { color: colors.textColor }]}>
-            {get(space, "name")}
-          </Text>
-          {hasMembers ? (
-            <Text style={styles.spacePreviewFollowerCount}>
-              {n(get(space, "followers", 0))} {i18n.t("members")}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            flex: 1,
+            borderBottomColor: colors.borderColor,
+          }}
+        >
+          <SpaceAvatar
+            space={space}
+            symbolIndex="space"
+            size={spaceAvatarWidth}
+          />
+          <View style={styles.spacePreviewTitleContainer}>
+            <Text
+              style={[
+                styles.spacePreviewTitle,
+                { color: colors.textColor, width: spaceNameWidth },
+              ]}
+              ellipsizeMode="tail"
+              numberOfLines={1}
+            >
+              {get(space, "name")}
             </Text>
-          ) : (
-            <Text />
-          )}
+            {hasMembers ? (
+              <Text style={styles.spacePreviewFollowerCount}>
+                {n(get(space, "followers", 0))} {i18n.t("members")}
+              </Text>
+            ) : (
+              <Text />
+            )}
+          </View>
         </View>
+      </TouchableHighlight>
+      <View
+        style={{
+          marginLeft: "auto",
+          height: 60,
+        }}
+      >
+        <FollowButton space={space} />
       </View>
-    </TouchableHighlight>
+    </View>
   );
 }
 

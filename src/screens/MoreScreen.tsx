@@ -63,18 +63,14 @@ function MoreScreen() {
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
       <ScrollView style={{ flex: 1 }}>
-        <View
-          style={[
-            { flexDirection: "row", borderBottomWidth: 0, paddingTop: 16 },
-          ]}
-        >
+        <View style={[common.headerContainer]}>
           <Text
-            style={{
-              color: colors.textColor,
-              fontFamily: "Calibre-Semibold",
-              fontSize: 18,
-              paddingLeft: 16,
-            }}
+            style={[
+              common.screenHeaderTitle,
+              {
+                color: colors.textColor,
+              },
+            ]}
           >
             {i18n.t("account")}
           </Text>

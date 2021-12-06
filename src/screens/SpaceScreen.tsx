@@ -144,11 +144,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   }, [route.params]);
 
   useEffect(() => {
-    if (index === 0) {
-      showingProposals.current = true;
-    } else {
-      showingProposals.current = false;
-    }
+    showingProposals.current = index === 0;
   }, [index]);
 
   useEffect(() => {

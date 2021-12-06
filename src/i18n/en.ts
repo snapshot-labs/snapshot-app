@@ -159,4 +159,5 @@ export default {
   unableToJoinSpace: "Unable to join or leave space.",
   unableToEstablishWalletConnect:
     "Unable to establish a wallet connect connection. Please logout of this address and log back in.",
+  notifications: "Notifications"
 };
