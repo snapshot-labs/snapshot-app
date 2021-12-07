@@ -73,6 +73,7 @@ function SpaceAvatar({
 
   return (
     <Image
+      key={`${space?.id}${url}`}
       source={imgSrc}
       style={{
         width: size,

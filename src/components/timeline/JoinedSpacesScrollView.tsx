@@ -35,7 +35,7 @@ function JoinedSpacesScrollView() {
                   space: { id: space?.space?.id, ...spaceDetails },
                 });
               }}
-              size={48}
+              size={64}
               space={spaceDetails}
               containerStyle={{
                 marginLeft: 16,
