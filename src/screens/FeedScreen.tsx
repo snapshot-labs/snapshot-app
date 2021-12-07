@@ -21,7 +21,7 @@ import isEmpty from "lodash/isEmpty";
 import TimelineFeed from "components/timeline/TimelineFeed";
 import * as Linking from "expo-linking";
 import includes from "lodash/includes";
-import { SPACE_SCREEN } from "constants/navigation";
+import { PROPOSAL_SCREEN, SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 
 async function getFollows(
@@ -73,19 +73,31 @@ function FeedScreen() {
   const navigation: any = useNavigation();
   const [isInitial, setIsInitial] = useState<boolean>(true);
 
-  function navigateToSpaceScreen(url: string) {
+  function navigateToScreen(url: string) {
     if (includes(url, "snapshot.org")) {
       const splitUrl = url.split("#");
       if (splitUrl?.length === 2) {
-        const spaceId = splitUrl[1]?.replace(/\//g, "");
-        const spaceDetails = spaces[spaceId] ?? {};
-        if (!isEmpty(spaceId)) {
-          navigation.navigate(SPACE_SCREEN, {
-            space: {
-              id: spaceId,
-              ...spaceDetails,
-            },
-          });
+        if (includes(splitUrl[1], "proposal")) {
+          const splitUrlProposal = splitUrl[1].split("/");
+          if (splitUrlProposal.length >= 4) {
+            const spaceId = splitUrlProposal[1];
+            const proposalId = splitUrlProposal[3];
+            navigation.replace(PROPOSAL_SCREEN, {
+              proposalId,
+              spaceId,
+            });
+          }
+        } else {
+          const spaceId = splitUrl[1]?.replace(/\//g, "");
+          const spaceDetails = spaces[spaceId] ?? {};
+          if (!isEmpty(spaceId)) {
+            navigation.navigate(SPACE_SCREEN, {
+              space: {
+                id: spaceId,
+                ...spaceDetails,
+              },
+            });
+          }
         }
       }
     }
@@ -93,10 +105,10 @@ function FeedScreen() {
 
   useEffect(() => {
     Linking.getInitialURL().then((url: string | null) => {
-      navigateToSpaceScreen(url ?? "");
+      navigateToScreen(url ?? "");
     });
     Linking.addEventListener("url", (event) => {
-      navigateToSpaceScreen(event?.url);
+      navigateToScreen(event?.url);
     });
     getExplore(exploreDispatch);
     getFollows(connectedAddress, authDispatch);
