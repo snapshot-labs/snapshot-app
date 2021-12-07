@@ -3,13 +3,7 @@ import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import React, { useEffect, useState } from "react";
 import { Proposal } from "types/proposal";
 import { setProfiles } from "helpers/profile";
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 import ProposalPreview from "components/ProposalPreview";
 import common from "styles/common";
 import i18n from "i18n-js";

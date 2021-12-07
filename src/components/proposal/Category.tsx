@@ -32,10 +32,8 @@ function Category({
         style={[
           buttonStyles.button,
           {
-            borderColor: isSelected
-              ? colors.textColor
-              : colors.categoriesBgColor,
-            backgroundColor: colors.categoriesBgColor,
+            borderColor: isSelected ? colors.textColor : colors.borderColor,
+            backgroundColor: colors.borderColor,
             paddingBottom: 8,
             paddingHorizontal: 14,
             paddingTop: Platform.OS === "android" ? 8 : 12,
@@ -47,7 +45,7 @@ function Category({
           style={[
             buttonStyles.buttonTitle,
             {
-              color: colors.black,
+              color: colors.textColor,
               textTransform: "capitalize",
               fontSize: 18,
               lineHeight: 18,
@@ -59,7 +57,7 @@ function Category({
         <Text
           style={{
             fontFamily: "Calibre-Medium",
-            color: colors.borderColor,
+            color: colors.darkGray,
             fontSize: 18,
             lineHeight: 18,
             marginLeft: 6,
