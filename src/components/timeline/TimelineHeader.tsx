@@ -21,10 +21,17 @@ function TimelineHeader({
     <View
       style={{
         backgroundColor: colors.bgDefault,
-        zIndex: 9999,
       }}
     >
-      <View style={common.headerContainer}>
+      <View
+        style={[
+          common.headerContainer,
+          {
+            borderBottomColor: colors.borderColor,
+            backgroundColor: colors.bgDefault,
+          },
+        ]}
+      >
         <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
           {i18n.t("timeline")}
         </Text>
@@ -36,9 +43,9 @@ function TimelineHeader({
             paddingRight: 16,
             paddingTop: 6,
             paddingBottom: 6,
-            zIndex: 9999,
             borderBottomWidth: 1,
             borderBottomColor: colors.borderColor,
+            backgroundColor: colors.bgDefault,
           }}
         >
           <ProposalFilters

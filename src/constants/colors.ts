@@ -1,6 +1,6 @@
 const defaultColors = {
   white: "#fff",
-  black: "#000",
+  black: "#111111",
   darkGray: "#576069",
   bgPurple: "rgba(124,58,237, 1)",
   bgGreen: "#21B66F",

@@ -63,7 +63,12 @@ function MoreScreen() {
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
       <ScrollView style={{ flex: 1 }}>
-        <View style={[common.headerContainer]}>
+        <View
+          style={[
+            common.headerContainer,
+            { borderBottomColor: colors.borderColor },
+          ]}
+        >
           <Text
             style={[
               common.screenHeaderTitle,
@@ -99,7 +104,7 @@ function MoreScreen() {
             navigation.navigate(CONNECT_ACCOUNT_SCREEN);
           }}
         >
-          <View style={{ marginTop: 24, paddingLeft: 16 }}>
+          <View style={{ marginTop: 16, paddingLeft: 16 }}>
             <Text style={[common.h4, { color: colors.textColor }]}>
               {i18n.t("addWallet")}
             </Text>
