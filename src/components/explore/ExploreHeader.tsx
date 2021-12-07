@@ -85,7 +85,11 @@ function ExploreHeader({
         />
       ) : (
         <View
-          style={[common.headerContainer, common.containerHorizontalPadding]}
+          style={[
+            common.headerContainer,
+            common.containerHorizontalPadding,
+            { borderBottomColor: colors.borderColor },
+          ]}
         >
           <Text
             style={{

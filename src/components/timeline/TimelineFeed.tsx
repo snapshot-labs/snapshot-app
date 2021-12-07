@@ -137,7 +137,7 @@ function TimelineFeed() {
           }}
         />
       }
-      headerHeight={followedSpaces.length > 0 ? 148 : 65}
+      headerHeight={followedSpaces.length > 0 ? 148 : 50}
       clipHeader
       CollapsibleHeaderComponent={
         <TimelineHeader

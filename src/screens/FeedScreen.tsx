@@ -72,11 +72,11 @@ function FeedScreen() {
   const insets = useSafeAreaInsets();
   const navigation: any = useNavigation();
   const [isInitial, setIsInitial] = useState<boolean>(true);
-  const linkingUrl = Linking.useURL();
+  const initialUrl = Linking.useURL();
 
-  useEffect(() => {
-    if (includes(linkingUrl, "snapshot.org")) {
-      const splitUrl = linkingUrl?.split("#");
+  function navigateToSpaceScreen(url: string) {
+    if (includes(url, "snapshot.org")) {
+      const splitUrl = url.split("#");
       if (splitUrl?.length === 2) {
         const spaceId = splitUrl[1]?.replace(/\//g, "");
         const spaceDetails = spaces[spaceId] ?? {};
@@ -90,9 +90,14 @@ function FeedScreen() {
         }
       }
     }
-  }, [linkingUrl]);
+  }
 
   useEffect(() => {
+    navigateToSpaceScreen(initialUrl ?? "");
+    console.log({ initialUrl });
+    Linking.addEventListener("url", (event) => {
+      navigateToSpaceScreen(event?.url);
+    });
     getExplore(exploreDispatch);
     getFollows(connectedAddress, authDispatch);
     setIsInitial(false);

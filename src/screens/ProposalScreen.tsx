@@ -124,7 +124,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
     isEmpty(proposal)
   );
   const [votes, setVotes] = useState<any[]>([]);
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   const [results, setResults] = useState({});
   const [resultsLoaded, setResultsLoaded] = useState<boolean>(false);
   const [scrollEnabled, setScrollEnabled] = useState<boolean>(true);

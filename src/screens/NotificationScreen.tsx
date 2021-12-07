@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAuthState } from "../context/authContext";
-import common from "../styles/common";
+import { useAuthState } from "context/authContext";
+import common from "styles/common";
 import i18n from "i18n-js";
 
 function NotificationScreen() {
@@ -22,7 +22,12 @@ function NotificationScreen() {
           paddingBottom: 8,
         }}
       >
-        <View style={common.headerContainer}>
+        <View
+          style={[
+            common.headerContainer,
+            { borderBottomColor: colors.borderColor },
+          ]}
+        >
           <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
             {i18n.t("notifications")}
           </Text>

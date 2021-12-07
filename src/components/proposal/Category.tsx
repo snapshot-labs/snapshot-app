@@ -47,7 +47,7 @@ function Category({
           style={[
             buttonStyles.buttonTitle,
             {
-              color: colors.textColor,
+              color: colors.black,
               textTransform: "capitalize",
               fontSize: 18,
               lineHeight: 18,

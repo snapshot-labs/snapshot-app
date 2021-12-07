@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     fontSize: 18,
     fontFamily: "Calibre-Medium",
+    marginRight: 4,
   },
 });
 
@@ -64,8 +65,8 @@ function ProposalFilters({
           {filter.text}
         </Text>
         <IconFont
-          name="arrow-up"
-          size={16}
+          name="filter-3-fill"
+          size={18}
           color={setIconColor}
           style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
         />
