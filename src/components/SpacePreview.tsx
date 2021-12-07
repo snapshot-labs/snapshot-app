@@ -59,6 +59,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
   const [showUnderlay, setShowUnderlay] = useState(false);
+
   return (
     <View
       style={[

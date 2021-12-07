@@ -12,7 +12,6 @@ import FeedScreen from "./FeedScreen";
 import * as navigationConstants from "constants/navigation";
 import LandingScreen from "./LandingScreen";
 import ExploreScreen from "./ExploreScreen";
-import HomeScreen from "./HomeScreen";
 import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
@@ -36,12 +35,6 @@ const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 const ICON_SIZE = 28;
-const BOTTOM_ICON_PADDING = Platform.OS === "android" ? 0 : 30;
-const BOTTOM_LABEL_PADDING = isOldIphone()
-  ? 8
-  : Platform.OS === "android"
-  ? 16
-  : 0;
 const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
@@ -156,7 +149,7 @@ const screenSettings =
     : {};
 
 export default function () {
-  const { connectedAddress, colors } = useAuthState();
+  const { connectedAddress } = useAuthState();
   return (
     <Stack.Navigator
       initialRouteName={

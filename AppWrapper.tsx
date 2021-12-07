@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import AppNavigator from "screens/AppNavigator";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import AppNavigator from "screens/AppNavigator";
 import { ExploreProvider } from "context/exploreContext";
 import storage from "helpers/storage";
 import {
