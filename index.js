@@ -1,8 +1,6 @@
 import "react-native-gesture-handler";
 import { registerRootComponent } from "expo";
 import "./shim";
-import crypto from "crypto";
-
 import App from "./App";
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

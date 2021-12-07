@@ -10,10 +10,19 @@ import {
   useAuthState,
 } from "context/authContext";
 import common from "styles/common";
-import { EXPLORE_ACTIONS, useExploreDispatch } from "context/exploreContext";
+import {
+  EXPLORE_ACTIONS,
+  useExploreDispatch,
+  useExploreState,
+} from "context/exploreContext";
 import { ContextDispatch } from "types/context";
 import { defaultHeaders } from "helpers/apiUtils";
+import isEmpty from "lodash/isEmpty";
 import TimelineFeed from "components/timeline/TimelineFeed";
+import * as Linking from "expo-linking";
+import includes from "lodash/includes";
+import { SPACE_SCREEN } from "constants/navigation";
+import { useNavigation } from "@react-navigation/core";
 
 async function getFollows(
   accountId: string | null | undefined,
@@ -57,10 +66,31 @@ async function getExplore(exploreDispatch: ContextDispatch) {
 
 function FeedScreen() {
   const { colors, connectedAddress } = useAuthState();
+  const { spaces } = useExploreState();
   const authDispatch = useAuthDispatch();
   const exploreDispatch = useExploreDispatch();
   const insets = useSafeAreaInsets();
+  const navigation: any = useNavigation();
   const [isInitial, setIsInitial] = useState<boolean>(true);
+  const linkingUrl = Linking.useURL();
+
+  useEffect(() => {
+    if (includes(linkingUrl, "snapshot.org")) {
+      const splitUrl = linkingUrl?.split("#");
+      if (splitUrl?.length === 2) {
+        const spaceId = splitUrl[1]?.replace(/\//g, "");
+        const spaceDetails = spaces[spaceId] ?? {};
+        if (!isEmpty(spaceId)) {
+          navigation.navigate(SPACE_SCREEN, {
+            space: {
+              id: spaceId,
+              ...spaceDetails,
+            },
+          });
+        }
+      }
+    }
+  }, [linkingUrl]);
 
   useEffect(() => {
     getExplore(exploreDispatch);

@@ -32,7 +32,9 @@ function JoinedSpacesScrollView() {
             <SpaceAvatarButton
               key={i}
               onPress={() => {
-                navigation.navigate(SPACE_SCREEN, { space: spaceDetails });
+                navigation.navigate(SPACE_SCREEN, {
+                  space: { id: space?.space?.id, ...spaceDetails },
+                });
               }}
               size={48}
               space={spaceDetails}
