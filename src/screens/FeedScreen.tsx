@@ -72,7 +72,6 @@ function FeedScreen() {
   const insets = useSafeAreaInsets();
   const navigation: any = useNavigation();
   const [isInitial, setIsInitial] = useState<boolean>(true);
-  const initialUrl = Linking.useURL();
 
   function navigateToSpaceScreen(url: string) {
     if (includes(url, "snapshot.org")) {
@@ -93,8 +92,9 @@ function FeedScreen() {
   }
 
   useEffect(() => {
-    navigateToSpaceScreen(initialUrl ?? "");
-    console.log({ initialUrl });
+    Linking.getInitialURL().then((url: string | null) => {
+      navigateToSpaceScreen(url ?? "");
+    });
     Linking.addEventListener("url", (event) => {
       navigateToSpaceScreen(event?.url);
     });
