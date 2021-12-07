@@ -16,7 +16,6 @@ function JoinedSpacesScrollView() {
     <View
       style={{
         marginTop: 8,
-        paddingHorizontal: 16,
         borderBottomWidth: 1,
         paddingBottom: 8,
         borderBottomColor: colors.borderColor,
@@ -38,7 +37,10 @@ function JoinedSpacesScrollView() {
               }}
               size={48}
               space={spaceDetails}
-              containerStyle={{ marginRight: 16 }}
+              containerStyle={{
+                marginLeft: 16,
+                marginRight: i === followedSpaces.length - 1 ? 16 : 0,
+              }}
             />
           );
         })}

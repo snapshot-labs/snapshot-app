@@ -30,6 +30,7 @@ import AdvancedSettingsScreen from "screens/AdvancedSettingsScreen";
 import SpaceSettingsScreen from "screens/SpaceSettingsScreen";
 import NotificationScreen from "screens/NotificationScreen";
 import UserAvatar from "components/UserAvatar";
+import { useExploreState } from "context/exploreContext";
 
 const Stack = createStackNavigator();
 
@@ -39,7 +40,8 @@ const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
   const { colors, connectedAddress } = useAuthState();
-
+  const { profiles } = useExploreState();
+  const profile = profiles[connectedAddress ?? ""];
   return (
     <Tab.Navigator
       screenOptions={{
@@ -112,7 +114,12 @@ function TabNavigator() {
           title: "",
           tabBarIcon: ({ color }) =>
             connectedAddress ? (
-              <UserAvatar size={24} address={connectedAddress} />
+              <UserAvatar
+                size={24}
+                address={connectedAddress}
+                imgSrc={profile?.image}
+                key={`${connectedAddress}${profile?.image}`}
+              />
             ) : (
               <IconFont name="people" color={color} size={ICON_SIZE} />
             ),

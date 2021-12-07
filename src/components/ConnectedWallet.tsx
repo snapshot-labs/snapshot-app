@@ -95,7 +95,12 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
           paddingVertical: 8,
         }}
       >
-        <UserAvatar size={40} address={address} imgSrc={profile?.image} />
+        <UserAvatar
+          size={40}
+          address={address}
+          imgSrc={profile?.image}
+          key={`${address}${profile?.image}`}
+        />
         <View style={styles.connectedAddressContainer}>
           <View>
             {ens !== undefined && ens !== "" && (
