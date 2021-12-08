@@ -157,7 +157,9 @@ export default {
   unableToEditSpace: "Unable to edit space",
   unableToFindProposal: "Unable to find proposal.",
   unableToJoinSpace: "Unable to join or leave space.",
+  unableToJoinSpaceWalletConnect:
+    "Unable to join or leave space with custom wallets. You will need to select a wallet and log in with that wallet.",
   unableToEstablishWalletConnect:
     "Unable to establish a wallet connect connection. Please logout of this address and log back in.",
-  notifications: "Notifications"
+  notifications: "Notifications",
 };

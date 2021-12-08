@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.black,
     width: deviceWidth,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   successContainer: { backgroundColor: colors.bgGreen },
   errorContainer: { backgroundColor: colors.red },

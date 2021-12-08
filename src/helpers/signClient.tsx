@@ -82,6 +82,7 @@ class Client {
         ]);
       } catch (e) {
         console.log("WALLET CONNECT FAILED", e.message);
+        throw new Error(e.message);
       }
       if (sig) {
         console.log("Sign", { address, sig, data: snapshotData });
