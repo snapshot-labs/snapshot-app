@@ -9,7 +9,6 @@ import {
 } from "context/authContext";
 import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
 import Toast from "react-native-toast-message";
-import client from "helpers/snapshotClient";
 import { useToastShowConfig } from "constants/toast";
 import { Proposal } from "types/proposal";
 import { useNavigation } from "@react-navigation/native";

@@ -174,7 +174,14 @@ function FollowButton({ space }: FollowButtonProps) {
             }
           }
         } catch (e) {
-          console.log("FOLLOW BUTTON ERROR", e);
+          Toast.show({
+            type: "customError",
+            text1: parseErrorMessage(
+              e,
+              i18n.t("unableToJoinSpaceWalletConnect")
+            ),
+            ...toastShowConfig,
+          });
         }
 
         setButtonLoading(false);
