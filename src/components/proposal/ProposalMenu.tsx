@@ -14,7 +14,7 @@ function ProposalMenu({ showBottomSheetModal }: ProposalMenuProps) {
     <TouchableOpacity onPress={showBottomSheetModal}>
       <IconFont
         name="more"
-        size={40}
+        size={32}
         color={colors.textColor}
         style={common.containerHorizontalPadding}
       />

@@ -87,17 +87,16 @@ function ExploreHeader({
         <View
           style={[
             common.headerContainer,
-            common.containerHorizontalPadding,
-            { borderBottomColor: colors.borderColor },
+            { borderBottomColor: colors.borderColor, paddingRight: 16 },
           ]}
         >
           <Text
-            style={{
-              color: colors.textColor,
-              fontSize: 21,
-              fontFamily: "Calibre-Medium",
-              lineHeight: 21,
-            }}
+            style={[
+              common.screenHeaderTitle,
+              {
+                color: colors.textColor,
+              },
+            ]}
           >
             {i18n.t("explore")}
           </Text>
@@ -118,6 +117,7 @@ function ExploreHeader({
             onPress={() => {
               setShowSearch(true);
             }}
+            hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
           >
             <IconFont
               name="search"

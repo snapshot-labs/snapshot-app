@@ -29,10 +29,10 @@ function CategoriesScrollView({
   return (
     <View
       style={{
-        marginTop: 8,
+        marginTop: 10,
         paddingHorizontal: 16,
         borderBottomWidth: 1,
-        paddingBottom: 8,
+        paddingBottom: 10,
         borderBottomColor: colors.borderColor,
       }}
     >
@@ -67,7 +67,10 @@ function CategoriesScrollView({
               name="close"
               size={21}
               color={colors.textColor}
-              style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
+              style={{
+                marginBottom: Platform.OS === "ios" ? 4 : 0,
+                marginRight: 6,
+              }}
             />
           </TouchableOpacity>
           <Category
