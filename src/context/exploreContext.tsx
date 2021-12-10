@@ -42,6 +42,10 @@ function exploreReducer(state: ExploreState, action: ContextAction) {
       const categories: any = {};
       for (let key in action.payload?.spaces) {
         action.payload.spaces[key]?.categories?.forEach((category: string) => {
+          if (action.payload.spaces[key]?.private) {
+            return;
+          }
+
           if (categories[category] !== undefined) {
             categories[category] = categories[category] + 1;
           } else {

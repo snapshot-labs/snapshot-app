@@ -6,23 +6,35 @@ import {
   TouchableHighlight,
   Dimensions,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import colors from "constants/colors";
 import { Proposal } from "types/proposal";
 import { shorten, toNow } from "helpers/miscUtils";
 import { useNavigation } from "@react-navigation/native";
-import { PROPOSAL_SCREEN } from "constants/navigation";
+import { CREATE_PROPOSAL_SCREEN, PROPOSAL_SCREEN } from "constants/navigation";
 import removeMd from "remove-markdown";
 import i18n from "i18n-js";
 import { useExploreState } from "context/exploreContext";
 import { Space } from "types/explore";
 import { getUsername } from "helpers/profile";
 import isEmpty from "lodash/isEmpty";
-import { useAuthState } from "context/authContext";
+import { useAuthDispatch, useAuthState } from "context/authContext";
 import SpaceAvatar from "./SpaceAvatar";
 import CoreBadge from "./CoreBadge";
 import StateBadge from "./StateBadge";
 import ProposalPreviewFinalScores from "./ProposalPreviewFinalScores";
+import IconFont from "components/IconFont";
+import common from "styles/common";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import ReceiptModal from "components/proposal/ReceiptModal";
+import { deleteProposal } from "helpers/apiUtils";
+import { useToastShowConfig } from "constants/toast";
+import BottomSheetModal from "components/BottomSheetModal";
 
 const { width } = Dimensions.get("screen");
 
@@ -65,7 +77,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statusContainer: {
-    paddingVertical: 8,
     flexDirection: "row",
   },
   title: {
@@ -73,12 +84,13 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Semibold",
     fontSize: 24,
     lineHeight: 30,
+    marginBottom: 8,
   },
   body: {
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
     fontSize: 20,
-    marginVertical: 8,
+    marginBottom: 16,
     lineHeight: 30,
   },
   period: {
@@ -87,6 +99,13 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
   },
 });
+
+const isAdmin = (connectedAddress: string, space: Space) => {
+  const admins = (space.admins || []).map((admin: string) =>
+    admin.toLowerCase()
+  );
+  return admins.includes(connectedAddress.toLowerCase());
+};
 
 function getPeriod(
   state: string,
@@ -114,12 +133,16 @@ function ProposalPreview({
   fromFeed = false,
 }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
-  const { connectedAddress, colors } = useAuthState();
+  const { connectedAddress, colors, wcConnector } = useAuthState();
+  const authDispatch = useAuthDispatch();
+  const toastShowConfig = useToastShowConfig();
   const { profiles } = useExploreState();
   const formattedBody = useMemo(
     () => shorten(removeMd(proposal.body), 140).replace(/\r?\n|\r/g, " "),
     [proposal]
   );
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetModalRef = useBottomSheetModalRef();
   const title = useMemo(() => shorten(proposal.title, 124), [proposal]);
   const period = useMemo(
     () => getPeriod(proposal.state, proposal.start, proposal.end, proposal),
@@ -137,6 +160,16 @@ function ProposalPreview({
       address.toLowerCase()
     );
     return updatedMembers.includes(proposal.author.toLowerCase());
+  }, [proposal, space]);
+  const options = useMemo(() => {
+    const setOptions = [i18n.t("duplicateProposal")];
+    if (
+      isAdmin(connectedAddress ?? "", space) ||
+      connectedAddress === proposal?.author
+    ) {
+      setOptions.push(i18n.t("deleteProposal"));
+    }
+    return setOptions;
   }, [proposal, space]);
 
   return (
@@ -177,13 +210,56 @@ function ProposalPreview({
               key={proposal.id}
             />
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              const snapPoints = [10, options.length > 1 ? 200 : 100];
+              const destructiveButtonIndex = options.length > 1 ? 1 : 3;
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  options: options,
+                  snapPoints: snapPoints,
+                  show: true,
+                  initialIndex: 1,
+                  destructiveButtonIndex,
+                  onPressOption: (index: number) => {
+                    if (index === 0) {
+                      navigation.navigate(CREATE_PROPOSAL_SCREEN, {
+                        proposal,
+                        space,
+                      });
+                    } else if (
+                      (isAdmin(connectedAddress ?? "", space) ||
+                        connectedAddress === proposal?.author) &&
+                      index === 1
+                    ) {
+                      deleteProposal(
+                        wcConnector,
+                        connectedAddress ?? "",
+                        space,
+                        proposal,
+                        authDispatch,
+                        toastShowConfig
+                      );
+                    }
+                    bottomSheetModalRef.current.close()
+                  },
+                },
+              });
+            }}
+            style={{ marginLeft: "auto" }}
+          >
+            <IconFont name="more" size={32} color={colors.textColor} />
+          </TouchableOpacity>
         </View>
         <View>
           <Text
             style={[
               styles.title,
-              { color: colors.textColor },
-              { marginBottom: isEmpty(formattedBody) ? 8 : 0 },
+              {
+                color: colors.textColor,
+                marginBottom: isEmpty(formattedBody) ? 16 : 8,
+              },
             ]}
           >
             {title}
@@ -197,7 +273,7 @@ function ProposalPreview({
         {proposal.scores_state === "final" &&
           proposal.votes > 0 &&
           proposal.choices?.length <= 6 && (
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <ProposalPreviewFinalScores proposal={proposal} />
             </View>
           )}

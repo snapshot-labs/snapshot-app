@@ -3,7 +3,13 @@ import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import React, { useEffect, useState } from "react";
 import { Proposal } from "types/proposal";
 import { setProfiles } from "helpers/profile";
-import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 import ProposalPreview from "components/ProposalPreview";
 import common from "styles/common";
 import i18n from "i18n-js";
@@ -11,7 +17,6 @@ import { PROPOSALS_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import uniqBy from "lodash/uniqBy";
-import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
 import TimelineHeader from "components/timeline/TimelineHeader";
 import proposal from "constants/proposal";
 import {
@@ -108,7 +113,7 @@ function TimelineFeed() {
   }, [proposals]);
 
   return (
-    <CollapsibleHeaderFlatList
+    <FlatList
       key={connectedAddress}
       refreshControl={
         <RefreshControl
@@ -131,9 +136,7 @@ function TimelineFeed() {
           }}
         />
       }
-      headerHeight={followedSpaces.length > 0 ? 164 : 50}
-      clipHeader
-      CollapsibleHeaderComponent={
+      ListHeaderComponent={
         <TimelineHeader
           joinedSpacesFilter={joinedSpacesFilter}
           showBottomSheetModal={() => {

@@ -95,6 +95,7 @@ export const PROPOSAL_VOTES_QUERY = gql`
       space {
         id
         name
+        symbol
       }
     }
     votes(first: 10000, where: { proposal: $id }) {

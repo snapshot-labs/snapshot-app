@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useExploreState } from "context/exploreContext";
-import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
 import orderBy from "lodash/orderBy";
 import common from "styles/common";
 import SpacePreview from "components/SpacePreview";
@@ -54,22 +53,21 @@ function ExploreScreen() {
         { backgroundColor: colors.bgDefault, paddingTop: insets.top },
       ]}
     >
-      <CollapsibleHeaderFlatList
-        data={filteredExplore}
-        headerHeight={110}
-        CollapsibleHeaderComponent={
-          <ExploreHeader
-            searchValue={searchValue}
-            onChangeText={(text: string) => {
-              setSearchValue(text);
-            }}
-            currentExplore={currentExplore}
-            setCurrentExplore={setCurrentExplore}
-            filteredExplore={orderedSpaces}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
+      <ExploreHeader
+        searchValue={searchValue}
+        onChangeText={(text: string) => {
+          setSearchValue(text);
+        }}
+        currentExplore={currentExplore}
+        setCurrentExplore={setCurrentExplore}
+        filteredExplore={
+          selectedCategory === "" ? orderedSpaces : filteredExplore
         }
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
+      <FlatList
+        data={filteredExplore}
         renderItem={(data) => {
           if (currentExplore.key === "spaces") {
             return <SpacePreview space={data.item} />;
@@ -79,7 +77,6 @@ function ExploreScreen() {
         keyExtractor={(item, i) => `${item.id}${i}`}
         onEndReachedThreshold={0.45}
         onEndReached={() => {}}
-        clipHeader
       />
     </View>
   );

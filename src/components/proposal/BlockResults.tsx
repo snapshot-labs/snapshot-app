@@ -1,22 +1,13 @@
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
-// @ts-ignore
-import ProgressBar from "react-native-progress/Bar";
 import i18n from "i18n-js";
 import Block from "../Block";
-import { n } from "../../helpers/miscUtils";
 import { Space } from "types/explore";
 import { useAuthState } from "context/authContext";
+import ProposalFinalScores from "../ProposalPreviewFinalScores";
 
 const ts = (Date.now() / 1e3).toFixed();
-
-const styles = StyleSheet.create({
-  choiceTitle: {
-    fontSize: 18,
-    fontFamily: "Calibre-Medium",
-  },
-});
 
 type BlockResultsProps = {
   resultsLoaded: boolean;
@@ -49,70 +40,13 @@ function BlockResults({
     }
     return [];
   }, [results, proposal]);
-
   return (
     <Block
       title={ts >= proposal.end ? i18n.t("results") : i18n.t("currentResults")}
       Content={
         <View style={{ padding: 24 }}>
           {resultsLoaded ? (
-            choices.map((choice: any, i: number) => (
-              <View
-                key={`${i}`}
-                style={{ marginBottom: i === choices.length - 1 ? 0 : 16 }}
-              >
-                <View>
-                  <Text
-                    style={[styles.choiceTitle, { color: colors.textColor }]}
-                  >
-                    {choice.choice}{" "}
-                  </Text>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text
-                      style={[styles.choiceTitle, { color: colors.textColor }]}
-                    >
-                      {n(
-                        results && results.resultsByVoteBalance
-                          ? results.resultsByVoteBalance[choice.i]
-                          : 0
-                      )}{" "}
-                      {space.symbol}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.choiceTitle,
-                        {
-                          color: colors.textColor,
-                          marginLeft: "auto",
-                        },
-                      ]}
-                    >
-                      {n(
-                        !results.sumOfResultsBalance
-                          ? 0
-                          : ((100 / results.sumOfResultsBalance) *
-                              results.resultsByVoteBalance[choice.i]) /
-                              1e2,
-                        "0.[00]%"
-                      )}
-                    </Text>
-                  </View>
-                </View>
-                <ProgressBar
-                  progress={
-                    !results.sumOfResultsBalance
-                      ? 0
-                      : ((100 / results.sumOfResultsBalance) *
-                          results.resultsByVoteBalance[choice.i]) /
-                        1e2
-                  }
-                  color={colors.bgBlue}
-                  unfilledColor={colors.borderColor}
-                  width={null}
-                  borderColor="transparent"
-                />
-              </View>
-            ))
+            <ProposalFinalScores proposal={proposal} />
           ) : (
             <Placeholder
               style={{ justifyContent: "center", alignItems: "center" }}

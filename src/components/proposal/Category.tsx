@@ -32,8 +32,8 @@ function Category({
         style={[
           buttonStyles.button,
           {
-            borderColor: isSelected ? colors.textColor : colors.borderColor,
-            backgroundColor: colors.borderColor,
+            borderColor: isSelected ? "transparent" : colors.borderColor,
+            backgroundColor: isSelected ? colors.bgBlue : colors.borderColor,
             paddingBottom: 8,
             paddingHorizontal: 14,
             paddingTop: Platform.OS === "android" ? 8 : 12,
@@ -45,7 +45,7 @@ function Category({
           style={[
             buttonStyles.buttonTitle,
             {
-              color: colors.textColor,
+              color: isSelected ? colors.white : colors.textColor,
               textTransform: "capitalize",
               fontSize: 18,
               lineHeight: 18,
@@ -54,17 +54,19 @@ function Category({
         >
           {category}
         </Text>
-        <Text
-          style={{
-            fontFamily: "Calibre-Medium",
-            color: colors.darkGray,
-            fontSize: 18,
-            lineHeight: 18,
-            marginLeft: 6,
-          }}
-        >
-          {categories[category]}
-        </Text>
+        {!isSelected && (
+          <Text
+            style={{
+              fontFamily: "Calibre-Medium",
+              color: colors.darkGray,
+              fontSize: 18,
+              lineHeight: 18,
+              marginLeft: 6,
+            }}
+          >
+            {categories[category]}
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );
