@@ -3,12 +3,12 @@ import proposal from "constants/proposal";
 
 import BottomSheetModal from "components/BottomSheetModal";
 
-type ProposalFiltersBottomSheetProps = {
+interface ProposalFiltersBottomSheetProps {
   bottomSheetRef: any;
   setFilter: (filter: { key: string; text: string }) => void;
   onChangeFilter: (newFilter: string) => void;
   onClose: () => void;
-};
+}
 
 function ProposalFiltersBottomSheet({
   bottomSheetRef,

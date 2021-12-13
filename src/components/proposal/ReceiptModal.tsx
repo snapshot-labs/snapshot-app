@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
   },
 });
 
-type ReceiptModalProps = {
+interface ReceiptModalProps {
   onClose: () => void;
   authorIpfsHash: string;
-};
+}
 
 function ReceiptModal({ onClose, authorIpfsHash = "" }: ReceiptModalProps) {
   const { colors, theme } = useAuthState();

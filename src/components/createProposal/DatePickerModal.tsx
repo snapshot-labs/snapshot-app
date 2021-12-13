@@ -11,13 +11,13 @@ import BackButton from "../BackButton";
 import TimePicker from "./TimePicker";
 import { useAuthState } from "context/authContext";
 
-type DatePickerModalProps = {
+interface DatePickerModalProps {
   isVisible: boolean;
   onClose: () => void;
   title?: string;
   timestamp?: number;
   setTimestamp?: (timestamp: number) => void;
-};
+}
 
 const initialDate = new Date().getTime() / 1e3;
 

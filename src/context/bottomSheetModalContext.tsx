@@ -86,6 +86,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
           {children}
           {showBottomSheetModal && (
             <BottomSheetModal
+              key={bottomSheetModal.key}
               bottomSheetRef={bottomSheetModalRef}
               onPressOption={bottomSheetModal.onPressOption}
               options={bottomSheetModal.options}

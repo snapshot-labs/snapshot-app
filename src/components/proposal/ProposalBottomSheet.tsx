@@ -2,32 +2,19 @@ import React, { useMemo } from "react";
 import BottomSheetModal from "components/BottomSheetModal";
 import i18n from "i18n-js";
 import { Space } from "types/explore";
-import {
-  AUTH_ACTIONS,
-  useAuthDispatch,
-  useAuthState,
-} from "context/authContext";
+import { useAuthDispatch, useAuthState } from "context/authContext";
 import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
-import Toast from "react-native-toast-message";
 import { useToastShowConfig } from "constants/toast";
 import { Proposal } from "types/proposal";
 import { useNavigation } from "@react-navigation/native";
-import { sendEIP712 } from "helpers/EIP712";
-import { deleteProposal } from "helpers/apiUtils";
+import { deleteProposal, isAdmin } from "helpers/apiUtils";
 
-const isAdmin = (connectedAddress: string, space: Space) => {
-  const admins = (space.admins || []).map((admin: string) =>
-    admin.toLowerCase()
-  );
-  return admins.includes(connectedAddress.toLowerCase());
-};
-
-type ProposalMenuProps = {
+interface ProposalMenuProps {
   proposal: Proposal;
   space: Space;
   bottomSheetRef: any;
   onClose: () => void;
-};
+}
 
 function ProposalBottomSheet({
   bottomSheetRef,
@@ -71,7 +58,8 @@ function ProposalBottomSheet({
             space,
             proposal,
             authDispatch,
-            toastShowConfig
+            toastShowConfig,
+            navigation
           );
         }
         onClose();

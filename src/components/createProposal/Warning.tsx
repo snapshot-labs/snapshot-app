@@ -7,10 +7,10 @@ import IconFont from "../IconFont";
 import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 
-type WarningProps = {
+interface WarningProps {
   space: Space;
   passValidation: [boolean, string];
-};
+}
 
 function Warning({ space, passValidation }: WarningProps) {
   const { colors } = useAuthState();

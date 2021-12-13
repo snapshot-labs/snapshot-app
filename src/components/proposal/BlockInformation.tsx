@@ -9,17 +9,17 @@ import {
 import i18n from "i18n-js";
 import IconFont from "../IconFont";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
-import colors from "../../constants/colors";
-import { Proposal } from "../../types/proposal";
-import { dateFormat, n, explorerUrl } from "../../helpers/miscUtils";
+import colors from "constants/colors";
+import { Proposal } from "types/proposal";
+import { dateFormat, n, explorerUrl } from "helpers/miscUtils";
 import Block from "../Block";
-import { Space } from "../../types/explore";
+import { Space } from "types/explore";
 import UserAvatar from "../UserAvatar";
 import SpaceAvatar from "../SpaceAvatar";
-import { useExploreState } from "../../context/exploreContext";
-import { getUsername } from "../../helpers/profile";
+import { useExploreState } from "context/exploreContext";
+import { getUsername } from "helpers/profile";
 import CoreBadge from "../CoreBadge";
-import { useAuthState } from "../../context/authContext";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -61,10 +61,10 @@ function getVotingType(type: string) {
   return "";
 }
 
-type BlockInformationProps = {
+interface BlockInformationProps {
   proposal: Proposal;
   space: Space | any;
-};
+}
 
 function BlockInformation({ proposal, space }: BlockInformationProps) {
   const { profiles } = useExploreState();

@@ -1,16 +1,15 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 import i18n from "i18n-js";
-import colors from "constants/colors";
 import { useAuthState } from "context/authContext";
 import ProposalFilters from "../proposal/ProposalFilters";
 import common from "styles/common";
 import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
 
-type TimelineHeaderProps = {
+interface TimelineHeaderProps {
   joinedSpacesFilter: { key: string; text: string };
   showBottomSheetModal: (showBottomSheetModal: boolean) => void;
-};
+}
 
 function TimelineHeader({
   joinedSpacesFilter,

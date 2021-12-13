@@ -158,7 +158,9 @@ function TimelineFeed() {
                 options,
                 snapPoints: [10, 250],
                 show: true,
+                key: "timeline-proposal-filters",
                 initialIndex: 1,
+                destructiveButtonIndex: -1,
                 onPressOption: (index: number) => {
                   if (index === 0) {
                     setFilter(allFilter);

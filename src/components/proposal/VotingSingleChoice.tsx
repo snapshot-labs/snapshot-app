@@ -2,11 +2,11 @@ import React from "react";
 import { View } from "react-native";
 import Button from "../Button";
 
-type VotingSingleChoiceProps = {
+interface VotingSingleChoiceProps {
   proposal: any;
   selectedChoices: number[];
   setSelectedChoices: (selectedChoices: number[]) => void;
-};
+}
 
 function VotingSingleChoice({
   proposal,

@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
   },
 });
 
-type BlockProps = {
+interface BlockProps {
   title?: string;
   Content: React.ReactElement;
   count?: number | string | undefined;
@@ -52,7 +52,7 @@ type BlockProps = {
   titleStyle?: any;
   headerStyle?: any;
   blockStyle?: any;
-};
+}
 
 function Block({
   title,

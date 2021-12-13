@@ -8,7 +8,7 @@ import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 import CategoriesScrollView from "components/CategoriesScrollView";
 
-type ExploreHeaderProps = {
+interface ExploreHeaderProps {
   searchValue: string;
   onChangeText: (text: string) => void;
   currentExplore: { key: string; text: string };
@@ -16,7 +16,7 @@ type ExploreHeaderProps = {
   filteredExplore: any[];
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
-};
+}
 
 function getCurrentExploreText(currentExplore: { key: string; text: string }) {
   switch (currentExplore.key) {

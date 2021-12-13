@@ -40,12 +40,12 @@ function setSelectedChoicesIndex(
   setSelectedChoices(selectedChoices);
 }
 
-type VotingRankedChoiceProps = {
+interface VotingRankedChoiceProps {
   proposal: any;
   selectedChoices: string[];
   setSelectedChoices: (selectedChoice: number[]) => void;
   setScrollEnabled: (scrollEnabled: boolean) => void;
-};
+}
 
 function VotingRankedChoice({
   proposal,

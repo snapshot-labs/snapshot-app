@@ -25,16 +25,13 @@ import CoreBadge from "./CoreBadge";
 import StateBadge from "./StateBadge";
 import ProposalPreviewFinalScores from "./ProposalPreviewFinalScores";
 import IconFont from "components/IconFont";
-import common from "styles/common";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import ReceiptModal from "components/proposal/ReceiptModal";
-import { deleteProposal } from "helpers/apiUtils";
+import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useToastShowConfig } from "constants/toast";
-import BottomSheetModal from "components/BottomSheetModal";
 
 const { width } = Dimensions.get("screen");
 
@@ -99,13 +96,6 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
   },
 });
-
-const isAdmin = (connectedAddress: string, space: Space) => {
-  const admins = (space.admins || []).map((admin: string) =>
-    admin.toLowerCase()
-  );
-  return admins.includes(connectedAddress.toLowerCase());
-};
 
 function getPeriod(
   state: string,
@@ -222,6 +212,7 @@ function ProposalPreview({
                   show: true,
                   initialIndex: 1,
                   destructiveButtonIndex,
+                  key: proposal.id,
                   onPressOption: (index: number) => {
                     if (index === 0) {
                       navigation.navigate(CREATE_PROPOSAL_SCREEN, {
@@ -239,10 +230,11 @@ function ProposalPreview({
                         space,
                         proposal,
                         authDispatch,
-                        toastShowConfig
+                        toastShowConfig,
+                        navigation
                       );
                     }
-                    bottomSheetModalRef.current.close()
+                    bottomSheetModalRef.current.close();
                   },
                 },
               });

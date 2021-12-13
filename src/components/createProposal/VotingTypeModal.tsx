@@ -3,17 +3,17 @@ import { Platform, Text, TouchableHighlight, View } from "react-native";
 import common from "../../styles/common";
 import i18n from "i18n-js";
 import Modal from "react-native-modal";
-import proposal from "../../constants/proposal";
+import proposal from "constants/proposal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "../BackButton";
 import { useAuthState } from "context/authContext";
 
-type VotingTypeModalProps = {
+interface VotingTypeModalProps {
   isVisible: boolean;
   onClose: () => void;
   setVotingType: (votingType: { key: string; text: string }) => void;
   addAny?: boolean;
-};
+}
 
 function VotingTypeModal({
   isVisible,

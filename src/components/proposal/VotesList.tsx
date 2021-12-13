@@ -1,15 +1,15 @@
 import React from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
 import VoteRow from "./VoteRow";
-import { Space } from "../../types/explore";
-import { Proposal } from "../../types/proposal";
+import { Space } from "types/explore";
+import { Proposal } from "types/proposal";
 
-type SceneListProps = {
+interface SceneListProps {
   allData: any[];
   space: Space;
   profiles: any;
   proposal: Proposal;
-};
+}
 
 function VoteList({ allData, space, profiles, proposal }: SceneListProps) {
   return (

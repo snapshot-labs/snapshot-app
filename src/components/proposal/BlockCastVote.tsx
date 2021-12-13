@@ -24,14 +24,14 @@ import size from "lodash/size";
 
 const { height: deviceHeight } = Dimensions.get("screen");
 
-type BlockCastVoteProps = {
+interface BlockCastVoteProps {
   proposal: Proposal;
   resultsLoaded: boolean;
   setScrollEnabled: (scrollEnabled: boolean) => void;
   space: Space;
   getProposal: () => void;
   onClose: () => void;
-};
+}
 
 async function loadPower(
   connectedAddress: string,

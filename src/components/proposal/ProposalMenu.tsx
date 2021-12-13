@@ -4,9 +4,9 @@ import IconFont from "../IconFont";
 import common from "styles/common";
 import { useAuthState } from "context/authContext";
 
-type ProposalMenuProps = {
+interface ProposalMenuProps {
   showBottomSheetModal: () => void;
-};
+}
 
 function ProposalMenu({ showBottomSheetModal }: ProposalMenuProps) {
   const { colors } = useAuthState();

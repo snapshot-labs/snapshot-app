@@ -25,7 +25,6 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
-import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("screen");
 
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type VoteConfirmModalProps = {
+interface VoteConfirmModalProps {
   onClose: () => void;
   proposal: any;
   selectedChoices: any;
@@ -93,7 +92,7 @@ type VoteConfirmModalProps = {
   totalScore: number;
   getProposal: () => void;
   navigation: any;
-};
+}
 
 function VoteConfirmModal({
   onClose,
