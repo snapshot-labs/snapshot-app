@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type ProposalPreviewFinalScoresProps = {
+interface ProposalPreviewFinalScoresProps {
   proposal: Proposal;
-};
+}
 
 function ProposalPreviewFinalScores({
   proposal,

@@ -8,7 +8,7 @@ import Block from "../Block";
 import Button from "../Button";
 import DatePickerModal from "./DatePickerModal";
 
-type ActionsBlockProps = {
+interface ActionsBlockProps {
   startTimestamp: number | undefined;
   endTimestamp: number | undefined;
   setStartTimestamp: (timestamp: number) => void;
@@ -17,7 +17,7 @@ type ActionsBlockProps = {
   snapshot: number | string;
   onSubmit: () => void;
   space: Space;
-};
+}
 
 function ActionsBlock({
   startTimestamp,

@@ -56,7 +56,8 @@ export async function deleteProposal(
   space: Space,
   proposal: Proposal,
   authDispatch: any,
-  toastShowConfig: any
+  toastShowConfig: any,
+  navigation: any
 ) {
   try {
     const sign = await sendEIP712(
@@ -98,4 +99,11 @@ export async function deleteProposal(
       ...toastShowConfig,
     });
   }
+}
+
+export function isAdmin(connectedAddress: string, space: Space) {
+  const admins = (space?.admins || []).map((admin: string) =>
+    admin.toLowerCase()
+  );
+  return admins.includes(connectedAddress.toLowerCase());
 }

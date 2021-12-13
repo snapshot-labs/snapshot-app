@@ -78,9 +78,9 @@ const remarkable = new Remarkable({
   typographer: false,
 }).use(linkify);
 
-type MarkdownBodyProps = {
+interface MarkdownBodyProps {
   body: string;
-};
+}
 
 function MarkdownBody({ body }: MarkdownBodyProps) {
   const { colors } = useAuthState();

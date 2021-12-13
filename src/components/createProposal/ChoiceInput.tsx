@@ -14,12 +14,12 @@ import IconFont from "../IconFont";
 
 const { width } = Dimensions.get("screen");
 
-type ChoiceInputProps = {
+interface ChoiceInputProps {
   choices: string[];
   choice: string;
   index: number;
   setChoices: (choices: string[]) => void;
-};
+}
 
 function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
   const [isFocused, setIsFocused] = useState(false);

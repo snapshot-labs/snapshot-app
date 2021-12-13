@@ -92,11 +92,11 @@ function removeVote(i: number, selectedChoices: { [index: number]: number }) {
     selectedChoices[i] = selectedChoices[i] < 1 ? 0 : (selectedChoices[i] -= 1);
 }
 
-type VotingQuadraticProps = {
+interface VotingQuadraticProps {
   proposal: Proposal | any;
   selectedChoices: { [index: number]: number };
   setSelectedChoices: (selectedChoices: { [index: number]: number }) => void;
-};
+}
 
 function VotingQuadratic({
   proposal,

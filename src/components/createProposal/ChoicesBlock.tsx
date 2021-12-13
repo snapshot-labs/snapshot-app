@@ -7,12 +7,12 @@ import Button from "../Button";
 import VotingTypeModal from "./VotingTypeModal";
 import ChoiceInput from "./ChoiceInput";
 
-type ChoicesBlockProps = {
+interface ChoicesBlockProps {
   choices: string[];
   setChoices: (choices: string[]) => void;
   votingType: { key: string; text: string };
   setVotingType: (votingType: { key: string; text: string }) => void;
-};
+}
 
 function ChoicesBlock({
   choices,

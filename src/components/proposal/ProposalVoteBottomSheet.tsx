@@ -5,24 +5,17 @@ import { Proposal } from "types/proposal";
 import BlockCastVote from "components/proposal/BlockCastVote";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
-const isAdmin = (connectedAddress: string, space: Space) => {
-  const admins = (space.admins || []).map((admin: string) =>
-    admin.toLowerCase()
-  );
-  return admins.includes(connectedAddress.toLowerCase());
-};
-
 const renderBackdrop = (props: any) => (
   <BottomSheetBackdrop {...props} pressBehavior="collapse" />
 );
 
-type ProposalVoteBottomSheetProps = {
+interface ProposalVoteBottomSheetProps {
   proposal: Proposal;
   space: Space;
   resultsLoaded: any;
   getProposal: () => void;
   setScrollEnabled: (scrollEnabled: boolean) => void;
-};
+}
 
 function ProposalVoteBottomSheet({
   proposal,

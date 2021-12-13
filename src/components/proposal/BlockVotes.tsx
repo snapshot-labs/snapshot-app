@@ -6,7 +6,7 @@ import { styles as blockStyles } from "../Block";
 import { Space } from "types/explore";
 import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import { setProfiles } from "../../helpers/profile";
+import { setProfiles } from "helpers/profile";
 import UserAvatar from "../UserAvatar";
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/native";
@@ -50,12 +50,12 @@ async function getChoicesTextWidth(
   setChoicesTextWidth(choicesTextWidth);
 }
 
-type BlockVotesProps = {
+interface BlockVotesProps {
   proposal: Proposal;
   votes: any[];
   space: Space;
   resultsLoaded: boolean;
-};
+}
 
 function BlockVotes({
   proposal,

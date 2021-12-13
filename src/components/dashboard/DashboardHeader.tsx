@@ -2,10 +2,9 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
-import common from "../../styles/common";
+import common from "styles/common";
 import IconFont from "../IconFont";
-import colors from "../../constants/colors";
-import { SETTINGS_SCREEN } from "../../constants/navigation";
+import { SETTINGS_SCREEN } from "constants/navigation";
 import { useAuthState } from "context/authContext";
 
 function DashboardHeader() {

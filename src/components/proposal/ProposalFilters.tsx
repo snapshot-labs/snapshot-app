@@ -27,14 +27,14 @@ const styles = StyleSheet.create({
   },
 });
 
-type ProposalFiltersProps = {
+interface ProposalFiltersProps {
   filter: { key: string; text: string };
   containerStyle?: ViewStyle;
   filterTextStyle?: TextStyle;
   filterContainerStyle?: ViewStyle;
   iconColor?: string;
   showBottomSheetModal: (showBottomSheetModal: boolean) => void;
-};
+}
 
 function ProposalFilters({
   filter = { key: "all", text: i18n.t("all") },

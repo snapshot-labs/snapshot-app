@@ -32,7 +32,7 @@ import { SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import ProposalVoteBottomSheet from "components/proposal/ProposalVoteBottomSheet";
 
-type ProposalScreenProps = {
+interface ProposalScreenProps {
   route: {
     params: {
       proposal: Proposal;
@@ -41,7 +41,7 @@ type ProposalScreenProps = {
       proposalId?: string;
     };
   };
-};
+}
 
 function getSpace(
   spaces: { [spaceId: string]: Space },
@@ -276,12 +276,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             resultsLoaded={resultsLoaded}
           />
           <View style={{ width: 10, height: 10 }} />
-          <BlockResults
-            resultsLoaded={resultsLoaded}
-            results={results}
-            proposal={proposal}
-            space={space}
-          />
+          <BlockResults resultsLoaded={resultsLoaded} proposal={proposal} />
           <View style={{ width: 10, height: 10 }} />
           <BlockInformation proposal={proposal} space={space} />
           <View style={{ width: 10, height: 75 }} />

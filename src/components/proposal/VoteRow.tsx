@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
   },
 });
 
-type VoteRowProps = {
+interface VoteRowProps {
   vote: any;
   profiles: any;
   space: Space;
   proposal: Proposal;
-};
+}
 
 function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
   const { connectedAddress, colors } = useAuthState();

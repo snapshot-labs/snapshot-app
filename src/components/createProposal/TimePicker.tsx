@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Platform } from "react-native";
+//@ts-ignore
 import { Picker } from "react-native-wheel-datepicker";
 import common from "../../styles/common";
 import { useAuthState } from "context/authContext";
@@ -25,10 +26,10 @@ const dividerStyle = {
   marginTop: Platform.OS === "ios" ? 73 : 0,
 };
 
-type TimePickerProps = {
+interface TimePickerProps {
   onChange: (time: { hour: number; minutes: number }) => void;
   time: { hour: number; minutes: number };
-};
+}
 
 function TimePicker({
   onChange,
