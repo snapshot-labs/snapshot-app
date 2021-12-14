@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function getKey(key: string) {
   return `SnapshotApp_${key}`;
@@ -10,7 +10,7 @@ const KEYS = {
   aliases: "aliases",
   androidAppUrl: "androidAppUrl",
   savedWallets: "savedWallets",
-  theme: "theme"
+  theme: "theme",
 };
 
 export async function load(key: string) {
