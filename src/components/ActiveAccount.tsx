@@ -33,9 +33,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type ActiveAccountProps = {
+interface ActiveAccountProps {
   address: string;
-};
+}
 
 function ActiveAccount({ address }: ActiveAccountProps) {
   const { colors } = useAuthState();

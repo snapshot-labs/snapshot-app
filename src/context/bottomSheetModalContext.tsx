@@ -94,6 +94,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
               initialIndex={bottomSheetModal.initialIndex}
               ModalContent={bottomSheetModal.ModalContent}
               scroll={bottomSheetModal.scroll}
+              icons={bottomSheetModal.icons ?? []}
               {...bottomSheetModal}
             />
           )}

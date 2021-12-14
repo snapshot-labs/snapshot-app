@@ -31,13 +31,13 @@ function createUrl(
   }
 }
 
-type AvatarProps = {
+interface AvatarProps {
   symbolIndex?: string | number;
   size: number;
   space?: Space | { id?: string; avatar: string };
   isAnimated?: boolean;
   animatedProps?: any;
-};
+}
 
 function SpaceAvatar({
   symbolIndex,

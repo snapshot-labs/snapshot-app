@@ -20,14 +20,12 @@ import {
   useAuthState,
 } from "context/authContext";
 import Warning from "components/createProposal/Warning";
-import client from "helpers/snapshotClient";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "constants/navigation";
 import { Proposal } from "types/proposal";
 import { useToastShowConfig } from "constants/toast";
 import { sendEIP712 } from "helpers/EIP712";
-import { signWithAliasCheck } from "helpers/aliasUtils";
 import { parseErrorMessage } from "helpers/apiUtils";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
@@ -112,14 +110,14 @@ async function validateUser(
   setPassValidation([isValid, validationName]);
 }
 
-type CreateProposalScreenProps = {
+interface CreateProposalScreenProps {
   route: {
     params: {
       space: Space;
       proposal?: Proposal;
     };
   };
-};
+}
 
 function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const space = route.params.space;

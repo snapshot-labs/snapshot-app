@@ -11,29 +11,25 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
-import { CUSTOM_WALLET_SCREEN } from "../constants/navigation";
-import { MetaMask } from "../constants/wallets";
-import { defaultHeaders } from "../helpers/apiUtils";
-import common from "../styles/common";
+import { CUSTOM_WALLET_SCREEN } from "constants/navigation";
+import { MetaMask } from "constants/wallets";
+import { defaultHeaders } from "helpers/apiUtils";
+import common from "styles/common";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
-} from "../context/authContext";
-import {
-  generateKey,
-  convertArrayBufferToHex,
-  uuid,
-} from "../helpers/miscUtils";
+} from "context/authContext";
+import { generateKey, convertArrayBufferToHex, uuid } from "helpers/miscUtils";
 import SendIntentAndroid from "react-native-send-intent";
 import get from "lodash/get";
-import BackButton from "../components/BackButton";
-import storage from "../helpers/storage";
+import BackButton from "components/BackButton";
+import storage from "helpers/storage";
 import WalletConnect from "@walletconnect/client";
 import {
   connectToWalletService,
   initialWalletConnectValues,
-} from "../helpers/walletConnectUtils";
+} from "helpers/walletConnectUtils";
 
 const defaultWallets = [MetaMask];
 
@@ -56,7 +52,7 @@ async function fetchWallets(
   } catch (e) {
     console.log("FAILED", e);
   }
-  const walletsMap = await response.json();
+  const walletsMap: any | undefined = await response.json();
   const walletKeys = Object.keys(walletsMap);
   const wallets = [];
   for (let i = 0; i < walletKeys.length; i++) {

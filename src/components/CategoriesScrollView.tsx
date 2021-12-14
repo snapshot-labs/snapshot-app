@@ -15,10 +15,10 @@ const allCategories = [
   "collector",
 ];
 
-type CategoriesScrollViewProps = {
+interface CategoriesScrollViewProps {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
-};
+}
 
 function CategoriesScrollView({
   selectedCategory,
@@ -30,7 +30,6 @@ function CategoriesScrollView({
     <View
       style={{
         marginTop: 10,
-        paddingHorizontal: 16,
         borderBottomWidth: 1,
         paddingBottom: 10,
         borderBottomColor: colors.borderColor,
@@ -49,7 +48,8 @@ function CategoriesScrollView({
                 }
               }}
               buttonContainerStyle={{
-                marginRight: i === allCategories.length - 1 ? 24 : 8,
+                marginLeft: i === 0 ? 16 : 0,
+                marginRight: i === allCategories.length - 1 ? 16 : 8,
               }}
               category={category}
               isSelected={selectedCategory === category}

@@ -1,10 +1,10 @@
 import React from "react";
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 
-type CustomTouchableNativeFeedbackProps = {
+interface CustomTouchableNativeFeedbackProps {
   children: React.FC;
   style: any;
-};
+}
 
 function CustomTouchableNativeFeedback({
   children,

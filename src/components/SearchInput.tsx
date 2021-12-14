@@ -35,12 +35,12 @@ const styles = StyleSheet.create({
   },
 });
 
-type SearchInputProps = {
+interface SearchInputProps {
   onChangeText: (text: string) => void;
   value: string;
   RightComponent?: React.FC | undefined;
   searchRef: any;
-};
+}
 
 function SearchInput({
   RightComponent = undefined,

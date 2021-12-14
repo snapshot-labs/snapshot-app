@@ -10,10 +10,8 @@ import i18n from "i18n-js";
 import IconFont from "../IconFont";
 import colors from "../../constants/colors";
 import Block from "../Block";
-import { Strategy } from "../../types/explore";
-import { getUsername } from "../../helpers/profile";
-import { useExploreState } from "../../context/exploreContext";
-import { useAuthState } from "../../context/authContext";
+import { Strategy } from "types/explore";
+import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -50,9 +48,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type BlockInformationProps = {
+interface BlockInformationProps {
   strategy: Strategy;
-};
+}
 
 function BlockInformation({ strategy }: BlockInformationProps) {
   const { colors } = useAuthState();

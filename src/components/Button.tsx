@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
   },
 });
 
-type ButtonProps = {
+interface ButtonProps {
   onPress: () => void;
   title: string;
   buttonContainerStyle?: ViewStyle;
@@ -58,7 +58,7 @@ type ButtonProps = {
   onlyOneLine?: boolean;
   selected?: boolean;
   label?: string;
-};
+}
 
 function Button({
   onPress,

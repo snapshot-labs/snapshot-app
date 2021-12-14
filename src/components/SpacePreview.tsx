@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type SpacePreviewProps = {
+interface SpacePreviewProps {
   space: Space | any;
-};
+}
 
 function SpacePreview({ space = {} }: SpacePreviewProps) {
   const { colors } = useAuthState();
