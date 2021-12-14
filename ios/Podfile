@@ -21,7 +21,6 @@ target 'snapshotapp' do
   pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  pod 'RNSVG', path: '../node_modules/react-native-svg/RNSVG.podspec'
 
   pod 'RNTextSize', :path => '../node_modules/react-native-text-size/ios'
 

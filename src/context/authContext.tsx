@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "types/context";
 import storage from "helpers/storage";
 import { Wallet } from "ethers";
-import WalletConnect from "@walletconnect/client";
+// import WalletConnect from "@walletconnect/client";
 import {
   initialWalletConnectValues,
   setWalletConnectListeners,
@@ -18,7 +18,7 @@ type AuthState = {
   androidAppUrl: string | null;
   aliasWallet: Wallet | null;
   savedWallets: { [id: string]: { name: string; address: string } };
-  wcConnector: WalletConnect;
+  wcConnector: any;
   refreshFeed: null | { spaceId: string };
   theme: string | "light" | "dark";
   colors: any;
@@ -115,10 +115,11 @@ function authReducer(state: AuthState, action: ContextAction) {
         );
       } else {
         if (action.payload.session) {
-          wcConnector = new WalletConnect({
-            ...initialWalletConnectValues,
-            session: action.payload.session,
-          });
+          // wcConnector = new WalletConnect({
+          //   ...initialWalletConnectValues,
+          //   session: action.payload.session,
+          // });
+          wcConnector = {};
           setWalletConnectListeners(
             wcConnector,
             action.payload.androidAppUrl,

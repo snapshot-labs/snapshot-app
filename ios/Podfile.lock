@@ -345,8 +345,6 @@ PODS:
   - RNScreens (3.7.2):
     - React-Core
     - React-RCTImage
-  - RNSVG (9.6.4):
-    - React
   - RNTextSize (4.0.0-rc.1):
     - React
   - RNVectorIcons (8.1.0):
@@ -423,7 +421,6 @@ DEPENDENCIES:
   - RNOS (from `../node_modules/react-native-os`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNSVG (from `../node_modules/react-native-svg/RNSVG.podspec`)
   - RNTextSize (from `../node_modules/react-native-text-size/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - TcpSockets (from `../node_modules/react-native-tcp`)
@@ -543,8 +540,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNSVG:
-    :path: "../node_modules/react-native-svg/RNSVG.podspec"
   RNTextSize:
     :path: "../node_modules/react-native-text-size/ios"
   RNVectorIcons:
@@ -616,7 +611,6 @@ SPEC CHECKSUMS:
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNReanimated: 8744fb15baf4c582367d910f4f32f5097fb350cb
   RNScreens: 0591543e343c7444ea1756b6265d81a4295922c9
-  RNSVG: a53a5de0d90ec96a6502cc3a4534dfcc0c130622
   RNTextSize: 7efa06531c6bb7ab6ed070b4ce0d1248cf06fcdf
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
@@ -627,6 +621,6 @@ SPEC CHECKSUMS:
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
-PODFILE CHECKSUM: 35f05929e9c248c1232db5037a5b9f8969e545d9
+PODFILE CHECKSUM: 57ae51cfc91bcc6aa78ee2ed8f925d891d7319ca
 
 COCOAPODS: 1.11.0
