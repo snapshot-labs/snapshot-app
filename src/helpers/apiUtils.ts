@@ -107,3 +107,7 @@ export function isAdmin(connectedAddress: string, space: Space) {
   );
   return admins.includes(connectedAddress.toLowerCase());
 }
+
+export function getProposalUrl(proposal: Proposal, space: Space) {
+  return `https://snapshot.org/#/${space.id}/proposal/${proposal.id}`;
+}

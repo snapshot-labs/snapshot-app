@@ -63,6 +63,7 @@ function TimelineFeed() {
   const { followedSpaces, colors, connectedAddress } = useAuthState();
   const { profiles, spaces } = useExploreState();
   const exploreDispatch = useExploreDispatch();
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
