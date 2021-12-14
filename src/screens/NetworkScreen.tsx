@@ -10,7 +10,7 @@ import { getFilteredSpaces } from "../helpers/searchUtils";
 import { useAuthState } from "context/authContext";
 import BackButton from "components/BackButton";
 
-type NetworkScreenProps = {
+interface NetworkScreenProps {
   route: {
     params: {
       networkName: string;
@@ -18,7 +18,7 @@ type NetworkScreenProps = {
       orderedSpaces: Space[];
     };
   };
-};
+}
 
 function NetworkScreen({ route }: NetworkScreenProps) {
   const { colors } = useAuthState();

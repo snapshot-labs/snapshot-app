@@ -28,7 +28,7 @@ import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
-} from "../../context/authContext";
+} from "context/authContext";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -87,14 +87,14 @@ async function getSpace(spaceId: string, exploreDispatch: ContextDispatch) {
   });
 }
 
-type SpaceProposalsProps = {
+interface SpaceProposalsProps {
   space: Space;
   spaceScreenRef: any;
   scrollProps: any;
   headerHeight?: number;
   filter: { key: string };
   spaceProposalsRef: any;
-};
+}
 function SpaceProposals({
   space,
   spaceScreenRef,

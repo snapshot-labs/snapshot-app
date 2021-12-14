@@ -7,6 +7,8 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import colors from "constants/colors";
 import { useAuthState } from "context/authContext";
+import isEmpty from "lodash/isEmpty";
+import IconFont from "components/IconFont";
 
 const styles = StyleSheet.create({
   row: {
@@ -26,7 +28,7 @@ const renderBackdrop = (props: any) => (
   <BottomSheetBackdrop {...props} pressBehavior="close" />
 );
 
-type BottomSheetModalProps = {
+interface BottomSheetModalProps {
   bottomSheetRef: any;
   snapPoints: any[];
   options: string[];
@@ -37,7 +39,8 @@ type BottomSheetModalProps = {
   scroll?: boolean;
   enablePanDownToClose?: boolean;
   BackDropRenderer?: any;
-};
+  icons: { name: string; size?: number; color?: string }[];
+}
 
 function BottomSheetModal({
   bottomSheetRef,
@@ -50,6 +53,7 @@ function BottomSheetModal({
   scroll = false,
   enablePanDownToClose = true,
   BackDropRenderer = undefined,
+  icons,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   let BottomSheetViewComponent: any = BottomSheetView;
@@ -74,31 +78,49 @@ function BottomSheetModal({
     >
       <BottomSheetViewComponent>
         {ModalContent !== undefined && <ModalContent />}
-        {options.map((option: string, index: number) => (
-          <TouchableHighlight
-            underlayColor={colors.highlightColor}
-            onPress={() => {
-              onPressOption(index);
-            }}
-            key={index}
-          >
-            <View style={styles.row}>
-              <Text
-                style={[
-                  styles.rowTitle,
-                  { color: colors.textColor },
-                  destructiveButtonIndex === index
-                    ? {
-                        color: colors.red,
-                      }
-                    : {},
-                ]}
-              >
-                {option}
-              </Text>
-            </View>
-          </TouchableHighlight>
-        ))}
+        {options.map((option: string, index: number) => {
+          const icon = icons[index];
+          return (
+            <TouchableHighlight
+              underlayColor={colors.highlightColor}
+              onPress={() => {
+                onPressOption(index);
+              }}
+              key={index}
+            >
+              <View style={styles.row}>
+                {!isEmpty(icon) && (
+                  <IconFont
+                    name={icon.name}
+                    size={icon.size ?? 20}
+                    color={
+                      destructiveButtonIndex === index
+                        ? colors.red
+                        : icon.color ?? colors.textColor
+                    }
+                    style={{ marginRight: 6 }}
+                  />
+                )}
+                <Text
+                  style={[
+                    styles.rowTitle,
+                    {
+                      color: colors.textColor,
+                      marginBottom: isEmpty(icon) ? 0 : 2,
+                    },
+                    destructiveButtonIndex === index
+                      ? {
+                          color: colors.red,
+                        }
+                      : {},
+                  ]}
+                >
+                  {option}
+                </Text>
+              </View>
+            </TouchableHighlight>
+          );
+        })}
       </BottomSheetViewComponent>
     </BottomSheet>
   );

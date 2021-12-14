@@ -25,10 +25,10 @@ const styles = StyleSheet.create({
   },
 });
 
-type CoreBadgeProps = {
+interface CoreBadgeProps {
   address: string;
   members: string[];
-};
+}
 
 function CoreBadge({ address, members = [] }: CoreBadgeProps) {
   const { colors } = useAuthState();

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Platform, Pressable, PressableProps } from "react-native";
 
-export type Props = PressableProps & {
+export interface Props extends PressableProps {
   pressColor?: string;
   pressOpacity?: number;
   children: React.ReactNode;
-};
+}
 
 const ANDROID_VERSION_LOLLIPOP = 21;
 const ANDROID_SUPPORTS_RIPPLE =

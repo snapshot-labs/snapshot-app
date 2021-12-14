@@ -4,11 +4,11 @@ import { Image } from "react-native";
 import isEmpty from "lodash/isEmpty";
 import makeBlockie from "ethereum-blockies-base64";
 
-type UserAvatarProps = {
+interface UserAvatarProps {
   address: string;
   imgSrc?: string;
   size: number;
-};
+}
 
 function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
   const blockie = useMemo(

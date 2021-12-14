@@ -16,10 +16,10 @@ import {
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
 
-type SpaceHeader = {
+interface SpaceHeader {
   space: Space;
   isWalletConnect: boolean | undefined;
-};
+}
 
 function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
   const { colors } = useAuthState();

@@ -8,17 +8,17 @@ import {
 } from "react-native";
 import IconFont from "./IconFont";
 import get from "lodash/get";
-import colors, { getColors } from "../constants/colors";
+import colors from "constants/colors";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
   useAuthState,
-} from "../context/authContext";
+} from "context/authContext";
 import UserAvatar from "./UserAvatar";
-import { shorten } from "../helpers/miscUtils";
-import storage from "../helpers/storage";
-import { useExploreState } from "../context/exploreContext";
-import { getAliasWallet } from "../helpers/aliasUtils";
+import { shorten } from "helpers/miscUtils";
+import storage from "helpers/storage";
+import { useExploreState } from "context/exploreContext";
+import { getAliasWallet } from "helpers/aliasUtils";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type ConnectedWalletProps = {
+interface ConnectedWalletProps {
   address: string;
-};
+}
 
 function ConnectedWallet({ address }: ConnectedWalletProps) {
   const { savedWallets, aliases, colors }: any = useAuthState();

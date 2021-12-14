@@ -4,7 +4,6 @@ import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
-import i18n from "i18n-js";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useAuthState } from "context/authContext";
 import { isOldIphone } from "helpers/phoneUtils";
@@ -36,7 +35,6 @@ const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 const ICON_SIZE = 28;
-const TAB_LABEL_FONT_SIZE = 16;
 
 function TabNavigator() {
   const { colors, connectedAddress } = useAuthState();
@@ -57,7 +55,7 @@ function TabNavigator() {
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
           elevation: 0,
-          paddingTop: 18,
+          paddingTop: 12,
         },
       }}
     >
@@ -69,10 +67,6 @@ function TabNavigator() {
           tabBarIcon: ({ color }) => (
             <IconFont name="home" color={color} size={ICON_SIZE} />
           ),
-          tabBarLabelStyle: {
-            fontFamily: "Calibre-Medium",
-            fontSize: TAB_LABEL_FONT_SIZE,
-          },
         }}
       />
       <Tab.Screen
@@ -83,10 +77,6 @@ function TabNavigator() {
           tabBarIcon: ({ color }) => (
             <IconFont name="search" color={color} size={ICON_SIZE} />
           ),
-          tabBarLabelStyle: {
-            fontFamily: "Calibre-Medium",
-            fontSize: TAB_LABEL_FONT_SIZE,
-          },
         }}
       />
       <Tab.Screen
@@ -101,10 +91,6 @@ function TabNavigator() {
               size={ICON_SIZE}
             />
           ),
-          tabBarLabelStyle: {
-            fontFamily: "Calibre-Medium",
-            fontSize: TAB_LABEL_FONT_SIZE,
-          },
         }}
       />
       <Tab.Screen
@@ -123,10 +109,6 @@ function TabNavigator() {
             ) : (
               <IconFont name="people" color={color} size={ICON_SIZE} />
             ),
-          tabBarLabelStyle: {
-            fontFamily: "Calibre-Medium",
-            fontSize: TAB_LABEL_FONT_SIZE,
-          },
         }}
       />
     </Tab.Navigator>

@@ -10,25 +10,25 @@ import {
 } from "react-native";
 import PlatformPressable from "./PlatformPressable";
 
-export type Scene<T extends Route> = {
+export interface Scene<T extends Route> {
   route: T;
-};
+}
 
-export type Route = {
+export interface Route {
   key: string;
   icon?: string;
   title?: string;
   accessible?: boolean;
   accessibilityLabel?: string;
   testID?: string;
-};
+}
 
-export type NavigationState<T extends Route> = {
+export interface NavigationState<T extends Route> {
   index: number;
   routes: T[];
-};
+}
 
-export type Props<T extends Route> = {
+export interface Props<T extends Route> {
   position: Animated.AnimatedInterpolation;
   route: T;
   navigationState: NavigationState<T>;
@@ -57,7 +57,7 @@ export type Props<T extends Route> = {
   labelStyle?: StyleProp<TextStyle>;
   style: StyleProp<ViewStyle>;
   PressableComponent?: React.Component;
-};
+}
 
 const DEFAULT_ACTIVE_COLOR = "rgba(255, 255, 255, 1)";
 const DEFAULT_INACTIVE_COLOR = "rgba(255, 255, 255, 0.7)";
@@ -251,6 +251,7 @@ export default class TabBarItem<T extends Route> extends React.Component<
     const badge = renderBadge ? renderBadge(scene) : null;
 
     return (
+      //@ts-ignore
       <UsedPressableComponent
         android_ripple={{ borderless: true }}
         testID={getTestID(scene)}

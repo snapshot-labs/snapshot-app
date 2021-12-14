@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type BackButtonProps = {
+interface BackButtonProps {
   containerStyle?: ViewStyle;
   title?: string | undefined;
   onPress?: () => void | undefined;
@@ -41,7 +41,7 @@ type BackButtonProps = {
   backIconStyle?: object;
   isAnimated?: boolean;
   animatedProps?: any;
-};
+}
 
 function BackButton({
   containerStyle,

@@ -67,9 +67,9 @@ async function followSpace(
   }
 }
 
-type FollowButtonProps = {
+interface FollowButtonProps {
   space: Space;
-};
+}
 
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);

@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type StateBadgeProps = {
+interface StateBadgeProps {
   state: string;
-};
+}
 
 function getStateBg(state: string) {
   if (state === "closed") return colors.bgPurple;

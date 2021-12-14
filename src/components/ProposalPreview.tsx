@@ -111,11 +111,11 @@ function getPeriod(
   return i18n.t("startIn", { timeAgo: toNow(start) });
 }
 
-type ProposalPreviewProps = {
+interface ProposalPreviewProps {
   proposal: Proposal;
   space: Space;
   fromFeed?: boolean;
-};
+}
 
 function ProposalPreview({
   proposal,
@@ -213,6 +213,7 @@ function ProposalPreview({
                   initialIndex: 1,
                   destructiveButtonIndex,
                   key: proposal.id,
+                  icons: [{ name: "external-link" }, { name: "close" }],
                   onPressOption: (index: number) => {
                     if (index === 0) {
                       navigation.navigate(CREATE_PROPOSAL_SCREEN, {

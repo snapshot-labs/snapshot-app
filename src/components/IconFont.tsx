@@ -10,12 +10,13 @@ const CustomIcon = createIconSet(
   require("../styles/iconfont.ttf")
 );
 
-type IconFontProps = {
+interface IconFontProps {
   name: string | any;
   size: number;
   color: string;
   style?: any;
-};
+}
+
 function IconFont({
   name,
   size,

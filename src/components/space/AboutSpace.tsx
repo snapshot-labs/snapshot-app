@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -16,9 +16,9 @@ import { Space } from "types/explore";
 import common from "styles/common";
 import colors from "constants/colors";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
-import { n } from "../../helpers/miscUtils";
+import { n } from "helpers/miscUtils";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import { getUsername, setProfiles } from "../../helpers/profile";
+import { getUsername, setProfiles } from "helpers/profile";
 import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
 
@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
   },
 });
 
-type AboutSpaceProps = {
+interface AboutSpaceProps {
   routeSpace: Space;
   scrollProps: any;
   headerHeight: number;
   spaceAboutRef: any;
-};
+}
 
 function AboutSpace({
   routeSpace,

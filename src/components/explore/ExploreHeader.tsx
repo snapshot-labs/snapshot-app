@@ -57,7 +57,6 @@ function ExploreHeader({
     <View
       style={{
         backgroundColor: colors.bgDefault,
-        paddingBottom: 8,
       }}
     >
       {showSearch ? (

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   KeyboardType,
-  Dimensions,
   Platform,
 } from "react-native";
 import Input from "components/Input";
@@ -17,8 +16,6 @@ import {
 } from "context/bottomSheetModalContext";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
-
-const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   container: {
@@ -61,7 +58,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type InputRoundProps = {
+interface InputRoundProps {
   title: string;
   icon?: string;
   value: string;
@@ -70,7 +67,7 @@ type InputRoundProps = {
   onChangeRightValue?: (text: string) => void;
   rightValueOptions?: string[];
   keyboardType?: KeyboardType;
-};
+}
 
 function InputRound({
   title,
