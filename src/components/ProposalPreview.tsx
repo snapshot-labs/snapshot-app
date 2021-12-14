@@ -202,6 +202,7 @@ function ProposalPreview({
             />
           </View>
           <TouchableOpacity
+            hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
             onPress={() => {
               const snapPoints = [10, options.length > 2 ? 300 : 200];
               const destructiveButtonIndex = 2;
