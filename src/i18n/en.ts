@@ -162,4 +162,5 @@ export default {
   unableToEstablishWalletConnect:
     "Unable to establish a wallet connect connection. Please logout of this address and log back in.",
   notifications: "Notifications",
+  share: "Share",
 };

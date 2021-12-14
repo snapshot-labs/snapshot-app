@@ -68,6 +68,7 @@ function CategoriesScrollView({
               size={21}
               color={colors.textColor}
               style={{
+                paddingLeft: 16,
                 marginBottom: Platform.OS === "ios" ? 4 : 0,
                 marginRight: 6,
               }}

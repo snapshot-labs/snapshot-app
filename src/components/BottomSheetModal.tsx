@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import BottomSheet, {
   BottomSheetView,
   BottomSheetScrollView,
@@ -8,6 +14,7 @@ import BottomSheet, {
 import colors from "constants/colors";
 import { useAuthState } from "context/authContext";
 import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
 import IconFont from "components/IconFont";
 
 const styles = StyleSheet.create({
@@ -39,7 +46,7 @@ interface BottomSheetModalProps {
   scroll?: boolean;
   enablePanDownToClose?: boolean;
   BackDropRenderer?: any;
-  icons: { name: string; size?: number; color?: string }[];
+  icons?: { name: string; size?: number; color?: string }[];
 }
 
 function BottomSheetModal({
@@ -53,7 +60,7 @@ function BottomSheetModal({
   scroll = false,
   enablePanDownToClose = true,
   BackDropRenderer = undefined,
-  icons,
+  icons = [],
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   let BottomSheetViewComponent: any = BottomSheetView;
@@ -79,7 +86,7 @@ function BottomSheetModal({
       <BottomSheetViewComponent>
         {ModalContent !== undefined && <ModalContent />}
         {options.map((option: string, index: number) => {
-          const icon = icons[index];
+          const icon = get(icons, index);
           return (
             <TouchableHighlight
               underlayColor={colors.highlightColor}
@@ -98,7 +105,10 @@ function BottomSheetModal({
                         ? colors.red
                         : icon.color ?? colors.textColor
                     }
-                    style={{ marginRight: 6 }}
+                    style={{
+                      marginRight: 6,
+                      marginBottom: Platform.OS === "ios" ? 4 : 0,
+                    }}
                   />
                 )}
                 <Text
@@ -106,7 +116,11 @@ function BottomSheetModal({
                     styles.rowTitle,
                     {
                       color: colors.textColor,
-                      marginBottom: isEmpty(icon) ? 0 : 2,
+                      marginBottom: isEmpty(icon)
+                        ? 0
+                        : Platform.OS === "ios"
+                        ? 0
+                        : 2,
                     },
                     destructiveButtonIndex === index
                       ? {

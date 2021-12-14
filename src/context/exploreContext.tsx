@@ -40,7 +40,10 @@ function exploreReducer(state: ExploreState, action: ContextAction) {
   switch (action.type) {
     case EXPLORE_ACTIONS.SET_EXPLORE:
       const categories: any = {};
+      const spaces: any = {};
       for (let key in action.payload?.spaces) {
+        const space = action.payload.spaces[key];
+        spaces[key] = { ...space, id: key };
         action.payload.spaces[key]?.categories?.forEach((category: string) => {
           if (action.payload.spaces[key]?.private) {
             return;
@@ -54,7 +57,7 @@ function exploreReducer(state: ExploreState, action: ContextAction) {
         });
       }
 
-      return { ...state, ...action.payload, categories };
+      return { ...state, ...action.payload, categories, spaces };
     case EXPLORE_ACTIONS.UPDATE_SPACES:
       const newSpaces = { ...state.spaces };
       if (Array.isArray(action.payload)) {

@@ -7,6 +7,7 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
+  Share,
 } from "react-native";
 import colors from "constants/colors";
 import { Proposal } from "types/proposal";
@@ -30,7 +31,7 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import { deleteProposal, isAdmin } from "helpers/apiUtils";
+import { deleteProposal, getProposalUrl, isAdmin } from "helpers/apiUtils";
 import { useToastShowConfig } from "constants/toast";
 
 const { width } = Dimensions.get("screen");
@@ -152,7 +153,7 @@ function ProposalPreview({
     return updatedMembers.includes(proposal.author.toLowerCase());
   }, [proposal, space]);
   const options = useMemo(() => {
-    const setOptions = [i18n.t("duplicateProposal")];
+    const setOptions = [i18n.t("share"), i18n.t("duplicateProposal")];
     if (
       isAdmin(connectedAddress ?? "", space) ||
       connectedAddress === proposal?.author
@@ -202,8 +203,8 @@ function ProposalPreview({
           </View>
           <TouchableOpacity
             onPress={() => {
-              const snapPoints = [10, options.length > 1 ? 200 : 100];
-              const destructiveButtonIndex = options.length > 1 ? 1 : 3;
+              const snapPoints = [10, options.length > 2 ? 300 : 200];
+              const destructiveButtonIndex = 2;
               bottomSheetModalDispatch({
                 type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                 payload: {
@@ -213,9 +214,22 @@ function ProposalPreview({
                   initialIndex: 1,
                   destructiveButtonIndex,
                   key: proposal.id,
-                  icons: [{ name: "external-link" }, { name: "close" }],
-                  onPressOption: (index: number) => {
+                  icons: [
+                    { name: "upload", size: 22 },
+                    { name: "external-link" },
+                    { name: "close" },
+                  ],
+                  onPressOption: async (index: number) => {
                     if (index === 0) {
+                      try {
+                        await Share.share({
+                          url: getProposalUrl(proposal, space),
+                          message: getProposalUrl(proposal, space),
+                        });
+                      } catch (error) {
+                        console.log("SHARE ERROR", error);
+                      }
+                    } else if (index === 1) {
                       navigation.navigate(CREATE_PROPOSAL_SCREEN, {
                         proposal,
                         space,
@@ -223,7 +237,7 @@ function ProposalPreview({
                     } else if (
                       (isAdmin(connectedAddress ?? "", space) ||
                         connectedAddress === proposal?.author) &&
-                      index === 1
+                      index === 2
                     ) {
                       deleteProposal(
                         wcConnector,
