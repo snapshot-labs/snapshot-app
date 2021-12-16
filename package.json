@@ -23,7 +23,7 @@
     "@snapshot-labs/lock": "github:snapshot-labs/lock#master",
     "@snapshot-labs/snapshot.js": "^0.3.0",
     "@tradle/react-native-http": "^2.0.1",
-    "@walletconnect/client": "^2.0.0-beta.20",
+    "@walletconnect/client": "^2.0.0-beta.20.6",
     "assert": "^1.5.0",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.2",

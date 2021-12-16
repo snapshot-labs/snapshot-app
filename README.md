@@ -6,6 +6,10 @@
 yarn
 ```
 
+### Copy env-sample.ts and rename to env.ts
+
+In src/constants copy env-sample.ts and rename to env.ts in the same directory
+
 ### Extra step to install for iOS
 
 ```

@@ -2330,10 +2330,10 @@
     expo-modules-autolinking "^0.0.3"
     invariant "^2.2.4"
 
-"@walletconnect/client@^2.0.0-beta.20":
-  version "2.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@walletconnect/client/-/client-2.0.0-beta.20.tgz#a09e05b9e195d38dad7a6ce82796249215143598"
-  integrity sha512-3HG1Cl29fNn+pwVe5cLHTCtiGwsAmW4Y2w6p0BV1dBawjNtoY4fcmGUSn+vj8dYy2bncH9gUUlzKeWng9Cu5gg==
+"@walletconnect/client@^2.0.0-beta.20.6":
+  version "2.0.0-beta.20.6"
+  resolved "https://registry.yarnpkg.com/@walletconnect/client/-/client-2.0.0-beta.20.6.tgz#bc187b894f41fbc064a28d78c44b71de3f8df880"
+  integrity sha512-IegvGydRmYpxnfVtA9BeXGq5ISgJvdAzs9M1l2KV7tBP6sKydzx1fViEDOIaGlWBLrAlZ/LXJFGcxHIeO/rCcQ==
   dependencies:
     "@walletconnect/encoding" "^1.0.0"
     "@walletconnect/jsonrpc-provider" "^1.0.0"
@@ -2342,11 +2342,9 @@
     "@walletconnect/logger" "^1.0.0"
     "@walletconnect/relay-api" "^1.0.0"
     "@walletconnect/safe-json" "^1.0.0"
-    "@walletconnect/types" "^2.0.0-beta.20"
-    "@walletconnect/utils" "^2.0.0-beta.20"
-    keyvaluestorage "^0.7.1"
-    pino "^6.7.0"
-    pino-pretty "^4.3.0"
+    "@walletconnect/types" "^2.0.0-beta.20.6"
+    "@walletconnect/utils" "^2.0.0-beta.20.6"
+    ws "^8.3.0"
 
 "@walletconnect/crypto@^1.0.1":
   version "1.0.1"
@@ -2441,27 +2439,27 @@
   resolved "https://registry.yarnpkg.com/@walletconnect/safe-json/-/safe-json-1.0.0.tgz#12eeb11d43795199c045fafde97e3c91646683b2"
   integrity sha512-QJzp/S/86sUAgWY6eh5MKYmSfZaRpIlmCJdi5uG4DJlKkZrHEF7ye7gA+VtbVzvTtpM/gRwO2plQuiooIeXjfg==
 
-"@walletconnect/types@^2.0.0-beta.20", "@walletconnect/types@^2.0.0-beta.20.5":
-  version "2.0.0-beta.20.5"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.0.0-beta.20.5.tgz#266d1348979f540bf3b0d8e3d7102c0f32b5236d"
-  integrity sha512-ly14MX0CwE/AJwTe7FLl/ruuJQRRDwOPtYLx+UZFZ9gbIu4zNP3gzWBPm57iFRhzNcHZHcXF09suTIXhHQZ7Kw==
+"@walletconnect/types@^2.0.0-beta.20.6":
+  version "2.0.0-beta.20.6"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.0.0-beta.20.6.tgz#2f6ebef337ec49fea08ba12c7728adb2497adb82"
+  integrity sha512-jWzVp/G9VlaQPbyybPeqV0tCho0yMepV/wWwHx3fRDW3bz8gaRIQlkxvwKAst9m+KIq53DW0OQOo2yMBcNAFmA==
   dependencies:
     "@walletconnect/jsonrpc-types" "^1.0.0"
     keyvaluestorage "^0.7.1"
     pino "^6.7.0"
     pino-pretty "^4.3.0"
 
-"@walletconnect/utils@^2.0.0-beta.20":
-  version "2.0.0-beta.20.5"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.0.0-beta.20.5.tgz#e9f47371c6dbce1ae1bf05717cd3c7f75e1494fe"
-  integrity sha512-oqScNXzPH9c/Q6Oqd1OFQkb38IevTsnX4V+cWNNsVBsGl93lN+7KYydtFvDo/sZmnuBiswGT58xBRu082gaVrw==
+"@walletconnect/utils@^2.0.0-beta.20.6":
+  version "2.0.0-beta.20.6"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.0.0-beta.20.6.tgz#d693ecaa7c03929e9c4499577e6bf7784a7fe0a8"
+  integrity sha512-LJXFKtcd64TZkP2hguGPMhWomi5/mVmySzyvC9ON33xDkqz+PM1uCHhNZXor8vy9lNe46jjEBlvCM58gwkS75Q==
   dependencies:
     "@walletconnect/ecies-25519" "^1.0.1"
     "@walletconnect/encoding" "^1.0.0"
     "@walletconnect/jsonrpc-utils" "^1.0.0"
     "@walletconnect/logger" "^1.0.0"
     "@walletconnect/safe-json" "^1.0.0"
-    "@walletconnect/types" "^2.0.0-beta.20.5"
+    "@walletconnect/types" "^2.0.0-beta.20.6"
     "@walletconnect/window-getters" "^1.0.0"
     "@walletconnect/window-metadata" "^1.0.0"
     lodash.union "^4.6.0"
@@ -8830,63 +8828,11 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-<<<<<<< HEAD
-web3-provider-engine@16.0.1:
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-16.0.1.tgz#2600a39ede364cdc0a1fc773bf40a94f2177e605"
-  integrity sha512-/Eglt2aocXMBiDj7Se/lyZnNDaHBaoJlaUfbP5HkLJQC/HlGbR+3/W+dINirlJDhh7b54DzgykqY7ksaU5QgTg==
-  dependencies:
-    async "^2.5.0"
-    backoff "^2.5.0"
-    clone "^2.0.0"
-    cross-fetch "^2.1.0"
-    eth-block-tracker "^4.4.2"
-    eth-json-rpc-filters "^4.2.1"
-    eth-json-rpc-infura "^5.1.0"
-    eth-json-rpc-middleware "^6.0.0"
-    eth-rpc-errors "^3.0.0"
-    eth-sig-util "^1.4.2"
-    ethereumjs-block "^1.2.2"
-    ethereumjs-tx "^1.2.0"
-    ethereumjs-util "^5.1.5"
-    ethereumjs-vm "^2.3.4"
-    json-stable-stringify "^1.0.1"
-    promise-to-callback "^1.0.0"
-    readable-stream "^2.2.9"
-    request "^2.85.0"
-    semaphore "^1.0.3"
-    ws "^5.1.1"
-    xhr "^2.2.0"
-    xtend "^4.0.1"
-
-webidl-conversions@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
-  integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
-
-whatwg-fetch@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
-  integrity sha512-dcQ1GWpOD/eEQ97k66aiEVpNnapVj90/+R+SXTPYGHpYBBypfKJEQjLrvMZ7YXbKm21gXd4NcuxUTjiv1YtLng==
-
-=======
->>>>>>> Add WC v2
 whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
   integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
 
-<<<<<<< HEAD
-whatwg-url@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
-  integrity sha1-lmRU6HZUYuN2RNNib2dCzotwll0=
-  dependencies:
-    tr46 "~0.0.3"
-    webidl-conversions "^3.0.0"
-
-=======
->>>>>>> Add WC v2
 which-module@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
@@ -8974,6 +8920,11 @@ ws@^7.5.1:
   version "7.5.6"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.6.tgz#e59fc509fb15ddfb65487ee9765c5a51dec5fe7b"
   integrity sha512-6GLgCqo2cy2A2rjCNFlxQS6ZljG/coZfZXclldI8FB/1G3CCI36Zd8xy2HrFVACi8tfk5XrgLQEk+P0Tnz9UcA==
+
+ws@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.3.0.tgz#7185e252c8973a60d57170175ff55fdbd116070d"
+  integrity sha512-Gs5EZtpqZzLvmIM59w4igITU57lrtYVFneaa434VROv4thzJyV6UjIL3D42lslWlI+D4KzLYnxSwtfuiO79sNw==
 
 xcode@^2.0.0:
   version "2.1.0"

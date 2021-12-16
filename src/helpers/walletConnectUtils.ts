@@ -53,12 +53,9 @@ export async function connectToWalletService(walletService: any, uri: string) {
   if (typeof uri !== "string" || !uri.length) {
     return Promise.reject(new Error("Invalid uri."));
   }
-  const maybeRedirectUrl = `&redirectUrl=${encodeURIComponent(
-    initialWalletConnectValues.redirectUrl
-  )}`;
   const connectionUrl = `${formatWalletServiceUrl(
     walletService
-  )}/wc?uri=${encodeURIComponent(uri)}${maybeRedirectUrl}`;
+  )}/wc?uri=${uri}`;
   if (await Linking.canOpenURL(connectionUrl)) {
     return await Linking.openURL(connectionUrl);
   }
