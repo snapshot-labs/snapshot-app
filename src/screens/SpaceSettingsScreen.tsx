@@ -44,9 +44,9 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
   const [name, setName] = useState(space.name);
   const [about, setAbout] = useState(space.about);
   const [avatar, setAvatar] = useState(space.avatar);
-  const [votingDelay, setVotingDelay] = useState(space.voting?.delay);
+  const [votingDelay, setVotingDelay] = useState(space.voting?.delay ?? 0);
   const [votingDelayUnit, setVotingDelayUnit] = useState("hours");
-  const [votingPeriod, setVotingPeriod] = useState(space.voting?.period);
+  const [votingPeriod, setVotingPeriod] = useState(space.voting?.period ?? 0);
   const [votingPeriodUnit, setVotingPeriodUnit] = useState("hours");
   const [quorum, setQuorum] = useState("0");
   const [symbol, setSymbol] = useState(space.symbol);

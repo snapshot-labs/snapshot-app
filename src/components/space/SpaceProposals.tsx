@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Dimensions,
+  Platform,
 } from "react-native";
 import { Proposal } from "types/proposal";
 import { PROPOSALS_QUERY, SPACES_QUERY } from "helpers/queries";
@@ -29,6 +30,14 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "context/authContext";
+import ProposalFilters from "components/proposal/ProposalFilters";
+import proposal from "constants/proposal";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import TimelineHeader from "components/timeline/TimelineHeader";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -89,18 +98,14 @@ async function getSpace(spaceId: string, exploreDispatch: ContextDispatch) {
 
 interface SpaceProposalsProps {
   space: Space;
-  spaceScreenRef: any;
   scrollProps: any;
   headerHeight?: number;
-  filter: { key: string };
   spaceProposalsRef: any;
 }
 function SpaceProposals({
   space,
-  spaceScreenRef,
   scrollProps,
   headerHeight = 150,
-  filter,
   spaceProposalsRef,
 }: SpaceProposalsProps) {
   const { refreshFeed, colors } = useAuthState();
@@ -111,9 +116,12 @@ function SpaceProposals({
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [endReached, setEndReached] = useState(false);
+  const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const exploreDispatch = useExploreDispatch();
 
-  const onRefresh = () => {
+  function onRefresh() {
     setLoadCount(0);
     getProposals(
       spaceId,
@@ -126,7 +134,22 @@ function SpaceProposals({
       filter.key,
       setEndReached
     );
-  };
+  }
+
+  function onChangeFilter(newFilter: string) {
+    setLoadCount(0);
+    getProposals(
+      spaceId,
+      0,
+      proposals,
+      setLoadCount,
+      setProposals,
+      true,
+      setLoadingMore,
+      newFilter,
+      setEndReached
+    );
+  }
 
   useEffect(() => {
     if (refreshFeed?.spaceId === spaceId) {
@@ -137,25 +160,6 @@ function SpaceProposals({
       });
     }
   }, [refreshFeed]);
-
-  useEffect(() => {
-    spaceScreenRef.current = {
-      onChangeFilter: (newFilter: string) => {
-        setLoadCount(0);
-        getProposals(
-          spaceId,
-          0,
-          proposals,
-          setLoadCount,
-          setProposals,
-          true,
-          setLoadingMore,
-          newFilter,
-          setEndReached
-        );
-      },
-    };
-  }, []);
 
   useEffect(() => {
     setLoadingMore(true);
@@ -195,6 +199,66 @@ function SpaceProposals({
         renderItem={(data: { item: Proposal }) => {
           return <ProposalPreview proposal={data.item} space={space} />;
         }}
+        ListHeaderComponent={
+          <View
+            style={{
+              paddingRight: 16,
+              paddingTop: 7,
+              paddingBottom: 6,
+              borderBottomWidth: 1,
+              borderBottomColor: colors.borderColor,
+              backgroundColor: colors.bgDefault,
+            }}
+          >
+            <ProposalFilters
+              filter={filter}
+              showBottomSheetModal={() => {
+                const stateFilters = proposal.getStateFilters();
+                const allFilter = stateFilters[0];
+                const activeFilter = stateFilters[1];
+                const pendingFilter = stateFilters[2];
+                const closedFilter = stateFilters[3];
+                const options = [
+                  allFilter.text,
+                  activeFilter.text,
+                  pendingFilter.text,
+                  closedFilter.text,
+                ];
+                bottomSheetModalDispatch({
+                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                  payload: {
+                    options,
+                    snapPoints: [10, 250],
+                    show: true,
+                    key: `space-proposal-filters-${spaceId}`,
+                    icons: [],
+                    initialIndex: 1,
+                    destructiveButtonIndex: -1,
+                    onPressOption: (index: number) => {
+                      if (index === 0) {
+                        setFilter(allFilter);
+                        onChangeFilter(allFilter.key);
+                      } else if (index === 1) {
+                        setFilter(activeFilter);
+                        onChangeFilter(activeFilter.key);
+                      } else if (index === 2) {
+                        setFilter(pendingFilter);
+                        onChangeFilter(pendingFilter.key);
+                      } else if (index === 3) {
+                        setFilter(closedFilter);
+                        onChangeFilter(closedFilter.key);
+                      }
+                      bottomSheetModalRef?.current?.close();
+                    },
+                  },
+                });
+              }}
+              filterContainerStyle={{
+                marginTop: 6,
+              }}
+            />
+          </View>
+        }
         refreshControl={
           <RefreshControl
             refreshing={false}

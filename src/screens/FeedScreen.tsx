@@ -88,7 +88,8 @@ function FeedScreen() {
             });
           }
         } else {
-          const spaceId = splitUrl[1]?.replace(/\//g, "");
+          const splitUrlSpace = splitUrl[1].split("/");
+          const spaceId = splitUrlSpace[1]?.replace(/\//g, "");
           const spaceDetails = spaces[spaceId] ?? {};
           if (!isEmpty(spaceId)) {
             navigation.navigate(SPACE_SCREEN, {

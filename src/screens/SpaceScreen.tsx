@@ -47,10 +47,8 @@ export const headerHeight = Platform.OS === "android" ? 185 : 170;
 
 const renderScene = (
   route: any,
-  spaceScreenRef: any,
   scrollPropsProposals: any,
   scrollPropsAbout: any,
-  filter: { key: string },
   spaceAboutRef: any,
   spaceProposalsRef: any
 ) =>
@@ -58,9 +56,7 @@ const renderScene = (
     proposals: () => (
       <SpaceProposals
         space={route.params.space}
-        spaceScreenRef={spaceScreenRef}
         scrollProps={scrollPropsProposals}
-        filter={filter}
         headerHeight={headerHeight}
         spaceProposalsRef={spaceProposalsRef}
       />
@@ -101,7 +97,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const layout = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { isWalletConnect, colors } = useAuthState();
-  const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const [showTitle, setShowTitle] = useState(false);
   const showTitleRef = useRef(false);
   const space = route.params.space;
@@ -117,9 +112,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     outputRange: [0, -headerHeight],
     extrapolate: "clamp",
   });
-  const spaceScreenRef: any = useRef(null);
-  const bottomSheetRef: any = useRef();
-  const [showProposalFilters, setShowProposalFilters] = useState(false);
   const spaceAboutCurrentScrollRef = useRef(0);
   const spaceProposalsCurrentScrollRef = useRef(0);
   const spaceAboutRef = useRef();
@@ -190,7 +182,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
     () =>
       renderScene(
         route,
-        spaceScreenRef,
         {
           onScroll: Animated.event(
             [
@@ -239,11 +230,10 @@ function SpaceScreen({ route }: SpaceScreenProps) {
             }
           ),
         },
-        filter,
         spaceAboutRef,
         spaceProposalsRef
       ),
-    [route, filter]
+    [route]
   );
   const headerTranslate = index === 0 ? headerProposals : headerAbout;
 
@@ -336,34 +326,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           }}
           title={showTitle ? space.name : ""}
         />
-        <View
-          style={{
-            paddingHorizontal: 16,
-            paddingTop: Platform.OS === "android" ? 12 : 16,
-            height: 60,
-            marginRight: 18,
-          }}
-        >
-          {index === 0 && (
-            <ProposalFilters
-              filter={filter}
-              showBottomSheetModal={() => {
-                if (bottomSheetRef.current) {
-                  bottomSheetRef.current.snapToIndex(1);
-                } else {
-                  setShowProposalFilters(!showProposalFilters);
-                }
-              }}
-              iconColor={showTitle ? colors.white : colors.textColor}
-              filterTextStyle={{
-                color: showTitle ? colors.white : colors.textColor,
-              }}
-              filterContainerStyle={{
-                marginTop: 6,
-              }}
-            />
-          )}
-        </View>
       </Animated.View>
       <TabView
         navigationState={{ index, routes }}
@@ -372,23 +334,6 @@ function SpaceScreen({ route }: SpaceScreenProps) {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
       />
-      {showProposalFilters && (
-        <ProposalFiltersBottomSheet
-          bottomSheetRef={bottomSheetRef}
-          setFilter={setFilter}
-          onClose={() => {
-            if (bottomSheetRef.current) {
-              bottomSheetRef.current.close();
-            } else {
-              setShowProposalFilters(false);
-            }
-          }}
-          onChangeFilter={(newFilter: string) => {
-            spaceScreenRef?.current?.onChangeFilter(newFilter);
-            resetHeader();
-          }}
-        />
-      )}
     </View>
   );
 }
