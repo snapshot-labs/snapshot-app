@@ -65,7 +65,12 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
     <SafeAreaView
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
-      <View style={common.headerContainer}>
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
         <BackButton title={i18n.t("spaceSettings")} />
       </View>
       <ScrollView

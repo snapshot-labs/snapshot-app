@@ -93,6 +93,7 @@ function InputRound({
       <View
         style={[
           styles.container,
+          { borderColor: colors.borderColor },
           isFocused ? { borderColor: colors.textColor } : {},
         ]}
       >
