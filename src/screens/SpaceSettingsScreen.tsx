@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import common from "styles/common";
 import { ScrollView, View, StyleSheet, Text } from "react-native";
 import { useAuthState } from "context/authContext";
@@ -9,10 +9,14 @@ import BackButton from "components/BackButton";
 import InputRound from "components/InputRound";
 import Button from "components/Button";
 import VotingTypeModal from "components/createProposal/VotingTypeModal";
-
+import { isAdmin } from "helpers/apiUtils";
 import { calcFromSeconds } from "helpers/miscUtils";
 import client from "helpers/snapshotClient";
 import { useToastShowConfig } from "constants/toast";
+import { getSpaceUri } from "@snapshot-labs/snapshot.js/src/utils";
+import { getAddress } from "@ethersproject/address";
+import schemas from "@snapshot-labs/snapshot.js/src/schemas";
+import networks from "@snapshot-labs/snapshot.js/src/networks.json";
 
 const styles = StyleSheet.create({
   separator: {
@@ -59,7 +63,30 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
       ? { key: space.voting.type, text: space.voting.type }
       : { key: "any", text: i18n.t("any") }
   );
+  const [currentTextRecord, setCurrentTextRecord] = useState<string>("");
+  const textRecord = useMemo(() => {
+    const keyURI = encodeURIComponent(space.id);
+    const address = connectedAddress
+      ? getAddress(connectedAddress)
+      : "<your-address>";
+    return `ipns://storage.snapshot.page/registry/${address}/${keyURI}`;
+  }, [space]);
   const toastShowConfig = useToastShowConfig();
+  const isSpaceAdmin = isAdmin(connectedAddress ?? "", space);
+  const isSpaceOwner = currentTextRecord === textRecord;
+
+  async function getUri() {
+    try {
+      const uri = await getSpaceUri(space.id);
+      setCurrentTextRecord(uri);
+    } catch (e) {
+      console.log("URI ERROR", e);
+    }
+  }
+
+  useEffect(() => {
+    getUri();
+  }, []);
 
   return (
     <SafeAreaView
@@ -186,52 +213,55 @@ function SpaceSettingsScreen({ route }: SpaceSettingsScreenProps) {
           keyboardType="number-pad"
         />
         <View style={styles.separator} />
-        <Button
-          title={i18n.t("save")}
-          onPress={async () => {
-            const parsedVotingDelay = calcFromSeconds(
-              parseInt(votingDelay, 16),
-              votingDelayUnit === "hours" ? "h" : "d"
-            );
-            const parsedVotingPeriod = calcFromSeconds(
-              parseInt(votingPeriod, 16),
-              votingPeriodUnit === "hours" ? "h" : "d"
-            );
-            //@ts-ignore
-            wcConnector.send = async (type, params) => {
-              return await wcConnector.signPersonalMessage(params);
-            };
+        {isSpaceAdmin ||
+          (isSpaceOwner && (
+            <Button
+              title={i18n.t("save")}
+              onPress={async () => {
+                const parsedVotingDelay = calcFromSeconds(
+                  parseInt(votingDelay, 16),
+                  votingDelayUnit === "hours" ? "h" : "d"
+                );
+                const parsedVotingPeriod = calcFromSeconds(
+                  parseInt(votingPeriod, 16),
+                  votingPeriodUnit === "hours" ? "h" : "d"
+                );
+                //@ts-ignore
+                wcConnector.send = async (type, params) => {
+                  return await wcConnector.signPersonalMessage(params);
+                };
 
-            const form = {
-              name,
-              about,
-              avatar,
-              symbol,
-              twitter,
-              github,
-              terms,
-              voting: {
-                delay: parsedVotingDelay,
-                period: parsedVotingPeriod,
-              },
-            };
-            try {
-              const sign = await client.broadcast(
-                wcConnector,
-                connectedAddress,
-                space.id,
-                "settings",
-                form
-              );
-            } catch (e) {
-              Toast.show({
-                type: "customError",
-                text1: i18n.t("unableToEditSpace"),
-                ...toastShowConfig,
-              });
-            }
-          }}
-        />
+                const form = {
+                  name,
+                  about,
+                  avatar,
+                  symbol,
+                  twitter,
+                  github,
+                  terms,
+                  voting: {
+                    delay: parsedVotingDelay,
+                    period: parsedVotingPeriod,
+                  },
+                };
+                try {
+                  const sign = await client.broadcast(
+                    wcConnector,
+                    connectedAddress,
+                    space.id,
+                    "settings",
+                    form
+                  );
+                } catch (e) {
+                  Toast.show({
+                    type: "customError",
+                    text1: i18n.t("unableToEditSpace"),
+                    ...toastShowConfig,
+                  });
+                }
+              }}
+            />
+          ))}
         <View style={styles.footer} />
         <VotingTypeModal
           isVisible={showVotingTypeModal}

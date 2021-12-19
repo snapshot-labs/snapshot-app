@@ -18,6 +18,7 @@ type BottomSheetModalState = {
   show: boolean;
   scroll: boolean;
   ModalContent: any;
+  icons: string[];
 };
 
 const BottomSheetModalContext = createContext<
@@ -40,6 +41,7 @@ const initialState = {
   ModalContent: undefined,
   show: false,
   scroll: false,
+  icons: [],
 };
 
 function bottomSheetModalReducer(
@@ -52,6 +54,7 @@ function bottomSheetModalReducer(
         ...state,
         ...action.payload,
         ModalContent: action?.payload?.ModalContent ?? undefined,
+        icons: action?.payload.icons ?? [],
         scroll: action?.payload?.scroll ?? false,
       };
     default:
