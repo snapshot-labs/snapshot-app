@@ -163,4 +163,9 @@ export default {
     "Unable to establish a wallet connect connection. Please logout of this address and log back in.",
   notifications: "Notifications",
   share: "Share",
+  startedTimeAgo: "Started {{timeAgo}} ago",
+  endedTimeAgo: "Ended {{timeAgo}} ago",
+  endsInTimeAgo: "Ends in {{timeAgo}}",
+  startsInTimeAgo: "Starts in {{timeAgo}}",
+  noNewNotifications: "No new notifications",
 };

@@ -33,6 +33,7 @@ import {
 } from "context/bottomSheetModalContext";
 import { deleteProposal, getProposalUrl, isAdmin } from "helpers/apiUtils";
 import { useToastShowConfig } from "constants/toast";
+import moment from "moment-timezone";
 
 const { width } = Dimensions.get("screen");
 
@@ -96,7 +97,32 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
   },
+  dayStartedEnded: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    marginTop: 20,
+  },
 });
+
+function getTimeAgo(proposal: Proposal) {
+  const today = parseInt((moment().valueOf() / 1e3).toFixed());
+  const startsIn = Math.abs(today - proposal.start);
+  const endsIn = Math.abs(today - proposal.end);
+
+  if (startsIn < endsIn) {
+    if (startsIn >= today) {
+      return i18n.t("startsInTimeAgo", { timeAgo: toNow(proposal.start) });
+    } else {
+      return i18n.t("startedTimeAgo", { timeAgo: toNow(proposal.start) });
+    }
+  } else {
+    if (endsIn >= today) {
+      return i18n.t("endsInTimeAgo", { timeAgo: toNow(proposal.end) });
+    } else {
+      return i18n.t("endedTimeAgo", { timeAgo: toNow(proposal.end) });
+    }
+  }
+}
 
 function getPeriod(
   state: string,
@@ -289,6 +315,16 @@ function ProposalPreview({
           <StateBadge state={proposal.state} />
           <Text style={[styles.period, { color: colors.secondaryTextColor }]}>
             , {period}
+          </Text>
+        </View>
+        <View>
+          <Text
+            style={[
+              styles.dayStartedEnded,
+              { color: colors.secondaryTextColor },
+            ]}
+          >
+            {getTimeAgo(proposal)}
           </Text>
         </View>
       </View>

@@ -9,11 +9,13 @@ import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
 interface TimelineHeaderProps {
   joinedSpacesFilter: { key: string; text: string };
   showBottomSheetModal: (showBottomSheetModal: boolean) => void;
+  isInitial: boolean;
 }
 
 function TimelineHeader({
   joinedSpacesFilter,
   showBottomSheetModal,
+  isInitial,
 }: TimelineHeaderProps) {
   const { followedSpaces, colors } = useAuthState();
   return (
@@ -35,25 +37,29 @@ function TimelineHeader({
           {i18n.t("timeline")}
         </Text>
       </View>
-      {followedSpaces.length > 0 && <JoinedSpacesScrollView />}
-      {followedSpaces.length > 0 ? (
-        <View
-          style={{
-            paddingRight: 16,
-            paddingTop: 6,
-            paddingBottom: 6,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.borderColor,
-            backgroundColor: colors.bgDefault,
-          }}
-        >
-          <ProposalFilters
-            filter={joinedSpacesFilter}
-            showBottomSheetModal={showBottomSheetModal}
-          />
-        </View>
-      ) : (
-        <View />
+      {!isInitial && (
+        <>
+          {followedSpaces.length > 0 && <JoinedSpacesScrollView />}
+          {followedSpaces.length > 0 ? (
+            <View
+              style={{
+                paddingRight: 16,
+                paddingTop: 6,
+                paddingBottom: 6,
+                borderBottomWidth: 1,
+                borderBottomColor: colors.borderColor,
+                backgroundColor: colors.bgDefault,
+              }}
+            >
+              <ProposalFilters
+                filter={joinedSpacesFilter}
+                showBottomSheetModal={showBottomSheetModal}
+              />
+            </View>
+          ) : (
+            <View />
+          )}
+        </>
       )}
     </View>
   );

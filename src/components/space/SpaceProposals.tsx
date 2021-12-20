@@ -37,7 +37,6 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import TimelineHeader from "components/timeline/TimelineHeader";
 
 const { height: screenHeight } = Dimensions.get("screen");
 

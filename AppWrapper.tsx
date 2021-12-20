@@ -13,6 +13,8 @@ import {
 import { ContextDispatch } from "types/context";
 import { getAliasWallet } from "helpers/aliasUtils";
 import { CUSTOM_WALLET_NAME } from "constants/wallets";
+import NotificationScreen from "screens/NotificationScreen";
+import { NotificationsProvider } from "context/notificationsContext";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
@@ -97,11 +99,13 @@ async function loadFromStorage(
 function MainApp() {
   return (
     <ActionSheetProvider>
-      <ExploreProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </ExploreProvider>
+      <NotificationsProvider>
+        <ExploreProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </ExploreProvider>
+      </NotificationsProvider>
     </ActionSheetProvider>
   );
 }

@@ -26,21 +26,26 @@ import { useNavigation } from "@react-navigation/core";
 
 async function getFollows(
   accountId: string | null | undefined,
-  authDispatch: ContextDispatch
+  authDispatch: ContextDispatch,
+  setIsInitial: (isInitial: boolean) => void
 ) {
-  if (accountId) {
-    const query = {
-      query: FOLLOWS_QUERY,
-      variables: {
-        follower_in: accountId,
-      },
-    };
-    const result = await apolloClient.query(query);
-    const followedSpaces = get(result, "data.follows", []);
-    authDispatch({
-      type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
-      payload: followedSpaces,
-    });
+  try {
+    if (accountId) {
+      const query = {
+        query: FOLLOWS_QUERY,
+        variables: {
+          follower_in: accountId,
+        },
+      };
+      const result = await apolloClient.query(query);
+      const followedSpaces = get(result, "data.follows", []);
+      authDispatch({
+        type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
+        payload: followedSpaces,
+      });
+    }
+  } catch (e) {
+    setIsInitial(false);
   }
 }
 
@@ -112,13 +117,12 @@ function FeedScreen() {
       navigateToScreen(event?.url);
     });
     getExplore(exploreDispatch);
-    getFollows(connectedAddress, authDispatch);
-    setIsInitial(false);
+    getFollows(connectedAddress, authDispatch, setIsInitial);
   }, []);
 
   useEffect(() => {
     if (!isInitial) {
-      getFollows(connectedAddress, authDispatch);
+      getFollows(connectedAddress, authDispatch, setIsInitial);
     }
   }, [connectedAddress]);
 
@@ -129,7 +133,7 @@ function FeedScreen() {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
-      <TimelineFeed />
+      <TimelineFeed feedScreenIsInitial={isInitial} />
     </View>
   );
 }

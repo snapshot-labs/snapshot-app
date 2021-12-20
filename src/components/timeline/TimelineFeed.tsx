@@ -24,8 +24,14 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
+import moment from "moment-timezone";
+import { sortProposals } from "helpers/apiUtils";
+import {
+  NOTIFICATIONS_ACTIONS,
+  useNotificationsDispatch,
+} from "context/notificationsContext";
 
-const LOAD_BY = 6;
+const LOAD_BY = 100;
 
 async function getProposals(
   followedSpaces: any,
@@ -37,42 +43,54 @@ async function getProposals(
   setLoadingMore: (loadingMore: boolean) => void,
   state: string
 ) {
+  const sevenDaysAgo = parseInt(
+    (moment().subtract(7, "days").valueOf() / 1e3).toFixed()
+  );
   const query = {
     query: PROPOSALS_QUERY,
     variables: {
       first: LOAD_BY,
       skip: loadCount,
       space_in: followedSpaces.map((follow: any) => follow.space.id),
+      start_gt: sevenDaysAgo,
+      end_gt: sevenDaysAgo,
       state,
     },
   };
+  try {
+    const result = await apolloClient.query(query);
+    const proposalResult = sortProposals(get(result, "data.proposals", []));
 
-  const result = await apolloClient.query(query);
-  const proposalResult = get(result, "data.proposals", []);
-  if (isInitial) {
-    setProposals(proposalResult);
-  } else {
-    const newProposals = uniqBy([...proposals, ...proposalResult], "id");
-    setProposals(newProposals);
-    setLoadCount(loadCount + LOAD_BY);
+    if (isInitial) {
+      setProposals(proposalResult);
+    } else {
+      const newProposals = uniqBy([...proposals, ...proposalResult], "id");
+      setProposals(newProposals);
+      setLoadCount(loadCount + LOAD_BY);
+    }
+  } catch (e) {
+    console.log(e);
   }
   setLoadingMore(false);
 }
-
-function TimelineFeed() {
+interface TimelineFeedProps {
+  feedScreenIsInitial: boolean;
+}
+function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const { followedSpaces, colors, connectedAddress } = useAuthState();
   const { profiles, spaces } = useExploreState();
   const exploreDispatch = useExploreDispatch();
-  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [isInitial, setIsInitial] = useState<boolean>(true);
   const [joinedSpacesFilter, setJoinedSpacesFilter] = useState(
     proposal.getStateFilters()[0]
   );
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const notificationsDispatch = useNotificationsDispatch();
 
   function onChangeFilter(newFilter: string) {
     setLoadCount(0);
@@ -98,9 +116,35 @@ function TimelineFeed() {
         setLoadCount,
         setProposals,
         true,
-        setLoadingMore,
+        (loadingMore: boolean) => {
+          setLoadingMore(loadingMore);
+          setIsInitial(loadingMore);
+        },
         joinedSpacesFilter.key
       );
+    } else {
+      setIsInitial(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (followedSpaces.length > 0 && !isInitial) {
+      setLoadingMore(true);
+      getProposals(
+        followedSpaces,
+        loadCount,
+        proposals,
+        setLoadCount,
+        setProposals,
+        true,
+        (loadingMore) => {
+          setLoadingMore(loadingMore);
+          setIsInitial(loadingMore);
+        },
+        joinedSpacesFilter.key
+      );
+    } else {
+      setIsInitial(false);
     }
   }, [followedSpaces]);
 
@@ -111,6 +155,10 @@ function TimelineFeed() {
       return !profilesArray.includes(address);
     });
     setProfiles(filteredArray, exploreDispatch);
+    notificationsDispatch({
+      type: NOTIFICATIONS_ACTIONS.SET_PROPOSALS,
+      payload: proposals,
+    });
   }, [proposals]);
 
   return (
@@ -139,6 +187,7 @@ function TimelineFeed() {
       }
       ListHeaderComponent={
         <TimelineHeader
+          isInitial={isInitial}
           joinedSpacesFilter={joinedSpacesFilter}
           showBottomSheetModal={() => {
             const stateFilters = proposal.getStateFilters();
@@ -209,7 +258,7 @@ function TimelineFeed() {
         );
       }}
       ListEmptyComponent={
-        loadingMore ? (
+        loadingMore || isInitial || feedScreenIsInitial ? (
           <View />
         ) : (
           <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
