@@ -4,6 +4,7 @@ import { Proposal } from "types/proposal";
 import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 import IconFont from "components/IconFont";
+import get from "lodash/get";
 
 const styles = StyleSheet.create({
   container: {
@@ -57,14 +58,14 @@ function ProposalPreviewFinalScores({
 }: ProposalPreviewFinalScoresProps) {
   const { colors } = useAuthState();
   const winningChoice = useMemo(
-    () => proposal.scores.indexOf(Math.max(...proposal.scores)),
+    () => proposal?.scores?.indexOf(Math.max(...proposal.scores)),
     [proposal]
   );
 
   return (
     <View>
       {proposal?.choices?.map((choice: string, index: number) => {
-        const currentScore = proposal.scores[index];
+        const currentScore = get(proposal?.scores, index, 0);
         const calculatedScore = n(
           (1 / proposal.scores_total) * currentScore,
           "0.[0]%"

@@ -11,6 +11,8 @@ const KEYS = {
   androidAppUrl: "androidAppUrl",
   savedWallets: "savedWallets",
   theme: "theme",
+  lastViewedNotification: "lastViewedNotification",
+  lastViewedProposal: "lastViewedProposal",
 };
 
 export async function load(key: string) {

@@ -13,11 +13,14 @@ import {
 import { ContextDispatch } from "types/context";
 import { getAliasWallet } from "helpers/aliasUtils";
 import { CUSTOM_WALLET_NAME } from "constants/wallets";
-import NotificationScreen from "screens/NotificationScreen";
-import { NotificationsProvider } from "context/notificationsContext";
+import {
+  NOTIFICATIONS_ACTIONS,
+  useNotificationsDispatch,
+} from "context/notificationsContext";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
+  notificationsDispatch: ContextDispatch,
   setLoading: (loading: boolean) => void
 ) {
   try {
@@ -92,6 +95,21 @@ async function loadFromStorage(
         payload: theme,
       });
     }
+    const lastViewedNotification = await storage.load(
+      storage.KEYS.lastViewedNotification
+    );
+    const lastViewedProposal = await storage.load(
+      storage.KEYS.lastViewedProposal
+    );
+    if (lastViewedNotification) {
+      notificationsDispatch({
+        type: NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION,
+        payload: {
+          time: parseInt(lastViewedNotification),
+          lastViewedProposal: lastViewedProposal,
+        },
+      });
+    }
   } catch (e) {}
   setLoading(false);
 }
@@ -99,13 +117,11 @@ async function loadFromStorage(
 function MainApp() {
   return (
     <ActionSheetProvider>
-      <NotificationsProvider>
-        <ExploreProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
-        </ExploreProvider>
-      </NotificationsProvider>
+      <ExploreProvider>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </ExploreProvider>
     </ActionSheetProvider>
   );
 }
@@ -114,9 +130,10 @@ function AppWrapper() {
   const [loading, setLoading] = useState(true);
   const { theme, colors } = useAuthState();
   const authDispatch = useAuthDispatch();
+  const notificationsDispatch = useNotificationsDispatch();
 
   useEffect(() => {
-    loadFromStorage(authDispatch, setLoading);
+    loadFromStorage(authDispatch, notificationsDispatch, setLoading);
   }, []);
 
   useEffect(() => {

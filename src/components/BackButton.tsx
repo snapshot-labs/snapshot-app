@@ -13,6 +13,7 @@ import colors from "../constants/colors";
 import IconFont from "./IconFont";
 import { useNavigation } from "@react-navigation/native";
 import { useAuthState } from "context/authContext";
+import { HOME_SCREEN } from "constants/navigation";
 
 const styles = StyleSheet.create({
   backButton: {
@@ -93,7 +94,14 @@ function BackButton({
         onPress
           ? onPress
           : () => {
-              navigation.goBack();
+              if (navigation?.canGoBack()) {
+                navigation.goBack();
+              } else {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: HOME_SCREEN }],
+                });
+              }
             }
       }
     >

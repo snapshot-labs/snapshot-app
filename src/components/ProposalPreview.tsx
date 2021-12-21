@@ -26,6 +26,7 @@ import CoreBadge from "./CoreBadge";
 import StateBadge from "./StateBadge";
 import ProposalPreviewFinalScores from "./ProposalPreviewFinalScores";
 import IconFont from "components/IconFont";
+import { getTimeAgo } from "helpers/proposalUtils";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
@@ -33,7 +34,6 @@ import {
 } from "context/bottomSheetModalContext";
 import { deleteProposal, getProposalUrl, isAdmin } from "helpers/apiUtils";
 import { useToastShowConfig } from "constants/toast";
-import moment from "moment-timezone";
 
 const { width } = Dimensions.get("screen");
 
@@ -104,26 +104,6 @@ const styles = StyleSheet.create({
   },
 });
 
-function getTimeAgo(proposal: Proposal) {
-  const today = parseInt((moment().valueOf() / 1e3).toFixed());
-  const startsIn = Math.abs(today - proposal.start);
-  const endsIn = Math.abs(today - proposal.end);
-
-  if (startsIn < endsIn) {
-    if (startsIn >= today) {
-      return i18n.t("startsInTimeAgo", { timeAgo: toNow(proposal.start) });
-    } else {
-      return i18n.t("startedTimeAgo", { timeAgo: toNow(proposal.start) });
-    }
-  } else {
-    if (endsIn >= today) {
-      return i18n.t("endsInTimeAgo", { timeAgo: toNow(proposal.end) });
-    } else {
-      return i18n.t("endedTimeAgo", { timeAgo: toNow(proposal.end) });
-    }
-  }
-}
-
 function getPeriod(
   state: string,
   start: number,
@@ -141,14 +121,9 @@ function getPeriod(
 interface ProposalPreviewProps {
   proposal: Proposal;
   space: Space;
-  fromFeed?: boolean;
 }
 
-function ProposalPreview({
-  proposal,
-  space,
-  fromFeed = false,
-}: ProposalPreviewProps) {
+function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
   const { connectedAddress, colors, wcConnector } = useAuthState();
   const authDispatch = useAuthDispatch();
@@ -193,7 +168,7 @@ function ProposalPreview({
     <TouchableHighlight
       underlayColor={colors.highlightColor}
       onPress={() => {
-        navigation.push(PROPOSAL_SCREEN, { proposal, fromFeed });
+        navigation.push(PROPOSAL_SCREEN, { proposal });
       }}
     >
       <View

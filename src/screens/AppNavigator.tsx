@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Platform } from "react-native";
 import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
+import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useAuthState } from "context/authContext";
 import { isOldIphone } from "helpers/phoneUtils";
@@ -30,6 +32,7 @@ import SpaceSettingsScreen from "screens/SpaceSettingsScreen";
 import NotificationScreen from "screens/NotificationScreen";
 import UserAvatar from "components/UserAvatar";
 import { useExploreState } from "context/exploreContext";
+import { useNotificationsState } from "context/notificationsContext";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +42,17 @@ const ICON_SIZE = 28;
 function TabNavigator() {
   const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
+  const { proposals, lastViewedProposal } = useNotificationsState();
+  const hasNotification = useMemo(() => {
+    if (isEmpty(lastViewedProposal)) {
+      return true;
+    }
+    for (let i = 0; i < proposals.length; i++) {
+      if (get(proposals[i], "id") === lastViewedProposal) {
+        return i > 0;
+      }
+    }
+  }, [proposals, lastViewedProposal]);
   const profile = profiles[connectedAddress ?? ""];
   return (
     <Tab.Navigator
@@ -86,8 +100,10 @@ function TabNavigator() {
           title: "",
           tabBarIcon: ({ color }) => (
             <IconFont
-              name="notifications-none"
-              color={color}
+              name={
+                hasNotification ? "notifications_active" : "notifications-none"
+              }
+              color={hasNotification ? colors.textColor : color}
               size={ICON_SIZE}
             />
           ),

@@ -36,7 +36,6 @@ interface ProposalScreenProps {
   route: {
     params: {
       proposal: Proposal;
-      fromFeed: boolean;
       spaceId?: string;
       proposalId?: string;
     };

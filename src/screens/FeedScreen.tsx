@@ -45,8 +45,12 @@ async function getFollows(
       });
     }
   } catch (e) {
-    setIsInitial(false);
+    authDispatch({
+      type: AUTH_ACTIONS.SET_FOLLOWED_SPACES,
+      payload: [],
+    });
   }
+  setIsInitial(false);
 }
 
 async function getExplore(exploreDispatch: ContextDispatch) {

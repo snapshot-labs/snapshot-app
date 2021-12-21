@@ -187,7 +187,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
       }
       ListHeaderComponent={
         <TimelineHeader
-          isInitial={isInitial}
+          isInitial={isInitial || feedScreenIsInitial}
           joinedSpacesFilter={joinedSpacesFilter}
           showBottomSheetModal={() => {
             const stateFilters = proposal.getStateFilters();
@@ -237,12 +237,11 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
         return (
           <ProposalPreview
             proposal={data.item}
-            fromFeed={true}
             space={spaces[data.item?.space?.id]}
           />
         );
       }}
-      keyExtractor={(item) => `${item.id}`}
+      keyExtractor={(item) => `timeline-${item.id}`}
       onEndReachedThreshold={0.6}
       onEndReached={() => {
         setLoadingMore(true);
