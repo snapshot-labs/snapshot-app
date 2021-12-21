@@ -40,10 +40,14 @@ const Tab = createBottomTabNavigator();
 const ICON_SIZE = 28;
 
 function TabNavigator() {
-  const { colors, connectedAddress } = useAuthState();
+  const { colors, connectedAddress, isWalletConnect, followedSpaces } =
+    useAuthState();
   const { profiles } = useExploreState();
   const { proposals, lastViewedProposal } = useNotificationsState();
   const hasNotification = useMemo(() => {
+    if (!isWalletConnect || isEmpty(followedSpaces)) {
+      return false;
+    }
     if (isEmpty(lastViewedProposal)) {
       return true;
     }

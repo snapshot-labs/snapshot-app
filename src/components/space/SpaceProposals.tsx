@@ -202,7 +202,7 @@ function SpaceProposals({
           <View
             style={{
               paddingRight: 16,
-              paddingTop: 7,
+              paddingTop: Platform.OS === "ios" ? 16 : 7,
               paddingBottom: 6,
               borderBottomWidth: 1,
               borderBottomColor: colors.borderColor,

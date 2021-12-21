@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "types/context";
 import { Proposal } from "types/proposal";
 import storage from "helpers/storage";
-import uniqBy from "lodash/uniqBy";
+import compact from "lodash/compact";
 import forEach from "lodash/forEach";
 
 type NotificationsState = {
@@ -36,26 +36,26 @@ function notificationsReducer(
   switch (action.type) {
     case NOTIFICATIONS_ACTIONS.SET_PROPOSALS:
       const proposalsMap: { [id: string]: number } = {};
-      const newProposals: Proposal[] = [];
+      const newProposals: any[] = [];
 
       forEach(action.payload, (proposal: Proposal) => {
         if (proposalsMap[proposal.id] === undefined) {
           newProposals.push(proposal);
+          proposalsMap[proposal.id] = newProposals.length - 1;
         }
-        proposalsMap[proposal.id] = newProposals.length - 1;
       });
 
       forEach(state.proposals, (proposal: Proposal) => {
         const oldIndex = proposalsMap[proposal.id];
         if (oldIndex !== undefined) {
-          newProposals.splice(oldIndex, 1);
+          newProposals[oldIndex] = undefined;
         }
         newProposals.push(proposal);
       });
 
       return {
         ...state,
-        proposals: newProposals,
+        proposals: compact(newProposals),
       };
     case NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION:
       if (action.payload?.saveToStorage) {

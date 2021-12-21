@@ -16,13 +16,10 @@ import { useAuthState } from "context/authContext";
 import BackButton from "components/BackButton";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import { Space } from "types/explore";
-import proposal from "constants/proposal";
-import ProposalFilters from "components/proposal/ProposalFilters";
 import AboutSpace from "components/space/AboutSpace";
 import SpaceHeader from "components/space/SpaceHeader";
 import SpaceProposals from "components/space/SpaceProposals";
 import TabBarItem from "components/tabBar/TabBarItem";
-import ProposalFiltersBottomSheet from "components/proposal/ProposalFiltersBottomSheet";
 
 const { width } = Dimensions.get("screen");
 

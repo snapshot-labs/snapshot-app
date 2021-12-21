@@ -36,7 +36,7 @@ function NotificationScreen() {
             lastViewedProposal: get(proposals[0], "id"),
           },
         });
-      }, 2500);
+      }, 3500);
     });
   }, [navigation]);
 
