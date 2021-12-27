@@ -1,7 +1,5 @@
 import { ContextDispatch } from "types/context";
 import Toast from "react-native-toast-message";
-import moment from "moment-timezone";
-import proposalConstants from "constants/proposal";
 import get from "lodash/get";
 import { AUTH_ACTIONS } from "context/authContext";
 import { sendEIP712 } from "helpers/EIP712";
@@ -108,45 +106,4 @@ export function isAdmin(connectedAddress: string, space: Space) {
     admin.toLowerCase()
   );
   return admins.includes(connectedAddress.toLowerCase());
-}
-
-export function getProposalUrl(proposal: Proposal, space: Space) {
-  return `https://snapshot.org/#/${space.id}/proposal/${proposal.id}`;
-}
-
-export function sortProposals(proposals: Proposal[] = []): Proposal[] {
-  const today = parseInt((moment().valueOf() / 1e3).toFixed());
-  const proposalTimes: { id: string; time: number }[] = [];
-  const proposalsMap: { [id: string]: Proposal } = {};
-  const updatedProposals: Proposal[] = [];
-
-  proposals?.forEach((proposal: Proposal) => {
-    if (proposal.state?.toLowerCase() !== proposalConstants.STATES.pending) {
-      proposalTimes.push({
-        id: proposal.id,
-        time: proposal.start,
-      });
-      proposalTimes.push({
-        id: proposal.id,
-        time: proposal.end,
-      });
-      proposalsMap[proposal.id] = proposal;
-    }
-  });
-
-  proposalTimes.sort((a, b) => {
-    return Math.abs(today - a.time) - Math.abs(today - b.time);
-  });
-
-  proposalTimes?.forEach((proposalTime) => {
-    if (proposalTime.time <= today) {
-      const proposal = proposalsMap[proposalTime.id];
-      if (proposal) {
-        updatedProposals.push(proposal);
-        delete proposalsMap[proposalTime.id];
-      }
-    }
-  });
-
-  return updatedProposals;
 }

@@ -1,19 +1,19 @@
 import i18n from "i18n-js";
 
-const STATES = {
+export const STATES = {
   active: "active",
   pending: "pending",
   closed: "closed",
 };
 
-const getStateFilters = () => [
+export const getStateFilters = () => [
   { key: "all", text: i18n.t("all") },
   { key: "active", text: i18n.t("active") },
   { key: "pending", text: i18n.t("pending") },
   { key: "closed", text: i18n.t("closed") },
 ];
 
-const getVotingTypes = () => [
+export const getVotingTypes = () => [
   {
     key: "single-choice",
     text: i18n.t("singleChoiceVoting"),
@@ -41,8 +41,14 @@ const getVotingTypes = () => [
   },
 ];
 
+export const NOTIFICATION_EVENTS = {
+  PROPOSAL_START: "proposal/start",
+  PROPOSAL_END: "proposal/end",
+};
+
 export default {
   STATES,
   getVotingTypes,
   getStateFilters,
+  NOTIFICATION_EVENTS,
 };

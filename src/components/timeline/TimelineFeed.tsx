@@ -25,11 +25,12 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import moment from "moment-timezone";
-import { sortProposals } from "helpers/apiUtils";
+import { sortProposals } from "helpers/proposalUtils";
 import {
   NOTIFICATIONS_ACTIONS,
   useNotificationsDispatch,
 } from "context/notificationsContext";
+import { ContextDispatch } from "types/context";
 
 const LOAD_BY = 100;
 
@@ -41,7 +42,8 @@ async function getProposals(
   setProposals: (proposals: Proposal[]) => void,
   isInitial: boolean,
   setLoadingMore: (loadingMore: boolean) => void,
-  state: string
+  state: string,
+  notificationsDispatch: ContextDispatch
 ) {
   const sevenDaysAgo = parseInt(
     (moment().subtract(7, "days").valueOf() / 1e3).toFixed()
@@ -59,12 +61,28 @@ async function getProposals(
   };
   try {
     const result = await apolloClient.query(query);
-    const proposalResult = sortProposals(get(result, "data.proposals", []));
+    const { updatedProposals, proposalTimes } = sortProposals(
+      get(result, "data.proposals", [])
+    );
 
     if (isInitial) {
-      setProposals(proposalResult);
+      setProposals(updatedProposals);
+      notificationsDispatch({
+        type: NOTIFICATIONS_ACTIONS.SET_PROPOSALS,
+        payload: {
+          proposals: updatedProposals,
+          proposalTimes,
+        },
+      });
     } else {
-      const newProposals = uniqBy([...proposals, ...proposalResult], "id");
+      const newProposals = uniqBy([...proposals, ...updatedProposals], "id");
+      notificationsDispatch({
+        type: NOTIFICATIONS_ACTIONS.SET_PROPOSALS,
+        payload: {
+          proposals: newProposals,
+          proposalTimes,
+        },
+      });
       setProposals(newProposals);
       setLoadCount(loadCount + LOAD_BY);
     }
@@ -102,7 +120,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
       setProposals,
       true,
       setLoadingMore,
-      newFilter
+      newFilter,
+      notificationsDispatch
     );
   }
 
@@ -120,7 +139,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
           setLoadingMore(loadingMore);
           setIsInitial(loadingMore);
         },
-        joinedSpacesFilter.key
+        joinedSpacesFilter.key,
+        notificationsDispatch
       );
     } else {
       setIsInitial(false);
@@ -141,7 +161,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
           setLoadingMore(loadingMore);
           setIsInitial(loadingMore);
         },
-        joinedSpacesFilter.key
+        joinedSpacesFilter.key,
+        notificationsDispatch
       );
     } else {
       setIsInitial(false);
@@ -155,10 +176,6 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
       return !profilesArray.includes(address);
     });
     setProfiles(filteredArray, exploreDispatch);
-    notificationsDispatch({
-      type: NOTIFICATIONS_ACTIONS.SET_PROPOSALS,
-      payload: proposals,
-    });
   }, [proposals]);
 
   return (
@@ -179,7 +196,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                 setProposals,
                 true,
                 setRefreshing,
-                joinedSpacesFilter.key
+                joinedSpacesFilter.key,
+                notificationsDispatch
               );
             }
           }}
@@ -253,7 +271,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
           setProposals,
           false,
           setLoadingMore,
-          joinedSpacesFilter.key
+          joinedSpacesFilter.key,
+          notificationsDispatch
         );
       }}
       ListEmptyComponent={

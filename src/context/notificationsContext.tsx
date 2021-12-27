@@ -1,14 +1,18 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { ContextAction, ContextDispatch } from "types/context";
 import { Proposal } from "types/proposal";
+import { NOTIFICATION_EVENTS } from "constants/proposal";
 import storage from "helpers/storage";
-import compact from "lodash/compact";
 import forEach from "lodash/forEach";
+import concat from "lodash/concat";
+import isEmpty from "lodash/isEmpty";
+import moment from "moment-timezone";
 
 type NotificationsState = {
-  proposals: Proposal[];
+  proposals: { [id: string]: Proposal };
   lastViewedNotification: null | number;
   lastViewedProposal: null | string;
+  proposalTimes: { id: string; time: number; event: string }[];
 };
 
 const NotificationsContext = createContext<NotificationsState | undefined>(
@@ -24,7 +28,8 @@ const NOTIFICATIONS_ACTIONS = {
 };
 
 const initialState = {
-  proposals: [],
+  proposals: {},
+  proposalTimes: [],
   lastViewedProposal: null,
   lastViewedNotification: null,
 };
@@ -35,27 +40,46 @@ function notificationsReducer(
 ) {
   switch (action.type) {
     case NOTIFICATIONS_ACTIONS.SET_PROPOSALS:
-      const proposalsMap: { [id: string]: number } = {};
-      const newProposals: any[] = [];
+      const { proposals, proposalTimes } = action.payload;
+      const today = parseInt((moment().valueOf() / 1e3).toFixed());
+      const proposalsMap: { [id: string]: Proposal } = {};
+      const startProposalTimes: { [id: string]: boolean } = {};
+      const endProposalTimes: { [id: string]: boolean } = {};
 
-      forEach(action.payload, (proposal: Proposal) => {
-        if (proposalsMap[proposal.id] === undefined) {
-          newProposals.push(proposal);
-          proposalsMap[proposal.id] = newProposals.length - 1;
-        }
+      forEach(proposals, (proposal: Proposal) => {
+        proposalsMap[proposal.id] = proposal;
       });
 
-      forEach(state.proposals, (proposal: Proposal) => {
-        const oldIndex = proposalsMap[proposal.id];
-        if (oldIndex !== undefined) {
-          newProposals[oldIndex] = undefined;
+      const newProposalTimes = concat(state.proposalTimes, proposalTimes);
+
+      newProposalTimes.sort((a, b) => {
+        return Math.abs(today - a.time) - Math.abs(today - b.time);
+      });
+
+      const updatedProposalTimes: {
+        id: string;
+        time: number;
+        event: string;
+      }[] = [];
+
+      forEach(newProposalTimes, (proposalTime) => {
+        if (proposalTime.event === NOTIFICATION_EVENTS.PROPOSAL_START) {
+          if (startProposalTimes[proposalTime.id] !== true) {
+            updatedProposalTimes.push(proposalTime);
+            startProposalTimes[proposalTime.id] = true;
+          }
+        } else if (proposalTime.event === NOTIFICATION_EVENTS.PROPOSAL_END) {
+          if (endProposalTimes[proposalTime.id] !== true) {
+            updatedProposalTimes.push(proposalTime);
+            endProposalTimes[proposalTime.id] = true;
+          }
         }
-        newProposals.push(proposal);
       });
 
       return {
         ...state,
-        proposals: compact(newProposals),
+        proposals: proposalsMap,
+        proposalTimes: updatedProposalTimes,
       };
     case NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION:
       if (action.payload?.saveToStorage) {

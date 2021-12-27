@@ -13,7 +13,10 @@ import { PROPOSAL_SCREEN } from "constants/navigation";
 import { useAuthState } from "context/authContext";
 import { Proposal } from "types/proposal";
 import { useExploreState } from "context/exploreContext";
-import { getTimeAgo } from "helpers/proposalUtils";
+import {
+  getTimeAgo,
+  getTimeAgoProposalNotification,
+} from "helpers/proposalUtils";
 import { getUsername } from "helpers/profile";
 import SpaceAvatar from "components/SpaceAvatar";
 import { useNotificationsState } from "context/notificationsContext";
@@ -54,11 +57,15 @@ const styles = StyleSheet.create({
 interface ProposalNotificationProps {
   proposal: Proposal;
   didView: boolean;
+  event: string;
+  time: number;
 }
 
 function ProposalNotification({
   proposal,
   didView,
+  event,
+  time,
 }: ProposalNotificationProps) {
   const navigation: any = useNavigation();
   const { colors, connectedAddress } = useAuthState();
@@ -74,8 +81,7 @@ function ProposalNotification({
     <TouchableOpacity
       onPress={() => {
         navigation.push(PROPOSAL_SCREEN, {
-          proposalId: proposal?.id,
-          spaceId: proposal?.space?.id,
+          proposal,
         });
       }}
     >
@@ -116,7 +122,7 @@ function ProposalNotification({
             { marginTop: 6, color: colors.secondaryTextColor },
           ]}
         >
-          {getTimeAgo(proposal)}
+          {getTimeAgoProposalNotification(time, event)}
         </Text>
       </View>
     </TouchableOpacity>

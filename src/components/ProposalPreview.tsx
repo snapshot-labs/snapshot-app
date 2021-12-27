@@ -32,7 +32,8 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import { deleteProposal, getProposalUrl, isAdmin } from "helpers/apiUtils";
+import { deleteProposal, isAdmin } from "helpers/apiUtils";
+import { getProposalUrl } from "helpers/proposalUtils";
 import { useToastShowConfig } from "constants/toast";
 
 const { width } = Dimensions.get("screen");

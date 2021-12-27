@@ -8,7 +8,8 @@ import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
 import { useToastShowConfig } from "constants/toast";
 import { Proposal } from "types/proposal";
 import { useNavigation } from "@react-navigation/native";
-import { deleteProposal, getProposalUrl, isAdmin } from "helpers/apiUtils";
+import { deleteProposal, isAdmin } from "helpers/apiUtils";
+import { getProposalUrl } from "helpers/proposalUtils";
 
 interface ProposalMenuProps {
   proposal: Proposal;

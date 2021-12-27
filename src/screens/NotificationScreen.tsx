@@ -16,7 +16,8 @@ import moment from "moment-timezone";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
-  const { proposals, lastViewedProposal } = useNotificationsState();
+  const { proposalTimes, proposals, lastViewedProposal } =
+    useNotificationsState();
   const navigation: NavigationProp<ReactNavigation.RootParamList> =
     useNavigation();
   const notificationsDispatch = useNotificationsDispatch();
@@ -27,13 +28,12 @@ function NotificationScreen() {
     return navigation.addListener("focus", () => {
       setTimeout(() => {
         const now = parseInt((moment().valueOf() / 1e3).toFixed());
-
         notificationsDispatch({
           type: NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION,
           payload: {
             saveToStorage: true,
             time: now,
-            lastViewedProposal: get(proposals[0], "id"),
+            lastViewedProposal: get(proposalTimes[0], "id"),
           },
         });
       }, 3500);
@@ -65,19 +65,22 @@ function NotificationScreen() {
       </View>
       <FlatList
         key={`${connectedAddress}${lastViewedProposal}`}
-        data={followedSpaces.length > 0 ? proposals : []}
+        data={followedSpaces.length > 0 ? proposalTimes : []}
         renderItem={(data) => {
           if (data?.item?.id === lastViewedProposal) {
             lastViewedProposalIndex.current = data.index;
           }
+          const proposalDetails = proposals[data?.item?.id];
           return (
             <ProposalNotification
-              proposal={data.item}
+              proposal={proposalDetails}
+              time={data.item?.time}
+              event={data.item?.event}
               didView={data.index >= lastViewedProposalIndex.current}
             />
           );
         }}
-        keyExtractor={(item) => `notification-${item.id}`}
+        keyExtractor={(item) => `notification-${item.id}-${item.time}`}
         onEndReachedThreshold={0.6}
         onEndReached={() => {}}
         ListEmptyComponent={
