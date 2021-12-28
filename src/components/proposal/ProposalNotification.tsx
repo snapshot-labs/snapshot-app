@@ -72,7 +72,7 @@ function ProposalNotification({
   const { profiles } = useExploreState();
   const authorProfile = profiles[proposal.author];
   const authorName = getUsername(
-    proposal.author,
+    proposal?.author,
     authorProfile,
     connectedAddress ?? ""
   );
@@ -97,13 +97,13 @@ function ProposalNotification({
         ]}
       >
         <View style={styles.authorContainer}>
-          <SpaceAvatar symbolIndex="space" size={24} space={proposal.space} />
+          <SpaceAvatar symbolIndex="space" size={24} space={proposal?.space} />
           <Text
             style={styles.headerAuthor}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {proposal.space.name} by {authorName}
+            {proposal?.space?.name} by {authorName}
           </Text>
         </View>
         <View style={styles.titleContainer}>
@@ -113,7 +113,7 @@ function ProposalNotification({
               { marginTop: isIOS ? 4 : 0, color: colors.textColor },
             ]}
           >
-            {proposal.title}
+            {proposal?.title}
           </Text>
         </View>
         <Text
