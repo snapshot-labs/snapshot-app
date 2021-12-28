@@ -126,9 +126,9 @@ export function getUsername(
   }
 
   if (userProfile) {
-    if (userProfile.name) {
+    if (userProfile?.name) {
       return userProfile.name;
-    } else if (userProfile.ens) {
+    } else if (userProfile?.ens) {
       return userProfile.ens;
     }
     return short ? shorten(address) : address;
