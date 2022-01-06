@@ -48,6 +48,7 @@ const tagsStyles = (colors: any) => ({
   ul: {
     marginLeft: 30,
     marginTop: 0,
+    lineHeight: 30,
     color: colors.darkGray,
   },
   ol: {
@@ -56,6 +57,8 @@ const tagsStyles = (colors: any) => ({
     fontSize: 20,
     fontFamily: "Calibre-Semibold",
     color: colors.darkGray,
+    alignSelf: "flex-start",
+    lineHeight: 30,
   },
   li: {
     color: colors.darkGray,

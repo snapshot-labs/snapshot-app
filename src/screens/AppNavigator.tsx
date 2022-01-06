@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Platform } from "react-native";
+import { Platform, View, Text, StyleSheet } from "react-native";
 import {
   createStackNavigator,
   TransitionPresets,
@@ -31,8 +31,23 @@ import AdvancedSettingsScreen from "screens/AdvancedSettingsScreen";
 import SpaceSettingsScreen from "screens/SpaceSettingsScreen";
 import NotificationScreen from "screens/NotificationScreen";
 import UserAvatar from "components/UserAvatar";
+import colors from "constants/colors";
 import { useExploreState } from "context/exploreContext";
 import { useNotificationsState } from "context/notificationsContext";
+
+const styles = StyleSheet.create({
+  notificationsCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  notificationText: {
+    fontFamily: "Calibre-Medium",
+    color: colors.bgLightGray,
+  },
+});
 
 const Stack = createStackNavigator();
 
@@ -43,21 +58,33 @@ function TabNavigator() {
   const { colors, connectedAddress, isWalletConnect, followedSpaces } =
     useAuthState();
   const { profiles } = useExploreState();
-  const { proposals, lastViewedProposal } = useNotificationsState();
-  const hasNotification = useMemo(() => {
+  const { proposalTimes, lastViewedProposal, lastViewedNotification } =
+    useNotificationsState();
+  const unreadNotifications = useMemo(() => {
     if (!isWalletConnect || isEmpty(followedSpaces)) {
-      return false;
+      return 0;
     }
     if (isEmpty(lastViewedProposal)) {
-      return true;
+      return proposalTimes.length;
     }
-    for (let i = 0; i < proposals.length; i++) {
-      if (get(proposals[i], "id") === lastViewedProposal) {
-        return i > 0;
+
+    for (let i = 0; i < proposalTimes?.length; i++) {
+      if (
+        get(proposalTimes[i], "id") === lastViewedProposal &&
+        get(proposalTimes[i], "time") === parseInt(lastViewedNotification)
+      ) {
+        if (i === 0) {
+          return 0;
+        } else {
+          return i + 1;
+        }
       }
     }
-  }, [proposals, lastViewedProposal]);
+
+    return 0;
+  }, [proposalTimes, lastViewedProposal, lastViewedNotification]);
   const profile = profiles[connectedAddress ?? ""];
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -103,13 +130,31 @@ function TabNavigator() {
         options={{
           title: "",
           tabBarIcon: ({ color }) => (
-            <IconFont
-              name={
-                hasNotification ? "notifications_active" : "notifications-none"
-              }
-              color={hasNotification ? colors.textColor : color}
-              size={ICON_SIZE}
-            />
+            <View>
+              <IconFont
+                name={
+                  unreadNotifications > 0
+                    ? "notifications_active"
+                    : "notifications-none"
+                }
+                color={unreadNotifications > 0 ? colors.textColor : color}
+                size={ICON_SIZE}
+              />
+              {unreadNotifications > 0 && (
+                <View style={{ position: "absolute", left: 10, top: -2 }}>
+                  <View
+                    style={[
+                      styles.notificationsCircle,
+                      { backgroundColor: colors.bgBlue },
+                    ]}
+                  >
+                    <Text style={[styles.notificationText]}>
+                      {unreadNotifications}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
           ),
         }}
       />

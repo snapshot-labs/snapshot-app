@@ -1,5 +1,11 @@
 import React from "react";
-import { View, ScrollView } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { useAuthState } from "context/authContext";
 import SpaceAvatarButton from "components/SpaceAvatarButton";
 import { SPACE_SCREEN } from "constants/navigation";
@@ -7,6 +13,16 @@ import { useNavigation } from "@react-navigation/core";
 import { Fade, Placeholder, PlaceholderMedia } from "rn-placeholder";
 import { useExploreState } from "context/exploreContext";
 import isEmpty from "lodash/isEmpty";
+
+const styles = StyleSheet.create({
+  spaceName: {
+    fontSize: 14,
+    fontFamily: "Calibre-Medium",
+    textAlign: "center",
+    marginTop: 2,
+    width: 66,
+  },
+});
 
 interface JoinedSpacesScrollViewProps {
   useLoader?: boolean;
@@ -53,20 +69,40 @@ function JoinedSpacesScrollView({
                 return;
               }
               return (
-                <SpaceAvatarButton
+                <View
                   key={i}
-                  onPress={() => {
-                    navigation.navigate(SPACE_SCREEN, {
-                      space: { id: space?.space?.id, ...spaceDetails },
-                    });
-                  }}
-                  size={64}
-                  space={spaceDetails}
-                  containerStyle={{
+                  style={{
                     marginLeft: 8,
                     marginRight: i === followedSpaces.length - 1 ? 16 : 0,
                   }}
-                />
+                >
+                  <SpaceAvatarButton
+                    onPress={() => {
+                      navigation.navigate(SPACE_SCREEN, {
+                        space: { id: space?.space?.id, ...spaceDetails },
+                      });
+                    }}
+                    size={64}
+                    space={spaceDetails}
+                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate(SPACE_SCREEN, {
+                        space: { id: space?.space?.id, ...spaceDetails },
+                      });
+                    }}
+                  >
+                    <View>
+                      <Text
+                        ellipsizeMode="tail"
+                        style={[styles.spaceName, { color: colors.textColor }]}
+                        numberOfLines={1}
+                      >
+                        {spaceDetails.name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               );
             })}
       </ScrollView>

@@ -33,19 +33,6 @@ function TimelineHeader({
         backgroundColor: colors.bgDefault,
       }}
     >
-      <View
-        style={[
-          common.headerContainer,
-          {
-            borderBottomColor: colors.borderColor,
-            backgroundColor: colors.bgDefault,
-          },
-        ]}
-      >
-        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
-          {i18n.t("timeline")}
-        </Text>
-      </View>
       {isInitial ? (
         <>
           <JoinedSpacesScrollView useLoader={true} />

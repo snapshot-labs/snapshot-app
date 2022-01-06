@@ -13,13 +13,9 @@ import { PROPOSAL_SCREEN } from "constants/navigation";
 import { useAuthState } from "context/authContext";
 import { Proposal } from "types/proposal";
 import { useExploreState } from "context/exploreContext";
-import {
-  getTimeAgo,
-  getTimeAgoProposalNotification,
-} from "helpers/proposalUtils";
+import { getTimeAgoProposalNotification } from "helpers/proposalUtils";
 import { getUsername } from "helpers/profile";
 import SpaceAvatar from "components/SpaceAvatar";
-import { useNotificationsState } from "context/notificationsContext";
 
 const isIOS = Platform.OS === "ios";
 

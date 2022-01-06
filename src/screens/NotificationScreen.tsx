@@ -12,7 +12,6 @@ import {
 import ProposalNotification from "components/proposal/ProposalNotification";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import get from "lodash/get";
-import moment from "moment-timezone";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
@@ -27,16 +26,15 @@ function NotificationScreen() {
   useEffect(() => {
     return navigation.addListener("focus", () => {
       setTimeout(() => {
-        const now = parseInt((moment().valueOf() / 1e3).toFixed());
         notificationsDispatch({
           type: NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION,
           payload: {
             saveToStorage: true,
-            time: now,
+            time: get(proposalTimes[0], "time"),
             lastViewedProposal: get(proposalTimes[0], "id"),
           },
         });
-      }, 3500);
+      }, 1000);
     });
   }, [navigation]);
 

@@ -179,139 +179,161 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   }, [proposals]);
 
   return (
-    <FlatList
-      key={connectedAddress}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => {
-            if (followedSpaces.length > 0) {
-              setLoadCount(0);
-              setRefreshing(true);
-              getProposals(
-                followedSpaces,
-                0,
-                proposals,
-                setLoadCount,
-                setProposals,
-                true,
-                setRefreshing,
-                joinedSpacesFilter.key,
-                notificationsDispatch
-              );
-            }
-          }}
-        />
-      }
-      ListHeaderComponent={
-        <TimelineHeader
-          isInitial={isInitial || feedScreenIsInitial}
-          joinedSpacesFilter={joinedSpacesFilter}
-          showBottomSheetModal={() => {
-            const stateFilters = proposal.getStateFilters();
-            const allFilter = stateFilters[0];
-            const activeFilter = stateFilters[1];
-            const pendingFilter = stateFilters[2];
-            const closedFilter = stateFilters[3];
-            const options = [
-              allFilter.text,
-              activeFilter.text,
-              pendingFilter.text,
-              closedFilter.text,
-            ];
-            const setFilter = setJoinedSpacesFilter;
-            bottomSheetModalDispatch({
-              type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-              payload: {
-                options,
-                snapPoints: [10, 250],
-                show: true,
-                key: "timeline-proposal-filters",
-                initialIndex: 1,
-                destructiveButtonIndex: -1,
-                onPressOption: (index: number) => {
-                  if (index === 0) {
-                    setFilter(allFilter);
-                    onChangeFilter(allFilter.key);
-                  } else if (index === 1) {
-                    setFilter(activeFilter);
-                    onChangeFilter(activeFilter.key);
-                  } else if (index === 2) {
-                    setFilter(pendingFilter);
-                    onChangeFilter(pendingFilter.key);
-                  } else if (index === 3) {
-                    setFilter(closedFilter);
-                    onChangeFilter(closedFilter.key);
-                  }
-                  bottomSheetModalRef?.current?.close();
+    <View
+      style={[
+        common.screen,
+        {
+          backgroundColor: colors.bgDefault,
+        },
+      ]}
+    >
+      <View
+        style={[
+          common.headerContainer,
+          {
+            borderBottomColor: colors.borderColor,
+            backgroundColor: colors.bgDefault,
+          },
+        ]}
+      >
+        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
+          {i18n.t("timeline")}
+        </Text>
+      </View>
+      <FlatList
+        key={connectedAddress}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              if (followedSpaces.length > 0) {
+                setLoadCount(0);
+                setRefreshing(true);
+                getProposals(
+                  followedSpaces,
+                  0,
+                  proposals,
+                  setLoadCount,
+                  setProposals,
+                  true,
+                  setRefreshing,
+                  joinedSpacesFilter.key,
+                  notificationsDispatch
+                );
+              }
+            }}
+          />
+        }
+        ListHeaderComponent={
+          <TimelineHeader
+            isInitial={isInitial || feedScreenIsInitial}
+            joinedSpacesFilter={joinedSpacesFilter}
+            showBottomSheetModal={() => {
+              const stateFilters = proposal.getStateFilters();
+              const allFilter = stateFilters[0];
+              const activeFilter = stateFilters[1];
+              const pendingFilter = stateFilters[2];
+              const closedFilter = stateFilters[3];
+              const options = [
+                allFilter.text,
+                activeFilter.text,
+                pendingFilter.text,
+                closedFilter.text,
+              ];
+              const setFilter = setJoinedSpacesFilter;
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  options,
+                  snapPoints: [10, 250],
+                  show: true,
+                  key: "timeline-proposal-filters",
+                  initialIndex: 1,
+                  destructiveButtonIndex: -1,
+                  onPressOption: (index: number) => {
+                    if (index === 0) {
+                      setFilter(allFilter);
+                      onChangeFilter(allFilter.key);
+                    } else if (index === 1) {
+                      setFilter(activeFilter);
+                      onChangeFilter(activeFilter.key);
+                    } else if (index === 2) {
+                      setFilter(pendingFilter);
+                      onChangeFilter(pendingFilter.key);
+                    } else if (index === 3) {
+                      setFilter(closedFilter);
+                      onChangeFilter(closedFilter.key);
+                    }
+                    bottomSheetModalRef?.current?.close();
+                  },
                 },
-              },
-            });
-          }}
-        />
-      }
-      data={followedSpaces.length > 0 ? proposals : []}
-      renderItem={(data) => {
-        return (
-          <ProposalPreview
-            proposal={data.item}
-            space={spaces[data.item?.space?.id]}
-          />
-        );
-      }}
-      keyExtractor={(item) => `timeline-${item.id}`}
-      onEndReachedThreshold={0.6}
-      onEndReached={() => {
-        setLoadingMore(true);
-        getProposals(
-          followedSpaces,
-          loadCount === 0 ? LOAD_BY : loadCount,
-          proposals,
-          setLoadCount,
-          setProposals,
-          false,
-          setLoadingMore,
-          joinedSpacesFilter.key,
-          notificationsDispatch
-        );
-      }}
-      ListEmptyComponent={
-        loadingMore || isInitial || feedScreenIsInitial ? (
-          <View />
-        ) : (
-          <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-            <Text style={[common.subTitle, { color: colors.textColor }]}>
-              {followedSpaces.length === 0
-                ? i18n.t("noSpacesJoinedYet")
-                : i18n.t("cantFindAnyResults")}
-            </Text>
-          </View>
-        )
-      }
-      ListFooterComponent={
-        loadingMore ? (
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 24,
-              height: 150,
-            }}
-          >
-            <ActivityIndicator color={colors.textColor} size="large" />
-          </View>
-        ) : (
-          <View
-            style={{
-              width: "100%",
-              height: 150,
-              backgroundColor: colors.bgDefault,
+              });
             }}
           />
-        )
-      }
-    />
+        }
+        data={followedSpaces.length > 0 ? proposals : []}
+        renderItem={(data) => {
+          return (
+            <ProposalPreview
+              proposal={data.item}
+              space={spaces[data.item?.space?.id]}
+            />
+          );
+        }}
+        keyExtractor={(item) => `timeline-${item.id}`}
+        onEndReachedThreshold={0.6}
+        onEndReached={() => {
+          setLoadingMore(true);
+          getProposals(
+            followedSpaces,
+            loadCount === 0 ? LOAD_BY : loadCount,
+            proposals,
+            setLoadCount,
+            setProposals,
+            false,
+            setLoadingMore,
+            joinedSpacesFilter.key,
+            notificationsDispatch
+          );
+        }}
+        ListEmptyComponent={
+          loadingMore || isInitial || feedScreenIsInitial ? (
+            <View />
+          ) : (
+            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+              <Text style={[common.subTitle, { color: colors.textColor }]}>
+                {followedSpaces.length === 0
+                  ? i18n.t("noSpacesJoinedYet")
+                  : i18n.t("cantFindAnyResults")}
+              </Text>
+            </View>
+          )
+        }
+        ListFooterComponent={
+          loadingMore ? (
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 24,
+                height: 150,
+              }}
+            >
+              <ActivityIndicator color={colors.textColor} size="large" />
+            </View>
+          ) : (
+            <View
+              style={{
+                width: "100%",
+                height: 150,
+                backgroundColor: colors.bgDefault,
+              }}
+            />
+          )
+        }
+      />
+    </View>
   );
 }
 

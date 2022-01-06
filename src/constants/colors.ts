@@ -30,7 +30,7 @@ const dark = {
   bgDefault: "#121212",
   indicatorColor: defaultColors.white,
   settingsIconBgColor: "rgba(255,255,255,.2)",
-  categoriesBgColor: defaultColors.darkGray,
+  categoriesBgColor: "rgba(255,255,255,.05)",
 };
 
 const colorScheme: any = { ...defaultColors, ...light };

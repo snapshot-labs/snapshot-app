@@ -5,12 +5,11 @@ import { NOTIFICATION_EVENTS } from "constants/proposal";
 import storage from "helpers/storage";
 import forEach from "lodash/forEach";
 import concat from "lodash/concat";
-import isEmpty from "lodash/isEmpty";
 import moment from "moment-timezone";
 
 type NotificationsState = {
   proposals: { [id: string]: Proposal };
-  lastViewedNotification: null | number;
+  lastViewedNotification: string;
   lastViewedProposal: null | string;
   proposalTimes: { id: string; time: number; event: string }[];
 };
@@ -92,6 +91,8 @@ function notificationsReducer(
           `${action.payload?.lastViewedProposal}`
         );
       }
+
+      storage.remove(storage.KEYS.lastViewedProposal);
       return {
         ...state,
         lastViewedNotification: action.payload?.time,
