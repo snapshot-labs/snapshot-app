@@ -91,8 +91,6 @@ function notificationsReducer(
           `${action.payload?.lastViewedProposal}`
         );
       }
-
-      storage.remove(storage.KEYS.lastViewedProposal);
       return {
         ...state,
         lastViewedNotification: action.payload?.time,
