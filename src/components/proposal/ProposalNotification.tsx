@@ -66,7 +66,7 @@ function ProposalNotification({
   const navigation: any = useNavigation();
   const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
-  const authorProfile = profiles[proposal.author];
+  const authorProfile = profiles[proposal?.author];
   const authorName = getUsername(
     proposal?.author,
     authorProfile,
