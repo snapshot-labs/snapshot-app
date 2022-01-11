@@ -13,6 +13,18 @@ const KEYS = {
   theme: "theme",
   lastViewedNotification: "lastViewedNotification",
   lastViewedProposal: "lastViewedProposal",
+  biometryChoiceDisabled: "biometryChoiceDisabled",
+  biometryChoice: "biometryChoice",
+  passcodeChoice: "passcodeChoice",
+  passcodeDisabled: "passcodeDisabled",
+  existingUser: "existingUser",
+  nextMakerReminder: "nextMakerReminder",
+  seedPhraseHints: "seedPhraseHints",
+  lastIncomingTxBlockInfo: "lastIncomingTxBlockInfo"
+};
+
+const VALUES = {
+  true: "TRUE",
 };
 
 export async function load(key: string) {
@@ -50,5 +62,6 @@ export default {
   save,
   clearAll,
   KEYS,
+  VALUES,
   remove,
 };

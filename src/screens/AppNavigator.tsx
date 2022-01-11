@@ -34,6 +34,8 @@ import UserAvatar from "components/UserAvatar";
 import colors from "constants/colors";
 import { useExploreState } from "context/exploreContext";
 import { useNotificationsState } from "context/notificationsContext";
+import WalletSetupScreen from "screens/WalletSetupScreen";
+import ChoosePasswordScreen from "screens/ChoosePasswordScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -296,6 +298,16 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.SPACE_SETTINGS_SCREEN}
         component={SpaceSettingsScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.WALLET_SETUP_SCREEN}
+        component={WalletSetupScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CHOOSE_PASSWORD_SCREEN}
+        component={ChoosePasswordScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

@@ -108,3 +108,10 @@ export function calcFromSeconds(value, unit) {
   if (unit === "h") return Math.floor(value / (60 * 60));
   if (unit === "d") return Math.floor(value / (60 * 60 * 24));
 }
+
+export const tlc = (str) => str?.toLowerCase?.();
+
+export const toLowerCaseEquals = (a, b) => {
+  if (!a && !b) return false;
+  return tlc(a) === tlc(b);
+};
