@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.tectiv3.aes.RCTAesPackage;
 import com.github.amarcruz.rntextsize.RNTextSizePackage;
 import com.zyu.ReactNativeWheelPickerPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;

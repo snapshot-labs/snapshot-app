@@ -170,6 +170,7 @@ export default {
   noNewNotifications: "No new notifications",
   createWallet: "Creating wallet...",
   createWalletSubtitle: "This shouldn't take long",
+  password: "Password",
   creatingPassword: "Creating password...",
   choosePasswordTitle: "Create password",
   choosePasswordSecure: "Secure wallet",
@@ -218,4 +219,66 @@ export default {
   loading: "Loading...",
   walletSetup: "Wallet setup",
   importAnExistingWallet: "Import an existing wallet or create a new one",
+  account_backup_step_1: {
+    continue: "Continue",
+    remind_me_later: "Remind me later",
+    remind_me_later_subtext: "(Not recommended)",
+    title: "Secure your wallet",
+    info_text_1_1:
+      "Don’t risk losing your funds. Protect your wallet by saving your",
+    info_text_1_2: "Secret Recovery Phrase",
+    info_text_1_3: "in a place you trust.",
+    info_text_1_4:
+      "It’s the only way to recover your wallet if you get locked out of the app or get a new device.",
+    cta_text: "Start",
+    cta_subText: "Highly recommended",
+    skip_button_cancel: "Secure now",
+    skip_button_confirm: "Skip",
+    skip_title: "Skip account security?",
+    skip_check:
+      "I understand that if I lose my Secret Recovery Phrase I will not be able to access my wallet.",
+    what_is_seedphrase_title: "What is a ‘Secret Recovery Phrase’",
+    what_is_seedphrase_text_1:
+      "A Secret Recovery Phrase is a set of twelve words that contains all the information about your wallet, including your funds. It’s like a secret code used to access your entire wallet.",
+    what_is_seedphrase_text_2:
+      "You must keep your Secret Recovery Phrase secret and safe. If someone gets your Secret Recovery Phrase, they’ll gain control over your accounts.",
+    what_is_seedphrase_text_3:
+      "Save it in a place where only you can access it. If you lose it, not even MetaMask can help you recover it.",
+  },
+  manual_backup_step_1: {
+    action: "Write down your Secret Recovery Phrase",
+    info: "This is your Secret Recovery Phrase. Write it down on paper and keep it in a safe place. You'll be asked to re-enter this phrase (in order) on the next step.",
+    continue: "Continue",
+    reveal: "Tap to reveal your Secret Recovery Phrase",
+    watching: "Make sure no one is watching your screen.",
+    view: "View",
+    confirm_password: "Confirm your password",
+    before_continiuing:
+      "Before continuing we need you to confirm your password",
+    confirm: "Confirm",
+  },
+  reveal_credential: {
+    warning_incorrect_password: "Incorrect password",
+    unknown_error: "Couldn't unlock your account. Please try again.",
+  },
+  manual_backup_step_2: {
+    action: "Confirm Secret Recovery Phrase",
+    info: "Select each word in the order it was presented to you.",
+    complete: "Complete Backup",
+    success: "Success",
+    error_title: "Oops!",
+    error_message:
+      "The order of the words is incorrect. Please make sure you wrote it down correctly and go to the previous screen if it is necessary",
+  },
+  manual_backup_step_3: {
+    congratulations: "Congratulations",
+    success:
+      "You’ve successfully protected your wallet. Remember to keep your Secret Recovery Phrase safe, it's your responsibility!",
+    recover: "Snapshot cannot recover your wallet should you lose it.",
+    learn: "Learn more",
+    done: "Done",
+    no_seedphrase: "Do not use this to write your Secret Recovery Phrase.",
+    save: "Save",
+    cancel: "Cancel",
+  },
 };

@@ -17,11 +17,14 @@ import {
   NOTIFICATIONS_ACTIONS,
   useNotificationsDispatch,
 } from "context/notificationsContext";
+import { useEngineDispatch } from "context/engineContext";
+import initializeEngine from "helpers/engineService";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
   notificationsDispatch: ContextDispatch,
-  setLoading: (loading: boolean) => void
+  setLoading: (loading: boolean) => void,
+  engineDispatch: ContextDispatch
 ) {
   try {
     const connectedAddress: string | null = await storage.load(
@@ -111,6 +114,9 @@ async function loadFromStorage(
       });
     }
   } catch (e) {}
+
+  initializeEngine(engineDispatch);
+
   setLoading(false);
 }
 
@@ -131,9 +137,15 @@ function AppWrapper() {
   const { theme, colors } = useAuthState();
   const authDispatch = useAuthDispatch();
   const notificationsDispatch = useNotificationsDispatch();
+  const engineDispatch = useEngineDispatch();
 
   useEffect(() => {
-    loadFromStorage(authDispatch, notificationsDispatch, setLoading);
+    loadFromStorage(
+      authDispatch,
+      notificationsDispatch,
+      setLoading,
+      engineDispatch
+    );
   }, []);
 
   useEffect(() => {

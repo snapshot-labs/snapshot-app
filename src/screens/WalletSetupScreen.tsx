@@ -14,8 +14,8 @@ import colors from "constants/colors";
 import Button from "components/Button";
 import IconFont from "components/IconFont";
 import common from "styles/common";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { CHOOSE_PASSWORD_SCREEN } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
+import { CHOOSE_PASSWORD_SCREEN, ONBOARDING } from "constants/navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "components/BackButton";
 
@@ -31,7 +31,9 @@ const styles = StyleSheet.create({
   iconWrapper: {
     width: Device.isIos() ? 90 : 45,
     height: Device.isIos() ? 90 : 45,
-    marginVertical: 20,
+    marginVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
     alignSelf: "center",
@@ -156,7 +158,9 @@ function WalletSetupScreen() {
                 <View style={styles.buttonWrapper}>
                   <Button
                     onPress={() => {
-                      navigation.navigate(CHOOSE_PASSWORD_SCREEN);
+                      navigation.navigate(CHOOSE_PASSWORD_SCREEN, {
+                        previousScreen: ONBOARDING,
+                      });
                     }}
                     title={i18n.t("createANewWallet")}
                   />

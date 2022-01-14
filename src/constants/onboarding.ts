@@ -5,3 +5,5 @@ export const createChoosePasswordSteps = () => [
   i18n.t("choosePasswordSecure"),
   i18n.t("choosePasswordConfirm"),
 ];
+
+export const WRONG_PASSWORD_ERROR = "Error: Decrypt failed";

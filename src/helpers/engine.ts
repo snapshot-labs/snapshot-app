@@ -84,127 +84,127 @@ class Engine {
           openSeaEnabled: true,
         }
       );
-      const networkController = new NetworkController({
-        infuraProjectId: process.env.MM_INFURA_PROJECT_ID || NON_EMPTY,
-        providerConfig: {
-          static: {
-            eth_sendTransaction: async (
-              payload: { params: any[]; origin: any },
-              next: any,
-              end: (arg0: undefined, arg1: undefined) => void
-            ) => {
-              const { TransactionController } = this.context;
-              try {
-                const hash = await (
-                  await TransactionController.addTransaction(
-                    payload.params[0],
-                    payload.origin,
-                    WalletDevice.MM_MOBILE
-                  )
-                ).result;
-                end(undefined, hash);
-              } catch (error) {
-                end(error);
-              }
-            },
-          },
-          getAccounts: (
-            end: (arg0: null, arg1: any[]) => void,
-            payload: { hostname: string | number }
-          ) => {
-            const { approvedHosts, privacyMode } = store.getState();
-            const isEnabled = !privacyMode || approvedHosts[payload.hostname];
-            const { KeyringController } = this.context;
-            const isUnlocked = KeyringController.isUnlocked();
-            const selectedAddress =
-              this.context.PreferencesController.state.selectedAddress;
-            end(
-              null,
-              isUnlocked && isEnabled && selectedAddress
-                ? [selectedAddress]
-                : []
-            );
-          },
-        },
-      });
-      const assetsContractController = new AssetsContractController();
-      const collectiblesController = new CollectiblesController(
-        {
-          onPreferencesStateChange: (listener) =>
-            preferencesController.subscribe(listener),
-          onNetworkStateChange: (listener) =>
-            networkController.subscribe(listener),
-          getAssetName: assetsContractController.getAssetName.bind(
-            assetsContractController
-          ),
-          getAssetSymbol: assetsContractController.getAssetSymbol.bind(
-            assetsContractController
-          ),
-          getCollectibleTokenURI:
-            assetsContractController.getCollectibleTokenURI.bind(
-              assetsContractController
-            ),
-          getOwnerOf: assetsContractController.getOwnerOf.bind(
-            assetsContractController
-          ),
-          balanceOfERC1155Collectible:
-            assetsContractController.balanceOfERC1155Collectible.bind(
-              assetsContractController
-            ),
-          uriERC1155Collectible:
-            assetsContractController.uriERC1155Collectible.bind(
-              assetsContractController
-            ),
-        },
-        {
-          useIPFSSubdomains: false,
-        }
-      );
-      const tokensController = new TokensController({
-        onPreferencesStateChange: (listener) =>
-          preferencesController.subscribe(listener),
-        onNetworkStateChange: (listener) =>
-          networkController.subscribe(listener),
-        config: { provider: networkController.provider },
-      });
+      // const networkController = new NetworkController({
+      //   infuraProjectId: process.env.MM_INFURA_PROJECT_ID || NON_EMPTY,
+      //   providerConfig: {
+      //     static: {
+      //       eth_sendTransaction: async (
+      //         payload: { params: any[]; origin: any },
+      //         next: any,
+      //         end: (arg0: undefined, arg1: undefined) => void
+      //       ) => {
+      //         const { TransactionController } = this.context;
+      //         try {
+      //           const hash = await (
+      //             await TransactionController.addTransaction(
+      //               payload.params[0],
+      //               payload.origin,
+      //               WalletDevice.MM_MOBILE
+      //             )
+      //           ).result;
+      //           end(undefined, hash);
+      //         } catch (error) {
+      //           end(error);
+      //         }
+      //       },
+      //     },
+      //     getAccounts: (
+      //       end: (arg0: null, arg1: any[]) => void,
+      //       payload: { hostname: string | number }
+      //     ) => {
+      //       const { approvedHosts, privacyMode } = store.getState();
+      //       const isEnabled = !privacyMode || approvedHosts[payload.hostname];
+      //       const { KeyringController } = this.context;
+      //       const isUnlocked = KeyringController.isUnlocked();
+      //       const selectedAddress =
+      //         this.context.PreferencesController.state.selectedAddress;
+      //       end(
+      //         null,
+      //         isUnlocked && isEnabled && selectedAddress
+      //           ? [selectedAddress]
+      //           : []
+      //       );
+      //     },
+      //   },
+      // });
+      // const assetsContractController = new AssetsContractController();
+      //
+      // const collectiblesController = new CollectiblesController(
+      //   {
+      //     onPreferencesStateChange: (listener) =>
+      //       preferencesController.subscribe(listener),
+      //     onNetworkStateChange: (listener) =>
+      //       networkController.subscribe(listener),
+      //     getAssetName: assetsContractController.getAssetName.bind(
+      //       assetsContractController
+      //     ),
+      //     getAssetSymbol: assetsContractController.getAssetSymbol.bind(
+      //       assetsContractController
+      //     ),
+      //     getCollectibleTokenURI:
+      //       assetsContractController.getCollectibleTokenURI.bind(
+      //         assetsContractController
+      //       ),
+      //     getOwnerOf: assetsContractController.getOwnerOf.bind(
+      //       assetsContractController
+      //     ),
+      //     balanceOfERC1155Collectible:
+      //       assetsContractController.balanceOfERC1155Collectible.bind(
+      //         assetsContractController
+      //       ),
+      //     uriERC1155Collectible:
+      //       assetsContractController.uriERC1155Collectible.bind(
+      //         assetsContractController
+      //       ),
+      //   },
+      //   {
+      //     useIPFSSubdomains: false,
+      //   }
+      // );
+      // const tokensController = new TokensController({
+      //   onPreferencesStateChange: (listener) =>
+      //     preferencesController.subscribe(listener),
+      //   onNetworkStateChange: (listener) =>
+      //     networkController.subscribe(listener),
+      //   config: { provider: networkController.provider },
+      // });
       this.controllerMessenger = new ControllerMessenger();
-      const tokenListController = new TokenListController({
-        chainId: networkController.provider.chainId,
-        onNetworkStateChange: (listener) =>
-          networkController.subscribe(listener),
-        useStaticTokenList: preferencesController.state.useStaticTokenList,
-        onPreferencesStateChange: (listener) =>
-          preferencesController.subscribe(listener),
-        messenger: this.controllerMessenger,
-      });
-      const currencyRateController = new CurrencyRateController({
-        messenger: this.controllerMessenger,
-        state: initialState.CurrencyRateController,
-      });
-      currencyRateController.start();
-
-      const gasFeeController = new GasFeeController({
-        messenger: this.controllerMessenger,
-        getProvider: () => networkController.provider,
-        onNetworkStateChange: (listener) =>
-          networkController.subscribe(listener),
-        getCurrentNetworkEIP1559Compatibility: async () =>
-          await networkController.getEIP1559Compatibility(),
-        getChainId: () => networkController.state.provider.chainId,
-        getCurrentNetworkLegacyGasAPICompatibility: () => {
-          const chainId = networkController.state.provider.chainId;
-          return (
-            isMainnetByChainId(chainId) ||
-            chainId === swapsUtils.BSC_CHAIN_ID ||
-            chainId === swapsUtils.POLYGON_CHAIN_ID
-          );
-        },
-        legacyAPIEndpoint:
-          "https://gas-api.metaswap.codefi.network/networks/<chain_id>/gasPrices",
-        EIP1559APIEndpoint:
-          "https://gas-api.metaswap.codefi.network/networks/<chain_id>/suggestedGasFees",
-      });
-
+      // const tokenListController = new TokenListController({
+      //   chainId: networkController.provider.chainId,
+      //   onNetworkStateChange: (listener) =>
+      //     networkController.subscribe(listener),
+      //   useStaticTokenList: preferencesController.state.useStaticTokenList,
+      //   onPreferencesStateChange: (listener) =>
+      //     preferencesController.subscribe(listener),
+      //   messenger: this.controllerMessenger,
+      // });
+      // const currencyRateController = new CurrencyRateController({
+      //   messenger: this.controllerMessenger,
+      //   state: initialState.CurrencyRateController,
+      // });
+      // currencyRateController.start();
+      //
+      // const gasFeeController = new GasFeeController({
+      //   messenger: this.controllerMessenger,
+      //   getProvider: () => networkController.provider,
+      //   onNetworkStateChange: (listener) =>
+      //     networkController.subscribe(listener),
+      //   getCurrentNetworkEIP1559Compatibility: async () =>
+      //     await networkController?.getEIP1559Compatibility(),
+      //   getChainId: () => networkController.state.provider.chainId,
+      //   getCurrentNetworkLegacyGasAPICompatibility: () => {
+      //     const chainId = networkController.state.provider.chainId;
+      //     return (
+      //       isMainnetByChainId(chainId) ||
+      //       chainId === swapsUtils.BSC_CHAIN_ID ||
+      //       chainId === swapsUtils.POLYGON_CHAIN_ID
+      //     );
+      //   },
+      //   legacyAPIEndpoint:
+      //     "https://gas-api.metaswap.codefi.network/networks/<chain_id>/gasPrices",
+      //   EIP1559APIEndpoint:
+      //     "https://gas-api.metaswap.codefi.network/networks/<chain_id>/suggestedGasFees",
+      // });
       const controllers = [
         new KeyringController(
           {
@@ -222,96 +222,96 @@ class Engine {
             ),
           },
           { encryptor },
-          initialState.KeyringController
+          initialState?.KeyringController
         ),
-        new AccountTrackerController({
-          onPreferencesStateChange: (listener) =>
-            preferencesController.subscribe(listener),
-          getIdentities: () => preferencesController.state.identities,
-        }),
-        new AddressBookController(),
-        assetsContractController,
-        collectiblesController,
-        tokensController,
-        tokenListController,
-        new TokenDetectionController({
-          onTokensStateChange: (listener) =>
-            tokensController.subscribe(listener),
-          onPreferencesStateChange: (listener) =>
-            preferencesController.subscribe(listener),
-          onNetworkStateChange: (listener) =>
-            networkController.subscribe(listener),
-          addTokens: tokensController.addTokens.bind(tokensController),
-          getTokensState: () => tokensController.state,
-          getTokenListState: () => tokenListController.state,
-          getBalancesInSingleCall:
-            assetsContractController.getBalancesInSingleCall.bind(
-              assetsContractController
-            ),
-        }),
-        new CollectibleDetectionController({
-          onCollectiblesStateChange: (listener) =>
-            collectiblesController.subscribe(listener),
-          onPreferencesStateChange: (listener) =>
-            preferencesController.subscribe(listener),
-          onNetworkStateChange: (listener) =>
-            networkController.subscribe(listener),
-          getOpenSeaApiKey: () => collectiblesController.openSeaApiKey,
-          addCollectible: collectiblesController.addCollectible.bind(
-            collectiblesController
-          ),
-          getCollectiblesState: () => collectiblesController.state,
-        }),
-        currencyRateController,
-        new PersonalMessageManager(),
-        new MessageManager(),
-        networkController,
-        new PhishingController(),
+        // new AccountTrackerController({
+        //   onPreferencesStateChange: (listener) =>
+        //     preferencesController.subscribe(listener),
+        //   getIdentities: () => preferencesController.state.identities,
+        // }),
+        // new AddressBookController(),
+        // assetsContractController,
+        // collectiblesController,
+        // tokensController,
+        // tokenListController,
+        // new TokenDetectionController({
+        //   onTokensStateChange: (listener) =>
+        //     tokensController.subscribe(listener),
+        //   onPreferencesStateChange: (listener) =>
+        //     preferencesController.subscribe(listener),
+        //   onNetworkStateChange: (listener) =>
+        //     networkController.subscribe(listener),
+        //   addTokens: tokensController.addTokens.bind(tokensController),
+        //   getTokensState: () => tokensController.state,
+        //   getTokenListState: () => tokenListController.state,
+        //   getBalancesInSingleCall:
+        //     assetsContractController.getBalancesInSingleCall.bind(
+        //       assetsContractController
+        //     ),
+        // }),
+        // new CollectibleDetectionController({
+        //   onCollectiblesStateChange: (listener) =>
+        //     collectiblesController.subscribe(listener),
+        //   onPreferencesStateChange: (listener) =>
+        //     preferencesController.subscribe(listener),
+        //   onNetworkStateChange: (listener) =>
+        //     networkController.subscribe(listener),
+        //   getOpenSeaApiKey: () => collectiblesController.openSeaApiKey,
+        //   addCollectible: collectiblesController.addCollectible.bind(
+        //     collectiblesController
+        //   ),
+        //   getCollectiblesState: () => collectiblesController.state,
+        // }),
+        // currencyRateController,
+        // new PersonalMessageManager(),
+        // new MessageManager(),
+        // networkController,
+        // new PhishingController(),
         preferencesController,
-        new TokenBalancesController(
-          {
-            onTokensStateChange: (listener) =>
-              tokensController.subscribe(listener),
-            getSelectedAddress: () =>
-              preferencesController.state.selectedAddress,
-            getBalanceOf: assetsContractController.getBalanceOf.bind(
-              assetsContractController
-            ),
-          },
-          { interval: 10000 }
-        ),
-        new TokenRatesController({
-          onTokensStateChange: (listener) =>
-            tokensController.subscribe(listener),
-          onCurrencyRateStateChange: (listener) =>
-            this.controllerMessenger.subscribe(
-              `${currencyRateController.name}:stateChange`,
-              listener
-            ),
-          onNetworkStateChange: (listener) =>
-            networkController.subscribe(listener),
-        }),
-        new TransactionController({
-          getNetworkState: () => networkController.state,
-          onNetworkStateChange: (listener) =>
-            networkController.subscribe(listener),
-          getProvider: () => networkController.provider,
-        }),
-        new TypedMessageManager(),
-        new SwapsController(
-          {
-            fetchGasFeeEstimates: () => gasFeeController.fetchGasFeeEstimates(),
-          },
-          {
-            clientId: AppConstants.SWAPS.CLIENT_ID,
-            fetchAggregatorMetadataThreshold:
-              AppConstants.SWAPS.CACHE_AGGREGATOR_METADATA_THRESHOLD,
-            fetchTokensThreshold: AppConstants.SWAPS.CACHE_TOKENS_THRESHOLD,
-            fetchTopAssetsThreshold:
-              AppConstants.SWAPS.CACHE_TOP_ASSETS_THRESHOLD,
-          }
-        ),
-        gasFeeController,
+        // new TokenBalancesController(
+        //   {
+        //     onTokensStateChange: (listener) =>
+        //       tokensController.subscribe(listener),
+        //     getSelectedAddress: () =>
+        //       preferencesController.state.selectedAddress,
+        //     getBalanceOf: assetsContractController.getBalanceOf.bind(
+        //       assetsContractController
+        //     ),
+        //   },
+        //   { interval: 10000 }
+        // ),
+        // new TokenRatesController({
+        //   onTokensStateChange: (listener) =>
+        //     tokensController.subscribe(listener),
+        //   onCurrencyRateStateChange: (listener) =>
+        //     this.controllerMessenger.subscribe(
+        //       `${currencyRateController.name}:stateChange`,
+        //       listener
+        //     ),
+        //   onNetworkStateChange: (listener) =>
+        //     networkController.subscribe(listener),
+        // }),
+        // new TransactionController({
+        //   getNetworkState: () => networkController.state,
+        //   onNetworkStateChange: (listener) =>
+        //     networkController.subscribe(listener),
+        //   getProvider: () => networkController.provider,
+        // }),
+        // new TypedMessageManager(),
+        // new SwapsController(
+        //   {
+        //     fetchGasFeeEstimates: () => gasFeeController.fetchGasFeeEstimates(),
+        //   },
+        //   {
+        //     clientId: AppConstants.SWAPS.CLIENT_ID,
+        //     fetchAggregatorMetadataThreshold:
+        //       AppConstants.SWAPS.CACHE_AGGREGATOR_METADATA_THRESHOLD,
+        //     fetchTokensThreshold: AppConstants.SWAPS.CACHE_TOKENS_THRESHOLD,
+        //     fetchTopAssetsThreshold:
+        //       AppConstants.SWAPS.CACHE_TOP_ASSETS_THRESHOLD,
+        //   }
+        // ),
+        // gasFeeController,
       ];
       // set initial state
       // TODO: Pass initial state into each controller constructor instead
@@ -338,33 +338,34 @@ class Engine {
       }, {});
 
       const {
-        CollectiblesController: collectibles,
+        // CollectiblesController: collectibles,
         KeyringController: keyring,
-        NetworkController: network,
+        // NetworkController: network,
         TransactionController: transaction,
       } = this.context;
 
-      collectibles.setApiKey(process.env.MM_OPENSEA_KEY);
-      network.refreshNetwork();
-      transaction.configure({ sign: keyring.signTransaction.bind(keyring) });
-      network.subscribe(
-        (state: { network: string; provider: { chainId: any } }) => {
-          if (
-            state.network !== "loading" &&
-            state.provider.chainId !== currentChainId
-          ) {
-            // We should add a state or event emitter saying the provider changed
-            setTimeout(() => {
-              this.configureControllersOnNetworkChange();
-              currentChainId = state.provider.chainId;
-            }, 500);
-          }
-        }
-      );
-      this.configureControllersOnNetworkChange();
-      this.startPolling();
+      // collectibles.setApiKey(process.env.MM_OPENSEA_KEY);
+      // network.refreshNetwork();
+      // transaction.configure({ sign: keyring.signTransaction.bind(keyring) });
+      // network.subscribe(
+      //   (state: { network: string; provider: { chainId: any } }) => {
+      //     if (
+      //       state.network !== "loading" &&
+      //       state.provider.chainId !== currentChainId
+      //     ) {
+      //       // We should add a state or event emitter saying the provider changed
+      //       setTimeout(() => {
+      //         this.configureControllersOnNetworkChange();
+      //         currentChainId = state.provider.chainId;
+      //       }, 500);
+      //     }
+      //   }
+      // );
+      // this.configureControllersOnNetworkChange();
+      // this.startPolling();
       Engine.instance = this;
     }
+
     return Engine.instance;
   }
 
@@ -575,46 +576,46 @@ class Engine {
     // Whenever we are gonna start a new wallet
     // either imported or created, we need to
     // get rid of the old data from state
-    const {
-      TransactionController,
-      TokensController,
-      CollectiblesController,
-      TokenBalancesController,
-      TokenRatesController,
-    } = this.context;
-
-    //Clear assets info
-    TokensController.update({
-      allTokens: {},
-      ignoredTokens: [],
-      tokens: [],
-      suggestedAssets: [],
-    });
-    CollectiblesController.update({
-      allCollectibleContracts: {},
-      allCollectibles: {},
-      collectibleContracts: [],
-      collectibles: [],
-      ignoredCollectibles: [],
-    });
-
-    TokensController.update({
-      allTokens: {},
-      allIgnoredTokens: {},
-      ignoredTokens: [],
-      tokens: [],
-      suggestedAssets: [],
-    });
-
-    TokenBalancesController.update({ contractBalances: {} });
-    TokenRatesController.update({ contractExchangeRates: {} });
-
-    TransactionController.update({
-      internalTransactions: [],
-      swapsTransactions: {},
-      methodData: {},
-      transactions: [],
-    });
+    // const {
+    //   TransactionController,
+    //   TokensController,
+    //   CollectiblesController,
+    //   TokenBalancesController,
+    //   TokenRatesController,
+    // } = this.context;
+    //
+    // //Clear assets info
+    // TokensController.update({
+    //   allTokens: {},
+    //   ignoredTokens: [],
+    //   tokens: [],
+    //   suggestedAssets: [],
+    // });
+    // CollectiblesController.update({
+    //   allCollectibleContracts: {},
+    //   allCollectibles: {},
+    //   collectibleContracts: [],
+    //   collectibles: [],
+    //   ignoredCollectibles: [],
+    // });
+    //
+    // TokensController.update({
+    //   allTokens: {},
+    //   allIgnoredTokens: {},
+    //   ignoredTokens: [],
+    //   tokens: [],
+    //   suggestedAssets: [],
+    // });
+    //
+    // TokenBalancesController.update({ contractBalances: {} });
+    // TokenRatesController.update({ contractExchangeRates: {} });
+    //
+    // TransactionController.update({
+    //   internalTransactions: [],
+    //   swapsTransactions: {},
+    //   methodData: {},
+    //   transactions: [],
+    // });
   };
 
   sync = async ({

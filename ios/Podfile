@@ -25,4 +25,6 @@ target 'snapshotapp' do
 
   pod 'RNTextSize', :path => '../node_modules/react-native-text-size/ios'
 
+  pod 'react-native-aes', :path => '../node_modules/react-native-aes-crypto'
+
 end

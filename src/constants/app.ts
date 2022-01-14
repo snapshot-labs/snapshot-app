@@ -27,11 +27,11 @@ export default {
     },
     SUPPORTED_NETWORKS: [MAINNET, RINKEBY],
   },
-  MM_UNIVERSAL_LINK_HOST: "metamask.app.link",
+  MM_UNIVERSAL_LINK_HOST: "snapshot.app",
   SAI_ADDRESS: "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
   UNIV3_NFT_CONTRACT_ADDRESS: "0xc36442b4a4522e871399cd717abdd847ab11fe88",
   HOMEPAGE_URL: "https://home.metamask.io/",
-  SHORT_HOMEPAGE_URL: "MetaMask.io",
+  SHORT_HOMEPAGE_URL: "snapshot.org",
   ZERO_ADDRESS: "0x0000000000000000000000000000000000000000",
   USER_AGENT: Device.isAndroid()
     ? "Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/OSM1.180201.023) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36"

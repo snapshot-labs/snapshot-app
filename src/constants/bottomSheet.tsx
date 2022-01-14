@@ -72,7 +72,7 @@ export function createBottomSheetParamsForWalletConnectError(
                 walletService: walletProfile?.walletService,
               },
             });
-
+r
             authDispatch({
               type: AUTH_ACTIONS.SET_ALIAS_WALLET,
               payload: aliases[connectedAddress]

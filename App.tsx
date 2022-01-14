@@ -14,6 +14,7 @@ import { toastLayoutConfig } from "constants/toast";
 import "./src/i18n";
 import { BottomSheetModalProvider } from "context/bottomSheetModalContext";
 import { NotificationsProvider } from "context/notificationsContext";
+import { EngineProvider } from "context/engineContext";
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),
@@ -39,13 +40,15 @@ export default function App() {
   if (fontsLoaded && fontLoaded) {
     return (
       <SafeAreaProvider>
-        <AuthProvider>
-          <NotificationsProvider>
-            <BottomSheetModalProvider>
-              <AppWrapper />
-            </BottomSheetModalProvider>
-          </NotificationsProvider>
-        </AuthProvider>
+        <EngineProvider>
+          <AuthProvider>
+            <NotificationsProvider>
+              <BottomSheetModalProvider>
+                <AppWrapper />
+              </BottomSheetModalProvider>
+            </NotificationsProvider>
+          </AuthProvider>
+        </EngineProvider>
         <Toast config={toastLayoutConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaProvider>
     );

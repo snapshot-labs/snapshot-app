@@ -7,7 +7,7 @@ import storage from "helpers/storage";
 const privates = new WeakMap();
 const encryptor = new Encryptor();
 const defaultOptions = {
-  service: "com.metamask",
+  service: "org.snapshot",
   authenticationPromptTitle: i18n.t("authentication.auth_prompt_title"),
   authenticationPrompt: { title: i18n.t("authentication.auth_prompt_desc") },
   authenticationPromptDesc: i18n.t("authentication.auth_prompt_desc"),
@@ -102,7 +102,7 @@ export default {
     }
 
     const encryptedPassword = await instance.encryptPassword(password);
-    await Keychain.setGenericPassword("metamask-user", encryptedPassword, {
+    await Keychain.setGenericPassword("snapshot-user", encryptedPassword, {
       ...defaultOptions,
       ...authOptions,
     });

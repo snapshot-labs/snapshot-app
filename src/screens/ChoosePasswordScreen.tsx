@@ -2,8 +2,6 @@ import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Image,
-  Linking,
   StyleSheet,
   Switch,
   Text,
@@ -27,13 +25,21 @@ import {
   passwordRequirementsMet,
 } from "helpers/password";
 import storage from "helpers/storage";
-import { ONBOARDING } from "constants/navigation";
-import Engine from "helpers/engine";
+import {
+  ONBOARDING,
+  SEED_PHRASE_BACKUP_STEP1_SCREEN,
+} from "constants/navigation";
 import SecureKeychain from "helpers/secureKeychain";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
 import common from "styles/common";
 import BackButton from "components/BackButton";
+import {
+  ENGINE_ACTIONS,
+  useEngineDispatch,
+  useEngineState,
+} from "context/engineContext";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -43,7 +49,7 @@ const styles = StyleSheet.create({
   },
   scrollableWrapper: {
     flex: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 16,
   },
   keyboardScrollableWrapper: {
     flexGrow: 1,
@@ -59,6 +65,8 @@ const styles = StyleSheet.create({
     height: Device.isIos() ? 90 : 80,
     marginTop: 30,
     marginBottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     alignSelf: "center",
@@ -79,10 +87,10 @@ const styles = StyleSheet.create({
     ...fontStyles.bold,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 23,
     color: colors.textColor,
-    textAlign: "center",
+    marginTop: 16,
     ...fontStyles.normal,
   },
   text: {
@@ -106,7 +114,7 @@ const styles = StyleSheet.create({
   },
   label: {
     ...fontStyles.normal,
-    fontSize: 14,
+    fontSize: 16,
     color: colors.black,
     paddingHorizontal: 10,
     lineHeight: 18,
@@ -132,6 +140,8 @@ const styles = StyleSheet.create({
   errorMsg: {
     color: colors.red,
     ...fontStyles.normal,
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
   biometrics: {
     position: "relative",
@@ -140,7 +150,8 @@ const styles = StyleSheet.create({
   },
   biometryLabel: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 18,
+    marginTop: 8,
     color: colors.black,
     ...fontStyles.normal,
   },
@@ -148,6 +159,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 0,
+  },
+  biometricsContainer: {
+    justifyContent: "center",
   },
   hintLabel: {
     fontSize: 18,
@@ -196,6 +210,8 @@ interface ChoosePasswordScreenProps {
 
 function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const { colors } = useAuthState();
+  const { keyRingController, preferencesController } = useEngineState();
+  const engineDispatch = useEngineDispatch();
   const CHOOSE_PASSWORD_STEPS = createChoosePasswordSteps();
   const [isSelected, setIsSelected] = useState(false);
   const [password, setPassword] = useState("");
@@ -206,13 +222,12 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [inputWidth, setInputWidth] = useState({ width: "99%" });
   const [passwordStrength, setPasswordStrength] = useState(0);
   const passwordStrengthWord = getPasswordStrengthWord(passwordStrength);
   const confirmPasswordInputRef = useRef<TextInput>(null);
   const passwordsMatch = password !== "" && password === confirmPassword;
   const canSubmit = passwordsMatch && isSelected;
-  const keyringControllerPasswordSetRef: any = useRef<boolean>(null);
+  const navigation: any = useNavigation();
   const previousScreen = route?.params?.previousScreen;
 
   async function updateBiometryChoice(biometryChoice: boolean = false) {
@@ -237,32 +252,24 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   }
 
   async function getSeedPhrase() {
-    const { KeyringController } = Engine.context;
-    const keychainPassword = keyringControllerPasswordSetRef.current
-      ? password
-      : "";
-    const mnemonic = await KeyringController.exportSeedPhrase(keychainPassword);
+    const mnemonic = await keyRingController.exportSeedPhrase(password);
     return JSON.stringify(mnemonic).replace(/"/g, "");
   }
 
   async function recreateVault(password: string) {
-    const { KeyringController, PreferencesController } = Engine.context;
     const seedPhrase = await getSeedPhrase();
 
     let importedAccounts: any[] = [];
     try {
-      const keychainPassword = keyringControllerPasswordSetRef.current
-        ? password
-        : "";
       // Get imported accounts
-      const simpleKeyrings = KeyringController.state.keyrings.filter(
+      const simpleKeyrings = keyRingController.state.keyrings.filter(
         (keyring: any) => keyring.type === "Simple Key Pair"
       );
       for (let i = 0; i < simpleKeyrings.length; i++) {
         const simpleKeyring = simpleKeyrings[i];
         const simpleKeyringAccounts = await Promise.all(
           simpleKeyring.accounts.map((account: string) =>
-            KeyringController.exportAccount(keychainPassword, account)
+            keyRingController.exportAccount(password, account)
           )
         );
         importedAccounts = [...importedAccounts, ...simpleKeyringAccounts];
@@ -275,25 +282,24 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
     }
 
     // Recreate keyring with password given to this method
-    await KeyringController.createNewVaultAndRestore(password, seedPhrase);
+    await keyRingController.createNewVaultAndRestore(password, seedPhrase);
     // Keyring is set with empty password or not
-    keyringControllerPasswordSetRef.current = password !== "";
 
     // Get props to restore vault
-    const hdKeyring = KeyringController.state.keyrings[0];
+    const hdKeyring = keyRingController.state.keyrings[0];
     const existingAccountCount = hdKeyring.accounts.length;
     const selectedAddress = "CHANGE THIS LATER";
-    let preferencesControllerState = PreferencesController.state;
+    let preferencesControllerState = preferencesController.state;
 
     // Create previous accounts again
     for (let i = 0; i < existingAccountCount - 1; i++) {
-      await KeyringController.addNewAccount();
+      await keyRingController.addNewAccount();
     }
 
     try {
       // Import imported accounts again
       for (let i = 0; i < importedAccounts.length; i++) {
-        await KeyringController.importAccountWithStrategy("privateKey", [
+        await keyRingController.importAccountWithStrategy("privateKey", [
           importedAccounts[i],
         ]);
       }
@@ -302,29 +308,30 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
     }
 
     // Reset preferencesControllerState
-    preferencesControllerState = PreferencesController.state;
+    preferencesControllerState = preferencesController.state;
 
     // Set preferencesControllerState again
-    await PreferencesController.update(preferencesControllerState);
+    await preferencesController.update(preferencesControllerState);
     // Reselect previous selected account if still available
     if (hdKeyring.accounts.includes(selectedAddress)) {
-      PreferencesController.setSelectedAddress(selectedAddress);
+      preferencesController.setSelectedAddress(selectedAddress);
     } else {
-      PreferencesController.setSelectedAddress(hdKeyring.accounts[0]);
+      preferencesController.setSelectedAddress(hdKeyring.accounts[0]);
     }
   }
 
   async function createNewVaultAndKeychain(password: string) {
-    const { KeyringController } = Engine.context;
-    await Engine.resetState();
-    await KeyringController.createNewVaultAndKeychain(password);
-    keyringControllerPasswordSetRef.current = true;
+    try {
+      const test = await keyRingController.createNewVaultAndKeychain(password);
+      console.log({ test });
+    } catch (e) {
+      console.log("KEY RING ERROR", e);
+    }
   }
 
   async function onPressCreate() {
     const passwordsMatch = password !== "" && password === confirmPassword;
     const canSubmit = passwordsMatch && isSelected;
-
     if (!canSubmit) return;
     if (loading) return;
     if (!passwordRequirementsMet(password)) {
@@ -337,11 +344,13 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
 
     try {
       setLoading(true);
-      const previous_screen = route.params?.previousScreen;
+      const previousScreen = route.params?.previousScreen;
 
-      if (previous_screen === ONBOARDING) {
+      if (previousScreen === ONBOARDING) {
         await createNewVaultAndKeychain(password);
-        // this.props.seedphraseNotBackedUp();
+        engineDispatch({
+          type: ENGINE_ACTIONS.SEEDPHRASE_NOT_BACKED_UP,
+        });
         await storage.remove(storage.KEYS.nextMakerReminder);
         await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
         await storage.remove(storage.KEYS.seedPhraseHints);
@@ -369,21 +378,28 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
       } else {
         await SecureKeychain.resetGenericPassword();
       }
+
       await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
       await storage.remove(storage.KEYS.seedPhraseHints);
-      // this.props.passwordSet();
+      engineDispatch({
+        type: ENGINE_ACTIONS.PASSWORD_SET,
+      });
       // this.props.logIn();
       // this.props.setLockTime(AppConstants.DEFAULT_LOCK_TIMEOUT);
       setLoading(false);
-      // this.props.navigation.replace("AccountBackupStep1");
+      navigation.replace(SEED_PHRASE_BACKUP_STEP1_SCREEN);
+      console.log("FINISH CREATE");
     } catch (error) {
+      console.log("FAILED TO CREATE", error);
       await recreateVault("");
       // Set state in app as it was with no password
       await SecureKeychain.resetGenericPassword();
       await storage.remove(storage.KEYS.nextMakerReminder);
       await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
       await storage.remove(storage.KEYS.seedPhraseHints);
-      // this.props.passwordUnset();
+      engineDispatch({
+        type: ENGINE_ACTIONS.PASSWORD_UNSET,
+      });
       // this.props.setLockTime(-1);
       // Should we force people to enable passcode / biometrics?
       if (error.toString() === PASSCODE_NOT_SET_ERROR) {
@@ -409,31 +425,28 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
           { borderBottomColor: colors.borderColor },
         ]}
       >
-        <BackButton />
+        <BackButton title={i18n.t("choosePasswordTitle")} />
       </View>
       {loading ? (
         <View style={styles.loadingWrapper}>
           <View style={styles.iconWrapper}>
-            <IconFont
-              name="snapshot"
-              size={20}
-              color={colors.yellow}
-              style={styles.image}
-            />
+            <IconFont name="snapshot" size={40} color={colors.yellow} />
           </View>
           <ActivityIndicator size="large" color={colors.textColor} />
-          <Text style={styles.title}>
+          <Text style={[styles.title, { color: colors.textColor }]}>
             {i18n.t(
               previousScreen === ONBOARDING
                 ? "createWallet"
                 : "creatingPassword"
             )}
           </Text>
-          <Text style={styles.subtitle}>{i18n.t("createWalletSubtitle")}</Text>
+          <Text style={[styles.subtitle, { color: colors.textColor }]}>
+            {i18n.t("createWalletSubtitle")}
+          </Text>
         </View>
       ) : (
         <View style={[styles.wrapper, { backgroundColor: colors.bgDefault }]}>
-          <View style={{ paddingHorizontal: 16 }}>
+          <View style={{ paddingHorizontal: 16, marginLeft: -16 }}>
             <OnboardingProgress steps={CHOOSE_PASSWORD_STEPS} />
           </View>
           <KeyboardAwareScrollView
@@ -441,11 +454,8 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
             contentContainerStyle={styles.keyboardScrollableWrapper}
             resetScrollToCoords={{ x: 0, y: 0 }}
           >
-            <View testID={"create-password-screen"}>
+            <View>
               <View style={styles.content}>
-                <Text style={[styles.title, { color: colors.textColor }]}>
-                  {i18n.t("choosePasswordTitle")}
-                </Text>
                 <View style={styles.text}>
                   <Text style={[styles.subtitle, { color: colors.textColor }]}>
                     {i18n.t("choosePasswordSubtitle")}
@@ -469,11 +479,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                   {i18n.t(secureTextEntry ? "show" : "hide")}
                 </Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    inputWidth,
-                    { color: colors.textColor },
-                  ]}
+                  style={[styles.input, { color: colors.textColor }]}
                   value={password}
                   onChangeText={(text) => {
                     const passInfo = zxcvbn(text);
@@ -520,11 +526,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                 </Text>
                 <TextInput
                   ref={confirmPasswordInputRef}
-                  style={[
-                    styles.input,
-                    inputWidth,
-                    { color: colors.textColor },
-                  ]}
+                  style={[styles.input, { color: colors.textColor }]}
                   value={confirmPassword}
                   onChangeText={(text: string) => {
                     setConfirmPassword(text);
@@ -538,7 +540,14 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                 />
                 <View style={styles.showMatchingPasswords}>
                   {passwordsMatch ? (
-                    <IconFont name="check" size={20} color={colors.bgGreen} />
+                    <IconFont
+                      name="check"
+                      size={24}
+                      color={colors.bgGreen}
+                      style={{
+                        marginTop: Device.isIos() ? -10 : 0,
+                      }}
+                    />
                   ) : null}
                 </View>
                 <Text
@@ -555,41 +564,39 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
               <View>
                 <View style={styles.biometrics}>
                   {biometryType !== null ? (
-                    <>
+                    <View style={styles.biometricsContainer}>
                       <Text style={styles.biometryLabel}>
                         {i18n.t(
                           `biometrics.enable_${biometryType?.toLowerCase()}`
                         )}
                       </Text>
-                      <View>
-                        <Switch
-                          onValueChange={async (biometryChoice: boolean) => {
-                            if (!biometryChoice) {
-                              await storage.save(
-                                storage.KEYS.biometryChoiceDisabled,
-                                "TRUE"
-                              );
-                            } else {
-                              await storage.remove(
-                                storage.KEYS.biometryChoiceDisabled
-                              );
-                            }
-
-                            setBiometryChoice(biometryChoice);
-                          }} // eslint-disable-line react/jsx-no-bind
-                          value={biometryChoice}
-                          style={styles.biometrySwitch}
-                          trackColor={
-                            Device.isIos()
-                              ? { true: colors.bgGreen, false: colors.darkGray }
-                              : null
+                      <Switch
+                        onValueChange={async (biometryChoice: boolean) => {
+                          if (!biometryChoice) {
+                            await storage.save(
+                              storage.KEYS.biometryChoiceDisabled,
+                              "TRUE"
+                            );
+                          } else {
+                            await storage.remove(
+                              storage.KEYS.biometryChoiceDisabled
+                            );
                           }
-                          ios_backgroundColor={colors.darkGray}
-                        />
-                      </View>
-                    </>
+
+                          setBiometryChoice(biometryChoice);
+                        }} // eslint-disable-line react/jsx-no-bind
+                        value={biometryChoice}
+                        style={styles.biometrySwitch}
+                        trackColor={
+                          Device.isIos()
+                            ? { true: colors.bgGreen, false: colors.darkGray }
+                            : null
+                        }
+                        ios_backgroundColor={colors.darkGray}
+                      />
+                    </View>
                   ) : (
-                    <>
+                    <View style={styles.biometricsContainer}>
                       <Text
                         style={[
                           styles.biometryLabel,
@@ -611,7 +618,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                         }
                         ios_backgroundColor={colors.darkGray}
                       />
-                    </>
+                    </View>
                   )}
                 </View>
               </View>
@@ -622,8 +629,11 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                     setIsSelected(!isSelected);
                   }}
                   style={styles.checkbox}
-                  tintColors={{ true: colors.bgBlue }}
+                  tintColors={{ true: colors.bgGreen }}
                   boxType="square"
+                  tintColor={colors.borderColor}
+                  onCheckColor={colors.bgGreen}
+                  onTintColor={colors.bgGreen}
                 />
                 <Text
                   style={[styles.label, { color: colors.textColor }]}

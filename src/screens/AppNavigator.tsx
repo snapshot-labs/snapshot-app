@@ -36,6 +36,10 @@ import { useExploreState } from "context/exploreContext";
 import { useNotificationsState } from "context/notificationsContext";
 import WalletSetupScreen from "screens/WalletSetupScreen";
 import ChoosePasswordScreen from "screens/ChoosePasswordScreen";
+import SeedPhraseBackupStep1Screen from "screens/seedPhraseBackup/SeedPhraseBackupStep1Screen";
+import SeedPhraseBackupStep2Screen from "screens/seedPhraseBackup/SeedPhraseBackupStep2Screen";
+import SeedPhraseBackupCompleteScreen
+    from "screens/seedPhraseBackup/SeedPhraseBackupCompleteScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -78,7 +82,7 @@ function TabNavigator() {
         if (i === 0) {
           return 0;
         } else {
-          return i + 1;
+          return i;
         }
       }
     }
@@ -308,6 +312,21 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.CHOOSE_PASSWORD_SCREEN}
         component={ChoosePasswordScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.SEED_PHRASE_BACKUP_STEP1_SCREEN}
+        component={SeedPhraseBackupStep1Screen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.SEED_PHRASE_BACKUP_STEP2_SCREEN}
+        component={SeedPhraseBackupStep2Screen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.SEED_PHRASE_BACKUP_COMPLETE_SCREEN}
+        component={SeedPhraseBackupCompleteScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>
