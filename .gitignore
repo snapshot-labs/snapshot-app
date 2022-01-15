@@ -72,6 +72,6 @@ buck-out/
 .expo/
 web-build/
 
-./src/constants/env.ts
+src/constants/env.ts
 
 # @end expo-cli
