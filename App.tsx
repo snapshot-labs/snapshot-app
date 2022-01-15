@@ -15,6 +15,8 @@ import "./src/i18n";
 import { BottomSheetModalProvider } from "context/bottomSheetModalContext";
 import { NotificationsProvider } from "context/notificationsContext";
 import { EngineProvider } from "context/engineContext";
+import SecureKeychain from "helpers/secureKeychain";
+import env from "constants/env";
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),
@@ -35,6 +37,7 @@ export default function App() {
 
   useEffect(() => {
     _loadFontsAsync(setFontsLoaded);
+    SecureKeychain.init(env.SECURE_KEYCHAIN_SALT);
   }, []);
 
   if (fontsLoaded && fontLoaded) {

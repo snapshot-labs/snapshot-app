@@ -5,9 +5,10 @@ type EngineState = {
   keyRingController: any;
   preferencesController: any;
   accountTrackerController: any;
+  networkController: any;
   seedPhraseBackedUp: boolean;
   backUpSeedPhraseVisible: boolean;
-  passwordSetup: boolean;
+  passwordSet: boolean;
 };
 
 const EngineContext = createContext<EngineState | undefined>(undefined);
@@ -26,9 +27,11 @@ const ENGINE_ACTIONS = {
 const initialState = {
   keyRingController: {},
   preferencesController: {},
+  networkController: {},
+  accountTrackerController: {},
   seedPhraseBackedUp: false,
   backUpSeedPhraseVisible: false,
-  passwordSetup: false,
+  passwordSet: false,
 };
 
 function engineReducer(state: EngineState, action: ContextAction) {
@@ -39,6 +42,7 @@ function engineReducer(state: EngineState, action: ContextAction) {
         keyRingController: action.payload.keyRingController,
         preferencesController: action.payload.preferencesController,
         accountTrackerController: action.payload.accountTrackerController,
+        networkController: action.payload.networkController,
       };
     case ENGINE_ACTIONS.SEEDPHRASE_BACKED_UP:
       return {
@@ -55,12 +59,12 @@ function engineReducer(state: EngineState, action: ContextAction) {
     case ENGINE_ACTIONS.PASSWORD_SET:
       return {
         ...state,
-        passwordSetup: true,
+        passwordSet: true,
       };
     case ENGINE_ACTIONS.PASSWORD_UNSET:
       return {
         ...state,
-        passwordSetup: false,
+        passwordSet: false,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

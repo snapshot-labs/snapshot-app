@@ -24,6 +24,7 @@ const KEYS: any = {
   preferencesControllerState: "preferencesControllerState",
   keyRingControllerState: "keyRingControllerState",
   snapshotWallets: "snapshotWallets",
+  passwordSet: "passwordSet",
 };
 
 const VALUES = {

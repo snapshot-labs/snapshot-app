@@ -19,6 +19,7 @@ import { shorten } from "helpers/miscUtils";
 import storage from "helpers/storage";
 import { useExploreState } from "context/exploreContext";
 import { getAliasWallet } from "helpers/aliasUtils";
+import { ENGINE_ACTIONS, useEngineDispatch } from "context/engineContext";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -50,6 +51,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
     useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
+  const engineDispatch = useEngineDispatch();
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address}.name`);
@@ -144,6 +146,12 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
               storage.KEYS.snapshotWallets,
               JSON.stringify(filteredSnapshotWallets)
             );
+            if (filteredSnapshotWallets.length === 0) {
+              storage.remove(storage.KEYS.passwordSet);
+              engineDispatch({
+                type: ENGINE_ACTIONS.PASSWORD_UNSET,
+              });
+            }
           }}
           style={{ marginLeft: 8 }}
         >

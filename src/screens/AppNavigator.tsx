@@ -38,8 +38,9 @@ import WalletSetupScreen from "screens/WalletSetupScreen";
 import ChoosePasswordScreen from "screens/ChoosePasswordScreen";
 import SeedPhraseBackupStep1Screen from "screens/seedPhraseBackup/SeedPhraseBackupStep1Screen";
 import SeedPhraseBackupStep2Screen from "screens/seedPhraseBackup/SeedPhraseBackupStep2Screen";
-import SeedPhraseBackupCompleteScreen
-    from "screens/seedPhraseBackup/SeedPhraseBackupCompleteScreen";
+import SeedPhraseBackupCompleteScreen from "screens/seedPhraseBackup/SeedPhraseBackupCompleteScreen";
+import ImportFromSeedScreen from "screens/ImportFromSeedScreen";
+import QRCodeScreen from "screens/QRCodeScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -327,6 +328,16 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.SEED_PHRASE_BACKUP_COMPLETE_SCREEN}
         component={SeedPhraseBackupCompleteScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.IMPORT_FROM_SEED_SCREEN}
+        component={ImportFromSeedScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.QR_CODE_SCREEN}
+        component={QRCodeScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

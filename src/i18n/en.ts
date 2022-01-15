@@ -175,6 +175,7 @@ export default {
   choosePasswordTitle: "Create password",
   choosePasswordSecure: "Secure wallet",
   choosePasswordConfirm: "Confirm secret recovery phrase",
+  choosePasswordSeedPhrase: "Secret Recovery Phrase",
   choosePasswordSubtitle:
     "This password will unlock your snapshot wallet only on this device.",
   choosePasswordNewPassword: "New password",
@@ -280,5 +281,43 @@ export default {
     no_seedphrase: "Do not use this to write your Secret Recovery Phrase.",
     save: "Save",
     cancel: "Cancel",
+  },
+  import_from_seed: {
+    title: "Import from seed",
+    seed_phrase_placeholder: "Enter your Secret Recovery Phrase",
+    new_password: "New Password",
+    confirm_password: "Confirm password",
+    import_button: "Import",
+    cancel_button: "Cancel",
+    password_length_error:
+      "The password needs to be at least 8 characters long",
+    password_dont_match: "Passwords don't match",
+    seed_phrase_requirements:
+      "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words",
+    invalid_seed_phrase: "Invalid Secret Recovery Phrase",
+    error: "Error",
+    invalid_qr_code_title: "Invalid QR Code",
+    invalid_qr_code_message:
+      "This QR code doesn't represent a valid Secret Recovery Phrase",
+  },
+  terms_and_conditions: {
+    title: "Terms and Conditions",
+    description: "By proceeding, you agree to these ",
+    terms: "Terms and Conditions",
+  },
+  qr_scanner: {
+    invalid_qr_code_title: "Invalid QR Code",
+    invalid_qr_code_message:
+      "The QR code that you are trying to scan it is not valid.",
+    allow_camera_dialog_title: "Allow camera access",
+    allow_camera_dialog_message: "We need your permission to scan QR codes",
+    scanning: "scanning...",
+    ok: "Ok",
+    cancel: "Cancel",
+    error: "Error",
+    attempting_to_scan_with_wallet_locked:
+      "Looks like you're trying to scan a QR code, you need to unlock your wallet to be able to use it.",
+    attempting_sync_from_wallet_error:
+      "Looks like you're trying to sync with the extension. In order to do so, you will need to erase your current wallet. \n\nOnce you've erased or reinstalled a fresh version of the app, select the option to \"Sync with MetaMask Extension\". Important! Before erasing your wallet, make sure you've backed up your Secret Recovery Phrase.",
   },
 };

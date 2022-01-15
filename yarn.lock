@@ -3575,6 +3575,11 @@ big-integer@^1.6.44:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
   integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
 
+bignumber.js@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-7.2.1.tgz#80c048759d826800807c4bfd521e50edbba57a5f"
+  integrity sha512-S4XzBk5sMB+Rcb/LNcpzXr57VRTxgAvaAEDAl1AwRx27j00hT84O6OkteE7u8UB3NuaaygCRrEpqox4uDOrbdQ==
+
 bignumber.js@^9.0.1:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
@@ -5007,6 +5012,14 @@ eth-simple-keyring@^4.2.0:
     ethereumjs-wallet "^1.0.1"
     events "^1.1.1"
 
+eth-url-parser@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/eth-url-parser/-/eth-url-parser-1.0.4.tgz#310a99f331abdb8d603c74131568fb773e609cd8"
+  integrity sha512-2PTTyc9OXNxePTUlYfos1du6hytElYdubJbx2uF3wNMEsvHOg/P7ZpPFERub6vod2T8eGjDZtB8nkGsKEc4tIQ==
+  dependencies:
+    bignumber.js "^7.2.1"
+    qs "^6.5.2"
+
 ethereum-blockies-base64@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ethereum-blockies-base64/-/ethereum-blockies-base64-1.0.2.tgz#4aebca52142bf4d16a3144e6e2b59303e39ed2b3"
@@ -5314,6 +5327,16 @@ ethjs-query@0.3.7:
   resolved "https://registry.yarnpkg.com/ethjs-query/-/ethjs-query-0.3.7.tgz#597884664e7769c5e314a8f2f7ac6b44aceaff5e"
   integrity sha512-TZnKUwfkWjy0SowFdPLtmsytCorHi0i4vvkQn7Jg8rZt33cRzKhuzOwKr/G3vdigCc+ePXOhUGMcJSAPlOG44A==
   dependencies:
+    ethjs-format "0.2.7"
+    ethjs-rpc "0.2.0"
+    promise-to-callback "^1.0.0"
+
+ethjs-query@^0.3.8:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/ethjs-query/-/ethjs-query-0.3.8.tgz#aa5af02887bdd5f3c78b3256d0f22ffd5d357490"
+  integrity sha512-/J5JydqrOzU8O7VBOwZKUWXxHDGr46VqNjBCJgBVNNda+tv7Xc8Y2uJc6aMHHVbeN3YOQ7YRElgIc0q1CI02lQ==
+  dependencies:
+    babel-runtime "^6.26.0"
     ethjs-format "0.2.7"
     ethjs-rpc "0.2.0"
     promise-to-callback "^1.0.0"
@@ -8736,6 +8759,13 @@ qs@^6.5.0:
   version "6.10.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.1.tgz#4931482fa8d647a5aab799c5271d2133b981fb6a"
   integrity sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg==
+  dependencies:
+    side-channel "^1.0.4"
+
+qs@^6.5.2:
+  version "6.10.3"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.3.tgz#d6cde1b2ffca87b5aa57889816c5f81535e22e8e"
+  integrity sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==
   dependencies:
     side-channel "^1.0.4"
 

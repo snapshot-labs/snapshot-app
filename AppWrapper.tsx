@@ -17,7 +17,7 @@ import {
   NOTIFICATIONS_ACTIONS,
   useNotificationsDispatch,
 } from "context/notificationsContext";
-import { useEngineDispatch } from "context/engineContext";
+import { ENGINE_ACTIONS, useEngineDispatch } from "context/engineContext";
 import initializeEngine from "helpers/engineService";
 
 async function loadFromStorage(
@@ -119,6 +119,13 @@ async function loadFromStorage(
       authDispatch({
         type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
         payload: JSON.parse(snapshotWallets),
+      });
+    }
+
+    const passwordSet = await storage.load(storage.KEYS.passwordSet);
+    if (passwordSet === storage.VALUES.true) {
+      engineDispatch({
+        type: ENGINE_ACTIONS.PASSWORD_SET,
       });
     }
   } catch (e) {}

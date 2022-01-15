@@ -15,7 +15,11 @@ import Button from "components/Button";
 import IconFont from "components/IconFont";
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/native";
-import { CHOOSE_PASSWORD_SCREEN, ONBOARDING } from "constants/navigation";
+import {
+  CHOOSE_PASSWORD_SCREEN,
+  IMPORT_FROM_SEED_SCREEN,
+  ONBOARDING,
+} from "constants/navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "components/BackButton";
 
@@ -152,7 +156,9 @@ function WalletSetupScreen() {
               <View style={styles.createWrapper}>
                 <View style={styles.buttonWrapper}>
                   <Button
-                    onPress={() => {}}
+                    onPress={() => {
+                      navigation.navigate(IMPORT_FROM_SEED_SCREEN);
+                    }}
                     title={i18n.t("importFromSeedButton")}
                   />
                 </View>

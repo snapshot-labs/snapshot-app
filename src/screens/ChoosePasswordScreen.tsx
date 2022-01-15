@@ -403,6 +403,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
         JSON.stringify(accounts)
       );
       await storage.remove(storage.KEYS.seedPhraseHints);
+      await storage.save(storage.KEYS.passwordSet, storage.VALUES.true);
       engineDispatch({
         type: ENGINE_ACTIONS.PASSWORD_SET,
       });
