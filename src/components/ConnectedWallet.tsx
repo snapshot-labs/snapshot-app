@@ -46,7 +46,8 @@ interface ConnectedWalletProps {
 }
 
 function ConnectedWallet({ address }: ConnectedWalletProps) {
-  const { savedWallets, aliases, colors }: any = useAuthState();
+  const { savedWallets, aliases, colors, snapshotWallets }: any =
+    useAuthState();
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
   const profile = profiles[address];
@@ -120,14 +121,28 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
         <TouchableOpacity
           onPress={() => {
             const newSavedWallets = { ...savedWallets };
+            const snapshotWalletsCopy = [...snapshotWallets];
+            const filteredSnapshotWallets = snapshotWalletsCopy.filter(
+              (addr: string) => {
+                return addr !== address;
+              }
+            );
             delete newSavedWallets[address];
             authDispatch({
               type: AUTH_ACTIONS.SET_OVERWRITE_SAVED_WALLETS,
               payload: newSavedWallets,
             });
+            authDispatch({
+              type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
+              payload: filteredSnapshotWallets,
+            });
             storage.save(
               storage.KEYS.savedWallets,
               JSON.stringify(newSavedWallets)
+            );
+            storage.save(
+              storage.KEYS.snapshotWallets,
+              JSON.stringify(filteredSnapshotWallets)
             );
           }}
           style={{ marginLeft: 8 }}

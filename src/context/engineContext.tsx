@@ -4,6 +4,7 @@ import { ContextAction, ContextDispatch } from "types/context";
 type EngineState = {
   keyRingController: any;
   preferencesController: any;
+  accountTrackerController: any;
   seedPhraseBackedUp: boolean;
   backUpSeedPhraseVisible: boolean;
   passwordSetup: boolean;
@@ -37,6 +38,7 @@ function engineReducer(state: EngineState, action: ContextAction) {
         ...state,
         keyRingController: action.payload.keyRingController,
         preferencesController: action.payload.preferencesController,
+        accountTrackerController: action.payload.accountTrackerController,
       };
     case ENGINE_ACTIONS.SEEDPHRASE_BACKED_UP:
       return {

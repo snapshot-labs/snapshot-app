@@ -4,11 +4,16 @@ import Encryptor from "helpers/encryptor";
 import {
   PreferencesController,
   KeyringController,
+  AccountTrackerController,
 } from "@metamask/controllers";
 import AppConstants from "constants/app";
 const encryptor = new Encryptor();
 
-function initializeEngine(engineDispatch: ContextDispatch) {
+function initializeEngine(
+  engineDispatch: ContextDispatch,
+  keyRingControllerState,
+  preferencesControllerState
+) {
   try {
     const preferencesController = new PreferencesController(
       {},
@@ -17,6 +22,7 @@ function initializeEngine(engineDispatch: ContextDispatch) {
         useStaticTokenList: true,
         useCollectibleDetection: true,
         openSeaEnabled: true,
+        ...preferencesControllerState,
       }
     );
     const keyRingController = new KeyringController(
@@ -35,14 +41,25 @@ function initializeEngine(engineDispatch: ContextDispatch) {
         ),
       },
       { encryptor },
-      {}
+      keyRingControllerState
     );
+    const accountTrackerController = new AccountTrackerController({
+      onPreferencesStateChange: (listener) =>
+        preferencesController.subscribe(listener),
+      getIdentities: () => preferencesController.state.identities,
+    });
+
+    const update_bg_state_cb = () => {
+      console.log("UPDATE KEY RING STATE", keyRingController.state);
+    };
+    keyRingController.subscribe(update_bg_state_cb);
 
     engineDispatch({
       type: ENGINE_ACTIONS.INIT_ENGINE,
       payload: {
         keyRingController,
         preferencesController,
+        accountTrackerController,
       },
     });
   } catch (e) {}

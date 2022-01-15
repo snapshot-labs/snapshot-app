@@ -113,9 +113,43 @@ async function loadFromStorage(
         },
       });
     }
+
+    const snapshotWallets = await storage.load(storage.KEYS.snapshotWallets);
+    if (snapshotWallets) {
+      authDispatch({
+        type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
+        payload: JSON.parse(snapshotWallets),
+      });
+    }
   } catch (e) {}
 
-  initializeEngine(engineDispatch);
+  let keyRingControllerState: any = {};
+  try {
+    const keyRingControllerStateImported = await storage.load(
+      storage.KEYS.keyRingControllerState
+    );
+    if (keyRingControllerStateImported) {
+      keyRingControllerState = JSON.parse(keyRingControllerStateImported);
+    }
+  } catch (e) {}
+
+  let preferencesControllerState: any = {};
+  try {
+    const preferencesControllerStateImported = await storage.load(
+      storage.KEYS.preferencesControllerState
+    );
+    if (preferencesControllerStateImported) {
+      preferencesControllerState = JSON.parse(
+        preferencesControllerStateImported
+      );
+    }
+  } catch (e) {}
+
+  initializeEngine(
+    engineDispatch,
+    keyRingControllerState,
+    preferencesControllerState
+  );
 
   setLoading(false);
 }

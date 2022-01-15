@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   successText: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.bgGreen,
     marginLeft: 4,
   },
@@ -249,7 +249,9 @@ function SeedPhraseBackupStep2Screen({
     }
   }
   return (
-    <SafeAreaView style={styles.mainWrapper}>
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    >
       <View
         style={[
           common.headerContainer,
@@ -263,7 +265,9 @@ function SeedPhraseBackupStep2Screen({
       </View>
       <View style={styles.wrapper}>
         <View style={styles.infoWrapper}>
-          <Text style={styles.info}>{i18n.t("manual_backup_step_2.info")}</Text>
+          <Text style={[styles.info, { color: colors.textColor }]}>
+            {i18n.t("manual_backup_step_2.info")}
+          </Text>
         </View>
 
         <View

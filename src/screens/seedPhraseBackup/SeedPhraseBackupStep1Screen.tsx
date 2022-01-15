@@ -1,7 +1,6 @@
 import React from "react";
 import {
   BackHandler,
-  InteractionManager,
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
@@ -37,7 +36,7 @@ import { useEngineState } from "context/engineContext";
 import { useAuthState } from "context/authContext";
 import { SEED_PHRASE_BACKUP_STEP2_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
-import { backgroundColor } from "react-native-calendars/src/style";
+import storage from "helpers/storage";
 
 const styles = StyleSheet.create({
   scrollviewWrapper: {
@@ -219,7 +218,7 @@ const styles = StyleSheet.create({
 
 function SeedPhraseBackupScreen() {
   const { colors } = useAuthState();
-  const { keyRingController } = useEngineState();
+  const { keyRingController, preferencesController } = useEngineState();
   const CHOOSE_PASSWORD_STEPS = createChoosePasswordSteps();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
@@ -269,6 +268,10 @@ function SeedPhraseBackupScreen() {
 
   useEffect(() => {
     setSeed();
+    storage.save(
+      storage.KEYS.preferencesControllerState,
+      JSON.stringify(preferencesController.state)
+    );
     const hardwareBackPress = () => true;
     BackHandler.addEventListener("hardwareBackPress", hardwareBackPress);
     return () => {

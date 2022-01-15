@@ -22,6 +22,7 @@ type AuthState = {
   refreshFeed: null | { spaceId: string };
   theme: string | "light" | "dark";
   colors: any;
+  snapshotWallets: string[];
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -42,6 +43,7 @@ const AUTH_ACTIONS = {
   SET_WC_CONNECTOR: "@auth/SET_WC_CONNECTOR",
   SET_REFRESH_FEED: "@auth/SET_REFRESH_FEED",
   SET_THEME: "@auth/SET_THEME",
+  SET_SNAPSHOT_WALLETS: "@auth/SET_SNAPSHOT_WALLETS",
 };
 
 const initialState = {
@@ -54,6 +56,7 @@ const initialState = {
   savedWallets: {},
   wcConnector: null,
   refreshFeed: null,
+  snapshotWallets: [],
   theme: "light",
   colors,
 };
@@ -98,6 +101,8 @@ function authReducer(state: AuthState, action: ContextAction) {
       return { ...state, androidAppUrl: action.payload };
     case AUTH_ACTIONS.SET_ALIAS_WALLET:
       return { ...state, aliasWallet: action.payload };
+    case AUTH_ACTIONS.SET_SNAPSHOT_WALLETS:
+      return { ...state, snapshotWallets: action.payload };
     case AUTH_ACTIONS.SET_SAVED_WALLETS:
       let savedWallets = { ...state.savedWallets };
       if (action.payload) {

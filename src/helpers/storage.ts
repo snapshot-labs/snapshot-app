@@ -4,7 +4,7 @@ function getKey(key: string) {
   return `SnapshotApp_${key}`;
 }
 
-const KEYS = {
+const KEYS: any = {
   connectedAddress: "connectedAddress",
   isWalletConnect: "isWalletConnect",
   aliases: "aliases",
@@ -20,7 +20,10 @@ const KEYS = {
   existingUser: "existingUser",
   nextMakerReminder: "nextMakerReminder",
   seedPhraseHints: "seedPhraseHints",
-  lastIncomingTxBlockInfo: "lastIncomingTxBlockInfo"
+  lastIncomingTxBlockInfo: "lastIncomingTxBlockInfo",
+  preferencesControllerState: "preferencesControllerState",
+  keyRingControllerState: "keyRingControllerState",
+  snapshotWallets: "snapshotWallets",
 };
 
 const VALUES = {
@@ -36,21 +39,14 @@ export async function save(key: string, value: string) {
 }
 
 export async function clearAll() {
-  try {
-    await remove(KEYS.connectedAddress);
-  } catch (e) {}
-  try {
-    await remove(KEYS.isWalletConnect);
-  } catch (e) {}
-  try {
-    await remove(KEYS.aliases);
-  } catch (e) {}
-  try {
-    await remove(KEYS.androidAppUrl);
-  } catch (e) {}
-  try {
-    await remove(KEYS.savedWallets);
-  } catch (e) {}
+  const keysArray = Object.keys(KEYS);
+
+  for (let i = 0; i < keysArray.length; i++) {
+    const keyVal = KEYS[keysArray[i]];
+    try {
+      await remove(keyVal);
+    } catch (e) {}
+  }
 }
 
 export async function remove(key: string) {

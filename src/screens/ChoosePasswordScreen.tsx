@@ -31,7 +31,11 @@ import {
 } from "constants/navigation";
 import SecureKeychain from "helpers/secureKeychain";
 import IconFont from "components/IconFont";
-import { useAuthState } from "context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
 import common from "styles/common";
 import BackButton from "components/BackButton";
 import {
@@ -211,6 +215,7 @@ interface ChoosePasswordScreenProps {
 function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const { colors } = useAuthState();
   const { keyRingController, preferencesController } = useEngineState();
+  const authDispatch = useAuthDispatch();
   const engineDispatch = useEngineDispatch();
   const CHOOSE_PASSWORD_STEPS = createChoosePasswordSteps();
   const [isSelected, setIsSelected] = useState(false);
@@ -322,8 +327,12 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
 
   async function createNewVaultAndKeychain(password: string) {
     try {
-      const test = await keyRingController.createNewVaultAndKeychain(password);
-      console.log({ test });
+      const keyRingControllState =
+        await keyRingController.createNewVaultAndKeychain(password);
+      storage.save(
+        storage.KEYS.keyRingControllerState,
+        JSON.stringify(keyRingControllState)
+      );
     } catch (e) {
       console.log("KEY RING ERROR", e);
     }
@@ -379,20 +388,36 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
         await SecureKeychain.resetGenericPassword();
       }
 
+      const accounts = await keyRingController.getAccounts();
+      authDispatch({
+        type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+        payload: {
+          connectedAddress: accounts[0],
+          addToStorage: true,
+          addToSavedWallets: true,
+        },
+      });
       await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
+      await storage.save(
+        storage.KEYS.snapshotWallets,
+        JSON.stringify(accounts)
+      );
       await storage.remove(storage.KEYS.seedPhraseHints);
       engineDispatch({
         type: ENGINE_ACTIONS.PASSWORD_SET,
+      });
+      authDispatch({
+        type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
+        payload: accounts,
       });
       // this.props.logIn();
       // this.props.setLockTime(AppConstants.DEFAULT_LOCK_TIMEOUT);
       setLoading(false);
       navigation.replace(SEED_PHRASE_BACKUP_STEP1_SCREEN);
-      console.log("FINISH CREATE");
     } catch (error) {
       console.log("FAILED TO CREATE", error);
       await recreateVault("");
-      // Set state in app as it was with no password
+
       await SecureKeychain.resetGenericPassword();
       await storage.remove(storage.KEYS.nextMakerReminder);
       await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
@@ -400,8 +425,6 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
       engineDispatch({
         type: ENGINE_ACTIONS.PASSWORD_UNSET,
       });
-      // this.props.setLockTime(-1);
-      // Should we force people to enable passcode / biometrics?
       if (error.toString() === PASSCODE_NOT_SET_ERROR) {
         Alert.alert(
           i18n.t("securityAlertTitle"),

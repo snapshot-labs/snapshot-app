@@ -100,10 +100,11 @@ const styles = StyleSheet.create({
 });
 
 function WalletSetupScreen() {
-  const { colors } = useAuthState();
+  const { colors, snapshotWallets } = useAuthState();
   const [loading, setLoading] = useState(false);
   const navigation: any = useNavigation();
   const insets = useSafeAreaInsets();
+  const hasSnapshotWallet = snapshotWallets?.length > 0;
 
   return (
     <View
@@ -155,16 +156,18 @@ function WalletSetupScreen() {
                     title={i18n.t("importFromSeedButton")}
                   />
                 </View>
-                <View style={styles.buttonWrapper}>
-                  <Button
-                    onPress={() => {
-                      navigation.navigate(CHOOSE_PASSWORD_SCREEN, {
-                        previousScreen: ONBOARDING,
-                      });
-                    }}
-                    title={i18n.t("createANewWallet")}
-                  />
-                </View>
+                {!hasSnapshotWallet && (
+                  <View style={styles.buttonWrapper}>
+                    <Button
+                      onPress={() => {
+                        navigation.navigate(CHOOSE_PASSWORD_SCREEN, {
+                          previousScreen: ONBOARDING,
+                        });
+                      }}
+                      title={i18n.t("createANewWallet")}
+                    />
+                  </View>
+                )}
               </View>
             </View>
           )}
