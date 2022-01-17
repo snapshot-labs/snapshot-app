@@ -359,8 +359,11 @@ export default {
   revealSecretRecoveryPhrase: "Reveal secret recovery phrase",
   privateKeyWarningExplanation:
     "Never give out this key. Anyone that has your private key can fully control your account, including transferring away any of your funds.",
-  "seedPhraseWarningExplanation": "Do NOT share this phrase with anyone! These words can be used to steal all your accounts.",
+  seedPhraseWarningExplanation:
+    "Do NOT share this phrase with anyone! These words can be used to steal all your accounts.",
   copyToClipboard: "Copy to clipboard",
   privateKeyCopiedToClipboard: "Private key copied to clipboard!",
-  seedPhraseCopiedToClipboard: "Seed phrase copied to clipboard!"
+  seedPhraseCopiedToClipboard: "Seed phrase copied to clipboard!",
+  yourWalletIsAlreadySetup: "Your wallet is already setup.",
+  goBack: "Go back",
 };

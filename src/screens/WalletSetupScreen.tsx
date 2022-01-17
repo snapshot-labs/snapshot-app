@@ -134,11 +134,20 @@ function WalletSetupScreen() {
           <View style={styles.iconWrapper}>
             <IconFont name={"snapshot"} size={40} color={colors.yellow} />
           </View>
-          {loading ? (
-            <View style={styles.wrapper}>
-              <View style={styles.loader}>
-                <ActivityIndicator size="small" color={colors.textColor} />
-                <Text style={styles.loadingText}>{i18n.t("loading")}</Text>
+          {hasSnapshotWallet ? (
+            <View style={styles.ctas}>
+              <Text
+                style={[styles.buttonDescription, { color: colors.textColor }]}
+              >
+                {i18n.t("yourWalletIsAlreadySetup")}
+              </Text>
+              <View style={styles.buttonWrapper}>
+                <Button
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                  title={i18n.t("goBack")}
+                />
               </View>
             </View>
           ) : (
