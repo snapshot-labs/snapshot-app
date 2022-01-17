@@ -145,6 +145,8 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
 
                 await storage.remove(storage.KEYS.passwordSet);
                 await storage.remove(storage.KEYS.existingUser);
+                await storage.remove(storage.KEYS.keyRingControllerState);
+                await storage.remove(storage.KEYS.preferencesControllerState);
                 await storage.save(
                   storage.KEYS.snapshotWallets,
                   JSON.stringify([])

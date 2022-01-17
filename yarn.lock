@@ -8920,6 +8920,11 @@ react-native-confetti@^0.1.0:
   resolved "https://registry.yarnpkg.com/react-native-confetti/-/react-native-confetti-0.1.0.tgz#9ec93c07f845de5ebeaed700043fd5218792b6f1"
   integrity sha512-+cXJvnPXKc0i/eTQcuzcjrlfIxmn/xFw4UyuVKQOWNK6BfWABvO6Ms6Zp6ivF1E8Vxt2vJkzJlNyoBvMh9FxKA==
 
+react-native-crypto-js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-crypto-js/-/react-native-crypto-js-1.0.0.tgz#e677e022e147f41b35614416c92d655f87e2450a"
+  integrity sha512-FNbLuG/HAdapQoybeZSoes1PWdOj0w242gb+e1R0hicf3Gyj/Mf8M9NaED2AnXVOX01b2FXomwUiw1xP1K+8sA==
+
 react-native-crypto@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-native-crypto/-/react-native-crypto-2.2.0.tgz#c999ed7c96064f830e1f958687f53d0c44025770"

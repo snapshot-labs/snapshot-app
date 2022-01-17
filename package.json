@@ -82,6 +82,7 @@
     "react-native-confetti": "^0.1.0",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-crypto": "^2.2.0",
+    "react-native-crypto-js": "^1.0.0",
     "react-native-device-info": "^8.4.1",
     "react-native-drag-sort": "^2.4.4",
     "react-native-emoji": "^1.8.0",

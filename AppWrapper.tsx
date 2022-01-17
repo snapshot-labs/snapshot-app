@@ -136,7 +136,7 @@ async function loadFromStorage(
       storage.KEYS.keyRingControllerState
     );
     if (keyRingControllerStateImported) {
-      keyRingControllerState = JSON.parse(keyRingControllerStateImported);
+      keyRingControllerState = keyRingControllerStateImported;
     }
   } catch (e) {}
 
@@ -146,9 +146,7 @@ async function loadFromStorage(
       storage.KEYS.preferencesControllerState
     );
     if (preferencesControllerStateImported) {
-      preferencesControllerState = JSON.parse(
-        preferencesControllerStateImported
-      );
+      preferencesControllerState = preferencesControllerStateImported;
     }
   } catch (e) {}
 
