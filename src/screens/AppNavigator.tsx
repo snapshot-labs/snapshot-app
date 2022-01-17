@@ -41,6 +41,9 @@ import SeedPhraseBackupStep2Screen from "screens/seedPhraseBackup/SeedPhraseBack
 import SeedPhraseBackupCompleteScreen from "screens/seedPhraseBackup/SeedPhraseBackupCompleteScreen";
 import ImportFromSeedScreen from "screens/ImportFromSeedScreen";
 import QRCodeScreen from "screens/QRCodeScreen";
+import ImportFromPrivateKeyScreen from "screens/ImportFromPrivateKeyScreen";
+import AccountDetailsScreen from "screens/AccountDetailsScreen";
+import ShowPrivateKeyScreen from "screens/ShowPrivateKeyScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -338,6 +341,21 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.QR_CODE_SCREEN}
         component={QRCodeScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.IMPORT_FROM_PRIVATE_KEY_SCREEN}
+        component={ImportFromPrivateKeyScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.ACCOUNT_DETAILS_SCREEN}
+        component={AccountDetailsScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.SHOW_PRIVATE_KEY_SCREEN}
+        component={ShowPrivateKeyScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

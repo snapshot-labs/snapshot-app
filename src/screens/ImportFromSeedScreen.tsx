@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
-  InteractionManager,
   SafeAreaView,
   StyleSheet,
   Switch,
@@ -190,7 +188,7 @@ function ImportFromSeedScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [seed, setSeed] = useState("");
-  const [biometryType, setBiometryType] = useState(null);
+  const [biometryType, setBiometryType] = useState<null | string>(null);
   const [rememberMe, setRememberMe] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [biometryChoice, setBiometryChoice] = useState(false);
@@ -200,10 +198,10 @@ function ImportFromSeedScreen() {
   const [hideSeedPhraseInput, setHideSeedPhraseInput] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const passwordStrengthWord = getPasswordStrengthWord(passwordStrength);
-  const passwordInputRef = useRef(null);
-  const confirmPasswordInputRef = useRef(null);
+  const passwordInputRef: any = useRef(null);
+  const confirmPasswordInputRef: any = useRef(null);
   const authDispatch = useAuthDispatch();
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   const engineDispatch = useEngineDispatch();
 
   async function onPressImport() {
@@ -243,6 +241,7 @@ function ImportFromSeedScreen() {
             connectedAddress: accounts[0],
             addToStorage: true,
             addToSavedWallets: true,
+            isSnapshotWallet: true,
           },
         });
         await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
@@ -264,6 +263,10 @@ function ImportFromSeedScreen() {
         } else {
           await SecureKeychain.resetGenericPassword();
         }
+        await storage.save(
+          storage.KEYS.keyRingControllerState,
+          JSON.stringify(vault)
+        );
         await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
         await storage.remove(storage.KEYS.seedPhraseHints);
         await storage.save(storage.KEYS.passwordSet, storage.VALUES.true);

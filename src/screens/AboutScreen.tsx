@@ -20,7 +20,14 @@ function AboutScreen() {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
-      <BackButton title={i18n.t("about")} />
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
+        <BackButton title={i18n.t("about")} />
+      </View>
       <View style={{ marginTop: 8, flex: 1 }}>
         <View style={styles.row}>
           <View

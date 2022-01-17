@@ -14,7 +14,7 @@
     "@expo-google-fonts/space-mono": "^0.2.0",
     "@expo/react-native-action-sheet": "^3.11.0",
     "@gorhom/bottom-sheet": "^4",
-    "@metamask/controllers": "^22.0.0",
+    "@metamask/controllers": "https://github.com/jm90m/controllers.git#v22.0.0-reworked",
     "@metamask/swaps-controller": "^6.3.0",
     "@react-native-async-storage/async-storage": "^1.15.14",
     "@react-native-clipboard/clipboard": "^1.9.0",

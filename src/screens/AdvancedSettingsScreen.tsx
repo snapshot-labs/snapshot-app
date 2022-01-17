@@ -20,7 +20,14 @@ function AdvancedSettingsScreen() {
         { paddingTop: insets.top, backgroundColor: colors.bgDefault },
       ]}
     >
-      <BackButton title={i18n.t("advanced")} />
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
+        <BackButton title={i18n.t("advanced")} />
+      </View>
       <View style={{ marginTop: 8, flex: 1 }}>
         <View style={styles.row}>
           <View

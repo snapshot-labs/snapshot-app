@@ -29,3 +29,4 @@ export const MetaMask = {
 };
 
 export const CUSTOM_WALLET_NAME = "Custom Wallet";
+export const SNAPSHOT_WALLET = "Snapshot Wallet";

@@ -16,9 +16,9 @@ import { parse } from "eth-url-parser";
 interface QRCodeScreenProps {
   route: {
     params: {
-      onScanError: () => void;
-      onScanSuccess: (data: any, content: any) => void;
-      onStartScan: () => void;
+      onScanError: (error: string) => void;
+      onScanSuccess: (data: any, content?: any) => void;
+      onStartScan: (data: any) => void;
     };
   };
 }

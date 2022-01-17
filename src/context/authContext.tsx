@@ -8,7 +8,7 @@ import {
   setWalletConnectListeners,
 } from "helpers/walletConnectUtils";
 import colors, { getColorScheme } from "constants/colors";
-import { CUSTOM_WALLET_NAME } from "constants/wallets";
+import { CUSTOM_WALLET_NAME, SNAPSHOT_WALLET } from "constants/wallets";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
@@ -77,7 +77,9 @@ function authReducer(state: AuthState, action: ContextAction) {
 
       if (action.payload.addToSavedWallets) {
         savedWallets[action.payload.connectedAddress] = {
-          name: CUSTOM_WALLET_NAME,
+          name: action.payload.isSnapshotWallet
+            ? SNAPSHOT_WALLET
+            : CUSTOM_WALLET_NAME,
           address: connectedAddress,
         };
         storage.save(storage.KEYS.savedWallets, JSON.stringify(savedWallets));

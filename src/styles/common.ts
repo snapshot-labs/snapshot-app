@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import colors from "../constants/colors";
+import fontStyles from "styles/fonts";
 
 const common = StyleSheet.create({
   screen: {
@@ -86,6 +87,23 @@ const common = StyleSheet.create({
   },
   alignItemsCenter: {
     alignItems: "center",
+  },
+  modalHeader: {
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderColor,
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.borderColor,
+    padding: 10,
+    borderRadius: 6,
+    fontSize: 16,
+    height: 50,
+    ...fontStyles.normal,
   },
 });
 

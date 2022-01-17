@@ -320,4 +320,47 @@ export default {
     attempting_sync_from_wallet_error:
       "Looks like you're trying to sync with the extension. In order to do so, you will need to erase your current wallet. \n\nOnce you've erased or reinstalled a fresh version of the app, select the option to \"Sync with MetaMask Extension\". Important! Before erasing your wallet, make sure you've backed up your Secret Recovery Phrase.",
   },
+  enterPassword: "Enter password",
+  submitPassword: "Submit password",
+  import_private_key: {
+    title: "Import Account",
+    description_one:
+      "Imported accounts are viewable in your wallet but are not recoverable with your snapshot secret recovery phrase.",
+    learn_more_here: "Learn more about imported accounts here.",
+    subtitle: "Paste your private key string",
+    cta_text: "Import",
+    example:
+      "e.g. 3a1076bf45ab87712ad64ccb3b10217737f7faacbf2872e88fdd9a537d8fe266",
+    error_title: "Ooops! something went wrong...",
+    error_message:
+      "We couldn't import that private key. Please make sure you entered it correctly.",
+    error_empty_message: "You need to enter your private key.",
+    or_scan_a_qr_code: "or Scan a QR Code",
+  },
+  resetWallet: "Reset wallet",
+  delete_wallet: {
+    type: "Type",
+    delete: "delete",
+    toEraseCurrentWalletPermanently: "to erase current wallet permanently",
+    wrongDeleteText:
+      "Please correctly type out the word 'delete' to reset your wallet",
+  },
+
+  wallet_reset: {
+    your_current_wallet: "Your current wallet, accounts and assets will be ",
+    removed_from: "removed from this app permanently. ",
+    this_action: "This action cannot be undone.",
+    you_can_only: "You can ONLY recover this wallet with your ",
+    recovery_phrase: "secret recovery phrase ",
+    snapshot_does_not: "snapshot does not have your Secret Recovery Phrase.",
+  },
+  accountDetails: "Account details",
+  showPrivateKey: "Show private key",
+  revealSecretRecoveryPhrase: "Reveal secret recovery phrase",
+  privateKeyWarningExplanation:
+    "Never give out this key. Anyone that has your private key can fully control your account, including transferring away any of your funds.",
+  "seedPhraseWarningExplanation": "Do NOT share this phrase with anyone! These words can be used to steal all your accounts.",
+  copyToClipboard: "Copy to clipboard",
+  privateKeyCopiedToClipboard: "Private key copied to clipboard!",
+  seedPhraseCopiedToClipboard: "Seed phrase copied to clipboard!"
 };

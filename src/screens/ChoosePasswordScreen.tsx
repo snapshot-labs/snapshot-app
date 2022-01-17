@@ -395,6 +395,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
           connectedAddress: accounts[0],
           addToStorage: true,
           addToSavedWallets: true,
+          isSnapshotWallet: true,
         },
       });
       await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
@@ -503,7 +504,13 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                   {i18n.t(secureTextEntry ? "show" : "hide")}
                 </Text>
                 <TextInput
-                  style={[styles.input, { color: colors.textColor }]}
+                  style={[
+                    styles.input,
+                    {
+                      color: colors.textColor,
+                      borderColor: colors.borderColor,
+                    },
+                  ]}
                   value={password}
                   onChangeText={(text) => {
                     const passInfo = zxcvbn(text);
@@ -550,7 +557,13 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                 </Text>
                 <TextInput
                   ref={confirmPasswordInputRef}
-                  style={[styles.input, { color: colors.textColor }]}
+                  style={[
+                    styles.input,
+                    {
+                      color: colors.textColor,
+                      borderColor: colors.borderColor,
+                    },
+                  ]}
                   value={confirmPassword}
                   onChangeText={(text: string) => {
                     setConfirmPassword(text);
