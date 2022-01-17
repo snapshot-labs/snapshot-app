@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   StyleSheet,
@@ -22,9 +21,10 @@ import {
   useEngineState,
 } from "context/engineContext";
 import storage from "helpers/storage";
-import { CUSTOM_WALLET_NAME, SNAPSHOT_WALLET } from "constants/wallets";
+import { CUSTOM_WALLET_NAME } from "constants/wallets";
 import { getAliasWallet } from "helpers/aliasUtils";
 import { LANDING_SCREEN } from "constants/navigation";
+import TextInput from "components/TextInput"
 
 const styles = StyleSheet.create({
   hintLabelContainer: {
@@ -110,12 +110,8 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
           </Text>
         </View>
         <TextInput
-          style={[
-            common.input,
-            { color: colors.textColor, borderColor: colors.borderColor },
-          ]}
           value={deleteText}
-          onChangeText={(text) => {
+          onChangeText={(text: string) => {
             setDeleteText(text);
           }}
           placeholder=""

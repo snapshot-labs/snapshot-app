@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
@@ -13,6 +7,7 @@ import common from "styles/common";
 import Button from "components/Button";
 import fontStyles from "styles/fonts";
 import { useEngineState } from "context/engineContext";
+import TextInput from "components/TextInput";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
@@ -88,12 +83,8 @@ function SubmitPasswordModal({
           </Text>
         </View>
         <TextInput
-          style={[
-            common.input,
-            { color: colors.textColor, borderColor: colors.borderColor },
-          ]}
           value={password}
-          onChangeText={(text) => {
+          onChangeText={(text: string) => {
             setPassword(text);
           }}
           secureTextEntry={secureTextEntry}
