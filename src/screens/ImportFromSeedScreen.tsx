@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Switch,
   Text,
-  TextInput,
+  TextInput as TextInputComponent,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -15,6 +15,7 @@ import Device from "helpers/device";
 import fontStyles from "styles/fonts";
 import i18n from "i18n-js";
 import Icon from "react-native-vector-icons/FontAwesome";
+import TextInput from "components/TextInput";
 import {
   getPasswordStrengthWord,
   MIN_PASSWORD_LENGTH,
@@ -416,10 +417,6 @@ function ImportFromSeedScreen() {
           </View>
           {hideSeedPhraseInput ? (
             <TextInput
-              style={[
-                styles.input,
-                { color: colors.textColor, borderColor: colors.borderColor },
-              ]}
               placeholder={i18n.t("import_from_seed.seed_phrase_placeholder")}
               returnKeyType="next"
               autoCapitalize="none"
@@ -432,7 +429,7 @@ function ImportFromSeedScreen() {
               onSubmitEditing={jumpToPassword}
             />
           ) : (
-            <TextInput
+            <TextInputComponent
               value={seed}
               numberOfLines={3}
               style={[
@@ -510,11 +507,7 @@ function ImportFromSeedScreen() {
               </View>
             </View>
             <TextInput
-              ref={passwordInputRef}
-              style={[
-                styles.input,
-                { color: colors.textColor, borderColor: colors.borderColor },
-              ]}
+              setRef={passwordInputRef}
               placeholder={i18n.t("import_from_seed.new_password")}
               placeholderTextColor={colors.darkGray}
               returnKeyType={"next"}
@@ -550,11 +543,7 @@ function ImportFromSeedScreen() {
               {i18n.t("import_from_seed.confirm_password")}
             </Text>
             <TextInput
-              style={[
-                styles.input,
-                { color: colors.textColor, borderColor: colors.borderColor },
-              ]}
-              ref={confirmPasswordInputRef}
+              setRef={confirmPasswordInputRef}
               onChangeText={(text: string) => {
                 setConfirmPassword(text);
               }}

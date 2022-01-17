@@ -14,8 +14,8 @@ const encryptor = new Encryptor();
 
 function initializeEngine(
   engineDispatch: ContextDispatch,
-  keyRingControllerState,
-  preferencesControllerState
+  keyRingControllerState: any,
+  preferencesControllerState: any
 ) {
   try {
     const preferencesController = new PreferencesController(

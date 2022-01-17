@@ -11,7 +11,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import { useNavigation } from "@react-navigation/native";
 import { Placeholder, PlaceholderMedia, PlaceholderLine } from "rn-placeholder";
-import { CUSTOM_WALLET_SCREEN, HOME_SCREEN } from "constants/navigation";
+import {
+  CUSTOM_WALLET_SCREEN,
+  HOME_SCREEN,
+  WALLET_SETUP_SCREEN,
+} from "constants/navigation";
 import { MetaMask } from "constants/wallets";
 import { defaultHeaders } from "helpers/apiUtils";
 import common from "styles/common";
@@ -346,6 +350,18 @@ function WalletConnectScreen() {
               </View>
             </TouchableOpacity>
           </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(WALLET_SETUP_SCREEN);
+            }}
+          >
+            <View style={{ marginTop: 24, marginLeft: 16 }}>
+              <Text style={[common.subTitle, { color: colors.textColor }]}>
+                {i18n.t("setupWallet")}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </>
       )}
     </View>

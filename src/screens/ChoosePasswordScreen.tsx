@@ -5,11 +5,11 @@ import {
   StyleSheet,
   Switch,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import TextInput from 'components/TextInput'
 import i18n from "i18n-js";
 import Device from "helpers/device";
 import fontStyles from "styles/fonts";
@@ -126,15 +126,6 @@ const styles = StyleSheet.create({
   field: {
     marginVertical: 5,
     position: "relative",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.borderColor,
-    padding: 10,
-    borderRadius: 6,
-    fontSize: 16,
-    height: 50,
-    ...fontStyles.normal,
   },
   ctaWrapper: {
     flex: 1,
@@ -502,13 +493,6 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                   {i18n.t(secureTextEntry ? "show" : "hide")}
                 </Text>
                 <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      color: colors.textColor,
-                      borderColor: colors.borderColor,
-                    },
-                  ]}
                   value={password}
                   onChangeText={(text) => {
                     const passInfo = zxcvbn(text);
@@ -554,14 +538,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                   {i18n.t("choosePasswordConfirmPassword")}
                 </Text>
                 <TextInput
-                  ref={confirmPasswordInputRef}
-                  style={[
-                    styles.input,
-                    {
-                      color: colors.textColor,
-                      borderColor: colors.borderColor,
-                    },
-                  ]}
+                  setRef={confirmPasswordInputRef}
                   value={confirmPassword}
                   onChangeText={(text: string) => {
                     setConfirmPassword(text);

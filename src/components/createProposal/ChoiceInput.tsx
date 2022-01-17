@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import common from "../../styles/common";
 import Input from "../Input";
-import colors from "../../constants/colors";
 import IconFont from "../IconFont";
+import { useAuthState } from "context/authContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -22,6 +22,7 @@ interface ChoiceInputProps {
 }
 
 function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
+  const { colors } = useAuthState();
   const [isFocused, setIsFocused] = useState(false);
   const textInputRef = useRef<any>(null);
   return (
@@ -33,9 +34,15 @@ function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
       <View
         style={[
           common.buttonContainer,
-          { marginBottom: 20, justifyContent: "space-between" },
+          {
+            marginBottom: 20,
+            justifyContent: "space-between",
+            backgroundColor: colors.bgDefault,
+          },
           common.containerHorizontalPadding,
-          isFocused ? { borderColor: colors.textColor } : {},
+          isFocused
+            ? { borderColor: colors.textColor }
+            : { borderColor: colors.borderColor },
         ]}
         key={index}
       >
@@ -51,6 +58,7 @@ function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
             color: colors.textColor,
             alignSelf: "center",
             maxWidth: width - 120,
+            backgroundColor: colors.bgDefault,
           }}
           value={choice}
           onChangeText={(text) => {
