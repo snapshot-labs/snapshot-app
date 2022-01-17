@@ -162,11 +162,9 @@ async function loadFromStorage(
 function MainApp() {
   return (
     <ActionSheetProvider>
-      <ExploreProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </ExploreProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
     </ActionSheetProvider>
   );
 }

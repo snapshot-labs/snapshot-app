@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import Button from "./Button";
-import { useAuthDispatch, useAuthState } from "context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
 import { Wallet } from "@ethersproject/wallet";
-import signClient from "helpers/signClient";
+import signClient, { domain } from "helpers/signClient";
 import "@ethersproject/shims";
-import { checkAlias, setAlias } from "helpers/aliasUtils";
+import { checkAlias, getRandomAliasWallet, setAlias } from "helpers/aliasUtils";
 import find from "lodash/find";
 import i18n from "i18n-js";
 import { useToastShowConfig } from "constants/toast";
@@ -20,6 +24,11 @@ import {
 } from "context/bottomSheetModalContext";
 import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
 import { useNavigation } from "@react-navigation/native";
+import { addressIsSnapshotWallet } from "helpers/address";
+import SignModal from "components/wallet/SignModal";
+import { useEngineState } from "context/engineContext";
+import { aliasTypes } from "@snapshot-labs/snapshot.js/src/sign/types";
+import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 
 async function followSpace(
   isFollowingSpace: any,
@@ -74,8 +83,11 @@ interface FollowButtonProps {
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const { wcConnector, colors, savedWallets, aliases } = useAuthState();
+  const { keyRingController, personalMessageManager, messageManager } =
+    useEngineState();
   const authDispatch = useAuthDispatch();
-  const { aliasWallet, followedSpaces, connectedAddress } = useAuthState();
+  const { aliasWallet, followedSpaces, connectedAddress, snapshotWallets } =
+    useAuthState();
   const navigation = useNavigation();
   const isFollowingSpace = find(followedSpaces, (followedSpace) => {
     return get(followedSpace, "space.id") === space.id;
@@ -92,6 +104,11 @@ function FollowButton({ space }: FollowButtonProps) {
     aliases,
     connectedAddress ?? ""
   );
+  const isSnapshotWallet = addressIsSnapshotWallet(
+    connectedAddress ?? "",
+    snapshotWallets
+  );
+
   const showBottomSheetWCErrorModal = () => {
     bottomSheetModalDispatch({
       type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
@@ -101,26 +118,181 @@ function FollowButton({ space }: FollowButtonProps) {
     });
   };
 
+  async function snapshotWalletSignAliasWallet() {
+    if (keyRingController.isUnlocked()) {
+      if (connectedAddress) {
+        const wallet = await getRandomAliasWallet();
+        const alias = {
+          [connectedAddress]: wallet.privateKey,
+        };
+        const timestamp = ~~(Date.now() / 1e3);
+        const message = {
+          alias: wallet.address,
+          from: connectedAddress,
+          timestamp,
+          metamaskId: `alias-wallet-${connectedAddress}-${timestamp}`,
+          id: `alias-wallet-${connectedAddress}-${timestamp}`,
+        };
+        const snapshotHubMessage = {
+          alias: wallet.address,
+          from: connectedAddress,
+          timestamp,
+        };
+
+        bottomSheetModalDispatch({
+          type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+          payload: {
+            show: true,
+            ModalContent: () => {
+              return (
+                <SignModal
+                  messageParamsData={snapshotHubMessage}
+                  onSign={async () => {
+                    try {
+                      messageManager.addMessage(message);
+                      const cleanMessageParams =
+                        await messageManager.approveMessage(message);
+                      const rawSig =
+                        await keyRingController.signPersonalMessage(
+                          cleanMessageParams
+                        );
+                      console.log({
+                        rawSig,
+                        cleanMessageParams,
+                      });
+                      const sentMessage = await signClient.send({
+                        address: connectedAddress,
+                        sig: rawSig,
+                        data: {
+                          domain,
+                          types: aliasTypes,
+                          message: snapshotHubMessage,
+                        },
+                      });
+
+                      console.log({ sentMessage });
+
+                      authDispatch({
+                        type: AUTH_ACTIONS.SET_ALIAS,
+                        payload: alias,
+                      });
+                      authDispatch({
+                        type: AUTH_ACTIONS.SET_ALIAS_WALLET,
+                        payload: wallet,
+                      });
+
+                      bottomSheetModalRef.current?.close();
+                    } catch (e) {
+                      Toast.show({
+                        type: "customError",
+                        text1: parseErrorMessage(
+                          e,
+                          i18n.t("signature_request.error")
+                        ),
+                        ...toastShowConfig,
+                      });
+                    }
+                  }}
+                />
+              );
+            },
+            initialIndex: 1,
+            snapPoints: [10, 600],
+          },
+        });
+      }
+    } else {
+      bottomSheetModalDispatch({
+        type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+        payload: {
+          snapPoints: [10, 450],
+          initialIndex: 1,
+          ModalContent: () => {
+            return (
+              <SubmitPasswordModal
+                onClose={() => {
+                  bottomSheetModalRef.current?.close();
+                }}
+                navigation={navigation}
+              />
+            );
+          },
+          show: true,
+          key: "submit-password-modal",
+        },
+      });
+    }
+  }
+
   return (
     <Button
       onPress={async () => {
         setButtonLoading(true);
         try {
-          if (aliasWallet) {
-            const isValidAlias = await checkAlias(
-              aliasWallet,
-              connectedAddress
-            );
-            if (isValidAlias) {
-              await followSpace(
-                isFollowingSpace,
+          if (isSnapshotWallet) {
+            if (aliasWallet) {
+              const isValidAlias = await checkAlias(
                 aliasWallet,
-                connectedAddress ?? "",
-                authDispatch,
-                space,
-                toastShowConfig,
-                showBottomSheetWCErrorModal
+                connectedAddress
               );
+              if (isValidAlias) {
+                await followSpace(
+                  isFollowingSpace,
+                  aliasWallet,
+                  connectedAddress ?? "",
+                  authDispatch,
+                  space,
+                  toastShowConfig,
+                  showBottomSheetWCErrorModal
+                );
+              } else {
+                snapshotWalletSignAliasWallet();
+              }
+            } else {
+              snapshotWalletSignAliasWallet();
+            }
+          } else {
+            if (aliasWallet) {
+              const isValidAlias = await checkAlias(
+                aliasWallet,
+                connectedAddress
+              );
+              if (isValidAlias) {
+                await followSpace(
+                  isFollowingSpace,
+                  aliasWallet,
+                  connectedAddress ?? "",
+                  authDispatch,
+                  space,
+                  toastShowConfig,
+                  showBottomSheetWCErrorModal
+                );
+              } else {
+                const aliasWallet = await setAlias(
+                  connectedAddress,
+                  wcConnector,
+                  authDispatch
+                );
+
+                if (aliasWallet) {
+                  const isValidAlias = await checkAlias(
+                    aliasWallet,
+                    connectedAddress
+                  );
+
+                  if (isValidAlias) {
+                    await followSpace(
+                      isFollowingSpace,
+                      aliasWallet,
+                      connectedAddress ?? "",
+                      authDispatch,
+                      space,
+                      toastShowConfig,
+                      showBottomSheetWCErrorModal
+                    );
+                  }
+                }
+              }
             } else {
               const aliasWallet = await setAlias(
                 connectedAddress,
@@ -145,31 +317,6 @@ function FollowButton({ space }: FollowButtonProps) {
                     showBottomSheetWCErrorModal
                   );
                 }
-              }
-            }
-          } else {
-            const aliasWallet = await setAlias(
-              connectedAddress,
-              wcConnector,
-              authDispatch
-            );
-
-            if (aliasWallet) {
-              const isValidAlias = await checkAlias(
-                aliasWallet,
-                connectedAddress
-              );
-
-              if (isValidAlias) {
-                await followSpace(
-                  isFollowingSpace,
-                  aliasWallet,
-                  connectedAddress ?? "",
-                  authDispatch,
-                  space,
-                  toastShowConfig,
-                  showBottomSheetWCErrorModal
-                );
               }
             }
           }

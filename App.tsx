@@ -17,6 +17,7 @@ import { NotificationsProvider } from "context/notificationsContext";
 import { EngineProvider } from "context/engineContext";
 import SecureKeychain from "helpers/secureKeychain";
 import env from "constants/env";
+import { ExploreProvider } from "context/exploreContext";
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),
@@ -45,11 +46,13 @@ export default function App() {
       <SafeAreaProvider>
         <EngineProvider>
           <AuthProvider>
-            <NotificationsProvider>
-              <BottomSheetModalProvider>
-                <AppWrapper />
-              </BottomSheetModalProvider>
-            </NotificationsProvider>
+            <ExploreProvider>
+              <NotificationsProvider>
+                <BottomSheetModalProvider>
+                  <AppWrapper />
+                </BottomSheetModalProvider>
+              </NotificationsProvider>
+            </ExploreProvider>
           </AuthProvider>
         </EngineProvider>
         <Toast config={toastLayoutConfig} ref={(ref) => Toast.setRef(ref)} />

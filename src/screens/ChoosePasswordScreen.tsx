@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import TextInput from 'components/TextInput'
+import TextInput from "components/TextInput";
 import i18n from "i18n-js";
 import Device from "helpers/device";
 import fontStyles from "styles/fonts";
@@ -403,6 +403,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
         type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
         payload: accounts,
       });
+      console.log({ accounts });
       setLoading(false);
       navigation.replace(SEED_PHRASE_BACKUP_STEP1_SCREEN);
     } catch (error) {

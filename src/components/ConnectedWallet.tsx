@@ -25,6 +25,7 @@ import {
   useEngineState,
 } from "context/engineContext";
 import { CUSTOM_WALLET_NAME, SNAPSHOT_WALLET } from "constants/wallets";
+import { addressIsSnapshotWallet } from "helpers/address";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -61,7 +62,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address}.name`);
-  const isSnapshotWallet = snapshotWallets?.includes(address);
+  const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
 
   return (
     <TouchableHighlight

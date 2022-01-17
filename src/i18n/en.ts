@@ -366,4 +366,11 @@ export default {
   seedPhraseCopiedToClipboard: "Seed phrase copied to clipboard!",
   yourWalletIsAlreadySetup: "Your wallet is already setup.",
   goBack: "Go back",
+  signature_request: {
+    signing: "Sign this message?",
+    message: "Message",
+    read_more: "Read more",
+    sign: "Sign",
+    error: "Unable to sign this message.",
+  },
 };

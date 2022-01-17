@@ -7,14 +7,12 @@ import makeBlockie from "ethereum-blockies-base64";
 import colors from "constants/colors";
 import isEmpty from "lodash/isEmpty";
 
-const AnimatedImage = Animated.createAnimatedComponent(Image);
-
 function createUrl(
   symbolIndex: string | number | undefined,
   space: Space | any
 ) {
   if (symbolIndex) {
-    const spaceId = space.id;
+    const spaceId = space?.id;
     const file = symbolIndex
       ? symbolIndex === "space"
         ? "space"

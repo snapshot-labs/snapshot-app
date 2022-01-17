@@ -66,11 +66,8 @@ export async function setAlias(
           }
         );
       } catch (e) {
-        console.log("FAILED ON ALIAS", e);
         throw new Error(e);
       }
-
-      console.log({ signClientAliasResponse, alias: wallet.address });
 
       if (signClientAliasResponse && authDispatch) {
         authDispatch({

@@ -6,6 +6,8 @@ type EngineState = {
   preferencesController: any;
   accountTrackerController: any;
   networkController: any;
+  personalMessageManager: any;
+  messageManager: any;
   seedPhraseBackedUp: boolean;
   backUpSeedPhraseVisible: boolean;
   passwordSet: boolean;
@@ -29,6 +31,8 @@ const initialState = {
   preferencesController: {},
   networkController: {},
   accountTrackerController: {},
+  PersonalMessageManager: {},
+  messageManager: {},
   seedPhraseBackedUp: false,
   backUpSeedPhraseVisible: false,
   passwordSet: false,
@@ -43,6 +47,8 @@ function engineReducer(state: EngineState, action: ContextAction) {
         preferencesController: action.payload.preferencesController,
         accountTrackerController: action.payload.accountTrackerController,
         networkController: action.payload.networkController,
+        personalMessageManager: action.payload.personalMessageManager,
+        messageManager: action.payload.messageManager,
       };
     case ENGINE_ACTIONS.SEEDPHRASE_BACKED_UP:
       return {

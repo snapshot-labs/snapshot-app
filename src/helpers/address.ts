@@ -10,3 +10,13 @@ export async function importAccountFromPrivateKey(
   }
   return keyringController.importAccountWithStrategy("privateKey", [pkey]);
 }
+
+export function addressIsSnapshotWallet(address: string, snapshotWallets: string[]) {
+  for (let i = 0; i < snapshotWallets.length; i++) {
+    const currentWallet = snapshotWallets[i];
+    if (currentWallet?.toLowerCase() === address.toLowerCase()) {
+      return true;
+    }
+  }
+  return false;
+}

@@ -91,6 +91,7 @@ function MoreScreen() {
         payload: accounts,
       });
 
+
       if (latestAddress) {
         await storage.save(
           storage.KEYS.keyRingControllerState,
@@ -118,6 +119,10 @@ function MoreScreen() {
             ...savedWallets,
             [latestAddress]: snapshotWallet,
           },
+        });
+        authDispatch({
+          type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
+          payload: accounts,
         });
       } else {
         throw new Error("Unable to get last address");

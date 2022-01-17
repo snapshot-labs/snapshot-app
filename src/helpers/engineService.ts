@@ -7,6 +7,8 @@ import {
   AccountTrackerController,
   NetworkController,
   WalletDevice,
+  PersonalMessageManager,
+  MessageManager,
 } from "@metamask/controllers";
 import AppConstants from "constants/app";
 import env from "constants/env";
@@ -107,6 +109,8 @@ function initializeEngine(
         preferencesController,
         accountTrackerController,
         networkController,
+        personalMessageManager: new PersonalMessageManager(),
+        messageManager: new MessageManager(),
       },
     });
   } catch (e) {}
