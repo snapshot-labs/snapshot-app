@@ -412,8 +412,6 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
         type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
         payload: accounts,
       });
-      // this.props.logIn();
-      // this.props.setLockTime(AppConstants.DEFAULT_LOCK_TIMEOUT);
       setLoading(false);
       navigation.replace(SEED_PHRASE_BACKUP_STEP1_SCREEN);
     } catch (error) {
@@ -666,7 +664,10 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                     setIsSelected(!isSelected);
                   }}
                   style={styles.checkbox}
-                  tintColors={{ true: colors.bgGreen }}
+                  tintColors={{
+                    true: colors.bgGreen,
+                    false: colors.borderColor,
+                  }}
                   boxType="square"
                   tintColor={colors.borderColor}
                   onCheckColor={colors.bgGreen}

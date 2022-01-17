@@ -62,6 +62,7 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
   const [deleteText, setDeleteText] = useState("");
   const [error, setError] = useState<undefined | string>(undefined);
   const engineDispatch = useEngineDispatch();
+  const [loading, setLoading] = useState(false);
   const authDispatch = useAuthDispatch();
   return (
     <View>
@@ -130,6 +131,7 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
           <Button
             onPress={async () => {
               try {
+                setLoading(true);
                 const copiedSavedWallets = { ...savedWallets };
                 if (deleteText !== "delete") {
                   throw new Error("Wrong delete text");
@@ -158,7 +160,7 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
                 engineDispatch({
                   type: ENGINE_ACTIONS.PASSWORD_UNSET,
                 });
-
+                setLoading(false);
                 snapshotWallets.forEach((address) => {
                   if (address === connectedAddress) {
                     const savedWalletsKeys = Object.keys(copiedSavedWallets);
@@ -213,10 +215,12 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
                 });
                 onClose();
               } catch (e) {
+                setLoading(false);
                 setError(i18n.t("delete_wallet.wrongDeleteText"));
               }
             }}
             title={i18n.t("resetWallet")}
+            loading={loading}
           />
         </View>
       </View>

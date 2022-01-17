@@ -37,6 +37,7 @@ import { useAuthState } from "context/authContext";
 import { SEED_PHRASE_BACKUP_STEP2_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import storage from "helpers/storage";
+import BackButton from "components/BackButton";
 
 const styles = StyleSheet.create({
   scrollviewWrapper: {
@@ -225,7 +226,7 @@ function SeedPhraseBackupScreen() {
   const [bottomSheetModalKey, setBottomSheetModalKey] = useState(1);
   const [seedPhraseHidden, setSeedPhraseHidden] = useState(true);
   const [words, setWords] = useState<string[]>([]);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [warningIncorrectPassword, setWarningIncorrectPassword] = useState<
     string | null
   >(null);
@@ -272,11 +273,6 @@ function SeedPhraseBackupScreen() {
       storage.KEYS.preferencesControllerState,
       JSON.stringify(preferencesController.state)
     );
-    const hardwareBackPress = () => true;
-    BackHandler.addEventListener("hardwareBackPress", hardwareBackPress);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", hardwareBackPress);
-    };
   }, []);
 
   const goNext = () => {
@@ -293,16 +289,7 @@ function SeedPhraseBackupScreen() {
           { borderBottomColor: colors.borderColor },
         ]}
       >
-        <Text
-          style={[
-            common.screenHeaderTitle,
-            {
-              color: colors.textColor,
-            },
-          ]}
-        >
-          {i18n.t("manual_backup_step_1.action")}
-        </Text>
+        <BackButton title={i18n.t("manual_backup_step_1.action")} />
       </View>
       <ScrollView
         contentContainerStyle={styles.scrollviewWrapper}

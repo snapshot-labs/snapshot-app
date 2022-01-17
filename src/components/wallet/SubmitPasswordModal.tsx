@@ -47,6 +47,7 @@ function SubmitPasswordModal({
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [error, setError] = useState<undefined | string>(undefined);
+  const [loading, setLoading] = useState(false);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
 
@@ -107,11 +108,15 @@ function SubmitPasswordModal({
         </View>
         <View style={{ marginTop: 16 }}>
           <Button
+            loading={loading}
             onPress={async () => {
               try {
+                setLoading(true);
                 await keyRingController.submitPassword(password);
+                setLoading(false);
                 onClose();
               } catch (e) {
+                setLoading(false);
                 setError(
                   i18n.t("reveal_credential.warning_incorrect_password")
                 );

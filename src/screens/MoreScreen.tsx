@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -6,6 +6,8 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  TouchableHighlight,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
@@ -47,25 +49,27 @@ const { width } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   bottomButton: {
     position: "absolute",
-    bottom: 30,
+    bottom: 0,
     width: width - 32,
     left: 16,
     zIndex: 100,
     paddingTop: 16,
+    paddingBottom: 30,
+  },
+  newWalletLoader: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
 });
 
 function MoreScreen() {
-  const {
-    keyRingController,
-    preferencesController,
-    accountTrackerController,
-    passwordSet,
-  } = useEngineState();
-  const { connectedAddress, savedWallets, wcConnector, theme, colors }: any =
+  const { keyRingController, passwordSet } = useEngineState();
+  const { connectedAddress, savedWallets, wcConnector, colors }: any =
     useAuthState();
   const { profiles } = useExploreState();
-  const { snapshotWallets } = useAuthState();
   const exploreDispatch = useExploreDispatch();
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
@@ -74,8 +78,10 @@ function MoreScreen() {
   );
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const [loadingNewWallet, setLoadingNewWallet] = useState(false);
 
   async function createNewWallet() {
+    setLoadingNewWallet(true);
     try {
       const vault = await keyRingController.addNewAccount();
       const accounts = get(keyRingController.state?.keyrings[0], "accounts");
@@ -98,6 +104,7 @@ function MoreScreen() {
           name: SNAPSHOT_WALLET,
           address: latestAddress,
         };
+        setLoadingNewWallet(false);
         storage.save(
           storage.KEYS.savedWallets,
           JSON.stringify({
@@ -116,6 +123,7 @@ function MoreScreen() {
         throw new Error("Unable to get last address");
       }
     } catch (e) {
+      setLoadingNewWallet(false);
       bottomSheetModalDispatch({
         type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
         payload: {
@@ -184,6 +192,18 @@ function MoreScreen() {
         {savedWalletKeys.map((address: string) => {
           return <ConnectedWallet address={address} key={address} />;
         })}
+        {loadingNewWallet && (
+          <View
+            style={[
+              styles.newWalletLoader,
+              {
+                borderBottomColor: colors.borderColor,
+              },
+            ]}
+          >
+            <ActivityIndicator color={colors.textColor} size="large" />
+          </View>
+        )}
         <TouchableOpacity
           onPress={() => {
             navigation.navigate(CONNECT_ACCOUNT_SCREEN);

@@ -94,6 +94,7 @@ function ShowPrivateCredentialsScreen({ route }: ShowPrivateKeyScreenProps) {
   const [revealCredentials, setRevealCredentials] = useState(false);
   const [privateCredential, setPrivateCredentials] = useState("");
   const toastShowConfig = useToastShowConfig();
+  const [loading, setLoading] = useState(false);
 
   const copyToClipboard = () => {
     Clipboard.setString(privateCredential);
@@ -198,6 +199,7 @@ function ShowPrivateCredentialsScreen({ route }: ShowPrivateKeyScreenProps) {
             <Button
               onPress={async () => {
                 try {
+                  setLoading(true);
                   await keyRingController.submitPassword(password);
                   if (privateCredentialName === "privateKey") {
                     const privateCredential =
@@ -218,13 +220,16 @@ function ShowPrivateCredentialsScreen({ route }: ShowPrivateKeyScreenProps) {
                   }
 
                   setRevealCredentials(true);
+                  setLoading(false);
                 } catch (e) {
                   setError(
                     i18n.t("reveal_credential.warning_incorrect_password")
                   );
+                  setLoading(false);
                 }
               }}
               title={i18n.t("submitPassword")}
+              loading={loading}
             />
           </View>
         </View>
