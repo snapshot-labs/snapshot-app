@@ -37,7 +37,7 @@ export function createBottomSheetParamsForWalletConnectError(
     onPressOption: (index: number) => {
       if (index === 0) {
         const newSavedWallets = { ...savedWallets };
-        delete newSavedWallets[connectedAddress];
+        delete newSavedWallets[connectedAddress.toLowerCase()];
         if (Object.keys(newSavedWallets).length === 0) {
           authDispatch({
             type: AUTH_ACTIONS.LOGOUT,
@@ -52,7 +52,10 @@ export function createBottomSheetParamsForWalletConnectError(
             payload: newSavedWallets,
           });
           const nextAddress = Object.keys(newSavedWallets)[0];
-          const walletName = get(savedWallets, `${nextAddress}.name`);
+          const walletName = get(
+            savedWallets,
+            `${nextAddress?.toLowerCase()}.name`
+          );
           const walletProfile = newSavedWallets[nextAddress];
           authDispatch({
             type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
@@ -72,7 +75,7 @@ export function createBottomSheetParamsForWalletConnectError(
                 walletService: walletProfile?.walletService,
               },
             });
-r
+            r;
             authDispatch({
               type: AUTH_ACTIONS.SET_ALIAS_WALLET,
               payload: aliases[connectedAddress]

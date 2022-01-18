@@ -550,7 +550,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                       size={24}
                       color={colors.bgGreen}
                       style={{
-                        marginTop: Device.isIos() ? -10 : 0,
+                        marginTop: Device.isIos() ? -10 : -7,
                       }}
                     />
                   ) : null}

@@ -205,14 +205,14 @@ function ConnectAccountScreen() {
                         storage.KEYS.savedWallets,
                         JSON.stringify({
                           ...savedWallets,
-                          [address]: connectedWallet,
+                          [address.toLowerCase()]: connectedWallet,
                         })
                       );
                       authDispatch({
                         type: AUTH_ACTIONS.SET_SAVED_WALLETS,
                         payload: {
                           ...savedWallets,
-                          [address]: connectedWallet,
+                          [address.toLowerCase()]: connectedWallet,
                         },
                       });
                       authDispatch({

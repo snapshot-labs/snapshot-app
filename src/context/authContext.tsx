@@ -76,7 +76,7 @@ function authReducer(state: AuthState, action: ContextAction) {
       }
 
       if (action.payload.addToSavedWallets) {
-        savedWallets[action.payload.connectedAddress] = {
+        savedWallets[action.payload.connectedAddress.toLowerCase()] = {
           name: action.payload.isSnapshotWallet
             ? SNAPSHOT_WALLET
             : CUSTOM_WALLET_NAME,

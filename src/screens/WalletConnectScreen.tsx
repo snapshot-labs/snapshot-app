@@ -221,7 +221,7 @@ function WalletConnectScreen() {
                     storage.save(
                       storage.KEYS.savedWallets,
                       JSON.stringify({
-                        [address]: connectedWallet,
+                        [address.toLowerCase()]: connectedWallet,
                       })
                     );
                     authDispatch({

@@ -69,7 +69,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
       underlayColor={colors.highlightColor}
       key={address}
       onPress={async () => {
-        const walletProfile = savedWallets[address];
+        const walletProfile = savedWallets[address.toLowerCase()];
         if (isSnapshotWallet) {
           await preferencesController.setSelectedAddress(address);
           storage.save(

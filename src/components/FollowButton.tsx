@@ -125,17 +125,28 @@ function FollowButton({ space }: FollowButtonProps) {
           [connectedAddress]: wallet.privateKey,
         };
         const timestamp = ~~(Date.now() / 1e3);
-        const message = {
-          alias: wallet.address,
-          from: connectedAddress,
-          timestamp,
-          metamaskId: `alias-wallet-${connectedAddress}-${timestamp}`,
-          id: `alias-wallet-${connectedAddress}-${timestamp}`,
-        };
         const snapshotHubMessage = {
           alias: wallet.address,
           from: connectedAddress,
           timestamp,
+        };
+        const snapshotData = {
+          domain,
+          types: aliasTypes,
+          message: snapshotHubMessage,
+        };
+        const updatedTypes = {
+          ...snapshotData.types,
+          EIP712Domain: [
+            { name: "name", type: "string" },
+            { name: "version", type: "string" },
+          ],
+        };
+        const wcData: any = {
+          domain,
+          types: updatedTypes,
+          message: snapshotHubMessage,
+          primaryType: "Alias",
         };
 
         bottomSheetModalDispatch({
@@ -143,6 +154,7 @@ function FollowButton({ space }: FollowButtonProps) {
           payload: {
             show: true,
             ModalContent: () => {
+              console.log(keyRingController.state.keyrings[0].accounts);
               return (
                 <SignModal
                   messageParamsData={snapshotHubMessage}
@@ -153,27 +165,28 @@ function FollowButton({ space }: FollowButtonProps) {
                           {
                             data: JSON.stringify(snapshotHubMessage),
                             from: connectedAddress,
-                            meta: {
-                              title: "snapshot",
-                              url: "snapshot.org",
-                            },
                           },
                           { origin: "snapshot.org" }
                         );
                       const cleanMessageParams =
                         await personalMessageManager.approveMessage({
-                          ...message,
+                          ...snapshotHubMessage,
                           id: messageId,
                           metamaskId: messageId,
                         });
-                      const rawSig =
-                        await keyRingController.signPersonalMessage(
-                          cleanMessageParams
-                        );
+                      const rawSig = await keyRingController.signTypedMessage(
+                        {
+                          data: JSON.stringify(wcData),
+                          from: connectedAddress,
+                        },
+                        "V3"
+                      );
                       personalMessageManager.setMessageStatusSigned(
                         messageId,
                         rawSig
                       );
+
+                      console.log({ rawSig, connectedAddress });
 
                       const sentMessage = await signClient.send({
                         address: connectedAddress,
@@ -196,6 +209,16 @@ function FollowButton({ space }: FollowButtonProps) {
                         payload: wallet,
                       });
 
+                      followSpace(
+                        isFollowingSpace,
+                        wallet,
+                        connectedAddress ?? "",
+                        authDispatch,
+                        space,
+                        toastShowConfig,
+                        showBottomSheetWCErrorModal
+                      );
+
                       bottomSheetModalRef.current?.close();
                     } catch (e) {
                       console.log({ e });
@@ -214,6 +237,7 @@ function FollowButton({ space }: FollowButtonProps) {
             },
             initialIndex: 1,
             snapPoints: [10, 600],
+            key: "sign-message-modal",
           },
         });
       }

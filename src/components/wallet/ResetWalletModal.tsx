@@ -133,7 +133,7 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
                 );
 
                 snapshotWallets.forEach((address) => {
-                  delete copiedSavedWallets[address];
+                  delete copiedSavedWallets[address.toLowerCase()];
                 });
 
                 await storage.remove(storage.KEYS.passwordSet);
@@ -152,7 +152,9 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
                 });
                 setLoading(false);
                 snapshotWallets.forEach((address) => {
-                  if (address === connectedAddress) {
+                  if (
+                    address.toLowerCase() === connectedAddress?.toLowerCase()
+                  ) {
                     const savedWalletsKeys = Object.keys(copiedSavedWallets);
                     const firstKey = savedWalletsKeys[0];
 

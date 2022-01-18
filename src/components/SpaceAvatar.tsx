@@ -20,7 +20,7 @@ function createUrl(
       : "logo";
 
     const url =
-      getUrl(space.avatar) ??
+      getUrl(space?.avatar) ??
       `https://raw.githubusercontent.com/snapshot-labs/snapshot-spaces/master/spaces/${spaceId}/${file}.png`;
 
     return `https://worker.snapshot.org/mirror?img=${encodeURIComponent(url)}`;

@@ -91,7 +91,6 @@ function MoreScreen() {
         payload: accounts,
       });
 
-
       if (latestAddress) {
         await storage.save(
           storage.KEYS.keyRingControllerState,
@@ -110,14 +109,14 @@ function MoreScreen() {
           storage.KEYS.savedWallets,
           JSON.stringify({
             ...savedWallets,
-            [latestAddress]: snapshotWallet,
+            [latestAddress.toLowerCase()]: snapshotWallet,
           })
         );
         authDispatch({
           type: AUTH_ACTIONS.SET_SAVED_WALLETS,
           payload: {
             ...savedWallets,
-            [latestAddress]: snapshotWallet,
+            [latestAddress.toLowerCase()]: snapshotWallet,
           },
         });
         authDispatch({
