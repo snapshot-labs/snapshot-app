@@ -5,7 +5,6 @@ type EngineState = {
   keyRingController: any;
   preferencesController: any;
   accountTrackerController: any;
-  networkController: any;
   personalMessageManager: any;
   messageManager: any;
   seedPhraseBackedUp: boolean;
@@ -29,7 +28,6 @@ const ENGINE_ACTIONS = {
 const initialState = {
   keyRingController: {},
   preferencesController: {},
-  networkController: {},
   accountTrackerController: {},
   PersonalMessageManager: {},
   messageManager: {},
@@ -46,7 +44,6 @@ function engineReducer(state: EngineState, action: ContextAction) {
         keyRingController: action.payload.keyRingController,
         preferencesController: action.payload.preferencesController,
         accountTrackerController: action.payload.accountTrackerController,
-        networkController: action.payload.networkController,
         personalMessageManager: action.payload.personalMessageManager,
         messageManager: action.payload.messageManager,
       };

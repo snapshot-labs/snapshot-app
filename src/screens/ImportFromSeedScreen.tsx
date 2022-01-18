@@ -37,7 +37,6 @@ import {
 } from "context/engineContext";
 import storage from "helpers/storage";
 import SecureKeychain from "helpers/secureKeychain";
-import importAdditionalAccounts from "helpers/importAdditionalAccounts";
 import { HOME_SCREEN, QR_CODE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -184,8 +183,7 @@ const PASSCODE_NOT_SET_ERROR = "Error: Passcode not set.";
 
 function ImportFromSeedScreen() {
   const { colors } = useAuthState();
-  const { keyRingController, preferencesController, networkController } =
-    useEngineState();
+  const { keyRingController } = useEngineState();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [seed, setSeed] = useState("");
@@ -278,11 +276,6 @@ function ImportFromSeedScreen() {
         navigation.navigate(HOME_SCREEN, {
           screen: "More",
         });
-        await importAdditionalAccounts(
-          keyRingController,
-          preferencesController,
-          networkController
-        );
       } catch (error) {
         // Should we force people to enable passcode / biometrics?
         if (error.toString() === PASSCODE_NOT_SET_ERROR) {

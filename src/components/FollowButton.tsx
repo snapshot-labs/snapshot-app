@@ -83,8 +83,7 @@ interface FollowButtonProps {
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const { wcConnector, colors, savedWallets, aliases } = useAuthState();
-  const { keyRingController, personalMessageManager, messageManager } =
-    useEngineState();
+  const { keyRingController, personalMessageManager } = useEngineState();
   const authDispatch = useAuthDispatch();
   const { aliasWallet, followedSpaces, connectedAddress, snapshotWallets } =
     useAuthState();
@@ -149,17 +148,33 @@ function FollowButton({ space }: FollowButtonProps) {
                   messageParamsData={snapshotHubMessage}
                   onSign={async () => {
                     try {
-                      messageManager.addMessage(message);
+                      const messageId =
+                        await personalMessageManager.addUnapprovedMessage(
+                          {
+                            data: JSON.stringify(snapshotHubMessage),
+                            from: connectedAddress,
+                            meta: {
+                              title: "snapshot",
+                              url: "snapshot.org",
+                            },
+                          },
+                          { origin: "snapshot.org" }
+                        );
                       const cleanMessageParams =
-                        await messageManager.approveMessage(message);
+                        await personalMessageManager.approveMessage({
+                          ...message,
+                          id: messageId,
+                          metamaskId: messageId,
+                        });
                       const rawSig =
                         await keyRingController.signPersonalMessage(
                           cleanMessageParams
                         );
-                      console.log({
-                        rawSig,
-                        cleanMessageParams,
-                      });
+                      personalMessageManager.setMessageStatusSigned(
+                        messageId,
+                        rawSig
+                      );
+
                       const sentMessage = await signClient.send({
                         address: connectedAddress,
                         sig: rawSig,
@@ -183,6 +198,7 @@ function FollowButton({ space }: FollowButtonProps) {
 
                       bottomSheetModalRef.current?.close();
                     } catch (e) {
+                      console.log({ e });
                       Toast.show({
                         type: "customError",
                         text1: parseErrorMessage(
