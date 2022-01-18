@@ -351,9 +351,6 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
         engineDispatch({
           type: ENGINE_ACTIONS.SEEDPHRASE_NOT_BACKED_UP,
         });
-        await storage.remove(storage.KEYS.nextMakerReminder);
-        await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
-        await storage.remove(storage.KEYS.seedPhraseHints);
       } else {
         await recreateVault(password);
       }
@@ -389,12 +386,10 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
           isSnapshotWallet: true,
         },
       });
-      await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
       await storage.save(
         storage.KEYS.snapshotWallets,
         JSON.stringify(accounts)
       );
-      await storage.remove(storage.KEYS.seedPhraseHints);
       await storage.save(storage.KEYS.passwordSet, storage.VALUES.true);
       engineDispatch({
         type: ENGINE_ACTIONS.PASSWORD_SET,
@@ -411,9 +406,6 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
       await recreateVault("");
 
       await SecureKeychain.resetGenericPassword();
-      await storage.remove(storage.KEYS.nextMakerReminder);
-      await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
-      await storage.remove(storage.KEYS.seedPhraseHints);
       engineDispatch({
         type: ENGINE_ACTIONS.PASSWORD_UNSET,
       });

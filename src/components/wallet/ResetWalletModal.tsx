@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import IconFont from "components/IconFont";
 import {
@@ -24,7 +19,7 @@ import storage from "helpers/storage";
 import { CUSTOM_WALLET_NAME } from "constants/wallets";
 import { getAliasWallet } from "helpers/aliasUtils";
 import { LANDING_SCREEN } from "constants/navigation";
-import TextInput from "components/TextInput"
+import TextInput from "components/TextInput";
 
 const styles = StyleSheet.create({
   hintLabelContainer: {
@@ -142,7 +137,6 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
                 });
 
                 await storage.remove(storage.KEYS.passwordSet);
-                await storage.remove(storage.KEYS.existingUser);
                 await storage.remove(storage.KEYS.keyRingControllerState);
                 await storage.remove(storage.KEYS.preferencesControllerState);
                 await storage.save(

@@ -228,7 +228,6 @@ function ImportFromSeedScreen() {
       try {
         setLoading(true);
 
-        await storage.remove(storage.KEYS.nextMakerReminder);
         const vault = await keyRingController.createNewVaultAndRestore(
           password,
           parsedSeed
@@ -243,7 +242,6 @@ function ImportFromSeedScreen() {
             isSnapshotWallet: true,
           },
         });
-        await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
         await storage.save(
           storage.KEYS.snapshotWallets,
           JSON.stringify(accounts)
@@ -266,8 +264,6 @@ function ImportFromSeedScreen() {
           storage.KEYS.keyRingControllerState,
           JSON.stringify(vault)
         );
-        await storage.save(storage.KEYS.existingUser, storage.VALUES.true);
-        await storage.remove(storage.KEYS.seedPhraseHints);
         await storage.save(storage.KEYS.passwordSet, storage.VALUES.true);
         setLoading(false);
         engineDispatch({
