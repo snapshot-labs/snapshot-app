@@ -118,8 +118,14 @@ function SignModal({ messageParamsData, onSign }: SignModalProps) {
 
         messageText.push(
           <View key={key} style={styles.messageTextContainer}>
-            <Text style={styles.messageLabelText}>{key}: </Text>
-            <Text style={styles.messageText}>{formattedValue}</Text>
+            <Text
+              style={[styles.messageLabelText, { color: colors.textColor }]}
+            >
+              {key}:{" "}
+            </Text>
+            <Text style={[styles.messageText, { color: colors.textColor }]}>
+              {formattedValue}
+            </Text>
           </View>
         );
       }
@@ -170,7 +176,9 @@ function SignModal({ messageParamsData, onSign }: SignModalProps) {
           }
         >
           <View style={styles.messageColumn}>
-            <Text style={styles.messageLabelText}>
+            <Text
+              style={[styles.messageLabelText, { color: colors.textColor }]}
+            >
               {i18n.t("signature_request.message")}:
             </Text>
             <View style={styles.messageWrapper}>{renderMessageText()}</View>

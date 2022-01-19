@@ -5,8 +5,7 @@ import {
   PreferencesController,
   KeyringController,
   AccountTrackerController,
-  PersonalMessageManager,
-  MessageManager,
+  TypedMessageManager,
 } from "@metamask/controllers";
 import AppConstants from "constants/app";
 const encryptor = new Encryptor();
@@ -51,20 +50,13 @@ function initializeEngine(
       getIdentities: () => preferencesController.state.identities,
     });
 
-    //
-    // const update_bg_state_cb = () => {
-    //   console.log("UPDATE KEY RING STATE", keyRingController.state);
-    // };
-    // keyRingController.subscribe(update_bg_state_cb);
-
     engineDispatch({
       type: ENGINE_ACTIONS.INIT_ENGINE,
       payload: {
         keyRingController,
         preferencesController,
         accountTrackerController,
-        personalMessageManager: new PersonalMessageManager(),
-        messageManager: new MessageManager(),
+        typedMessageManager: new TypedMessageManager(),
       },
     });
   } catch (e) {}

@@ -29,6 +29,14 @@ import SignModal from "components/wallet/SignModal";
 import { useEngineState } from "context/engineContext";
 import { aliasTypes } from "@snapshot-labs/snapshot.js/src/sign/types";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
+import {
+  personalSign,
+  signTypedData,
+  SignTypedDataVersion,
+} from "@metamask/eth-sig-util";
+import snapshot from "@snapshot-labs/snapshot.js";
+import { ethers, getDefaultProvider } from "ethers";
+const signer = ethers.Wallet.createRandom();
 
 async function followSpace(
   isFollowingSpace: any,
@@ -83,7 +91,8 @@ interface FollowButtonProps {
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const { wcConnector, colors, savedWallets, aliases } = useAuthState();
-  const { keyRingController, personalMessageManager } = useEngineState();
+  const { keyRingController, personalMessageManager, typedMessageManager } =
+    useEngineState();
   const authDispatch = useAuthDispatch();
   const { aliasWallet, followedSpaces, connectedAddress, snapshotWallets } =
     useAuthState();
@@ -121,13 +130,15 @@ function FollowButton({ space }: FollowButtonProps) {
     if (keyRingController.isUnlocked()) {
       if (connectedAddress) {
         const wallet = await getRandomAliasWallet();
+        const formattedAddress = connectedAddress?.toLowerCase();
+        const checksumAddress = ethers.utils.getAddress(formattedAddress);
         const alias = {
           [connectedAddress]: wallet.privateKey,
         };
         const timestamp = ~~(Date.now() / 1e3);
         const snapshotHubMessage = {
           alias: wallet.address,
-          from: connectedAddress,
+          from: checksumAddress,
           timestamp,
         };
         const snapshotData = {
@@ -154,51 +165,42 @@ function FollowButton({ space }: FollowButtonProps) {
           payload: {
             show: true,
             ModalContent: () => {
-              console.log(keyRingController.state.keyrings[0].accounts);
               return (
                 <SignModal
                   messageParamsData={snapshotHubMessage}
                   onSign={async () => {
                     try {
                       const messageId =
-                        await personalMessageManager.addUnapprovedMessage(
+                        await typedMessageManager.addUnapprovedMessage(
                           {
-                            data: JSON.stringify(snapshotHubMessage),
-                            from: connectedAddress,
+                            data: JSON.stringify(wcData),
+                            from: checksumAddress,
                           },
                           { origin: "snapshot.org" }
                         );
                       const cleanMessageParams =
-                        await personalMessageManager.approveMessage({
-                          ...snapshotHubMessage,
-                          id: messageId,
+                        await typedMessageManager.approveMessage({
+                          ...wcData,
                           metamaskId: messageId,
                         });
                       const rawSig = await keyRingController.signTypedMessage(
                         {
-                          data: JSON.stringify(wcData),
-                          from: connectedAddress,
+                          data: JSON.stringify(cleanMessageParams),
+                          from: checksumAddress,
                         },
-                        "V3"
+                        "V4"
                       );
-                      personalMessageManager.setMessageStatusSigned(
+
+                      typedMessageManager.setMessageStatusSigned(
                         messageId,
                         rawSig
                       );
 
-                      console.log({ rawSig, connectedAddress });
-
-                      const sentMessage = await signClient.send({
-                        address: connectedAddress,
+                      await signClient.send({
+                        address: checksumAddress,
                         sig: rawSig,
-                        data: {
-                          domain,
-                          types: aliasTypes,
-                          message: snapshotHubMessage,
-                        },
+                        data: snapshotData,
                       });
-
-                      console.log({ sentMessage });
 
                       authDispatch({
                         type: AUTH_ACTIONS.SET_ALIAS,

@@ -7,9 +7,6 @@ import { AUTH_ACTIONS } from "../context/authContext";
 import WalletConnect from "@walletconnect/client";
 import { ContextDispatch } from "../types/context";
 import "@ethersproject/shims";
-import Toast from "react-native-toast-message";
-import { parseErrorMessage } from "helpers/apiUtils";
-import i18n from "i18n-js";
 
 export function getAliasWallet(aliasWalletPrivateKey: string | undefined) {
   const provider = getDefaultProvider();

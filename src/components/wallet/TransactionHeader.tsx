@@ -38,7 +38,12 @@ const TransactionHeader = ({ title }: TransactionHeaderProps) => {
     <View style={styles.transactionHeader}>
       <IconFont name="snapshot" color={colors.yellow} size={40} />
       <View style={styles.domainUrlContainer}>
-        <FontAwesome name="lock" size={15} style={styles.secureIcon} />
+        <FontAwesome
+          name="lock"
+          size={15}
+          style={styles.secureIcon}
+          color={colors.textColor}
+        />
         <Text style={[styles.domainUrl, { color: colors.textColor }]}>
           {title}
         </Text>

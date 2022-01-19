@@ -20,6 +20,7 @@ import { CUSTOM_WALLET_NAME } from "constants/wallets";
 import { getAliasWallet } from "helpers/aliasUtils";
 import { LANDING_SCREEN } from "constants/navigation";
 import TextInput from "components/TextInput";
+import SecureKeychain from "helpers/secureKeychain";
 
 const styles = StyleSheet.create({
   hintLabelContainer: {
@@ -136,6 +137,7 @@ function ResetWalletModal({ onClose, navigation }: ResetWalletModalProps) {
                   delete copiedSavedWallets[address.toLowerCase()];
                 });
 
+                await SecureKeychain.resetGenericPassword();
                 await storage.remove(storage.KEYS.passwordSet);
                 await storage.remove(storage.KEYS.keyRingControllerState);
                 await storage.remove(storage.KEYS.preferencesControllerState);

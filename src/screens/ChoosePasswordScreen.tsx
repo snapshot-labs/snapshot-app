@@ -398,7 +398,6 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
         type: AUTH_ACTIONS.SET_SNAPSHOT_WALLETS,
         payload: accounts,
       });
-      console.log({ accounts });
       setLoading(false);
       navigation.replace(SEED_PHRASE_BACKUP_STEP1_SCREEN);
     } catch (error) {
