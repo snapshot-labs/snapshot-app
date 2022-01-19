@@ -93,9 +93,10 @@ const styles = StyleSheet.create({
 interface SignModalProps {
   messageParamsData: any;
   onSign: () => void;
+  onClose: () => void;
 }
 
-function SignModal({ messageParamsData, onSign }: SignModalProps) {
+function SignModal({ messageParamsData, onSign, onClose }: SignModalProps) {
   const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
   const [truncateMessage, setTruncateMessage] = useState(false);
@@ -135,13 +136,32 @@ function SignModal({ messageParamsData, onSign }: SignModalProps) {
 
   return (
     <View>
-      <TransactionHeader title="snapshot.org" />
-      <View style={styles.messageContainer}>
+      <View
+        style={[
+          common.modalHeader,
+          {
+            borderBottomColor: colors.borderColor,
+            marginBottom: 16,
+          },
+        ]}
+      >
         <Text
-          style={[styles.signingTitle, common.h4, { color: colors.textColor }]}
+          style={[common.h3, { textAlign: "center", color: colors.textColor }]}
         >
           {i18n.t("signature_request.signing")}
         </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            onClose();
+          }}
+          style={{ marginLeft: "auto" }}
+        >
+          <IconFont name="close" size={20} color={colors.darkGray} />
+        </TouchableOpacity>
+      </View>
+      <TransactionHeader title="snapshot.org" />
+      <View style={styles.messageContainer}>
         <View
           style={[
             styles.accountInformation,

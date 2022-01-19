@@ -91,8 +91,7 @@ interface FollowButtonProps {
 function FollowButton({ space }: FollowButtonProps) {
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const { wcConnector, colors, savedWallets, aliases } = useAuthState();
-  const { keyRingController, personalMessageManager, typedMessageManager } =
-    useEngineState();
+  const { keyRingController, typedMessageManager } = useEngineState();
   const authDispatch = useAuthDispatch();
   const { aliasWallet, followedSpaces, connectedAddress, snapshotWallets } =
     useAuthState();
@@ -167,6 +166,9 @@ function FollowButton({ space }: FollowButtonProps) {
             ModalContent: () => {
               return (
                 <SignModal
+                  onClose={() => {
+                    bottomSheetModalRef?.current?.close();
+                  }}
                   messageParamsData={snapshotHubMessage}
                   onSign={async () => {
                     try {

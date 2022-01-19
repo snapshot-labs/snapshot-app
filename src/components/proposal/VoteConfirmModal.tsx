@@ -15,7 +15,11 @@ import colors from "constants/colors";
 import IconFont from "../IconFont";
 import { styles as buttonStyles } from "../Button";
 import { explorerUrl, getChoiceString, n, shorten } from "helpers/miscUtils";
-import { useAuthDispatch, useAuthState } from "context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
 import { useToastShowConfig } from "constants/toast";
 import { sendEIP712 } from "helpers/EIP712";
 import { parseErrorMessage } from "helpers/apiUtils";
@@ -25,6 +29,23 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
+import { addressIsSnapshotWallet } from "helpers/address";
+import { getRandomAliasWallet } from "helpers/aliasUtils";
+import { ethers } from "ethers";
+import signClient, { domain } from "helpers/signClient";
+import {
+  aliasTypes,
+  vote2Types,
+  voteArray2Types,
+  voteArrayTypes,
+  voteString2Types,
+  voteStringTypes,
+  voteTypes,
+} from "@snapshot-labs/snapshot.js/src/sign/types";
+import SignModal from "components/wallet/SignModal";
+import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
+import { useEngineState } from "context/engineContext";
+import Device from "helpers/device";
 
 const { width } = Dimensions.get("screen");
 
@@ -111,7 +132,9 @@ function VoteConfirmModal({
     colors,
     aliases,
     savedWallets,
+    snapshotWallets,
   } = useAuthState();
+  const { keyRingController, typedMessageManager } = useEngineState();
   const authDispatch = useAuthDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const toastShowConfig = useToastShowConfig();
@@ -126,6 +149,163 @@ function VoteConfirmModal({
     aliases,
     connectedAddress ?? ""
   );
+  const isSnapshotWallet = addressIsSnapshotWallet(
+    connectedAddress ?? "",
+    snapshotWallets
+  );
+
+  async function snapshotWalletVote() {
+    if (keyRingController.isUnlocked()) {
+      if (connectedAddress) {
+        const formattedAddress = connectedAddress?.toLowerCase();
+        const checksumAddress = ethers.utils.getAddress(formattedAddress);
+        console.log({ checksumAddress });
+        let formattedSelectedChoices = selectedChoices;
+
+        if (proposal.type === "single-choice") {
+          formattedSelectedChoices = selectedChoices[0];
+        }
+        const timestamp = ~~(Date.now() / 1e3);
+        const snapshotHubMessage = {
+          space: space.id,
+          proposal: proposal.id,
+          type: proposal.type,
+          choice: formattedSelectedChoices,
+          metadata: JSON.stringify({}),
+          from: checksumAddress,
+          timestamp,
+        };
+        const type2 = snapshotHubMessage.proposal.startsWith("0x");
+        let types = type2 ? vote2Types : voteTypes;
+        if (["approval", "ranked-choice"].includes(snapshotHubMessage.type))
+          types = type2 ? voteArray2Types : voteArrayTypes;
+        if (["quadratic", "weighted"].includes(snapshotHubMessage.type)) {
+          types = type2 ? voteString2Types : voteStringTypes;
+          snapshotHubMessage.choice = JSON.stringify(snapshotHubMessage.choice);
+        }
+        const snapshotData = {
+          domain,
+          types,
+          message: snapshotHubMessage,
+        };
+        const updatedTypes = {
+          ...snapshotData.types,
+          EIP712Domain: [
+            { name: "name", type: "string" },
+            { name: "version", type: "string" },
+          ],
+        };
+        const wcData: any = {
+          domain,
+          types: updatedTypes,
+          message: snapshotHubMessage,
+          primaryType: "Vote",
+        };
+
+        bottomSheetModalDispatch({
+          type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+          payload: {
+            show: true,
+            ModalContent: () => {
+              return (
+                <SignModal
+                  messageParamsData={snapshotHubMessage}
+                  onClose={() => {
+                    bottomSheetModalRef?.current?.close();
+                  }}
+                  onSign={async () => {
+                    try {
+                      const messageId =
+                        await typedMessageManager.addUnapprovedMessage(
+                          {
+                            data: JSON.stringify(wcData),
+                            from: checksumAddress,
+                          },
+                          { origin: "snapshot.org" }
+                        );
+                      const cleanMessageParams =
+                        await typedMessageManager.approveMessage({
+                          ...wcData,
+                          metamaskId: messageId,
+                        });
+                      const rawSig = await keyRingController.signTypedMessage(
+                        {
+                          data: JSON.stringify(cleanMessageParams),
+                          from: checksumAddress,
+                        },
+                        "V4"
+                      );
+
+                      typedMessageManager.setMessageStatusSigned(
+                        messageId,
+                        rawSig
+                      );
+
+                      const sign = await signClient.send({
+                        address: checksumAddress,
+                        sig: rawSig,
+                        data: snapshotData,
+                      });
+                      if (sign) {
+                        Toast.show({
+                          type: "customSuccess",
+                          text1: i18n.t("yourVoteIsIn"),
+                          ...toastShowConfig,
+                        });
+
+                        bottomSheetModalRef.current?.close();
+                        getProposal();
+                        onClose();
+                      } else {
+                        Toast.show({
+                          type: "customError",
+                          text1: i18n.t("unableToCastVote"),
+                          ...toastShowConfig,
+                        });
+                      }
+                    } catch (e) {
+                      console.log({ e });
+                      Toast.show({
+                        type: "customError",
+                        text1: parseErrorMessage(
+                          e,
+                          i18n.t("signature_request.error")
+                        ),
+                        ...toastShowConfig,
+                      });
+                    }
+                  }}
+                />
+              );
+            },
+            initialIndex: 1,
+            snapPoints: [10, Device.getDeviceHeight()],
+            key: `vote-message-modal-${proposal.id}`,
+          },
+        });
+      }
+    } else {
+      bottomSheetModalDispatch({
+        type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+        payload: {
+          snapPoints: [10, 450],
+          initialIndex: 1,
+          ModalContent: () => {
+            return (
+              <SubmitPasswordModal
+                onClose={() => {
+                  bottomSheetModalRef.current?.close();
+                }}
+                navigation={navigation}
+              />
+            );
+          },
+          show: true,
+          key: `submit-password-modal-${proposal.id}`,
+        },
+      });
+    }
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.bgDefault }]}>
@@ -259,35 +439,39 @@ function VoteConfirmModal({
             }
 
             try {
-              const sign = await sendEIP712(
-                wcConnector,
-                connectedAddress,
-                space,
-                "vote",
-                {
-                  proposal: {
-                    id: proposal.id,
-                    type: proposal.type,
-                  },
-                  choice: formattedSelectedChoices,
-                }
-              );
-
-              if (sign) {
-                Toast.show({
-                  type: "customSuccess",
-                  text1: i18n.t("yourVoteIsIn"),
-                  ...toastShowConfig,
-                });
-
-                getProposal();
-                onClose();
+              if (isSnapshotWallet) {
+                snapshotWalletVote();
               } else {
-                Toast.show({
-                  type: "customError",
-                  text1: i18n.t("unableToCastVote"),
-                  ...toastShowConfig,
-                });
+                const sign = await sendEIP712(
+                  wcConnector,
+                  connectedAddress,
+                  space,
+                  "vote",
+                  {
+                    proposal: {
+                      id: proposal.id,
+                      type: proposal.type,
+                    },
+                    choice: formattedSelectedChoices,
+                  }
+                );
+
+                if (sign) {
+                  Toast.show({
+                    type: "customSuccess",
+                    text1: i18n.t("yourVoteIsIn"),
+                    ...toastShowConfig,
+                  });
+
+                  getProposal();
+                  onClose();
+                } else {
+                  Toast.show({
+                    type: "customError",
+                    text1: i18n.t("unableToCastVote"),
+                    ...toastShowConfig,
+                  });
+                }
               }
             } catch (e) {
               console.log("FAILED TO VOTE");

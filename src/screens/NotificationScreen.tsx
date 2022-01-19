@@ -10,33 +10,34 @@ import {
   useNotificationsState,
 } from "context/notificationsContext";
 import ProposalNotification from "components/proposal/ProposalNotification";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import get from "lodash/get";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
-  const { proposalTimes, proposals, lastViewedProposal } =
-    useNotificationsState();
-  const navigation: NavigationProp<ReactNavigation.RootParamList> =
-    useNavigation();
+  const {
+    proposalTimes,
+    proposals,
+    lastViewedProposal,
+    lastViewedNotification,
+  } = useNotificationsState();
   const notificationsDispatch = useNotificationsDispatch();
   const lastViewedProposalIndex = useRef(Infinity);
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    return navigation.addListener("focus", () => {
-      setTimeout(() => {
-        notificationsDispatch({
-          type: NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION,
-          payload: {
-            saveToStorage: true,
-            time: get(proposalTimes[0], "time"),
-            lastViewedProposal: get(proposalTimes[0], "id"),
-          },
-        });
-      }, 1000);
-    });
-  }, [navigation]);
+    if (isFocused) {
+      notificationsDispatch({
+        type: NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION,
+        payload: {
+          saveToStorage: true,
+          time: get(proposalTimes[0], "time"),
+          lastViewedProposal: get(proposalTimes[0], "id"),
+        },
+      });
+    }
+  }, [isFocused, proposals]);
 
   return (
     <View
@@ -69,13 +70,18 @@ function NotificationScreen() {
             lastViewedProposalIndex.current = data.index;
           }
           const proposalDetails = proposals[data?.item?.id];
+          let didView = data.index >= lastViewedProposalIndex.current;
+
+          if (lastViewedProposal === null && lastViewedNotification === null) {
+            didView = false;
+          }
 
           return (
             <ProposalNotification
               proposal={proposalDetails}
               time={data.item?.time}
               event={data.item?.event}
-              didView={data.index >= lastViewedProposalIndex.current}
+              didView={didView}
             />
           );
         }}
