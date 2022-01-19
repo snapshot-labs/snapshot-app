@@ -110,6 +110,12 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             payload: aliases[address] ? getAliasWallet(aliases[address]) : null,
           });
         }
+        notificationsDispatch({
+          type: NOTIFICATIONS_ACTIONS.RESET_PROPOSAL_TIMES,
+        });
+        notificationsDispatch({
+          type: NOTIFICATIONS_ACTIONS.RESET_LAST_VIEWED_NOTIFICATION,
+        });
       }}
     >
       <View
@@ -177,13 +183,6 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
                   type: ENGINE_ACTIONS.PASSWORD_UNSET,
                 });
               }
-
-              notificationsDispatch({
-                type: NOTIFICATIONS_ACTIONS.RESET_PROPOSAL_TIMES,
-              });
-              notificationsDispatch({
-                type: NOTIFICATIONS_ACTIONS.RESET_LAST_VIEWED_NOTIFICATION,
-              });
             }}
             style={{ marginLeft: 8 }}
           >
