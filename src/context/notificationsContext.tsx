@@ -24,6 +24,9 @@ const NotificationsDispatchContext = createContext<ContextDispatch | undefined>(
 const NOTIFICATIONS_ACTIONS = {
   SET_PROPOSALS: "@notifications/SET_PROPOSALS",
   SET_LAST_VIEWED_NOTIFICATION: "@notification/SET_LAST_VIEWED_NOTIFICATION",
+  RESET_PROPOSAL_TIMES: "@notifications/RESET_PROPOSAL_TIMES",
+  RESET_LAST_VIEWED_NOTIFICATION:
+    "@notifications/RESET_LAST_VIEWED_NOTIFICATION",
 };
 
 const initialState = {
@@ -41,7 +44,7 @@ function notificationsReducer(
     case NOTIFICATIONS_ACTIONS.SET_PROPOSALS:
       const { proposals, proposalTimes } = action.payload;
       const today = parseInt((moment().valueOf() / 1e3).toFixed());
-      const proposalsMap: { [id: string]: Proposal } = {};
+      const proposalsMap: { [id: string]: Proposal } = { ...state.proposals };
       const startProposalTimes: { [id: string]: boolean } = {};
       const endProposalTimes: { [id: string]: boolean } = {};
 
@@ -95,6 +98,19 @@ function notificationsReducer(
         ...state,
         lastViewedNotification: action.payload?.time,
         lastViewedProposal: action.payload?.lastViewedProposal,
+      };
+    case NOTIFICATIONS_ACTIONS.RESET_LAST_VIEWED_NOTIFICATION:
+      storage.remove(storage.KEYS.lastViewedNotification);
+      storage.remove(storage.KEYS.lastViewedProposal);
+      return {
+        ...state,
+        lastViewedProposal: null,
+        lastViewedNotification: null,
+      };
+    case NOTIFICATIONS_ACTIONS.RESET_PROPOSAL_TIMES:
+      return {
+        ...state,
+        proposalTimes: [],
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

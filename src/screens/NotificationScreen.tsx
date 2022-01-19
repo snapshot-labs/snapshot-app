@@ -69,6 +69,7 @@ function NotificationScreen() {
             lastViewedProposalIndex.current = data.index;
           }
           const proposalDetails = proposals[data?.item?.id];
+
           return (
             <ProposalNotification
               proposal={proposalDetails}

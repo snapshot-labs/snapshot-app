@@ -6,6 +6,20 @@ const HD_KEY_TREE_ERROR = "MetamaskController - No HD Key Tree found";
 const ZERO_BALANCE = "0x0";
 const MAX = 20;
 
+export async function syncPrefs(oldPrefs, updatedPref) {
+  try {
+    Object.keys(oldPrefs.identities).forEach((ids) => {
+      if (updatedPref.identities[ids]) {
+        updatedPref.identities[ids] = oldPrefs.identities[ids];
+      }
+    });
+
+    return updatedPref;
+  } catch (err) {
+    return updatedPref;
+  }
+}
+
 /**
  * Get an account balance from the network.
  * @param {string} address - The account address

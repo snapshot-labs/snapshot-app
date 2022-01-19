@@ -26,6 +26,10 @@ import {
 } from "context/engineContext";
 import { CUSTOM_WALLET_NAME, SNAPSHOT_WALLET } from "constants/wallets";
 import { addressIsSnapshotWallet } from "helpers/address";
+import {
+  NOTIFICATIONS_ACTIONS,
+  useNotificationsDispatch,
+} from "context/notificationsContext";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -59,6 +63,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
   const { profiles } = useExploreState();
   const authDispatch = useAuthDispatch();
   const engineDispatch = useEngineDispatch();
+  const notificationsDispatch = useNotificationsDispatch();
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address}.name`);
@@ -172,6 +177,13 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
                   type: ENGINE_ACTIONS.PASSWORD_UNSET,
                 });
               }
+
+              notificationsDispatch({
+                type: NOTIFICATIONS_ACTIONS.RESET_PROPOSAL_TIMES,
+              });
+              notificationsDispatch({
+                type: NOTIFICATIONS_ACTIONS.RESET_LAST_VIEWED_NOTIFICATION,
+              });
             }}
             style={{ marginLeft: 8 }}
           >

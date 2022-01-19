@@ -375,6 +375,7 @@ function SeedPhraseBackupScreen() {
                       }}
                       secureTextEntry
                       onSubmitEditing={tryUnlockWithPassword}
+                      autoCapitalize="none"
                     />
                     {warningIncorrectPassword && (
                       <Text style={styles.warningMessageText}>

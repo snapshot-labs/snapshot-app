@@ -330,7 +330,7 @@ export default {
     subtitle: "Paste your private key string",
     cta_text: "Import",
     example:
-      "e.g. 3a1076bf45ab87712ad64ccb3b10217737f7faacbf2872e88fdd9a537d8fe266",
+      "e.g. 3a1076bf45ab87712ad64ccb3b10217737f7faacbf2872e88fdd9a537dz8fe266",
     error_title: "Ooops! something went wrong...",
     error_message:
       "We couldn't import that private key. Please make sure you entered it correctly.",
@@ -372,5 +372,11 @@ export default {
     read_more: "Read more",
     sign: "Sign",
     error: "Unable to sign this message.",
+  },
+  change_password: {
+    title: "Change password",
+    current_password: "Current password",
+    unable_to_change_password: "Unable to change password",
+    password_changed: "Your snapshot password was updated",
   },
 };

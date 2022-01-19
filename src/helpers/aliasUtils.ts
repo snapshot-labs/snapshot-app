@@ -49,7 +49,7 @@ export async function setAlias(
   if (connectedAddress) {
     const wallet = await getRandomAliasWallet();
     const alias = {
-      [connectedAddress]: wallet.privateKey,
+      [connectedAddress.toLowerCase()]: wallet.privateKey,
     };
 
     if (wallet.address) {

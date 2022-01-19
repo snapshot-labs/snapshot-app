@@ -220,7 +220,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const [error, setError] = useState(null);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const passwordStrengthWord = getPasswordStrengthWord(passwordStrength);
-  const confirmPasswordInputRef = useRef<TextInput>(null);
+  const confirmPasswordInputRef = useRef(null);
   const passwordsMatch = password !== "" && password === confirmPassword;
   const canSubmit = passwordsMatch && isSelected;
   const navigation: any = useNavigation();

@@ -44,6 +44,7 @@ import QRCodeScreen from "screens/QRCodeScreen";
 import ImportFromPrivateKeyScreen from "screens/ImportFromPrivateKeyScreen";
 import AccountDetailsScreen from "screens/AccountDetailsScreen";
 import ShowPrivateKeyScreen from "screens/ShowPrivateKeyScreen";
+import ChangePasswordScreen from "screens/ChangePasswordScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -316,6 +317,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.CHOOSE_PASSWORD_SCREEN}
         component={ChoosePasswordScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CHANGE_PASSWORD_SCREEN}
+        component={ChangePasswordScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen

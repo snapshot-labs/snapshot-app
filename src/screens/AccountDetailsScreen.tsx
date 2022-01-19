@@ -6,8 +6,11 @@ import common from "styles/common";
 import { useAuthState } from "context/authContext";
 import BackButton from "components/BackButton";
 import IconFont from "components/IconFont";
-import styles, { ICON_SIZE } from "styles/settings";
-import { SHOW_PRIVATE_KEY_SCREEN } from "constants/navigation";
+import styles from "styles/settings";
+import {
+  CHANGE_PASSWORD_SCREEN,
+  SHOW_PRIVATE_KEY_SCREEN,
+} from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 
 function AccountDetailsScreen() {
@@ -47,7 +50,7 @@ function AccountDetailsScreen() {
                 { backgroundColor: colors.settingsIconBgColor },
               ]}
             >
-              <IconFont name="signature" size={18} color={colors.textColor} />
+              <IconFont name="wallet" size={24} color={colors.textColor} />
             </View>
             <Text
               style={[
@@ -88,6 +91,31 @@ function AccountDetailsScreen() {
               ]}
             >
               {i18n.t("revealSecretRecoveryPhrase")}
+            </Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => {
+            navigation.navigate(CHANGE_PASSWORD_SCREEN);
+          }}
+          underlayColor={colors.highlightColor}
+        >
+          <View style={styles.row}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: colors.settingsIconBgColor },
+              ]}
+            >
+              <IconFont name="warning" size={24} color={colors.textColor} />
+            </View>
+            <Text
+              style={[
+                styles.rowTitle,
+                { color: colors.textColor, marginLeft: 8 },
+              ]}
+            >
+              {i18n.t("change_password.title")}
             </Text>
           </View>
         </TouchableHighlight>

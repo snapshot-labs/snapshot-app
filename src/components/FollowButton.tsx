@@ -133,7 +133,7 @@ function FollowButton({ space }: FollowButtonProps) {
         const formattedAddress = connectedAddress?.toLowerCase();
         const checksumAddress = ethers.utils.getAddress(formattedAddress);
         const alias = {
-          [connectedAddress]: wallet.privateKey,
+          [connectedAddress.toLowerCase()]: wallet.privateKey,
         };
         const timestamp = ~~(Date.now() / 1e3);
         const snapshotHubMessage = {
@@ -271,17 +271,20 @@ function FollowButton({ space }: FollowButtonProps) {
       onPress={async () => {
         setButtonLoading(true);
         try {
+          const checksumAddress = ethers.utils.getAddress(
+            connectedAddress ?? ""
+          );
           if (isSnapshotWallet) {
             if (aliasWallet) {
               const isValidAlias = await checkAlias(
                 aliasWallet,
-                connectedAddress
+                checksumAddress
               );
               if (isValidAlias) {
                 await followSpace(
                   isFollowingSpace,
                   aliasWallet,
-                  connectedAddress ?? "",
+                  checksumAddress ?? "",
                   authDispatch,
                   space,
                   toastShowConfig,
@@ -297,13 +300,13 @@ function FollowButton({ space }: FollowButtonProps) {
             if (aliasWallet) {
               const isValidAlias = await checkAlias(
                 aliasWallet,
-                connectedAddress
+                checksumAddress
               );
               if (isValidAlias) {
                 await followSpace(
                   isFollowingSpace,
                   aliasWallet,
-                  connectedAddress ?? "",
+                  checksumAddress ?? "",
                   authDispatch,
                   space,
                   toastShowConfig,
@@ -311,7 +314,7 @@ function FollowButton({ space }: FollowButtonProps) {
                 );
               } else {
                 const aliasWallet = await setAlias(
-                  connectedAddress,
+                  checksumAddress,
                   wcConnector,
                   authDispatch
                 );
@@ -319,14 +322,14 @@ function FollowButton({ space }: FollowButtonProps) {
                 if (aliasWallet) {
                   const isValidAlias = await checkAlias(
                     aliasWallet,
-                    connectedAddress
+                    checksumAddress
                   );
 
                   if (isValidAlias) {
                     await followSpace(
                       isFollowingSpace,
                       aliasWallet,
-                      connectedAddress ?? "",
+                      checksumAddress ?? "",
                       authDispatch,
                       space,
                       toastShowConfig,
@@ -337,7 +340,7 @@ function FollowButton({ space }: FollowButtonProps) {
               }
             } else {
               const aliasWallet = await setAlias(
-                connectedAddress,
+                checksumAddress,
                 wcConnector,
                 authDispatch
               );
@@ -345,14 +348,14 @@ function FollowButton({ space }: FollowButtonProps) {
               if (aliasWallet) {
                 const isValidAlias = await checkAlias(
                   aliasWallet,
-                  connectedAddress
+                  checksumAddress
                 );
 
                 if (isValidAlias) {
                   await followSpace(
                     isFollowingSpace,
                     aliasWallet,
-                    connectedAddress ?? "",
+                    checksumAddress ?? "",
                     authDispatch,
                     space,
                     toastShowConfig,
