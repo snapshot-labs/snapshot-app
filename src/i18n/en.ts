@@ -354,7 +354,7 @@ export default {
     recovery_phrase: "secret recovery phrase ",
     snapshot_does_not: "snapshot does not have your Secret Recovery Phrase.",
   },
-  accountDetails: "Account details",
+  accountSecurity: "Account security",
   showPrivateKey: "Show private key",
   revealSecretRecoveryPhrase: "Reveal secret recovery phrase",
   privateKeyWarningExplanation:

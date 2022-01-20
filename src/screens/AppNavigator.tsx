@@ -156,7 +156,13 @@ function TabNavigator() {
                   <View
                     style={[
                       styles.notificationsCircle,
-                      { backgroundColor: colors.bgBlue },
+                      {
+                        backgroundColor: colors.bgGreen,
+                        width:
+                          unreadNotifications.toString().length >= 3 ? 30 : 20,
+                        height:
+                          unreadNotifications.toString().length >= 3 ? 30 : 20,
+                      },
                     ]}
                   >
                     <Text style={[styles.notificationText]}>

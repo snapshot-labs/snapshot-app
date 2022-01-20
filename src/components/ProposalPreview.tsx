@@ -35,6 +35,7 @@ import {
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { getProposalUrl } from "helpers/proposalUtils";
 import { useToastShowConfig } from "constants/toast";
+import { useEngineState } from "context/engineContext";
 
 const { width } = Dimensions.get("screen");
 
@@ -126,7 +127,9 @@ interface ProposalPreviewProps {
 
 function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
   const navigation: any = useNavigation();
-  const { connectedAddress, colors, wcConnector } = useAuthState();
+  const { connectedAddress, colors, wcConnector, snapshotWallets } =
+    useAuthState();
+  const { keyRingController, typedMessageManager } = useEngineState();
   const authDispatch = useAuthDispatch();
   const toastShowConfig = useToastShowConfig();
   const { profiles } = useExploreState();
@@ -158,7 +161,7 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
     const setOptions = [i18n.t("share"), i18n.t("duplicateProposal")];
     if (
       isAdmin(connectedAddress ?? "", space) ||
-      connectedAddress === proposal?.author
+      connectedAddress?.toLowerCase() === proposal?.author?.toLowerCase()
     ) {
       setOptions.push(i18n.t("deleteProposal"));
     }
@@ -208,6 +211,7 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
             onPress={() => {
               const snapPoints = [10, options.length > 2 ? 300 : 200];
               const destructiveButtonIndex = 2;
+              console.log({ connectedAddress, author: proposal?.author });
               bottomSheetModalDispatch({
                 type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                 payload: {
@@ -239,7 +243,8 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
                       });
                     } else if (
                       (isAdmin(connectedAddress ?? "", space) ||
-                        connectedAddress === proposal?.author) &&
+                        connectedAddress?.toLowerCase() ===
+                          proposal?.author?.toLowerCase()) &&
                       index === 2
                     ) {
                       deleteProposal(
@@ -249,7 +254,12 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
                         proposal,
                         authDispatch,
                         toastShowConfig,
-                        navigation
+                        navigation,
+                        snapshotWallets,
+                        keyRingController,
+                        typedMessageManager,
+                        bottomSheetModalDispatch,
+                        bottomSheetModalRef
                       );
                     }
                     bottomSheetModalRef.current.close();

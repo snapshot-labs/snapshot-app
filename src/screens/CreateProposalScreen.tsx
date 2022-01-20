@@ -33,6 +33,12 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
+import { ethers } from "ethers";
+import signClient from "helpers/signClient";
+import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
+import { useEngineState } from "context/engineContext";
+import { addressIsSnapshotWallet } from "helpers/address";
+import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 
 const bodyLimit = 6400;
 
@@ -123,6 +129,8 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
   const space = route.params.space;
   const duplicateProposal = route.params.proposal;
   const authDispatch = useAuthDispatch();
+  const { snapshotWallets } = useAuthState();
+  const { keyRingController, typedMessageManager } = useEngineState();
   const allVotingTypes = proposal.getVotingTypes();
   const dateStart = useMemo(() => {
     return space.voting?.delay
@@ -178,11 +186,111 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
     aliases,
     connectedAddress ?? ""
   );
+  const isSnapshotWallet = addressIsSnapshotWallet(
+    connectedAddress ?? "",
+    snapshotWallets
+  );
 
   useEffect(() => {
     fetchBlockNumber(space, setSnapshot);
     validateUser(connectedAddress ?? "", space, setPassValidation);
   }, []);
+
+  async function snapshotWalletProposalCreate(proposal: any) {
+    if (keyRingController.isUnlocked()) {
+      if (connectedAddress) {
+        const formattedAddress = connectedAddress?.toLowerCase();
+        const checksumAddress = ethers.utils.getAddress(formattedAddress);
+        const { snapshotData, signData } = getSnapshotDataForSign(
+          checksumAddress,
+          "proposal",
+          proposal,
+          space
+        );
+
+        try {
+          const messageId = await typedMessageManager.addUnapprovedMessage(
+            {
+              data: JSON.stringify(signData),
+              from: checksumAddress,
+            },
+            { origin: "snapshot.org" }
+          );
+          const cleanMessageParams = await typedMessageManager.approveMessage({
+            ...signData,
+            metamaskId: messageId,
+          });
+          const rawSig = await keyRingController.signTypedMessage(
+            {
+              data: JSON.stringify(cleanMessageParams),
+              from: checksumAddress,
+            },
+            "V4"
+          );
+
+          typedMessageManager.setMessageStatusSigned(messageId, rawSig);
+
+          const sign: any = await signClient.send({
+            address: checksumAddress,
+            sig: rawSig,
+            data: snapshotData,
+          });
+
+          if (sign) {
+            navigation.replace(PROPOSAL_SCREEN, {
+              proposalId: sign.id,
+              spaceId: space.id,
+            });
+            Toast.show({
+              type: "customSuccess",
+              text1: i18n.t("proposalCreated"),
+              ...toastShowConfig,
+            });
+            authDispatch({
+              type: AUTH_ACTIONS.SET_REFRESH_FEED,
+              payload: {
+                spaceId: space.id,
+              },
+            });
+            bottomSheetModalRef?.current?.close();
+          } else {
+            Toast.show({
+              type: "customError",
+              text1: i18n.t("unableToCreateProposal"),
+              ...toastShowConfig,
+            });
+          }
+        } catch (e) {
+          console.log({ e });
+          Toast.show({
+            type: "customError",
+            text1: parseErrorMessage(e, i18n.t("signature_request.error")),
+            ...toastShowConfig,
+          });
+        }
+      }
+    } else {
+      bottomSheetModalDispatch({
+        type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+        payload: {
+          snapPoints: [10, 450],
+          initialIndex: 1,
+          ModalContent: () => {
+            return (
+              <SubmitPasswordModal
+                onClose={() => {
+                  bottomSheetModalRef.current?.close();
+                }}
+                navigation={navigation}
+              />
+            );
+          },
+          show: true,
+          key: `submit-password-modal-${proposal.id}`,
+        },
+      });
+    }
+  }
 
   return (
     <SafeAreaView
@@ -285,38 +393,40 @@ function CreateProposalScreen({ route }: CreateProposalScreenProps) {
             };
 
             try {
-              const sign = await sendEIP712(
-                wcConnector,
-                connectedAddress,
-                space,
-                "proposal",
-                form
-              );
-
-              if (sign) {
-                console.log("SIGN", JSON.stringify(sign));
-
-                navigation.replace(PROPOSAL_SCREEN, {
-                  proposalId: sign.id,
-                  spaceId: space.id,
-                });
-                Toast.show({
-                  type: "customSuccess",
-                  text1: i18n.t("proposalCreated"),
-                  ...toastShowConfig,
-                });
-                authDispatch({
-                  type: AUTH_ACTIONS.SET_REFRESH_FEED,
-                  payload: {
-                    spaceId: space.id,
-                  },
-                });
+              if (isSnapshotWallet) {
+                await snapshotWalletProposalCreate(form);
               } else {
-                Toast.show({
-                  type: "customError",
-                  text1: i18n.t("unableToCreateProposal"),
-                  ...toastShowConfig,
-                });
+                const sign: any = await sendEIP712(
+                  wcConnector,
+                  connectedAddress,
+                  space,
+                  "proposal",
+                  form
+                );
+
+                if (sign) {
+                  navigation.replace(PROPOSAL_SCREEN, {
+                    proposalId: sign.id,
+                    spaceId: space.id,
+                  });
+                  Toast.show({
+                    type: "customSuccess",
+                    text1: i18n.t("proposalCreated"),
+                    ...toastShowConfig,
+                  });
+                  authDispatch({
+                    type: AUTH_ACTIONS.SET_REFRESH_FEED,
+                    payload: {
+                      spaceId: space.id,
+                    },
+                  });
+                } else {
+                  Toast.show({
+                    type: "customError",
+                    text1: i18n.t("unableToCreateProposal"),
+                    ...toastShowConfig,
+                  });
+                }
               }
             } catch (e) {
               Toast.show({

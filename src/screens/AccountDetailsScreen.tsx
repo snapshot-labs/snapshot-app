@@ -31,7 +31,7 @@ function AccountDetailsScreen() {
           { borderBottomColor: colors.borderColor },
         ]}
       >
-        <BackButton title={i18n.t("accountDetails")} />
+        <BackButton title={i18n.t("accountSecurity")} />
       </View>
       <View style={{ marginTop: 8, flex: 1 }}>
         <TouchableHighlight

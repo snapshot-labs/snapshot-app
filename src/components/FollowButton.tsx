@@ -25,18 +25,10 @@ import {
 import { createBottomSheetParamsForWalletConnectError } from "constants/bottomSheet";
 import { useNavigation } from "@react-navigation/native";
 import { addressIsSnapshotWallet } from "helpers/address";
-import SignModal from "components/wallet/SignModal";
 import { useEngineState } from "context/engineContext";
-import { aliasTypes } from "@snapshot-labs/snapshot.js/src/sign/types";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
-import {
-  personalSign,
-  signTypedData,
-  SignTypedDataVersion,
-} from "@metamask/eth-sig-util";
-import snapshot from "@snapshot-labs/snapshot.js";
-import { ethers, getDefaultProvider } from "ethers";
-const signer = ethers.Wallet.createRandom();
+import { ethers } from "ethers";
+import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 
 async function followSpace(
   isFollowingSpace: any,
@@ -131,119 +123,70 @@ function FollowButton({ space }: FollowButtonProps) {
         const wallet = await getRandomAliasWallet();
         const formattedAddress = connectedAddress?.toLowerCase();
         const checksumAddress = ethers.utils.getAddress(formattedAddress);
+        const { snapshotData, signData } = getSnapshotDataForSign(
+          checksumAddress,
+          "alias",
+          { address: wallet.address }
+        );
         const alias = {
           [connectedAddress.toLowerCase()]: wallet.privateKey,
         };
-        const timestamp = ~~(Date.now() / 1e3);
-        const snapshotHubMessage = {
-          alias: wallet.address,
-          from: checksumAddress,
-          timestamp,
-        };
-        const snapshotData = {
-          domain,
-          types: aliasTypes,
-          message: snapshotHubMessage,
-        };
-        const updatedTypes = {
-          ...snapshotData.types,
-          EIP712Domain: [
-            { name: "name", type: "string" },
-            { name: "version", type: "string" },
-          ],
-        };
-        const wcData: any = {
-          domain,
-          types: updatedTypes,
-          message: snapshotHubMessage,
-          primaryType: "Alias",
-        };
-
-        bottomSheetModalDispatch({
-          type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-          payload: {
-            show: true,
-            ModalContent: () => {
-              return (
-                <SignModal
-                  onClose={() => {
-                    bottomSheetModalRef?.current?.close();
-                  }}
-                  messageParamsData={snapshotHubMessage}
-                  onSign={async () => {
-                    try {
-                      const messageId =
-                        await typedMessageManager.addUnapprovedMessage(
-                          {
-                            data: JSON.stringify(wcData),
-                            from: checksumAddress,
-                          },
-                          { origin: "snapshot.org" }
-                        );
-                      const cleanMessageParams =
-                        await typedMessageManager.approveMessage({
-                          ...wcData,
-                          metamaskId: messageId,
-                        });
-                      const rawSig = await keyRingController.signTypedMessage(
-                        {
-                          data: JSON.stringify(cleanMessageParams),
-                          from: checksumAddress,
-                        },
-                        "V4"
-                      );
-
-                      typedMessageManager.setMessageStatusSigned(
-                        messageId,
-                        rawSig
-                      );
-
-                      await signClient.send({
-                        address: checksumAddress,
-                        sig: rawSig,
-                        data: snapshotData,
-                      });
-
-                      authDispatch({
-                        type: AUTH_ACTIONS.SET_ALIAS,
-                        payload: alias,
-                      });
-                      authDispatch({
-                        type: AUTH_ACTIONS.SET_ALIAS_WALLET,
-                        payload: wallet,
-                      });
-
-                      followSpace(
-                        isFollowingSpace,
-                        wallet,
-                        connectedAddress ?? "",
-                        authDispatch,
-                        space,
-                        toastShowConfig,
-                        showBottomSheetWCErrorModal
-                      );
-
-                      bottomSheetModalRef.current?.close();
-                    } catch (e) {
-                      console.log({ e });
-                      Toast.show({
-                        type: "customError",
-                        text1: parseErrorMessage(
-                          e,
-                          i18n.t("signature_request.error")
-                        ),
-                        ...toastShowConfig,
-                      });
-                    }
-                  }}
-                />
-              );
+        try {
+          const messageId = await typedMessageManager.addUnapprovedMessage(
+            {
+              data: JSON.stringify(signData),
+              from: checksumAddress,
             },
-            initialIndex: 1,
-            snapPoints: [10, 600],
-            key: "sign-message-modal",
-          },
-        });
+            { origin: "snapshot.org" }
+          );
+          const cleanMessageParams = await typedMessageManager.approveMessage({
+            ...signData,
+            metamaskId: messageId,
+          });
+          const rawSig = await keyRingController.signTypedMessage(
+            {
+              data: JSON.stringify(cleanMessageParams),
+              from: checksumAddress,
+            },
+            "V4"
+          );
+
+          typedMessageManager.setMessageStatusSigned(messageId, rawSig);
+
+          await signClient.send({
+            address: checksumAddress,
+            sig: rawSig,
+            data: snapshotData,
+          });
+
+          authDispatch({
+            type: AUTH_ACTIONS.SET_ALIAS,
+            payload: alias,
+          });
+          authDispatch({
+            type: AUTH_ACTIONS.SET_ALIAS_WALLET,
+            payload: wallet,
+          });
+
+          followSpace(
+            isFollowingSpace,
+            wallet,
+            connectedAddress ?? "",
+            authDispatch,
+            space,
+            toastShowConfig,
+            showBottomSheetWCErrorModal
+          );
+
+          bottomSheetModalRef.current?.close();
+        } catch (e) {
+          console.log({ e });
+          Toast.show({
+            type: "customError",
+            text1: parseErrorMessage(e, i18n.t("signature_request.error")),
+            ...toastShowConfig,
+          });
+        }
       }
     } else {
       bottomSheetModalDispatch({
@@ -293,10 +236,10 @@ function FollowButton({ space }: FollowButtonProps) {
                   showBottomSheetWCErrorModal
                 );
               } else {
-                snapshotWalletSignAliasWallet();
+                await snapshotWalletSignAliasWallet();
               }
             } else {
-              snapshotWalletSignAliasWallet();
+              await snapshotWalletSignAliasWallet();
             }
           } else {
             if (aliasWallet) {

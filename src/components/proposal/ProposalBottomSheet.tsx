@@ -10,6 +10,13 @@ import { Proposal } from "types/proposal";
 import { useNavigation } from "@react-navigation/native";
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { getProposalUrl } from "helpers/proposalUtils";
+import { useEngineState } from "context/engineContext";
+import { ethers } from "ethers";
+import {
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import { addressIsSnapshotWallet } from "helpers/address";
 
 interface ProposalMenuProps {
   proposal: Proposal;
@@ -24,22 +31,25 @@ function ProposalBottomSheet({
   space,
   onClose,
 }: ProposalMenuProps) {
-  const { connectedAddress, wcConnector } = useAuthState();
+  const { connectedAddress, wcConnector, snapshotWallets } = useAuthState();
+  const { keyRingController, typedMessageManager } = useEngineState();
   const options = useMemo(() => {
     const setOptions = [i18n.t("share"), i18n.t("duplicateProposal")];
     if (
       isAdmin(connectedAddress ?? "", space) ||
-      connectedAddress === proposal?.author
+      connectedAddress?.toLowerCase() === proposal?.author?.toLowerCase()
     ) {
       setOptions.push(i18n.t("deleteProposal"));
     }
     return setOptions;
   }, [proposal, space]);
   const authDispatch = useAuthDispatch();
-  const snapPoints = [10, options.length > 1 ? 200 : 100];
+  const snapPoints = [10, options.length > 2 ? 300 : 200];
   const toastShowConfig = useToastShowConfig();
   const navigation: any = useNavigation();
   const destructiveButtonIndex = 2;
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetModalRef = useBottomSheetModalRef();
 
   return (
     <BottomSheetModal
@@ -63,7 +73,8 @@ function ProposalBottomSheet({
           navigation.navigate(CREATE_PROPOSAL_SCREEN, { proposal, space });
         } else if (
           (isAdmin(connectedAddress ?? "", space) ||
-            connectedAddress === proposal?.author) &&
+            connectedAddress?.toLowerCase() ===
+              proposal?.author?.toLowerCase()) &&
           index === 2
         ) {
           deleteProposal(
@@ -73,7 +84,12 @@ function ProposalBottomSheet({
             proposal,
             authDispatch,
             toastShowConfig,
-            navigation
+            navigation,
+            snapshotWallets,
+            keyRingController,
+            typedMessageManager,
+            bottomSheetModalDispatch,
+            bottomSheetModalRef
           );
         }
         onClose();

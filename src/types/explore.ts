@@ -16,7 +16,7 @@ export type Space = {
   network: string;
   skin: string;
   avatar?: string;
-  id?: string;
+  id: string;
   private?: boolean;
   strategies: any;
   symbol?: string;
@@ -28,9 +28,9 @@ export type Space = {
   members?: any;
   categories: string[];
   voting: {
-    delay: number,
-    period: number
-  }
+    delay: number;
+    period: number;
+  };
 };
 
 type StrategyExample = {

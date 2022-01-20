@@ -96,7 +96,7 @@ function SettingsScreen() {
                 { color: colors.textColor, marginLeft: 8 },
               ]}
             >
-              {i18n.t("accountDetails")}
+              {i18n.t("accountSecurity")}
             </Text>
           </View>
         </TouchableHighlight>

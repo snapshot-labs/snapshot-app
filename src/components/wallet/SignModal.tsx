@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { util } from "@metamask/controllers";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import fontStyles from "styles/fonts";
 import { useAuthState } from "context/authContext";
 import TransactionHeader from "components/wallet/TransactionHeader";
@@ -99,7 +104,7 @@ interface SignModalProps {
 function SignModal({ messageParamsData, onSign, onClose }: SignModalProps) {
   const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
-  const [truncateMessage, setTruncateMessage] = useState(false);
+  const [truncateMessage, setTruncateMessage] = useState(true);
   const [showExpandedMessage, setShowExpandedMessage] = useState(false);
   const profile = profiles[connectedAddress ?? ""];
   const ens = get(profile, "ens", undefined);
@@ -116,6 +121,10 @@ function SignModal({ messageParamsData, onSign, onClose }: SignModalProps) {
         try {
           formattedValue = isObject(value) ? JSON.stringify(value) : value;
         } catch (e) {}
+
+        if (!showExpandedMessage && messageText.length > 5) {
+          continue;
+        }
 
         messageText.push(
           <View key={key} style={styles.messageTextContainer}>
@@ -160,80 +169,77 @@ function SignModal({ messageParamsData, onSign, onClose }: SignModalProps) {
           <IconFont name="close" size={20} color={colors.darkGray} />
         </TouchableOpacity>
       </View>
-      <TransactionHeader title="snapshot.org" />
-      <View style={styles.messageContainer}>
-        <View
-          style={[
-            styles.accountInformation,
-            { borderColor: colors.borderColor },
-          ]}
-        >
-          <UserAvatar
-            size={40}
-            address={connectedAddress ?? ""}
-            imgSrc={profile?.image}
-            key={`${connectedAddress}${profile?.image}`}
-          />
-          {ens !== undefined && ens !== "" && (
-            <Text style={[styles.ens, { color: colors.textColor }]}>{ens}</Text>
-          )}
-          <Text
-            style={[styles.address, { color: colors.textColor }]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
+      <ScrollView>
+        <TransactionHeader title="snapshot.org" />
+        <View style={styles.messageContainer}>
+          <View
+            style={[
+              styles.accountInformation,
+              { borderColor: colors.borderColor },
+            ]}
           >
-            {shorten(connectedAddress ?? "")}
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={[styles.children, { borderColor: colors.borderColor }]}
-          onPress={
-            truncateMessage
-              ? () => {
-                  setShowExpandedMessage(!showExpandedMessage);
-                }
-              : () => {}
-          }
-        >
-          <View style={styles.messageColumn}>
-            <Text
-              style={[styles.messageLabelText, { color: colors.textColor }]}
-            >
-              {i18n.t("signature_request.message")}:
-            </Text>
-            <View style={styles.messageWrapper}>{renderMessageText()}</View>
-            {truncateMessage ? (
-              <Text style={[styles.readMore, { color: colors.bgBlue }]}>
-                {i18n.t("signature_request.read_more")}
+            <UserAvatar
+              size={40}
+              address={connectedAddress ?? ""}
+              imgSrc={profile?.image}
+              key={`${connectedAddress}${profile?.image}`}
+            />
+            {ens !== undefined && ens !== "" && (
+              <Text style={[styles.ens, { color: colors.textColor }]}>
+                {ens}
               </Text>
-            ) : (
-              <View />
             )}
+            <Text
+              style={[styles.address, { color: colors.textColor }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {shorten(connectedAddress ?? "")}
+            </Text>
           </View>
-          <View style={styles.arrowIconWrapper}>
-            {truncateMessage ? (
-              <View style={styles.arrowIconWrapper}>
-                <Ionicons
-                  name={"ios-arrow-forward"}
-                  size={20}
-                  color={colors.darkGray}
-                />
-              </View>
-            ) : null}
+          <TouchableOpacity
+            style={[styles.children, { borderColor: colors.borderColor }]}
+            onPress={
+              truncateMessage
+                ? () => {
+                    setShowExpandedMessage(!showExpandedMessage);
+                  }
+                : () => {}
+            }
+          >
+            <View style={styles.messageColumn}>
+              <Text
+                style={[styles.messageLabelText, { color: colors.textColor }]}
+              >
+                {i18n.t("signature_request.message")}:
+              </Text>
+              <View style={styles.messageWrapper}>{renderMessageText()}</View>
+              {truncateMessage ? (
+                <Text style={[styles.readMore, { color: colors.bgBlue }]}>
+                  {showExpandedMessage
+                    ? i18n.t("hide")
+                    : i18n.t("signature_request.read_more")}
+                </Text>
+              ) : (
+                <View />
+              )}
+            </View>
+          </TouchableOpacity>
+          <View style={styles.signButtonContainer}>
+            <Button
+              onPress={async () => {
+                setLoading(true);
+                await onSign();
+                setLoading(false);
+              }}
+              title={i18n.t("signature_request.sign")}
+              loading={loading}
+            />
           </View>
-        </TouchableOpacity>
-        <View style={styles.signButtonContainer}>
-          <Button
-            onPress={async () => {
-              setLoading(true);
-              await onSign();
-              setLoading(false);
-            }}
-            title={i18n.t("signature_request.sign")}
-            loading={loading}
-          />
+
+          <View style={{ width: 300, height: 200 }} />
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }

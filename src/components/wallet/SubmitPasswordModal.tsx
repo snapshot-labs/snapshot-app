@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet, Switch } from "react-native";
 import i18n from "i18n-js";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
@@ -14,6 +14,9 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import ResetWalletModal from "components/wallet/ResetWalletModal";
+import storage from "helpers/storage";
+import Device from "helpers/device";
+import SecureKeychain from "helpers/secureKeychain";
 
 const styles = StyleSheet.create({
   hintLabel: {
@@ -26,7 +29,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Calibre-Medium",
   },
+  biometrics: {
+    position: "relative",
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  biometryLabel: {
+    fontSize: 18,
+    marginTop: 2,
+    ...fontStyles.normal,
+    marginLeft: "auto",
+    marginRight: 60,
+  },
+  biometrySwitch: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+  biometricsContainer: {
+    justifyContent: "center",
+  },
 });
+
+const IOS_DENY_BIOMETRIC_ERROR =
+  "The user name or passphrase you entered is not correct.";
 
 interface SubmitPasswordModalProps {
   onClose: () => void;
@@ -45,6 +71,42 @@ function SubmitPasswordModal({
   const [loading, setLoading] = useState(false);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const [biometryType, setBiometryType] = useState<string | null>(null);
+  const [biometryChoice, setBiometryChoice] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  async function checkBiometryType() {
+    const biometryType = await SecureKeychain.getSupportedBiometryType();
+    if (biometryType) {
+      setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
+      setBiometryChoice(true);
+    }
+  }
+
+  useEffect(() => {
+    checkBiometryType();
+  }, []);
+
+  async function updateBiometryChoice(biometryChoice: boolean = false) {
+    if (!biometryChoice) {
+      await storage.save(
+        storage.KEYS.biometryChoiceDisabled,
+        storage.VALUES.true
+      );
+    } else {
+      await storage.remove(storage.KEYS.biometryChoiceDisabled);
+    }
+    setBiometryChoice(biometryChoice);
+  }
+  async function handleRejectedOsBiometricPrompt(error: Error) {
+    const biometryType = await SecureKeychain.getSupportedBiometryType();
+    if (error.toString().includes(IOS_DENY_BIOMETRIC_ERROR) && !biometryType) {
+      setBiometryType(biometryType);
+      setBiometryChoice(true);
+      updateBiometryChoice();
+      throw Error(i18n.t("disableBiometricError"));
+    }
+  }
 
   return (
     <View>
@@ -97,6 +159,56 @@ function SubmitPasswordModal({
             <Text style={[styles.error, { color: colors.red }]}>{error}</Text>
           )}
         </View>
+        <View style={styles.biometrics}>
+          {biometryType !== null ? (
+            <View style={styles.biometricsContainer}>
+              <Text style={[styles.biometryLabel, { color: colors.textColor }]}>
+                {i18n.t(`biometrics.enable_${biometryType?.toLowerCase()}`)}
+              </Text>
+              <Switch
+                onValueChange={async (biometryChoice: boolean) => {
+                  if (!biometryChoice) {
+                    await storage.save(
+                      storage.KEYS.biometryChoiceDisabled,
+                      storage.VALUES.true
+                    );
+                  } else {
+                    await storage.remove(storage.KEYS.biometryChoiceDisabled);
+                  }
+
+                  setBiometryChoice(biometryChoice);
+                }} // eslint-disable-line react/jsx-no-bind
+                value={biometryChoice}
+                style={styles.biometrySwitch}
+                trackColor={
+                  Device.isIos()
+                    ? { true: colors.bgGreen, false: colors.darkGray }
+                    : null
+                }
+                ios_backgroundColor={colors.darkGray}
+              />
+            </View>
+          ) : (
+            <View style={styles.biometricsContainer}>
+              <Text style={[styles.biometryLabel, { color: colors.textColor }]}>
+                {i18n.t("choosePasswordRememberMe")}
+              </Text>
+              <Switch
+                onValueChange={(rememberMe) => {
+                  setRememberMe(rememberMe);
+                }} // eslint-disable-line react/jsx-no-bind
+                value={rememberMe}
+                style={styles.biometrySwitch}
+                trackColor={
+                  Device.isIos()
+                    ? { true: colors.bgGreen, false: colors.darkGray }
+                    : null
+                }
+                ios_backgroundColor={colors.darkGray}
+              />
+            </View>
+          )}
+        </View>
         <View style={{ marginTop: 16 }}>
           <Button
             loading={loading}
@@ -104,6 +216,24 @@ function SubmitPasswordModal({
               try {
                 setLoading(true);
                 await keyRingController.submitPassword(password);
+                if (biometryType && biometryChoice) {
+                  try {
+                    await SecureKeychain.setGenericPassword(
+                      password,
+                      SecureKeychain.TYPES.BIOMETRICS
+                    );
+                  } catch (error) {
+                    if (Device.isIos())
+                      await handleRejectedOsBiometricPrompt(error);
+                    throw error;
+                  }
+                } else if (rememberMe) {
+                  await SecureKeychain.setGenericPassword(
+                    password,
+                    SecureKeychain.TYPES.REMEMBER_ME
+                  );
+                }
+
                 setLoading(false);
                 onClose();
               } catch (e) {
