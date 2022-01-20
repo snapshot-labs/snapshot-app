@@ -204,9 +204,11 @@ export default {
   },
   authentication: {
     auth_prompt_title: "Authentication required",
-    auth_prompt_desc: "Please authenticate in order to use MetaMask",
+    auth_prompt_desc:
+      "Please authenticate in order to use your snapshot wallet",
     fingerprint_prompt_title: "Authentication required",
-    fingerprint_prompt_desc: "Use your fingerprint to unlock MetaMask",
+    fingerprint_prompt_desc:
+      "Use your fingerprint to unlock your snapshot wallet",
     fingerprint_prompt_cancel: "Cancel",
   },
   securityAlertTitle: "Security Alert",

@@ -446,22 +446,11 @@ function ChangePasswordScreen() {
             <View style={styles.biometrics}>
               {biometryType !== null ? (
                 <View style={styles.biometricsContainer}>
-                  <Text style={styles.biometryLabel}>
+                  <Text style={[styles.biometryLabel, { color: colors.textColor }]}>
                     {i18n.t(`biometrics.enable_${biometryType?.toLowerCase()}`)}
                   </Text>
                   <Switch
                     onValueChange={async (biometryChoice: boolean) => {
-                      if (!biometryChoice) {
-                        await storage.save(
-                          storage.KEYS.biometryChoiceDisabled,
-                          "TRUE"
-                        );
-                      } else {
-                        await storage.remove(
-                          storage.KEYS.biometryChoiceDisabled
-                        );
-                      }
-
                       setBiometryChoice(biometryChoice);
                     }} // eslint-disable-line react/jsx-no-bind
                     value={biometryChoice}

@@ -226,23 +226,11 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const navigation: any = useNavigation();
   const previousScreen = route?.params?.previousScreen;
 
-  async function updateBiometryChoice(biometryChoice: boolean = false) {
-    if (!biometryChoice) {
-      await storage.save(
-        storage.KEYS.biometryChoiceDisabled,
-        storage.VALUES.true
-      );
-    } else {
-      await storage.remove(storage.KEYS.biometryChoiceDisabled);
-    }
-    setBiometryChoice(biometryChoice);
-  }
   async function handleRejectedOsBiometricPrompt(error: Error) {
     const biometryType = await SecureKeychain.getSupportedBiometryType();
     if (error.toString().includes(IOS_DENY_BIOMETRIC_ERROR) && !biometryType) {
       setBiometryType(biometryType);
       setBiometryChoice(true);
-      updateBiometryChoice();
       throw Error(i18n.t("disableBiometricError"));
     }
   }
@@ -569,24 +557,13 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                 <View style={styles.biometrics}>
                   {biometryType !== null ? (
                     <View style={styles.biometricsContainer}>
-                      <Text style={styles.biometryLabel}>
+                      <Text style={[styles.biometryLabel, { color: colors.textColor }]}>
                         {i18n.t(
                           `biometrics.enable_${biometryType?.toLowerCase()}`
                         )}
                       </Text>
                       <Switch
                         onValueChange={async (biometryChoice: boolean) => {
-                          if (!biometryChoice) {
-                            await storage.save(
-                              storage.KEYS.biometryChoiceDisabled,
-                              "TRUE"
-                            );
-                          } else {
-                            await storage.remove(
-                              storage.KEYS.biometryChoiceDisabled
-                            );
-                          }
-
                           setBiometryChoice(biometryChoice);
                         }} // eslint-disable-line react/jsx-no-bind
                         value={biometryChoice}

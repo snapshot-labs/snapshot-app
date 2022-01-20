@@ -6,7 +6,7 @@ import storage from "helpers/storage";
 
 const privates = new WeakMap();
 const encryptor = new Encryptor();
-const defaultOptions = {
+const createDefaultOptions = () => ({
   service: "org.snapshot",
   authenticationPromptTitle: i18n.t("authentication.auth_prompt_title"),
   authenticationPrompt: { title: i18n.t("authentication.auth_prompt_desc") },
@@ -14,7 +14,7 @@ const defaultOptions = {
   fingerprintPromptTitle: i18n.t("authentication.fingerprint_prompt_title"),
   fingerprintPromptDesc: i18n.t("authentication.fingerprint_prompt_desc"),
   fingerprintPromptCancel: i18n.t("authentication.fingerprint_prompt_cancel"),
-};
+});
 
 /**
  * Class that wraps Keychain from react-native-keychain
@@ -61,25 +61,30 @@ export default {
   },
 
   async resetGenericPassword() {
+    const defaultOptions = createDefaultOptions();
     const options = { service: defaultOptions.service };
     await storage.remove(storage.KEYS.biometryChoice);
-    await storage.remove(storage.KEYS.passcodeChoice);
     return Keychain.resetGenericPassword(options);
   },
 
   async getGenericPassword() {
     if (instance) {
       instance.isAuthenticating = true;
-      const keychainObject: any = await Keychain.getGenericPassword(
-        defaultOptions
-      );
-      if (keychainObject.password) {
-        const encryptedPassword = keychainObject.password;
-        const decrypted = await instance.decryptPassword(encryptedPassword);
-        keychainObject.password = decrypted.password;
-        instance.isAuthenticating = false;
-        return keychainObject;
-      }
+      console.log(" GET GENERIC PASSWORD");
+      const defaultOptions = createDefaultOptions();
+      try {
+        const keychainObject: any = await Keychain.getGenericPassword(
+          defaultOptions
+        );
+        console.log("KEYCHAIN OBJECT", { keychainObject });
+        if (keychainObject.password) {
+          const encryptedPassword = keychainObject.password;
+          const decrypted = await instance.decryptPassword(encryptedPassword);
+          keychainObject.password = decrypted.password;
+          instance.isAuthenticating = false;
+          return keychainObject;
+        }
+      } catch (e) {}
       instance.isAuthenticating = false;
     }
     return null;
@@ -89,6 +94,7 @@ export default {
     const authOptions: any = {
       accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
     };
+    const defaultOptions = createDefaultOptions();
 
     if (type === this.TYPES.BIOMETRICS) {
       authOptions.accessControl = Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET;
@@ -109,31 +115,13 @@ export default {
 
     if (type === this.TYPES.BIOMETRICS) {
       await storage.save(storage.KEYS.biometryChoice, storage.VALUES.true);
-      await storage.save(storage.KEYS.passcodeDisabled, storage.VALUES.true);
-      await storage.remove(storage.KEYS.passcodeChoice);
-      await storage.remove(storage.KEYS.biometryChoiceDisabled);
-
-      // If the user enables biometrics, we're trying to read the password
-      // immediately so we get the permission prompt
+      await storage.remove(storage.KEYS.rememberMe);
       if (Platform.OS === "ios") {
         await this.getGenericPassword();
       }
-    } else if (type === this.TYPES.PASSCODE) {
-      await storage.remove(storage.KEYS.biometryChoice);
-      await storage.remove(storage.KEYS.passcodeDisabled);
-      await storage.save(storage.KEYS.passcodeChoice, storage.VALUES.true);
-      await storage.save(
-        storage.KEYS.biometryChoiceDisabled,
-        storage.VALUES.true
-      );
     } else if (type === this.TYPES.REMEMBER_ME) {
       await storage.remove(storage.KEYS.biometryChoice);
-      await storage.save(storage.KEYS.passcodeDisabled, storage.VALUES.true);
-      await storage.remove(storage.KEYS.passcodeChoice);
-      await storage.save(
-        storage.KEYS.biometryChoiceDisabled,
-        storage.VALUES.true
-      );
+      await storage.save(storage.KEYS.rememberMe, storage.VALUES.true);
     }
   },
   ACCESS_CONTROL: Keychain.ACCESS_CONTROL,

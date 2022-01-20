@@ -1,3 +1,4 @@
+import React from "react";
 import { ContextDispatch } from "types/context";
 import Toast from "react-native-toast-message";
 import get from "lodash/get";
@@ -12,6 +13,8 @@ import { addressIsSnapshotWallet } from "helpers/address";
 import { ethers } from "ethers";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 import signClient from "helpers/signClient";
+import { BOTTOM_SHEET_MODAL_ACTIONS } from "context/bottomSheetModalContext";
+import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 
 export const defaultHeaders = {
   accept: "application/json; charset=utf-8",
@@ -64,7 +67,9 @@ export async function deleteProposal(
   navigation: any,
   snapshotWallets: string[],
   keyRingController: any,
-  typedMessageManager: any
+  typedMessageManager: any,
+  bottomSheetModalDispatch: any,
+  bottomSheetModalRef: any
 ) {
   const isSnapshotWallet = addressIsSnapshotWallet(
     connectedAddress ?? "",
@@ -73,63 +78,86 @@ export async function deleteProposal(
 
   try {
     if (isSnapshotWallet) {
-      const formattedAddress = connectedAddress?.toLowerCase();
-      const checksumAddress = ethers.utils.getAddress(formattedAddress);
-      const { snapshotData, signData } = getSnapshotDataForSign(
-        checksumAddress,
-        "vote",
-        {
-          proposal: {
-            id: proposal.id,
+      if (keyRingController.isUnlocked()) {
+        const formattedAddress = connectedAddress?.toLowerCase();
+        const checksumAddress = ethers.utils.getAddress(formattedAddress);
+        const { snapshotData, signData } = getSnapshotDataForSign(
+          checksumAddress,
+          "vote",
+          {
+            proposal: {
+              id: proposal.id,
+            },
           },
-        },
-        space
-      );
-      const messageId = await typedMessageManager.addUnapprovedMessage(
-        {
-          data: JSON.stringify(signData),
-          from: checksumAddress,
-        },
-        { origin: "snapshot.org" }
-      );
-      const cleanMessageParams = await typedMessageManager.approveMessage({
-        ...signData,
-        metamaskId: messageId,
-      });
-      const rawSig = await keyRingController.signTypedMessage(
-        {
-          data: JSON.stringify(cleanMessageParams),
-          from: checksumAddress,
-        },
-        "V4"
-      );
-
-      typedMessageManager.setMessageStatusSigned(messageId, rawSig);
-
-      const sign = await signClient.send({
-        address: checksumAddress,
-        sig: rawSig,
-        data: snapshotData,
-      });
-
-      if (sign) {
-        Toast.show({
-          type: "customSuccess",
-          text1: i18n.t("proposalDeleted"),
-          ...toastShowConfig,
-        });
-        authDispatch({
-          type: AUTH_ACTIONS.SET_REFRESH_FEED,
-          payload: {
-            spaceId: space.id,
+          space
+        );
+        const messageId = await typedMessageManager.addUnapprovedMessage(
+          {
+            data: JSON.stringify(signData),
+            from: checksumAddress,
           },
+          { origin: "snapshot.org" }
+        );
+        const cleanMessageParams = await typedMessageManager.approveMessage({
+          ...signData,
+          metamaskId: messageId,
         });
-        navigation.goBack();
+        const rawSig = await keyRingController.signTypedMessage(
+          {
+            data: JSON.stringify(cleanMessageParams),
+            from: checksumAddress,
+          },
+          "V4"
+        );
+
+        typedMessageManager.setMessageStatusSigned(messageId, rawSig);
+
+        const sign = await signClient.send({
+          address: checksumAddress,
+          sig: rawSig,
+          data: snapshotData,
+        });
+
+        if (sign) {
+          Toast.show({
+            type: "customSuccess",
+            text1: i18n.t("proposalDeleted"),
+            ...toastShowConfig,
+          });
+          authDispatch({
+            type: AUTH_ACTIONS.SET_REFRESH_FEED,
+            payload: {
+              spaceId: space.id,
+            },
+          });
+          navigation.goBack();
+        } else {
+          Toast.show({
+            type: "customError",
+            text1: i18n.t("unableToDeleteProposal"),
+            ...toastShowConfig,
+          });
+        }
       } else {
-        Toast.show({
-          type: "customError",
-          text1: i18n.t("unableToDeleteProposal"),
-          ...toastShowConfig,
+        bottomSheetModalDispatch({
+          type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+          payload: {
+            snapPoints: [10, 450],
+            initialIndex: 1,
+            ModalContent: () => {
+              return (
+                <SubmitPasswordModal
+                  onClose={() => {
+                    bottomSheetModalRef.current?.close();
+                  }}
+                  navigation={navigation}
+                />
+              );
+            },
+            show: true,
+            key: `submit-password-modal-${proposal.id}`,
+            options: [],
+          },
         });
       }
     } else {

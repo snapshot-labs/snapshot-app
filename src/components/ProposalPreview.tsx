@@ -211,7 +211,6 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
             onPress={() => {
               const snapPoints = [10, options.length > 2 ? 300 : 200];
               const destructiveButtonIndex = 2;
-              console.log({ connectedAddress, author: proposal?.author });
               bottomSheetModalDispatch({
                 type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                 payload: {

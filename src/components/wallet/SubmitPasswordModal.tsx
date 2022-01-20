@@ -83,27 +83,29 @@ function SubmitPasswordModal({
     }
   }
 
+  async function tryBiometrics() {
+    try {
+      const biometryChoice = await storage.load(storage.KEYS.biometryChoice);
+      if (biometryChoice === storage.VALUES.true) {
+        const credentials = await SecureKeychain.getGenericPassword();
+        if (!credentials) {
+          return;
+        }
+        setPassword(credentials.password);
+      }
+    } catch (e) {}
+  }
+
   useEffect(() => {
     checkBiometryType();
+    tryBiometrics();
   }, []);
 
-  async function updateBiometryChoice(biometryChoice: boolean = false) {
-    if (!biometryChoice) {
-      await storage.save(
-        storage.KEYS.biometryChoiceDisabled,
-        storage.VALUES.true
-      );
-    } else {
-      await storage.remove(storage.KEYS.biometryChoiceDisabled);
-    }
-    setBiometryChoice(biometryChoice);
-  }
   async function handleRejectedOsBiometricPrompt(error: Error) {
     const biometryType = await SecureKeychain.getSupportedBiometryType();
     if (error.toString().includes(IOS_DENY_BIOMETRIC_ERROR) && !biometryType) {
       setBiometryType(biometryType);
       setBiometryChoice(true);
-      updateBiometryChoice();
       throw Error(i18n.t("disableBiometricError"));
     }
   }
@@ -167,15 +169,6 @@ function SubmitPasswordModal({
               </Text>
               <Switch
                 onValueChange={async (biometryChoice: boolean) => {
-                  if (!biometryChoice) {
-                    await storage.save(
-                      storage.KEYS.biometryChoiceDisabled,
-                      storage.VALUES.true
-                    );
-                  } else {
-                    await storage.remove(storage.KEYS.biometryChoiceDisabled);
-                  }
-
                   setBiometryChoice(biometryChoice);
                 }} // eslint-disable-line react/jsx-no-bind
                 value={biometryChoice}

@@ -16,14 +16,12 @@ const KEYS: any = {
   theme: "theme",
   lastViewedNotification: "lastViewedNotification",
   lastViewedProposal: "lastViewedProposal",
-  biometryChoiceDisabled: "biometryChoiceDisabled",
   biometryChoice: "biometryChoice",
-  passcodeChoice: "passcodeChoice",
-  passcodeDisabled: "passcodeDisabled",
   preferencesControllerState: "preferencesControllerState",
   keyRingControllerState: "keyRingControllerState",
   snapshotWallets: "snapshotWallets",
   passwordSet: "passwordSet",
+  rememberMe: "rememberMe",
 };
 
 const VALUES = {

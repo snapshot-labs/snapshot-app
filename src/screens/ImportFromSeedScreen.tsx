@@ -291,15 +291,8 @@ function ImportFromSeedScreen() {
   async function initBiometryType() {
     const biometryType = await SecureKeychain.getSupportedBiometryType();
     if (biometryType) {
-      let enabled = true;
-      const previouslyDisabled: any = await storage.remove(
-        storage.KEYS.biometryChoiceDisabled
-      );
-      if (previouslyDisabled && previouslyDisabled === storage.VALUES.true) {
-        enabled = false;
-      }
       setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
-      setBiometryChoice(enabled);
+      setBiometryChoice(true);
     }
   }
 
@@ -331,7 +324,9 @@ function ImportFromSeedScreen() {
             {i18n.t(`biometrics.enable_${biometryType.toLowerCase()}`)}
           </Text>
           <Switch
-            onValueChange={this.updateBiometryChoice}
+            onValueChange={(biometryChoice: boolean) => {
+              setBiometryChoice(biometryChoice);
+            }}
             value={biometryChoice}
             style={styles.biometrySwitch}
             trackColor={
