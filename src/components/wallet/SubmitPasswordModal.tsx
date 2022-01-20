@@ -16,7 +16,8 @@ import {
 import ResetWalletModal from "components/wallet/ResetWalletModal";
 import storage from "helpers/storage";
 import Device from "helpers/device";
-import SecureKeychain from "helpers/secureKeychain";
+import SecureKeychain, { createDefaultOptions } from "helpers/secureKeychain";
+import * as Keychain from "react-native-keychain";
 
 const styles = StyleSheet.create({
   hintLabel: {
@@ -76,24 +77,51 @@ function SubmitPasswordModal({
   const [rememberMe, setRememberMe] = useState(false);
 
   async function checkBiometryType() {
-    const biometryType = await SecureKeychain.getSupportedBiometryType();
-    if (biometryType) {
-      setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
-      setBiometryChoice(true);
+    if (Device.isIos()) {
+      const biometryType = await SecureKeychain.getSupportedBiometryType();
+      if (biometryType) {
+        setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
+        setBiometryChoice(true);
+      }
     }
   }
 
   async function tryBiometrics() {
+    const defaultOptions = createDefaultOptions();
     try {
-      const biometryChoice = await storage.load(storage.KEYS.biometryChoice);
-      if (biometryChoice === storage.VALUES.true) {
-        const credentials = await SecureKeychain.getGenericPassword();
-        if (!credentials) {
-          return;
+      if (Device.isIos()) {
+        const biometryChoice = await storage.load(storage.KEYS.biometryChoice);
+        if (biometryChoice === storage.VALUES.true) {
+          setLoading(true);
+          const credentials = await Keychain.getGenericPassword(defaultOptions);
+          if (!credentials) {
+            setLoading(false);
+            return;
+          }
+          await keyRingController.submitPassword(credentials.password);
+          setLoading(false);
+          onClose();
+        } else {
+          setLoading(false);
         }
-        setPassword(credentials.password);
+      } else {
+        const rememberMe = await storage.load(storage.KEYS.rememberMe);
+        if (rememberMe) {
+          setLoading(true);
+          const credentials = await Keychain.getGenericPassword(defaultOptions);
+          if (!credentials) {
+            setLoading(false);
+            return;
+          }
+          await keyRingController.submitPassword(credentials.password);
+          setLoading(false);
+          onClose();
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      setLoading(false);
+      setError(i18n.t("reveal_credential.warning_incorrect_password"));
+    }
   }
 
   useEffect(() => {
@@ -225,6 +253,9 @@ function SubmitPasswordModal({
                     password,
                     SecureKeychain.TYPES.REMEMBER_ME
                   );
+                } else {
+                  storage.remove(storage.KEYS.rememberMe);
+                  storage.remove(storage.KEYS.biometryChoice);
                 }
 
                 setLoading(false);

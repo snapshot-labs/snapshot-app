@@ -30,6 +30,7 @@ import {
   NOTIFICATIONS_ACTIONS,
   useNotificationsDispatch,
 } from "context/notificationsContext";
+import WalletType from "components/wallet/WalletType";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -148,6 +149,9 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             >
               {shorten(address ?? "")}
             </Text>
+          </View>
+          <View style={{ marginLeft: 8 }}>
+            <WalletType address={address} />
           </View>
         </View>
         {!isSnapshotWallet && (

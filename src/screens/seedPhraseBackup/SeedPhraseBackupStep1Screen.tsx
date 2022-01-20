@@ -257,6 +257,8 @@ function SeedPhraseBackupScreen() {
       );
       const seed = JSON.stringify(mnemonic).replace(/"/g, "").split(" ");
       setWords(seed);
+      setPassword(credentials.password);
+      setShowConfirmPassword(false);
     } else {
       setShowConfirmPassword(true);
     }

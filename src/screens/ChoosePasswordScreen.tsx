@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -213,7 +213,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [biometryType, setBiometryType] = useState(null);
+  const [biometryType, setBiometryType] = useState<null | string>(null);
   const [biometryChoice, setBiometryChoice] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -225,6 +225,16 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const canSubmit = passwordsMatch && isSelected;
   const navigation: any = useNavigation();
   const previousScreen = route?.params?.previousScreen;
+
+  async function checkBiometryType() {
+    if (Device.isIos()) {
+      const biometryType = await SecureKeychain.getSupportedBiometryType();
+      if (biometryType) {
+        setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
+        setBiometryChoice(true);
+      }
+    }
+  }
 
   async function handleRejectedOsBiometricPrompt(error: Error) {
     const biometryType = await SecureKeychain.getSupportedBiometryType();
@@ -409,6 +419,10 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
     }
   }
 
+  useEffect(() => {
+    checkBiometryType();
+  }, []);
+
   return (
     <SafeAreaView
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
@@ -557,7 +571,12 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                 <View style={styles.biometrics}>
                   {biometryType !== null ? (
                     <View style={styles.biometricsContainer}>
-                      <Text style={[styles.biometryLabel, { color: colors.textColor }]}>
+                      <Text
+                        style={[
+                          styles.biometryLabel,
+                          { color: colors.textColor },
+                        ]}
+                      >
                         {i18n.t(
                           `biometrics.enable_${biometryType?.toLowerCase()}`
                         )}

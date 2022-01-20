@@ -43,6 +43,8 @@ import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import storage from "helpers/storage";
 import { SNAPSHOT_WALLET } from "constants/wallets";
 import ResetWalletModal from "components/wallet/ResetWalletModal";
+import * as Keychain from "react-native-keychain";
+import { createDefaultOptions } from "helpers/secureKeychain";
 
 const { width } = Dimensions.get("screen");
 
@@ -79,6 +81,23 @@ function MoreScreen() {
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
   const [loadingNewWallet, setLoadingNewWallet] = useState(false);
+
+  useEffect(() => {
+    const defaultOptions = createDefaultOptions();
+    async function checkWallet() {
+      try {
+        const credentials = await Keychain.getGenericPassword(defaultOptions);
+
+        if (credentials) {
+          keyRingController.submitPassword(credentials.password);
+        }
+      } catch (e) {
+        console.log("KEYCHAIN ERROR", e);
+      }
+    }
+
+    checkWallet();
+  }, []);
 
   async function createNewWallet() {
     setLoadingNewWallet(true);

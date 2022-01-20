@@ -6,7 +6,7 @@ import storage from "helpers/storage";
 
 const privates = new WeakMap();
 const encryptor = new Encryptor();
-const createDefaultOptions = () => ({
+export const createDefaultOptions = () => ({
   service: "org.snapshot",
   authenticationPromptTitle: i18n.t("authentication.auth_prompt_title"),
   authenticationPrompt: { title: i18n.t("authentication.auth_prompt_desc") },
@@ -70,13 +70,11 @@ export default {
   async getGenericPassword() {
     if (instance) {
       instance.isAuthenticating = true;
-      console.log(" GET GENERIC PASSWORD");
       const defaultOptions = createDefaultOptions();
       try {
         const keychainObject: any = await Keychain.getGenericPassword(
           defaultOptions
         );
-        console.log("KEYCHAIN OBJECT", { keychainObject });
         if (keychainObject.password) {
           const encryptedPassword = keychainObject.password;
           const decrypted = await instance.decryptPassword(encryptedPassword);

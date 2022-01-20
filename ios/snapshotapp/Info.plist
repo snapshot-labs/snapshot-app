@@ -102,6 +102,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow snapshot to use the camera</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID to unlock snapshot wallet</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow snapshot to use the microphone</string>
 	<key>UIAppFonts</key>
