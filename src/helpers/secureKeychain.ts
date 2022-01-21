@@ -133,9 +133,6 @@ export default {
       await storage.save(storage.KEYS.rememberMe, storage.VALUES.true);
     }
   },
-  ACCESS_CONTROL: Keychain.ACCESS_CONTROL,
-  ACCESSIBLE: Keychain.ACCESSIBLE,
-  AUTHENTICATION_TYPE: Keychain.AUTHENTICATION_TYPE,
   TYPES: {
     BIOMETRICS: "BIOMETRICS",
     PASSCODE: "PASSCODE",
