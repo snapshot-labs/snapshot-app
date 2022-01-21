@@ -18,6 +18,7 @@ import colors from "constants/colors";
 import { useToastShowConfig } from "constants/toast";
 import { useAuthState } from "context/authContext";
 import common from "styles/common";
+import WalletType from "components/wallet/WalletType";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -74,6 +75,9 @@ function ActiveAccount({ address }: ActiveAccountProps) {
             imgSrc={profile?.image}
             key={`${address}${profile?.image}`}
           />
+          <View style={{ position: "absolute", top: -4, right: -10 }}>
+            <WalletType address={address} />
+          </View>
         </TouchableOpacity>
       ) : (
         <View />
@@ -101,7 +105,6 @@ function ActiveAccount({ address }: ActiveAccountProps) {
             </Text>
           </View>
         </TouchableOpacity>
-        {isEmpty(ens) && <Text style={styles.connectedEns}> </Text>}
       </View>
     </View>
   );

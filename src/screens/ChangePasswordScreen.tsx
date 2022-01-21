@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import i18n from "i18n-js";
@@ -154,7 +154,7 @@ function ChangePasswordScreen() {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [secureTextEntryCurrentPassword, setSecureTextEntryCurrentPassword] =
     useState(true);
-  const [biometryType, setBiometryType] = useState(null);
+  const [biometryType, setBiometryType] = useState<string | null>(null);
   const [biometryChoice, setBiometryChoice] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -167,6 +167,16 @@ function ChangePasswordScreen() {
   const canSubmit = passwordsMatch && isSelected;
   const toastShowConfig = useToastShowConfig();
   const navigation: any = useNavigation();
+
+  async function checkBiometryType() {
+    if (Device.isIos()) {
+      const biometryType = await SecureKeychain.getSupportedBiometryType();
+      if (biometryType) {
+        setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
+        setBiometryChoice(true);
+      }
+    }
+  }
 
   async function recreateVault() {
     try {
@@ -287,6 +297,10 @@ function ChangePasswordScreen() {
 
     setLoading(false);
   }
+
+  useEffect(() => {
+    checkBiometryType();
+  });
 
   return (
     <SafeAreaView
@@ -446,7 +460,9 @@ function ChangePasswordScreen() {
             <View style={styles.biometrics}>
               {biometryType !== null ? (
                 <View style={styles.biometricsContainer}>
-                  <Text style={[styles.biometryLabel, { color: colors.textColor }]}>
+                  <Text
+                    style={[styles.biometryLabel, { color: colors.textColor }]}
+                  >
                     {i18n.t(`biometrics.enable_${biometryType?.toLowerCase()}`)}
                   </Text>
                   <Switch
