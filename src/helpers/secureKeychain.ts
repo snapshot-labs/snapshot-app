@@ -127,7 +127,6 @@ export default {
         await this.getGenericPassword();
       }
     } else if (type === this.TYPES.REMEMBER_ME) {
-      console.log({ authOptions, encryptedPass });
       SecureStore.setItemAsync(SNAPSHOT_USER, encryptedPass, authOptions);
       await storage.remove(storage.KEYS.biometryChoice);
       await storage.save(storage.KEYS.rememberMe, storage.VALUES.true);

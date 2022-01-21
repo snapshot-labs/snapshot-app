@@ -74,8 +74,6 @@ class Client {
     } else {
       let sig;
       try {
-        console.log(JSON.stringify(wcData));
-        console.log("START WALLET CONNECT SIGN");
         sig = await wcConnector.signTypedData([
           address,
           JSON.stringify(wcData),
@@ -102,18 +100,14 @@ class Client {
       body: JSON.stringify(envelop),
     };
 
-    console.log(url);
-    console.log(JSON.stringify(envelop));
     return new Promise((resolve, reject) => {
       fetch(url, init)
         .then((res) => {
-          console.log("RES RESPONSE", res.ok);
           if (res.ok) return resolve(res.json());
 
           throw res;
         })
         .catch((e) => {
-          console.log("HUB RESPONSE ERROR");
           if (e.json) {
             e.json()
               .then((json) => {
