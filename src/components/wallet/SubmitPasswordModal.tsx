@@ -16,7 +16,7 @@ import {
 import ResetWalletModal from "components/wallet/ResetWalletModal";
 import storage from "helpers/storage";
 import Device from "helpers/device";
-import SecureKeychain, { createDefaultOptions } from "helpers/secureKeychain";
+import SecureKeychain from "helpers/secureKeychain";
 
 const styles = StyleSheet.create({
   hintLabel: {
@@ -85,37 +85,32 @@ function SubmitPasswordModal({
 
   async function tryBiometrics() {
     try {
-      if (Device.isIos()) {
-        const biometryChoice = await storage.load(storage.KEYS.biometryChoice);
-        if (biometryChoice === storage.VALUES.true) {
-          setLoading(true);
-          const credentials = await SecureKeychain.getGenericPassword();
-          if (!credentials) {
-            setLoading(false);
-            return;
-          }
-          await keyRingController.submitPassword(credentials.password);
+      const biometryChoice = await storage.load(storage.KEYS.biometryChoice);
+      const rememberMe = await storage.load(storage.KEYS.rememberMe);
+      if (biometryChoice === storage.VALUES.true) {
+        setLoading(true);
+        const credentials = await SecureKeychain.getGenericPassword();
+        if (!credentials) {
           setLoading(false);
-          onClose();
-        } else {
-          setLoading(false);
+          return;
         }
+        await keyRingController.submitPassword(credentials.password);
+        setLoading(false);
+        onClose();
+      } else if (rememberMe) {
+        setLoading(true);
+        const credentials = await SecureKeychain.getGenericPassword();
+        if (!credentials) {
+          setLoading(false);
+          return;
+        }
+        await keyRingController.submitPassword(credentials.password);
+        setLoading(false);
+        onClose();
       } else {
-        const rememberMe = await storage.load(storage.KEYS.rememberMe);
-        if (rememberMe) {
-          setLoading(true);
-          const credentials = await SecureKeychain.getGenericPassword();
-          if (!credentials) {
-            setLoading(false);
-            return;
-          }
-          await keyRingController.submitPassword(credentials.password);
-          setLoading(false);
-          onClose();
-        }
+        setLoading(false);
       }
     } catch (e) {
-      console.log("try error", e);
       setLoading(false);
       setError(i18n.t("reveal_credential.warning_incorrect_password"));
     }

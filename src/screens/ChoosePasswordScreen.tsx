@@ -227,12 +227,10 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
   const previousScreen = route?.params?.previousScreen;
 
   async function checkBiometryType() {
-    if (Device.isIos()) {
-      const biometryType = await SecureKeychain.getSupportedBiometryType();
-      if (biometryType) {
-        setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
-        setBiometryChoice(true);
-      }
+    const biometryType = await SecureKeychain.getSupportedBiometryType();
+    if (biometryType) {
+      setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
+      setBiometryChoice(true);
     }
   }
 

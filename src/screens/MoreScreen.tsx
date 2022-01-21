@@ -82,20 +82,18 @@ function MoreScreen() {
 
   useEffect(() => {
     async function checkWallet() {
-      if (!keyRingController.isUnlocked()) {
-        try {
-          const credentials = await SecureKeychain.getGenericPassword();
-          if (credentials) {
-            keyRingController.submitPassword(credentials.password);
-          }
-        } catch (e) {
-          console.log("KEYCHAIN ERROR", e);
+      try {
+        const credentials = await SecureKeychain.getGenericPassword();
+        if (credentials) {
+          keyRingController.submitPassword(credentials.password);
         }
+      } catch (e) {
+        console.log("KEYCHAIN ERROR", e);
       }
     }
 
     checkWallet();
-  }, []);
+  }, [connectedAddress]);
 
   async function createNewWallet() {
     setLoadingNewWallet(true);

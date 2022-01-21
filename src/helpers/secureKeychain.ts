@@ -6,6 +6,7 @@ import storage from "helpers/storage";
 import * as SecureStore from "expo-secure-store";
 import env from "constants/env";
 import CryptoJS from "react-native-crypto-js";
+import * as LocalAuthentication from "expo-local-authentication";
 
 const privates = new WeakMap();
 const encryptor = new Encryptor();
@@ -67,31 +68,37 @@ export default {
   },
 
   async resetGenericPassword() {
-    const defaultOptions = createDefaultOptions();
-    const options = { service: defaultOptions.service };
-    await storage.remove(storage.KEYS.biometryChoice);
-    await SecureStore.deleteItemAsync(SNAPSHOT_USER);
+    try {
+      await storage.remove(storage.KEYS.biometryChoice);
+      await SecureStore.deleteItemAsync(SNAPSHOT_USER);
+    } catch (e) {
+      console.log("RESET ERROR", e);
+    }
   },
 
   async getGenericPassword() {
     if (instance) {
       try {
-        const options = {
-          authenticationPrompt: i18n.t("authentication.auth_prompt_desc"),
-          requireAuthentication: true,
-        };
-        const password = SecureStore.getItemAsync(SNAPSHOT_USER, options);
+        const biometry = await storage.load(storage.KEYS.biometryChoice);
+        if (biometry === storage.VALUES.true) {
+          const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+          if (isEnrolled) {
+            const auth = await LocalAuthentication.authenticateAsync();
+            console.log({ auth });
+          } else {
+            return null;
+          }
+        }
+        const password = await SecureStore.getItemAsync(SNAPSHOT_USER);
         if (password) {
           const bytes = CryptoJS.AES.decrypt(
             password,
             env.SECURE_KEYCHAIN_SALT
           );
-          console.log(bytes.toString(CryptoJS.enc.Utf8));
           return { password: bytes.toString(CryptoJS.enc.Utf8) };
         }
         return null;
       } catch (e) {
-        console.log("GENERIC PASSWORD ERROR", e);
         return null;
       }
     }
@@ -105,16 +112,14 @@ export default {
 
     if (type === this.TYPES.BIOMETRICS) {
       authOptions.requireAuthentication = true;
-    } else {
-      return await this.resetGenericPassword();
     }
 
-    if (type === this.TYPES.BIOMETRICS) {
-      const encryptedPass = CryptoJS.AES.encrypt(
-        password,
-        env.SECURE_KEYCHAIN_SALT
-      ).toString();
+    const encryptedPass = CryptoJS.AES.encrypt(
+      password,
+      env.SECURE_KEYCHAIN_SALT
+    ).toString();
 
+    if (type === this.TYPES.BIOMETRICS) {
       SecureStore.setItemAsync(SNAPSHOT_USER, encryptedPass, authOptions);
       await storage.save(storage.KEYS.biometryChoice, storage.VALUES.true);
       await storage.remove(storage.KEYS.rememberMe);
@@ -122,6 +127,8 @@ export default {
         await this.getGenericPassword();
       }
     } else if (type === this.TYPES.REMEMBER_ME) {
+      console.log({ authOptions, encryptedPass });
+      SecureStore.setItemAsync(SNAPSHOT_USER, encryptedPass, authOptions);
       await storage.remove(storage.KEYS.biometryChoice);
       await storage.save(storage.KEYS.rememberMe, storage.VALUES.true);
     }

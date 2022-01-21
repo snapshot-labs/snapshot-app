@@ -46,7 +46,7 @@ function JoinedSpacesScrollView({
     >
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {useLoader
-          ? new Array(3).fill(1).map((v, index: number) => {
+          ? new Array(1).fill(1).map((v, index: number) => {
               return (
                 <Placeholder
                   key={index}
