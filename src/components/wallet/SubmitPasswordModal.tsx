@@ -17,7 +17,6 @@ import ResetWalletModal from "components/wallet/ResetWalletModal";
 import storage from "helpers/storage";
 import Device from "helpers/device";
 import SecureKeychain, { createDefaultOptions } from "helpers/secureKeychain";
-import * as Keychain from "react-native-keychain";
 
 const styles = StyleSheet.create({
   hintLabel: {
@@ -77,23 +76,20 @@ function SubmitPasswordModal({
   const [rememberMe, setRememberMe] = useState(false);
 
   async function checkBiometryType() {
-    if (Device.isIos()) {
-      const biometryType = await SecureKeychain.getSupportedBiometryType();
-      if (biometryType) {
-        setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
-        setBiometryChoice(true);
-      }
+    const biometryType = await SecureKeychain.getSupportedBiometryType();
+    if (biometryType) {
+      setBiometryType(Device.isAndroid() ? "biometrics" : biometryType);
+      setBiometryChoice(true);
     }
   }
 
   async function tryBiometrics() {
-    const defaultOptions = createDefaultOptions();
     try {
       if (Device.isIos()) {
         const biometryChoice = await storage.load(storage.KEYS.biometryChoice);
         if (biometryChoice === storage.VALUES.true) {
           setLoading(true);
-          const credentials = await Keychain.getGenericPassword(defaultOptions);
+          const credentials = await SecureKeychain.getGenericPassword();
           if (!credentials) {
             setLoading(false);
             return;
@@ -108,7 +104,7 @@ function SubmitPasswordModal({
         const rememberMe = await storage.load(storage.KEYS.rememberMe);
         if (rememberMe) {
           setLoading(true);
-          const credentials = await Keychain.getGenericPassword(defaultOptions);
+          const credentials = await SecureKeychain.getGenericPassword();
           if (!credentials) {
             setLoading(false);
             return;
@@ -119,6 +115,7 @@ function SubmitPasswordModal({
         }
       }
     } catch (e) {
+      console.log("try error", e);
       setLoading(false);
       setError(i18n.t("reveal_credential.warning_incorrect_password"));
     }

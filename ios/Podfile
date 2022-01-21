@@ -27,4 +27,5 @@ target 'snapshotapp' do
 
   pod 'react-native-aes', :path => '../node_modules/react-native-aes-crypto'
 
+  pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 end

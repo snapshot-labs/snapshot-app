@@ -3,9 +3,15 @@ import Encryptor from "./encryptor";
 import i18n from "i18n-js";
 import { Platform } from "react-native";
 import storage from "helpers/storage";
+import * as SecureStore from "expo-secure-store";
+import env from "constants/env";
+import CryptoJS from "react-native-crypto-js";
 
 const privates = new WeakMap();
 const encryptor = new Encryptor();
+
+const SNAPSHOT_USER = "snapshot-user";
+
 export const createDefaultOptions = () => ({
   service: "org.snapshot",
   authenticationPromptTitle: i18n.t("authentication.auth_prompt_title"),
@@ -64,54 +70,52 @@ export default {
     const defaultOptions = createDefaultOptions();
     const options = { service: defaultOptions.service };
     await storage.remove(storage.KEYS.biometryChoice);
-    return Keychain.resetGenericPassword(options);
+    await SecureStore.deleteItemAsync(SNAPSHOT_USER);
   },
 
   async getGenericPassword() {
     if (instance) {
-      instance.isAuthenticating = true;
-      const defaultOptions = createDefaultOptions();
       try {
-        const keychainObject: any = await Keychain.getGenericPassword(
-          defaultOptions
-        );
-        if (keychainObject.password) {
-          const encryptedPassword = keychainObject.password;
-          const decrypted = await instance.decryptPassword(encryptedPassword);
-          keychainObject.password = decrypted.password;
-          instance.isAuthenticating = false;
-          return keychainObject;
+        const options = {
+          authenticationPrompt: i18n.t("authentication.auth_prompt_desc"),
+          requireAuthentication: true,
+        };
+        const password = SecureStore.getItemAsync(SNAPSHOT_USER, options);
+        if (password) {
+          const bytes = CryptoJS.AES.decrypt(
+            password,
+            env.SECURE_KEYCHAIN_SALT
+          );
+          console.log(bytes.toString(CryptoJS.enc.Utf8));
+          return { password: bytes.toString(CryptoJS.enc.Utf8) };
         }
-      } catch (e) {}
-      instance.isAuthenticating = false;
+        return null;
+      } catch (e) {
+        console.log("GENERIC PASSWORD ERROR", e);
+        return null;
+      }
     }
     return null;
   },
 
   async setGenericPassword(password: string, type: string) {
     const authOptions: any = {
-      accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+      authenticationPrompt: i18n.t("authentication.auth_prompt_desc"),
     };
-    const defaultOptions = createDefaultOptions();
 
     if (type === this.TYPES.BIOMETRICS) {
-      authOptions.accessControl = Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET;
-    } else if (type === this.TYPES.PASSCODE) {
-      authOptions.accessControl = Keychain.ACCESS_CONTROL.DEVICE_PASSCODE;
-    } else if (type === this.TYPES.REMEMBER_ME) {
-      //Don't need to add any parameter
+      authOptions.requireAuthentication = true;
     } else {
-      // Setting a password without a type does not save it
       return await this.resetGenericPassword();
     }
 
-    const encryptedPassword = await instance.encryptPassword(password);
-    await Keychain.setGenericPassword("snapshot-user", encryptedPassword, {
-      ...defaultOptions,
-      ...authOptions,
-    });
-
     if (type === this.TYPES.BIOMETRICS) {
+      const encryptedPass = CryptoJS.AES.encrypt(
+        password,
+        env.SECURE_KEYCHAIN_SALT
+      ).toString();
+
+      SecureStore.setItemAsync(SNAPSHOT_USER, encryptedPass, authOptions);
       await storage.save(storage.KEYS.biometryChoice, storage.VALUES.true);
       await storage.remove(storage.KEYS.rememberMe);
       if (Platform.OS === "ios") {

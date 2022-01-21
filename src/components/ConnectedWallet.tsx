@@ -129,12 +129,17 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
           paddingVertical: 8,
         }}
       >
-        <UserAvatar
-          size={40}
-          address={address}
-          imgSrc={profile?.image}
-          key={`${address}${profile?.image}`}
-        />
+        <View>
+          <UserAvatar
+            size={40}
+            address={address}
+            imgSrc={profile?.image}
+            key={`${address}${profile?.image}`}
+          />
+          <View style={{ position: "absolute", top: -2, right: -6 }}>
+            <WalletType address={address} size="s" />
+          </View>
+        </View>
         <View style={styles.connectedAddressContainer}>
           <View>
             {ens !== undefined && ens !== "" && (
@@ -149,9 +154,6 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             >
               {shorten(address ?? "")}
             </Text>
-          </View>
-          <View style={{ marginLeft: 8 }}>
-            <WalletType address={address} />
           </View>
         </View>
         {!isSnapshotWallet && (

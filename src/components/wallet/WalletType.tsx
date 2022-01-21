@@ -23,14 +23,16 @@ const styles = StyleSheet.create({
 
 interface WalletTypeProps {
   address: string;
+  size: string;
 }
 
-function WalletType({ address }: WalletTypeProps) {
+function WalletType({ address, size }: WalletTypeProps) {
   const { colors, snapshotWallets, savedWallets } = useAuthState();
   const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
   const walletName: any = get(savedWallets, `${address}.name`, "");
   const isWalletConnect =
     walletName !== CUSTOM_WALLET_NAME && walletName !== SNAPSHOT_WALLET;
+  const isSmall = size === "s";
 
   if (walletName === CUSTOM_WALLET_NAME) {
     return <View />;
@@ -45,6 +47,9 @@ function WalletType({ address }: WalletTypeProps) {
             backgroundColor: isWalletConnect ? colors.white : colors.bgBlue,
             borderColor: isWalletConnect ? colors.textColor : colors.bgBlue,
             borderWidth: 1,
+            width: isSmall ? 20 : 30,
+            height: isSmall ? 20 : 30,
+            borderRadius: isSmall ? 10 : 15,
           },
         ]}
       >
@@ -52,14 +57,18 @@ function WalletType({ address }: WalletTypeProps) {
           <Image
             source={walletConnectLogo}
             style={{
-              width: 20,
-              height: 20,
+              width: isSmall ? 15 : 20,
+              height: isSmall ? 15 : 20,
             }}
             resizeMode="contain"
           />
         )}
         {isSnapshotWallet && (
-          <IconFont name="snapshot" size={20} color={colors.yellow} />
+          <IconFont
+            name="snapshot"
+            size={size === "s" ? 15 : 20}
+            color={colors.yellow}
+          />
         )}
       </View>
     </View>

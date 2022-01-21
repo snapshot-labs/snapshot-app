@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeModules } from "react-native";
 import env from "constants/env";
 import CryptoJS from "react-native-crypto-js";
 

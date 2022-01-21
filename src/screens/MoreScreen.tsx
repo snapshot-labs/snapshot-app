@@ -6,7 +6,6 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -43,8 +42,7 @@ import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import storage from "helpers/storage";
 import { SNAPSHOT_WALLET } from "constants/wallets";
 import ResetWalletModal from "components/wallet/ResetWalletModal";
-import * as Keychain from "react-native-keychain";
-import { createDefaultOptions } from "helpers/secureKeychain";
+import SecureKeychain from "helpers/secureKeychain";
 
 const { width } = Dimensions.get("screen");
 
@@ -83,16 +81,16 @@ function MoreScreen() {
   const [loadingNewWallet, setLoadingNewWallet] = useState(false);
 
   useEffect(() => {
-    const defaultOptions = createDefaultOptions();
     async function checkWallet() {
-      try {
-        const credentials = await Keychain.getGenericPassword(defaultOptions);
-
-        if (credentials) {
-          keyRingController.submitPassword(credentials.password);
+      if (!keyRingController.isUnlocked()) {
+        try {
+          const credentials = await SecureKeychain.getGenericPassword();
+          if (credentials) {
+            keyRingController.submitPassword(credentials.password);
+          }
+        } catch (e) {
+          console.log("KEYCHAIN ERROR", e);
         }
-      } catch (e) {
-        console.log("KEYCHAIN ERROR", e);
       }
     }
 
