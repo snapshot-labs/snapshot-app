@@ -82,13 +82,15 @@ function MoreScreen() {
 
   useEffect(() => {
     async function checkWallet() {
-      try {
-        const credentials = await SecureKeychain.getGenericPassword();
-        if (credentials) {
-          keyRingController.submitPassword(credentials.password);
+      if (!keyRingController.isUnlocked()) {
+        try {
+          const credentials = await SecureKeychain.getGenericPassword();
+          if (credentials) {
+            keyRingController.submitPassword(credentials.password);
+          }
+        } catch (e) {
+          console.log("KEYCHAIN ERROR", e);
         }
-      } catch (e) {
-        console.log("KEYCHAIN ERROR", e);
       }
     }
 
