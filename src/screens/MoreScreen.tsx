@@ -270,6 +270,7 @@ function MoreScreen() {
                         );
                       },
                       show: true,
+                      options: [],
                       key: "submit-password-modal",
                     },
                   });
@@ -300,6 +301,7 @@ function MoreScreen() {
                         />
                       );
                     },
+                    options: [],
                     show: true,
                     key: "reset-wallet-modal",
                   },

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 
 interface WalletTypeProps {
   address: string;
-  size: string;
+  size?: string;
 }
 
 function WalletType({ address, size }: WalletTypeProps) {

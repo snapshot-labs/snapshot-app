@@ -120,6 +120,7 @@ function FollowButton({ space }: FollowButtonProps) {
   async function snapshotWalletSignAliasWallet() {
     if (keyRingController.isUnlocked()) {
       if (connectedAddress) {
+        setButtonLoading(true);
         const wallet = await getRandomAliasWallet();
         const formattedAddress = connectedAddress?.toLowerCase();
         const checksumAddress = ethers.utils.getAddress(formattedAddress);
@@ -168,7 +169,7 @@ function FollowButton({ space }: FollowButtonProps) {
             payload: wallet,
           });
 
-          followSpace(
+          await followSpace(
             isFollowingSpace,
             wallet,
             connectedAddress ?? "",
@@ -177,7 +178,7 @@ function FollowButton({ space }: FollowButtonProps) {
             toastShowConfig,
             showBottomSheetWCErrorModal
           );
-
+          setButtonLoading(false);
           bottomSheetModalRef.current?.close();
         } catch (e) {
           console.log({ e });
@@ -186,6 +187,7 @@ function FollowButton({ space }: FollowButtonProps) {
             text1: parseErrorMessage(e, i18n.t("signature_request.error")),
             ...toastShowConfig,
           });
+          setButtonLoading(false);
         }
       }
     } else {

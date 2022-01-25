@@ -136,7 +136,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             imgSrc={profile?.image}
             key={`${address}${profile?.image}`}
           />
-          <View style={{ position: "absolute", top: -2, right: -6 }}>
+          <View style={{ position: "absolute", bottom: -2, right: -6 }}>
             <WalletType address={address} size="s" />
           </View>
         </View>

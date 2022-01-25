@@ -231,6 +231,69 @@ function VoteConfirmModal({
                   bottomSheetModalRef.current?.close();
                 }}
                 navigation={navigation}
+                onSuccess={async () => {
+                  setLoading(true);
+                  try {
+                    const messageId =
+                      await typedMessageManager.addUnapprovedMessage(
+                        {
+                          data: JSON.stringify(signData),
+                          from: checksumAddress,
+                        },
+                        { origin: "snapshot.org" }
+                      );
+                    const cleanMessageParams =
+                      await typedMessageManager.approveMessage({
+                        ...signData,
+                        metamaskId: messageId,
+                      });
+                    const rawSig = await keyRingController.signTypedMessage(
+                      {
+                        data: JSON.stringify(cleanMessageParams),
+                        from: checksumAddress,
+                      },
+                      "V4"
+                    );
+
+                    typedMessageManager.setMessageStatusSigned(
+                      messageId,
+                      rawSig
+                    );
+
+                    const sign = await signClient.send({
+                      address: checksumAddress,
+                      sig: rawSig,
+                      data: snapshotData,
+                    });
+
+                    if (sign) {
+                      Toast.show({
+                        type: "customSuccess",
+                        text1: i18n.t("yourVoteIsIn"),
+                        ...toastShowConfig,
+                      });
+                      setLoading(false);
+                      getProposal();
+                    } else {
+                      setLoading(false);
+                      Toast.show({
+                        type: "customError",
+                        text1: i18n.t("unableToCastVote"),
+                        ...toastShowConfig,
+                      });
+                    }
+                  } catch (e) {
+                    setLoading(false);
+                    Toast.show({
+                      type: "customError",
+                      text1: parseErrorMessage(
+                        e,
+                        i18n.t("signature_request.error")
+                      ),
+                      ...toastShowConfig,
+                    });
+                  }
+                }}
               />
             );
           },
@@ -362,7 +425,12 @@ function VoteConfirmModal({
 
         <TouchableOpacity
           onPress={async () => {
-            if (loading || !isWalletConnect || totalScore === 0) return;
+            if (
+              loading ||
+              (!isSnapshotWallet && !isWalletConnect) ||
+              totalScore === 0
+            )
+              return;
 
             setLoading(true);
 
@@ -432,11 +500,17 @@ function VoteConfirmModal({
                 width: buttonWidth,
                 marginLeft: 16,
                 backgroundColor:
-                  !isWalletConnect || loading || totalScore === 0
+                  isSnapshotWallet ||
+                  !isWalletConnect ||
+                  loading ||
+                  totalScore === 0
                     ? colors.borderColor
                     : "transparent",
                 borderColor:
-                  !isWalletConnect || loading || totalScore === 0
+                  isSnapshotWallet ||
+                  !isWalletConnect ||
+                  loading ||
+                  totalScore === 0
                     ? colors.borderColor
                     : colors.textColor,
               },
@@ -450,7 +524,10 @@ function VoteConfirmModal({
                   buttonStyles.buttonTitle,
                   {
                     color:
-                      !isWalletConnect || loading || totalScore === 0
+                      isSnapshotWallet ||
+                      !isWalletConnect ||
+                      loading ||
+                      totalScore === 0
                         ? colors.white
                         : colors.textColor,
                   },

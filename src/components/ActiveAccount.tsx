@@ -75,7 +75,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
             imgSrc={profile?.image}
             key={`${address}${profile?.image}`}
           />
-          <View style={{ position: "absolute", top: -4, right: -10 }}>
+          <View style={{ position: "absolute", bottom: -4, right: -10 }}>
             <WalletType address={address} />
           </View>
         </TouchableOpacity>

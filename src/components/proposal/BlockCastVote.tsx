@@ -21,6 +21,7 @@ import {
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/core";
 import size from "lodash/size";
+import { addressIsSnapshotWallet } from "helpers/address";
 
 const { height: deviceHeight } = Dimensions.get("screen");
 
@@ -55,11 +56,15 @@ function BlockCastVote({
   onClose,
 }: BlockCastVoteProps) {
   const { colors } = useAuthState();
-  const { connectedAddress, isWalletConnect } = useAuthState();
+  const { connectedAddress, isWalletConnect, snapshotWallets } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
   const navigation = useNavigation();
+  const isSnapshotWallet = addressIsSnapshotWallet(
+    connectedAddress ?? "",
+    snapshotWallets
+  );
 
   const [totalScore, setTotalScore] = useState(0);
   let VotesComponent;
@@ -155,7 +160,10 @@ function BlockCastVote({
                     },
                   });
                 }}
-                disabled={!isWalletConnect || selectedChoices.length === 0}
+                disabled={
+                  (!isSnapshotWallet && !isWalletConnect) ||
+                  selectedChoices.length === 0
+                }
                 buttonContainerStyle={{
                   backgroundColor:
                     !isWalletConnect || selectedChoices.length === 0

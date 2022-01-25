@@ -57,11 +57,13 @@ const IOS_DENY_BIOMETRIC_ERROR =
 interface SubmitPasswordModalProps {
   onClose: () => void;
   navigation: any;
+  onSuccess?: () => void;
 }
 
 function SubmitPasswordModal({
   onClose,
   navigation,
+  onSuccess = () => {},
 }: SubmitPasswordModalProps) {
   const { colors } = useAuthState();
   const { keyRingController } = useEngineState();
@@ -251,6 +253,9 @@ function SubmitPasswordModal({
                 }
 
                 setLoading(false);
+                if (onSuccess) {
+                  onSuccess();
+                }
                 onClose();
               } catch (e) {
                 setLoading(false);

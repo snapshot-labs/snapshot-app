@@ -48,15 +48,16 @@ import ChangePasswordScreen from "screens/ChangePasswordScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
-    width: 20,
     height: 20,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 8,
   },
   notificationText: {
     fontFamily: "Calibre-Medium",
     color: colors.bgLightGray,
+    fontSize: 11,
   },
 });
 
@@ -143,11 +144,7 @@ function TabNavigator() {
           tabBarIcon: ({ color }) => (
             <View>
               <IconFont
-                name={
-                  unreadNotifications > 0
-                    ? "notifications_active"
-                    : "notifications-none"
-                }
+                name={"notifications-none"}
                 color={unreadNotifications > 0 ? colors.textColor : color}
                 size={ICON_SIZE}
               />
@@ -158,10 +155,7 @@ function TabNavigator() {
                       styles.notificationsCircle,
                       {
                         backgroundColor: colors.bgGreen,
-                        width:
-                          unreadNotifications.toString().length >= 3 ? 30 : 20,
-                        height:
-                          unreadNotifications.toString().length >= 3 ? 30 : 20,
+                        height: 20,
                       },
                     ]}
                   >

@@ -77,7 +77,6 @@ function SpaceAvatar({
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: colors.white,
       }}
       onError={() => {
         const blockie = makeBlockie(space?.id ?? "");
