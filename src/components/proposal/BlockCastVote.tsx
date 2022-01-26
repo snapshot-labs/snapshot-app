@@ -166,11 +166,13 @@ function BlockCastVote({
                 }
                 buttonContainerStyle={{
                   backgroundColor:
-                    !isWalletConnect || selectedChoices.length === 0
+                    (!isSnapshotWallet && !isWalletConnect) ||
+                    selectedChoices.length === 0
                       ? colors.borderColor
                       : colors.bgBlue,
                   borderColor:
-                    !isWalletConnect || selectedChoices.length === 0
+                    (!isSnapshotWallet && !isWalletConnect) ||
+                    selectedChoices.length === 0
                       ? colors.borderColor
                       : colors.bgBlue,
                 }}

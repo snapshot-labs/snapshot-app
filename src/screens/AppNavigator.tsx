@@ -45,6 +45,7 @@ import ImportFromPrivateKeyScreen from "screens/ImportFromPrivateKeyScreen";
 import AccountDetailsScreen from "screens/AccountDetailsScreen";
 import ShowPrivateKeyScreen from "screens/ShowPrivateKeyScreen";
 import ChangePasswordScreen from "screens/ChangePasswordScreen";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     color: colors.bgLightGray,
     fontSize: 11,
+    marginTop: Device.isIos() ? 2 : 0,
   },
 });
 

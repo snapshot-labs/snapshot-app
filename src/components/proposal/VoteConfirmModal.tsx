@@ -140,30 +140,29 @@ function VoteConfirmModal({
   );
 
   async function snapshotWalletVote() {
+    let formattedSelectedChoices = selectedChoices;
+
+    if (proposal.type === "single-choice") {
+      formattedSelectedChoices = selectedChoices[0];
+    }
+    const payload = {
+      proposal: {
+        id: proposal.id,
+        type: proposal.type,
+      },
+      choice: formattedSelectedChoices,
+    };
+    const formattedAddress = connectedAddress?.toLowerCase();
+    const checksumAddress = ethers.utils.getAddress(formattedAddress);
+    const { snapshotData, signData } = getSnapshotDataForSign(
+      checksumAddress,
+      "vote",
+      payload,
+      space
+    );
     if (keyRingController.isUnlocked()) {
       setLoading(true);
       if (connectedAddress) {
-        let formattedSelectedChoices = selectedChoices;
-
-        if (proposal.type === "single-choice") {
-          formattedSelectedChoices = selectedChoices[0];
-        }
-        const payload = {
-          proposal: {
-            id: proposal.id,
-            type: proposal.type,
-          },
-          choice: formattedSelectedChoices,
-        };
-        const formattedAddress = connectedAddress?.toLowerCase();
-        const checksumAddress = ethers.utils.getAddress(formattedAddress);
-        const { snapshotData, signData } = getSnapshotDataForSign(
-          checksumAddress,
-          "vote",
-          payload,
-          space
-        );
-
         try {
           const messageId = await typedMessageManager.addUnapprovedMessage(
             {
@@ -429,8 +428,9 @@ function VoteConfirmModal({
               loading ||
               (!isSnapshotWallet && !isWalletConnect) ||
               totalScore === 0
-            )
+            ) {
               return;
+            }
 
             setLoading(true);
 
@@ -476,18 +476,20 @@ function VoteConfirmModal({
                 }
               }
             } catch (e) {
-              console.log("FAILED TO VOTE");
               Toast.show({
                 type: "customError",
                 text1: parseErrorMessage(e, i18n.t("unableToCastVote")),
                 ...toastShowConfig,
               });
-              bottomSheetModalDispatch({
-                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                payload: {
-                  ...bottomSheetWCErrorConfig,
-                },
-              });
+
+              if (isWalletConnect) {
+                bottomSheetModalDispatch({
+                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                  payload: {
+                    ...bottomSheetWCErrorConfig,
+                  },
+                });
+              }
             }
 
             setLoading(false);
@@ -524,8 +526,7 @@ function VoteConfirmModal({
                   buttonStyles.buttonTitle,
                   {
                     color:
-                      isSnapshotWallet ||
-                      !isWalletConnect ||
+                      (!isSnapshotWallet && !isWalletConnect) ||
                       loading ||
                       totalScore === 0
                         ? colors.white
