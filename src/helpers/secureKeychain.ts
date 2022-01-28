@@ -83,8 +83,10 @@ export default {
         if (biometry === storage.VALUES.true) {
           const isEnrolled = await LocalAuthentication.isEnrolledAsync();
           if (isEnrolled) {
-            const auth = await LocalAuthentication.authenticateAsync();
-            console.log({ auth });
+            const auth: any = await LocalAuthentication.authenticateAsync();
+            if (!auth?.success) {
+              return null;
+            }
           } else {
             return null;
           }

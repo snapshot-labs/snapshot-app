@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthState } from "context/authContext";
@@ -24,10 +24,11 @@ function NotificationScreen() {
   const notificationsDispatch = useNotificationsDispatch();
   const lastViewedProposalIndex = useRef(Infinity);
   const insets = useSafeAreaInsets();
+  const [onScreen, setOnScreen] = useState(true);
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) {
+    if (!onScreen) {
       notificationsDispatch({
         type: NOTIFICATIONS_ACTIONS.SET_LAST_VIEWED_NOTIFICATION,
         payload: {
@@ -36,8 +37,13 @@ function NotificationScreen() {
           lastViewedProposal: get(proposalTimes[0], "id"),
         },
       });
+      setOnScreen(true);
     }
-  }, [isFocused, proposals]);
+  }, [onScreen]);
+
+  useEffect(() => {
+    setOnScreen(isFocused);
+  }, [isFocused]);
 
   return (
     <View

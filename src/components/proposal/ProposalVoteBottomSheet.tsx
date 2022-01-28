@@ -15,6 +15,7 @@ interface ProposalVoteBottomSheetProps {
   resultsLoaded: any;
   getProposal: () => void;
   setScrollEnabled: (scrollEnabled: boolean) => void;
+  scrollEnabled: boolean;
 }
 
 function ProposalVoteBottomSheet({
@@ -23,10 +24,10 @@ function ProposalVoteBottomSheet({
   getProposal,
   resultsLoaded,
   setScrollEnabled,
+  scrollEnabled,
 }: ProposalVoteBottomSheetProps) {
-  const snapPoints = [65, "50%", "75%", "100%"];
+  let snapPoints = [65, "50%", "75%", "100%"];
   const bottomSheetRef = useRef();
-
   return (
     <BottomSheetModal
       onPressOption={() => {}}
@@ -43,6 +44,7 @@ function ProposalVoteBottomSheet({
             setScrollEnabled={setScrollEnabled}
             space={space}
             getProposal={getProposal}
+            scrollEnabled={scrollEnabled}
             onClose={() => {
               //@ts-ignore
               bottomSheetRef.current?.snapToIndex(0);

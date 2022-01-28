@@ -32,6 +32,7 @@ interface BlockCastVoteProps {
   space: Space;
   getProposal: () => void;
   onClose: () => void;
+  scrollEnabled: boolean;
 }
 
 async function loadPower(
@@ -54,6 +55,7 @@ function BlockCastVote({
   space,
   getProposal,
   onClose,
+  scrollEnabled,
 }: BlockCastVoteProps) {
   const { colors } = useAuthState();
   const { connectedAddress, isWalletConnect, snapshotWallets } = useAuthState();
@@ -141,7 +143,7 @@ function BlockCastVote({
                       options: [],
                       snapPoints: [10, initialSnapPoint, "100%"],
                       show: true,
-                      scroll: true,
+                      scroll: scrollEnabled,
                       initialIndex: 1,
                       ModalContent: () => (
                         <VoteConfirmModal

@@ -75,9 +75,6 @@ function VotingRankedChoice({
 
   return (
     <View>
-      <Text style={[common.subTitle, { marginBottom: 16 }]}>
-        {i18n.t("longPressToDragAndDrop")}
-      </Text>
       <DragSortableView
         dataSource={proposalChoices}
         parentWidth={width - 32}

@@ -202,6 +202,7 @@ function WalletConnectScreen() {
                   if (!error) {
                     const params = payload.params[0];
                     const address = params ? params.accounts[0] : "";
+                    const lowerCasedAddress = address.toLowerCase();
                     const androidAppArray = get(
                       wallet,
                       "app.android",
@@ -221,19 +222,19 @@ function WalletConnectScreen() {
                     storage.save(
                       storage.KEYS.savedWallets,
                       JSON.stringify({
-                        [address.toLowerCase()]: connectedWallet,
+                        [lowerCasedAddress]: connectedWallet,
                       })
                     );
                     authDispatch({
                       type: AUTH_ACTIONS.SET_SAVED_WALLETS,
                       payload: {
-                        [address]: connectedWallet,
+                        [lowerCasedAddress]: connectedWallet,
                       },
                     });
                     authDispatch({
                       type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
                       payload: {
-                        connectedAddress: address,
+                        connectedAddress: lowerCasedAddress,
                         isWalletConnect: true,
                         addToStorage: true,
                       },

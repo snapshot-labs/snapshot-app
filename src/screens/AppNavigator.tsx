@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   notificationText: {
-    fontFamily: "Calibre-Medium",
+    fontFamily: "Calibre-Semibold",
     color: colors.bgLightGray,
     fontSize: 11,
     marginTop: Device.isIos() ? 2 : 0,
@@ -161,7 +161,7 @@ function TabNavigator() {
                       },
                     ]}
                   >
-                    <Text style={[styles.notificationText]}>
+                    <Text style={styles.notificationText}>
                       {unreadNotifications}
                     </Text>
                   </View>

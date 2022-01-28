@@ -306,6 +306,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               setResultsLoaded
             );
           }}
+          scrollEnabled={scrollEnabled}
         />
       )}
       {showProposalBottomSheet && (

@@ -29,10 +29,19 @@ interface WalletTypeProps {
 function WalletType({ address, size }: WalletTypeProps) {
   const { colors, snapshotWallets, savedWallets } = useAuthState();
   const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
+  const walletId: any = get(
+    savedWallets,
+    `${address}.walletService.id`,
+    undefined
+  );
   const walletName: any = get(savedWallets, `${address}.name`, "");
   const isWalletConnect =
     walletName !== CUSTOM_WALLET_NAME && walletName !== SNAPSHOT_WALLET;
   const isSmall = size === "s";
+  const walletConnectSrc =
+    walletId !== undefined
+      ? { uri: `https://registry.walletconnect.org/logo/md/${walletId}.jpeg` }
+      : walletConnectLogo;
 
   if (walletName === CUSTOM_WALLET_NAME) {
     return <View />;
@@ -55,7 +64,7 @@ function WalletType({ address, size }: WalletTypeProps) {
       >
         {isWalletConnect && (
           <Image
-            source={walletConnectLogo}
+            source={walletConnectSrc}
             style={{
               width: isSmall ? 15 : 20,
               height: isSmall ? 15 : 20,

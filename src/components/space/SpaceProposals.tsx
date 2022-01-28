@@ -137,6 +137,7 @@ function SpaceProposals({
 
   function onChangeFilter(newFilter: string) {
     setLoadCount(0);
+    setLoadingMore(true);
     getProposals(
       spaceId,
       0,
