@@ -27,6 +27,10 @@ function NotificationScreen() {
   const [onScreen, setOnScreen] = useState(true);
   const isFocused = useIsFocused();
 
+  function setOnScreenState(onScreenState: boolean) {
+    setOnScreen(onScreenState);
+  }
+
   useEffect(() => {
     if (!onScreen) {
       notificationsDispatch({
@@ -37,12 +41,12 @@ function NotificationScreen() {
           lastViewedProposal: get(proposalTimes[0], "id"),
         },
       });
-      setOnScreen(true);
+      setOnScreenState(true);
     }
   }, [onScreen]);
 
   useEffect(() => {
-    setOnScreen(isFocused);
+    setOnScreenState(isFocused);
   }, [isFocused]);
 
   return (
@@ -72,7 +76,10 @@ function NotificationScreen() {
         key={`${connectedAddress}${lastViewedProposal}`}
         data={followedSpaces.length > 0 ? proposalTimes : []}
         renderItem={(data) => {
-          if (data?.item?.id === lastViewedProposal) {
+          if (
+            data?.item?.id === lastViewedProposal &&
+            `${data?.item?.time}` === `${lastViewedNotification}`
+          ) {
             lastViewedProposalIndex.current = data.index;
           }
           const proposalDetails = proposals[data?.item?.id];

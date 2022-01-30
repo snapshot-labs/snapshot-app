@@ -73,5 +73,6 @@ buck-out/
 web-build/
 
 src/constants/env.ts
+src/constants/pusherConfig.ts
 
 # @end expo-cli
