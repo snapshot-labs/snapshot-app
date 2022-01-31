@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -31,6 +31,7 @@ import {
   useNotificationsDispatch,
 } from "context/notificationsContext";
 import WalletType from "components/wallet/WalletType";
+import { ethers } from "ethers";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -69,6 +70,14 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address}.name`);
   const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
+  const [checksumAddress, setChecksumAddress] = useState(address);
+
+  useEffect(() => {
+    try {
+      const checksumAddress = ethers.utils.getAddress(address ?? "");
+      setChecksumAddress(checksumAddress);
+    } catch (e) {}
+  }, [address]);
 
   return (
     <TouchableHighlight
@@ -152,7 +161,7 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {shorten(address ?? "")}
+              {shorten(checksumAddress ?? "")}
             </Text>
           </View>
         </View>

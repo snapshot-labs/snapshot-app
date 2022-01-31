@@ -444,9 +444,12 @@ function VoteConfirmModal({
               if (isSnapshotWallet) {
                 await snapshotWalletVote();
               } else {
+                const checksumAddress = ethers.utils.getAddress(
+                  connectedAddress ?? ""
+                );
                 const sign = await sendEIP712(
                   wcConnector,
-                  connectedAddress ?? "",
+                  checksumAddress ?? "",
                   space,
                   "vote",
                   {

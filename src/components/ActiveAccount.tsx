@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -19,6 +19,7 @@ import { useToastShowConfig } from "constants/toast";
 import { useAuthState } from "context/authContext";
 import common from "styles/common";
 import WalletType from "components/wallet/WalletType";
+import { ethers } from "ethers";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -44,9 +45,17 @@ function ActiveAccount({ address }: ActiveAccountProps) {
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const toastShowConfig = useToastShowConfig();
+  const [checksumAddress, setChecksumAddress] = useState(address);
+
+  useEffect(() => {
+    try {
+      const checksumAddress = ethers.utils.getAddress(address ?? "");
+      setChecksumAddress(checksumAddress);
+    } catch (e) {}
+  }, [address]);
 
   const copyToClipboard = () => {
-    Clipboard.setString(address);
+    Clipboard.setString(checksumAddress);
     Toast.show({
       type: "default",
       text1: i18n.t("publicAddressCopiedToClipboard"),
@@ -101,7 +110,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {shorten(address ?? "")}
+              {shorten(checksumAddress ?? "")}
             </Text>
           </View>
         </TouchableOpacity>
