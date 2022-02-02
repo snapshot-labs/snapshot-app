@@ -15,6 +15,14 @@ import {
 } from "constants/navigation";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
+import { addressIsSnapshotWallet } from "helpers/address";
+import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
+import { ethers } from "ethers";
+import signClient from "helpers/signClient";
+import { useEngineState } from "context/engineContext";
+import { useToastShowConfig } from "constants/toast";
+import { parseErrorMessage } from "helpers/apiUtils";
+import Toast from "react-native-toast-message";
 
 interface SpaceHeader {
   space: Space;
@@ -22,8 +30,14 @@ interface SpaceHeader {
 }
 
 function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
-  const { colors } = useAuthState();
+  const { colors, connectedAddress, snapshotWallets } = useAuthState();
   const navigation: any = useNavigation();
+  const { typedMessageManager, keyRingController } = useEngineState();
+  const isSnapshotWallet = addressIsSnapshotWallet(
+    connectedAddress ?? "",
+    snapshotWallets
+  );
+  const toastShowConfig = useToastShowConfig();
   return (
     <View
       style={{
@@ -51,17 +65,93 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
             {n(get(space, "followers"))} {i18n.t("members")}
           </Text>
         </View>
-        {isWalletConnect && (
+        {(isWalletConnect || isSnapshotWallet) && (
           <View style={{ marginLeft: "auto", marginTop: 16 }}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate(SPACE_SETTINGS_SCREEN, { space });
-              }}
-            >
-              <View style={{ alignSelf: "flex-end", marginBottom: 8 }}>
-                <IconFont name="gear" size={30} color={colors.textColor} />
-              </View>
-            </TouchableOpacity>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              <TouchableOpacity
+                onPress={async () => {
+                  try {
+                    const formattedAddress =
+                      connectedAddress?.toLowerCase() ?? "";
+                    const checksumAddress =
+                      ethers.utils.getAddress(formattedAddress);
+                    const { snapshotData, signData } = getSnapshotDataForSign(
+                      checksumAddress,
+                      "alias",
+                      { address: checksumAddress }
+                    );
+
+                    const messageId =
+                      await typedMessageManager.addUnapprovedMessage(
+                        {
+                          data: JSON.stringify(signData),
+                          from: checksumAddress,
+                        },
+                        { origin: "snapshot.org" }
+                      );
+                    const cleanMessageParams =
+                      await typedMessageManager.approveMessage({
+                        ...signData,
+                        metamaskId: messageId,
+                      });
+                    const rawSig = await keyRingController.signTypedMessage(
+                      {
+                        data: JSON.stringify(cleanMessageParams),
+                        from: checksumAddress,
+                      },
+                      "V4"
+                    );
+
+                    typedMessageManager.setMessageStatusSigned(
+                      messageId,
+                      rawSig
+                    );
+
+                    await signClient.send({
+                      address: checksumAddress,
+                      sig: rawSig,
+                      data: snapshotData,
+                    });
+
+                    Toast.show({
+                      type: "customSuccess",
+                      text1: i18n.t("subscribedToSpace", {
+                        space: space?.name ?? "space",
+                      }),
+                      ...toastShowConfig,
+                    });
+                  } catch (e) {
+                    Toast.show({
+                      type: "customError",
+                      text1: parseErrorMessage(
+                        e,
+                        i18n.t("signature_request.error", {
+                          space: space?.name ?? "space",
+                        })
+                      ),
+                      ...toastShowConfig,
+                    });
+                  }
+                }}
+              >
+                <View style={{ marginRight: 16, alignSelf: "flex-end" }}>
+                  <IconFont
+                    name="notifications_active"
+                    size={30}
+                    color={colors.textColor}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(SPACE_SETTINGS_SCREEN, { space });
+                }}
+              >
+                <View style={{ marginBottom: 8 }}>
+                  <IconFont name="gear" size={30} color={colors.textColor} />
+                </View>
+              </TouchableOpacity>
+            </View>
             <FollowButton space={space} />
             <TouchableOpacity
               onPress={() => {

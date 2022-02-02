@@ -71,6 +71,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - PushNotifications (4.0.0)
   - RCTRequired (0.63.4)
   - RCTTypeSafety (0.63.4):
     - FBLazyVector (= 0.63.4)
@@ -243,6 +244,9 @@ PODS:
     - React
   - react-native-netinfo (7.1.9):
     - React-Core
+  - react-native-pusher-push-notifications (2.5.2):
+    - PushNotifications (>= 2.1.2)
+    - React
   - react-native-randombytes (3.6.1):
     - React-Core
   - react-native-safe-area-context (3.2.0):
@@ -420,6 +424,7 @@ DEPENDENCIES:
   - react-native-aes (from `../node_modules/react-native-aes-crypto`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-pusher-push-notifications (from `../node_modules/react-native-pusher-push-notifications`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-udp (from `../node_modules/react-native-udp`)
@@ -457,6 +462,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - PushNotifications
     - ZXingObjC
 
 EXTERNAL SOURCES:
@@ -530,6 +536,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-pusher-push-notifications:
+    :path: "../node_modules/react-native-pusher-push-notifications"
   react-native-randombytes:
     :path: "../node_modules/react-native-randombytes"
   react-native-safe-area-context:
@@ -621,6 +629,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  PushNotifications: 2b2174b28bf48b1fe552686d1f95c53d62a4781d
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
   React: b0a957a2c44da4113b0c4c9853d8387f8e64e615
@@ -634,6 +643,7 @@ SPEC CHECKSUMS:
   react-native-aes: c75c46aa744bef7c2415fdf7f5b2dcb75ca4364d
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-netinfo: 87e5bfaf21ea5c6c110941290aa481dd8e849f98
+  react-native-pusher-push-notifications: af265c0048b39a20a27eeaf0047d263d1667bdb6
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-udp: ff9d13e523f2b58e6bc5d4d32321ac60671b5dc9

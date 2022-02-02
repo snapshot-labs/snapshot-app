@@ -251,6 +251,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                   initialIndex: 1,
                   destructiveButtonIndex: -1,
                   onPressOption: (index: number) => {
+                    setLoadingMore(true);
                     if (index === 0) {
                       setFilter(allFilter);
                       onChangeFilter(allFilter.key);

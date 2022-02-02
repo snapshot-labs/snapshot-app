@@ -381,4 +381,6 @@ export default {
     unable_to_change_password: "Unable to change password",
     password_changed: "Your snapshot password was updated",
   },
+  subscribedToSpace: "Subscribed to {{space}}",
+  unableToSubscribeToSpace: "Unable to subscribe to {{space}}",
 };

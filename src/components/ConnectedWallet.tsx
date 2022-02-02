@@ -97,7 +97,9 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
           payload: {
             connectedAddress: address,
             addToStorage: true,
-            isWalletConnect: walletName !== CUSTOM_WALLET_NAME,
+            isWalletConnect:
+              walletName !== CUSTOM_WALLET_NAME &&
+              walletName !== SNAPSHOT_WALLET,
           },
         });
 

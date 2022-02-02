@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Semibold",
     color: colors.bgLightGray,
     fontSize: 11,
-    marginTop: Device.isIos() ? 2 : 0,
+    marginTop: Device.isIos() ? 2 : -2,
   },
 });
 

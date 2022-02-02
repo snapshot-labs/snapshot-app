@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthState } from "context/authContext";
 import common from "styles/common";
@@ -12,6 +12,8 @@ import {
 import ProposalNotification from "components/proposal/ProposalNotification";
 import { useIsFocused } from "@react-navigation/native";
 import get from "lodash/get";
+import RNPusherPushNotifications from "react-native-pusher-push-notifications";
+import pusherConfig from "constants/pusherConfig";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
@@ -27,9 +29,52 @@ function NotificationScreen() {
   const [onScreen, setOnScreen] = useState(true);
   const isFocused = useIsFocused();
 
+  const init = (): void => {
+    RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
+
+    RNPusherPushNotifications.on("notification", handleNotification);
+    RNPusherPushNotifications.setOnSubscriptionsChangedListener(
+      onSubscriptionsChanged
+    );
+
+    subscribe(connectedAddress ?? "");
+  };
+
+  const onSubscriptionsChanged = (interests: string[]): void => {
+    console.log("CALLBACK: onSubscriptionsChanged");
+    console.log(interests);
+  };
+
+  const subscribe = (interest: string): void => {
+    console.log(`Subscribing to "${interest}"`);
+    RNPusherPushNotifications.subscribe(
+      interest,
+      (statusCode, response) => {
+        console.error(statusCode, response, connectedAddress);
+      },
+      () => {
+        console.log(`CALLBACK: Subscribed to ${connectedAddress}`);
+      }
+    );
+  };
+
+  const handleNotification = (notification: any): void => {
+    console.log(notification);
+    if (Platform.OS === "ios") {
+      console.log("CALLBACK: handleNotification (ios)");
+    } else {
+      console.log("CALLBACK: handleNotification (android)");
+      console.log(notification);
+    }
+  };
+
   function setOnScreenState(onScreenState: boolean) {
     setOnScreen(onScreenState);
   }
+
+  useEffect(() => {
+    init();
+  }, []);
 
   useEffect(() => {
     if (!onScreen) {

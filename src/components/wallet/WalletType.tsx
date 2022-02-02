@@ -54,7 +54,7 @@ function WalletType({ address, size }: WalletTypeProps) {
           styles.iconContainer,
           {
             backgroundColor: isWalletConnect ? colors.white : colors.bgBlue,
-            borderColor: isWalletConnect ? colors.white : colors.bgBlue,
+            borderColor: isWalletConnect ? colors.borderColor : colors.bgBlue,
             borderWidth: 1,
             width: isSmall ? 20 : 30,
             height: isSmall ? 20 : 30,
@@ -66,8 +66,8 @@ function WalletType({ address, size }: WalletTypeProps) {
           <Image
             source={walletConnectSrc}
             style={{
-              width: isSmall ? 15 : 20,
-              height: isSmall ? 15 : 20,
+              width: isSmall ? 13 : 20,
+              height: isSmall ? 13 : 20,
             }}
             resizeMode="contain"
           />

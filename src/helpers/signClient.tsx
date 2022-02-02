@@ -8,6 +8,10 @@ import {
   Follow,
   Unfollow,
   Alias,
+  Subscribe,
+  Unsubscribe,
+  subscribeTypes,
+  unsubscribeTypes,
   spaceTypes,
   proposalTypes,
   cancelProposalTypes,
@@ -182,6 +186,20 @@ class Client {
 
   async alias(connector: WalletConnect, address: string, message: Alias) {
     return await this.sign(connector, address, message, aliasTypes, "Alias");
+  }
+
+  async subscribe(web3: Wallet, address: string, message: Subscribe) {
+    return await this.sign(web3, address, message, subscribeTypes, "Subscribe");
+  }
+
+  async unsubscribe(web3: Wallet, address: string, message: Unsubscribe) {
+    return await this.sign(
+      web3,
+      address,
+      message,
+      unsubscribeTypes,
+      "Unsubscribe"
+    );
   }
 }
 const hubUrl = "https://hub.snapshot.org";

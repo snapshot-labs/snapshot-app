@@ -10,6 +10,7 @@ import {
   proposalTypes,
   cancelProposal2Types,
   cancelProposalTypes,
+  subscribeTypes,
 } from "@snapshot-labs/snapshot.js/src/sign/types";
 import { domain } from "helpers/signClient";
 
@@ -151,6 +152,30 @@ export function getSnapshotDataForSign(
       types: updatedTypes,
       message: snapshotHubMessage,
       primaryType: "Alias",
+    };
+    return { snapshotData, signData };
+  } else if (type === "subscribe") {
+    const snapshotHubMessage = {
+      from: checksumAddress,
+      space: space?.id,
+    };
+    const snapshotData = {
+      domain,
+      types: subscribeTypes,
+      message: snapshotHubMessage,
+    };
+    const updatedTypes = {
+      ...snapshotData.types,
+      EIP712Domain: [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+      ],
+    };
+    const signData: any = {
+      domain,
+      types: updatedTypes,
+      message: snapshotHubMessage,
+      primaryType: "Subscribe",
     };
     return { snapshotData, signData };
   }
