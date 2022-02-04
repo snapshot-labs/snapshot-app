@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     borderColor: colors.borderColor,
     borderWidth: 1,
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 10,
     height: 50,
   },
   choiceContainer: {

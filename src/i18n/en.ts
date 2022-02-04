@@ -70,6 +70,7 @@ export default {
   back: "Back",
   version: "Version",
   castYourVote: "Cast your vote",
+  castVote: "Cast vote",
   vote: "Vote",
   navigateToCastVote: "Navigate to cast your vote",
   longPressToDragAndDrop: "(Long press to drag and drop choices)",

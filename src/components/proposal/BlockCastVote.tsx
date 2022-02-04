@@ -1,38 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import i18n from "i18n-js";
-import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
-import Block from "../Block";
 import { Proposal } from "types/proposal";
 import { Space } from "types/explore";
 import { getPower } from "helpers/snapshot";
 import Button from "../Button";
 import VotingSingleChoice from "./VotingSingleChoice";
 import VotingRankedChoice from "./VotingRankedChoice";
-import VoteConfirmModal from "./VoteConfirmModal";
 import { useAuthState } from "context/authContext";
 import VotingQuadratic from "./VotingQuadratic";
 import VotingApproval from "./VotingApproval";
-import {
-  BOTTOM_SHEET_MODAL_ACTIONS,
-  useBottomSheetModalDispatch,
-  useBottomSheetModalRef,
-} from "context/bottomSheetModalContext";
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/core";
-import size from "lodash/size";
 import { addressIsSnapshotWallet } from "helpers/address";
-
-const { height: deviceHeight } = Dimensions.get("screen");
+import { VOTE_CONFIRM_SCREEN } from "constants/navigation";
 
 interface BlockCastVoteProps {
   proposal: Proposal;
-  resultsLoaded: boolean;
-  setScrollEnabled: (scrollEnabled: boolean) => void;
   space: Space;
   getProposal: () => void;
-  onClose: () => void;
-  scrollEnabled: boolean;
 }
 
 async function loadPower(
@@ -48,21 +34,11 @@ async function loadPower(
   }
 }
 
-function BlockCastVote({
-  proposal,
-  resultsLoaded,
-  setScrollEnabled,
-  space,
-  getProposal,
-  onClose,
-  scrollEnabled,
-}: BlockCastVoteProps) {
+function BlockCastVote({ proposal, space, getProposal }: BlockCastVoteProps) {
   const { colors } = useAuthState();
   const { connectedAddress, isWalletConnect, snapshotWallets } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
-  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
-  const bottomSheetModalRef = useBottomSheetModalRef();
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   const isSnapshotWallet = addressIsSnapshotWallet(
     connectedAddress ?? "",
     snapshotWallets
@@ -88,103 +64,69 @@ function BlockCastVote({
   if (VotesComponent) {
     return (
       <>
-        <Block
-          title={i18n.t("vote")}
-          headerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            borderBottomWidth: 0,
-            paddingTop: 0,
+        <View
+          style={{
+            flex: 1,
           }}
-          blockStyle={{ borderWidth: 0 }}
-          Content={
-            <View
-              style={{
-                paddingVertical: 24,
-                paddingHorizontal:
-                  proposal.type === "quadratic" || proposal.type === "weighted"
-                    ? 8
-                    : 24,
+        >
+          <ScrollView
+            style={{
+              paddingVertical: 24,
+              paddingHorizontal:
+                proposal.type === "quadratic" || proposal.type === "weighted"
+                  ? 8
+                  : 24,
+              flex: 1,
+            }}
+          >
+            <VotesComponent
+              proposal={proposal}
+              selectedChoices={selectedChoices}
+              setSelectedChoices={setSelectedChoices}
+            />
+          </ScrollView>
+
+          <View
+            style={{
+              position: "absolute",
+              bottom: 20,
+              width: "100%",
+              paddingHorizontal: 16,
+            }}
+          >
+            <Button
+              title={i18n.t("vote")}
+              onPress={() => {
+                navigation.navigate(VOTE_CONFIRM_SCREEN, {
+                  proposal,
+                  selectedChoices,
+                  space,
+                  totalScore,
+                  getProposal,
+                });
               }}
-            >
-              {resultsLoaded ? (
-                <VotesComponent
-                  proposal={proposal}
-                  selectedChoices={selectedChoices}
-                  setSelectedChoices={setSelectedChoices}
-                  setScrollEnabled={setScrollEnabled}
-                />
-              ) : (
-                <Placeholder
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                  Animation={Fade}
-                >
-                  <PlaceholderLine width={100} />
-                  <PlaceholderLine width={100} />
-                  <PlaceholderLine width={100} />
-                </Placeholder>
-              )}
-
-              <Button
-                title={i18n.t("vote")}
-                onPress={() => {
-                  let initialSnapPoint: number | string =
-                    selectedChoices.length > 2
-                      ? deviceHeight / 2 + size(selectedChoices) * 20
-                      : deviceHeight / 2;
-                  if (initialSnapPoint >= deviceHeight) {
-                    initialSnapPoint = "100%";
-                  }
-
-                  bottomSheetModalDispatch({
-                    type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                    payload: {
-                      options: [],
-                      snapPoints: [10, initialSnapPoint, "100%"],
-                      show: true,
-                      scroll: scrollEnabled,
-                      initialIndex: 1,
-                      ModalContent: () => (
-                        <VoteConfirmModal
-                          onClose={() => {
-                            onClose();
-                            bottomSheetModalRef.current.close();
-                          }}
-                          proposal={proposal}
-                          selectedChoices={selectedChoices}
-                          space={space}
-                          totalScore={totalScore}
-                          getProposal={getProposal}
-                          navigation={navigation}
-                        />
-                      ),
-                    },
-                  });
-                }}
-                disabled={
+              disabled={
+                (!isSnapshotWallet && !isWalletConnect) ||
+                selectedChoices.length === 0
+              }
+              buttonContainerStyle={{
+                backgroundColor:
                   (!isSnapshotWallet && !isWalletConnect) ||
                   selectedChoices.length === 0
-                }
-                buttonContainerStyle={{
-                  backgroundColor:
-                    (!isSnapshotWallet && !isWalletConnect) ||
-                    selectedChoices.length === 0
-                      ? colors.borderColor
-                      : colors.bgBlue,
-                  borderColor:
-                    (!isSnapshotWallet && !isWalletConnect) ||
-                    selectedChoices.length === 0
-                      ? colors.borderColor
-                      : colors.bgBlue,
-                }}
-                buttonTitleStyle={{
-                  color: colors.white,
-                }}
-              />
-            </View>
-          }
-        />
+                    ? colors.borderColor
+                    : colors.bgBlue,
+                borderColor:
+                  (!isSnapshotWallet && !isWalletConnect) ||
+                  selectedChoices.length === 0
+                    ? colors.borderColor
+                    : colors.bgBlue,
+              }}
+              buttonTitleStyle={{
+                color: colors.white,
+              }}
+            />
+          </View>
+        </View>
       </>
     );
   }

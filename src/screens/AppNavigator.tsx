@@ -46,6 +46,8 @@ import AccountDetailsScreen from "screens/AccountDetailsScreen";
 import ShowPrivateKeyScreen from "screens/ShowPrivateKeyScreen";
 import ChangePasswordScreen from "screens/ChangePasswordScreen";
 import Device from "helpers/device";
+import VoteScreen from "screens/VoteScreen";
+import VoteConfirmScreen from "screens/VoteConfirmScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -364,6 +366,16 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.SHOW_PRIVATE_KEY_SCREEN}
         component={ShowPrivateKeyScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.VOTE_SCREEN}
+        component={VoteScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.VOTE_CONFIRM_SCREEN}
+        component={VoteConfirmScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

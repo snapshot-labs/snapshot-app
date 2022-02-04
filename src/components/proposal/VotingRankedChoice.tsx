@@ -1,36 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { View, Dimensions, Text, TouchableOpacity } from "react-native";
+import { View, Dimensions, TouchableOpacity, Text } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
+import { getNumberWithOrdinal } from "helpers/numUtils";
 import i18n from "i18n-js";
-import { getNumberWithOrdinal } from "../../helpers/numUtils";
 import Button from "../Button";
-import common from "../../styles/common";
 import IconFont from "../IconFont";
 import { useAuthState } from "context/authContext";
+import compact from "lodash/compact";
+import common from "styles/common";
 
 const { width } = Dimensions.get("screen");
 
-function getRemovedChoices(originalChoices: string[], choices: string[]) {
-  const newChoices: any[] = [];
-  originalChoices.forEach((choice: string) => {
-    if (!choices.includes(choice)) {
-      newChoices.push(choice);
-    }
+function getRemovedChoices(
+  originalChoices: string[],
+  selectedChoices: number[]
+) {
+  const copiedOriginalChoices: any = originalChoices.map((choice, i) => {
+    return {
+      title: choice,
+      index: i,
+    };
   });
 
-  return newChoices;
+  selectedChoices.forEach((index) => {
+    copiedOriginalChoices[index - 1] = undefined;
+  });
+
+  return compact(copiedOriginalChoices);
 }
 
 function setSelectedChoicesIndex(
   originalChoices: string[],
-  choices: string[],
+  choices: any[],
   setSelectedChoices: (selectedChoices: number[]) => void
 ) {
   const selectedChoices: number[] = [];
-  choices.forEach((choice: string, i: number) => {
+  choices.forEach((choice: any, i: number) => {
     originalChoices.forEach(
       (originalChoice: string, originalChoiceIndex: number) => {
-        if (choice === originalChoice) {
+        if (choice.index === originalChoiceIndex) {
           selectedChoices.push(originalChoiceIndex + 1);
         }
       }
@@ -42,21 +50,21 @@ function setSelectedChoicesIndex(
 
 interface VotingRankedChoiceProps {
   proposal: any;
-  selectedChoices: string[];
+  selectedChoices: number[];
   setSelectedChoices: (selectedChoice: number[]) => void;
-  setScrollEnabled: (scrollEnabled: boolean) => void;
 }
 
 function VotingRankedChoice({
   proposal,
   selectedChoices,
   setSelectedChoices,
-  setScrollEnabled,
 }: VotingRankedChoiceProps) {
   const { colors } = useAuthState();
   const [proposalChoices, setProposalChoices] = useState<any[]>([]);
   const [removedProposalChoices, setRemovedProposalChoices] = useState<any[]>(
-    proposal.choices
+    proposal?.choices?.map((choice: string, i: number) => {
+      return { title: choice, index: i };
+    })
   );
 
   useEffect(() => {
@@ -69,24 +77,21 @@ function VotingRankedChoice({
 
   useEffect(() => {
     setRemovedProposalChoices(
-      getRemovedChoices(proposal.choices, proposalChoices)
+      getRemovedChoices(proposal.choices, selectedChoices)
     );
-  }, [proposalChoices]);
+  }, [selectedChoices]);
 
   return (
     <View>
+      <Text style={[common.subTitle, { marginBottom: 16 }]}>
+        {i18n.t("longPressToDragAndDrop")}
+      </Text>
       <DragSortableView
         dataSource={proposalChoices}
         parentWidth={width - 32}
         childrenWidth={width - 32}
         childrenHeight={70}
         scaleStatus={"scaleY"}
-        onDragStart={() => {
-          setScrollEnabled(false);
-        }}
-        onDragEnd={() => {
-          setScrollEnabled(true);
-        }}
         onDataChange={(data: any) => {
           setSelectedChoicesIndex(proposal.choices, data, setSelectedChoices);
         }}
@@ -96,22 +101,23 @@ function VotingRankedChoice({
             <>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingBottom: 20,
+                  paddingBottom: 10,
                 }}
               >
                 <Button
-                  title={`(${getNumberWithOrdinal(index + 1)}) ${item}`}
+                  title={`(${getNumberWithOrdinal(index + 1)}) ${item.title}`}
                   onPress={() => {}}
                   onlyOneLine
-                  buttonContainerStyle={{ width: width - 100 }}
+                  buttonContainerStyle={{ width: width - 50 }}
                   selected
                 />
                 <TouchableOpacity
                   onPress={() => {
-                    const copyArray = [...proposalChoices];
-                    copyArray.splice(index, 1);
+                    const copyArray = [...proposalChoices].filter(
+                      (proposalChoice) => {
+                        return proposalChoice.index !== item.index;
+                      }
+                    );
                     setProposalChoices(copyArray);
                     setSelectedChoicesIndex(
                       proposal.choices,
@@ -119,7 +125,7 @@ function VotingRankedChoice({
                       setSelectedChoices
                     );
                   }}
-                  style={{ marginLeft: 6 }}
+                  style={{ position: "absolute", right: 16, top: 16 }}
                 >
                   <IconFont name="close" color={colors.textColor} size={20} />
                 </TouchableOpacity>
@@ -132,18 +138,16 @@ function VotingRankedChoice({
         return (
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 20,
+              marginBottom: 10,
             }}
             key={index}
           >
             <Button
-              title={choice}
+              title={choice.title}
               onlyOneLine
               onPress={() => {
                 const copyArray = [...proposalChoices];
-                copyArray.push(choice);
+                copyArray.push({ title: choice.title, index: choice.index });
                 setProposalChoices(copyArray);
                 setSelectedChoicesIndex(
                   proposal.choices,
@@ -151,7 +155,7 @@ function VotingRankedChoice({
                   setSelectedChoices
                 );
               }}
-              buttonContainerStyle={{ width: width - 100 }}
+              buttonContainerStyle={{ width: "100%" }}
             />
           </View>
         );

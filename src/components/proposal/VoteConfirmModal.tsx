@@ -7,6 +7,7 @@ import {
   Linking,
   Dimensions,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import i18n from "i18n-js";
 import common from "styles/common";
@@ -31,6 +32,8 @@ import signClient from "helpers/signClient";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import { useEngineState } from "context/engineContext";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
+import BackButton from "components/BackButton";
+import { useNavigation } from "@react-navigation/core";
 
 const { width } = Dimensions.get("screen");
 
@@ -43,6 +46,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.bgDefault,
+    flex: 1,
   },
   header: {
     paddingBottom: 16,
@@ -92,6 +96,7 @@ const styles = StyleSheet.create({
 
 interface VoteConfirmModalProps {
   onClose: () => void;
+  onSuccess: () => void;
   proposal: any;
   selectedChoices: any;
   space: any;
@@ -102,6 +107,7 @@ interface VoteConfirmModalProps {
 
 function VoteConfirmModal({
   onClose,
+  onSuccess,
   proposal,
   selectedChoices,
   space,
@@ -200,6 +206,7 @@ function VoteConfirmModal({
             setLoading(false);
             getProposal();
             onClose();
+            onSuccess();
           } else {
             setLoading(false);
             Toast.show({
@@ -307,26 +314,12 @@ function VoteConfirmModal({
     <View style={[styles.container, { backgroundColor: colors.bgDefault }]}>
       <View
         style={[
-          styles.header,
-          {
-            borderBottomColor: colors.borderColor,
-          },
+          common.headerContainer,
+          common.justifySpaceBetween,
+          { borderBottomColor: colors.borderColor },
         ]}
       >
-        <Text
-          style={[common.h3, { textAlign: "center", color: colors.textColor }]}
-        >
-          {i18n.t("confirmVote")}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            setLoading(false);
-            onClose();
-          }}
-          style={{ marginLeft: "auto" }}
-        >
-          <IconFont name="close" size={20} color={colors.darkGray} />
-        </TouchableOpacity>
+        <BackButton title={i18n.t("confirmVote")} />
       </View>
       <Text
         style={[
@@ -405,7 +398,7 @@ function VoteConfirmModal({
         <TouchableOpacity
           onPress={() => {
             setLoading(false);
-            onClose();
+            navigation.goBack();
           }}
         >
           <View

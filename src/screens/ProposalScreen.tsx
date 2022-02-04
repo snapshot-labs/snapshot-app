@@ -31,6 +31,7 @@ import SpaceAvatar from "components/SpaceAvatar";
 import { SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import ProposalVoteBottomSheet from "components/proposal/ProposalVoteBottomSheet";
+import ProposalVoteButton from "components/proposal/ProposalVoteButton";
 
 interface ProposalScreenProps {
   route: {
@@ -282,10 +283,8 @@ function ProposalScreen({ route }: ProposalScreenProps) {
         </ScrollView>
       )}
       {proposal?.state === "active" && (
-        <ProposalVoteBottomSheet
+        <ProposalVoteButton
           proposal={proposal}
-          resultsLoaded={resultsLoaded}
-          setScrollEnabled={setScrollEnabled}
           space={space}
           getProposal={async () => {
             const proposalResponse = await getProposal(
@@ -306,7 +305,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               setResultsLoaded
             );
           }}
-          scrollEnabled={scrollEnabled}
         />
       )}
       {showProposalBottomSheet && (
