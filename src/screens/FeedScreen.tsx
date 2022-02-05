@@ -16,7 +16,7 @@ import {
   useExploreState,
 } from "context/exploreContext";
 import { ContextDispatch } from "types/context";
-import { defaultHeaders } from "helpers/apiUtils";
+import { defaultHeaders, getSubscriptions } from "helpers/apiUtils";
 import isEmpty from "lodash/isEmpty";
 import TimelineFeed from "components/timeline/TimelineFeed";
 import * as Linking from "expo-linking";
@@ -121,12 +121,14 @@ function FeedScreen() {
       navigateToScreen(event?.url);
     });
     getExplore(exploreDispatch);
+    getSubscriptions(connectedAddress ?? "", authDispatch);
     getFollows(connectedAddress, authDispatch, setIsInitial);
   }, []);
 
   useEffect(() => {
     if (!isInitial) {
       getFollows(connectedAddress, authDispatch, setIsInitial);
+      getSubscriptions(connectedAddress ?? "", authDispatch);
     }
   }, [connectedAddress]);
 

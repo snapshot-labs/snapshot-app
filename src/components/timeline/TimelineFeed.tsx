@@ -43,7 +43,8 @@ async function getProposals(
   isInitial: boolean,
   setLoadingMore: (loadingMore: boolean) => void,
   state: string,
-  notificationsDispatch: ContextDispatch
+  notificationsDispatch: ContextDispatch,
+  setLoadingFilter?: (loadingFilter: boolean) => void
 ) {
   const sevenDaysAgo = parseInt(
     (moment().subtract(7, "days").valueOf() / 1e3).toFixed()
@@ -90,6 +91,9 @@ async function getProposals(
     console.log(e);
   }
   setLoadingMore(false);
+  if (setLoadingFilter) {
+    setLoadingFilter(false);
+  }
 }
 interface TimelineFeedProps {
   feedScreenIsInitial: boolean;
@@ -103,6 +107,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [isInitial, setIsInitial] = useState<boolean>(true);
+  const [loadingFilter, setLoadingFilter] = useState<boolean>(false);
   const [joinedSpacesFilter, setJoinedSpacesFilter] = useState(
     proposal.getStateFilters()[0]
   );
@@ -121,7 +126,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
       true,
       setLoadingMore,
       newFilter,
-      notificationsDispatch
+      notificationsDispatch,
+      setLoadingFilter
     );
   }
 
@@ -251,7 +257,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                   initialIndex: 1,
                   destructiveButtonIndex: -1,
                   onPressOption: (index: number) => {
-                    setLoadingMore(true);
+                    setLoadingFilter(true);
                     if (index === 0) {
                       setFilter(allFilter);
                       onChangeFilter(allFilter.key);
@@ -334,6 +340,19 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
           )
         }
       />
+      {loadingFilter && (
+        <View
+          style={{
+            position: "absolute",
+            top: 300,
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <ActivityIndicator color={colors.textColor} size="large" />
+        </View>
+      )}
     </View>
   );
 }

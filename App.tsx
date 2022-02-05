@@ -6,6 +6,7 @@ import {
   SpaceMono_700Bold,
   SpaceMono_400Regular,
 } from "@expo-google-fonts/space-mono";
+import { LogBox } from "react-native";
 import Toast from "react-native-toast-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "context/authContext";
@@ -18,6 +19,10 @@ import { EngineProvider } from "context/engineContext";
 import SecureKeychain from "helpers/secureKeychain";
 import env from "constants/env";
 import { ExploreProvider } from "context/exploreContext";
+
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
 
 let customFonts = {
   "Calibre-Medium": require("./assets/font/Calibre-Medium.ttf"),

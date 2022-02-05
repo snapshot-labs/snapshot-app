@@ -7,7 +7,7 @@ import { sendEIP712 } from "helpers/EIP712";
 import i18n from "i18n-js";
 import { Proposal } from "types/proposal";
 import { Space } from "types/explore";
-import { FOLLOWS_QUERY } from "./queries";
+import { FOLLOWS_QUERY, SUBSCRIPTIONS_QUERY } from "./queries";
 import apolloClient from "./apolloClient";
 import { addressIsSnapshotWallet } from "helpers/address";
 import { ethers } from "ethers";
@@ -15,6 +15,7 @@ import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 import signClient from "helpers/signClient";
 import { BOTTOM_SHEET_MODAL_ACTIONS } from "context/bottomSheetModalContext";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
+import reduce from "lodash/reduce";
 
 export const defaultHeaders = {
   accept: "application/json; charset=utf-8",
@@ -45,6 +46,42 @@ export async function getFollows(
   }
   if (setLoading) {
     setLoading(false);
+  }
+}
+
+export async function getSubscriptions(
+  address: string | null | undefined,
+  authDispatch: ContextDispatch
+) {
+  try {
+    const checksumAddress = ethers.utils.getAddress(address ?? "");
+    if (checksumAddress) {
+      const query = {
+        query: SUBSCRIPTIONS_QUERY,
+        variables: {
+          address: checksumAddress,
+        },
+      };
+      const result = await apolloClient.query(query);
+      const subscriptions = get(result, "data.subscriptions", []);
+      const subscriptionsMap = reduce(
+        subscriptions,
+        (map: any, subscription) => {
+          map[subscription?.space?.id] = subscription;
+          return map;
+        },
+        {}
+      );
+      authDispatch({
+        type: AUTH_ACTIONS.SET_SUBSCRIPTIONS,
+        payload: subscriptionsMap,
+      });
+    }
+  } catch (e) {
+    authDispatch({
+      type: AUTH_ACTIONS.SET_SUBSCRIPTIONS,
+      payload: {},
+    });
   }
 }
 

@@ -44,5 +44,15 @@ export async function sendEIP712(
       space: space.id,
       settings: JSON.stringify(payload),
     });
+  } else if (type === "subscribe") {
+    return signClient.subscribe(connector, connectedAddress, {
+      from: connectedAddress,
+      space: space.id,
+    });
+  } else if (type === "unsubscribe") {
+    return signClient.unsubscribe(connector, connectedAddress, {
+      from: connectedAddress,
+      space: space.id,
+    });
   }
 }

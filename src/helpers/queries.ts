@@ -173,3 +173,15 @@ export const SPACES_QUERY = gql`
     }
   }
 `;
+
+export const SUBSCRIPTIONS_QUERY = gql`
+  query Subscriptions($space: String, $address: String) {
+    subscriptions(where: { space: $space, address: $address }) {
+      id
+      address
+      space {
+        id
+      }
+    }
+  }
+`;

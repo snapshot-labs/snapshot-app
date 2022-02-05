@@ -53,8 +53,8 @@ function WalletType({ address, size }: WalletTypeProps) {
         style={[
           styles.iconContainer,
           {
-            backgroundColor: isWalletConnect ? colors.white : colors.bgBlue,
-            borderColor: isWalletConnect ? colors.borderColor : colors.bgBlue,
+            backgroundColor: colors.white,
+            borderColor: colors.borderColor,
             borderWidth: 1,
             width: isSmall ? 20 : 30,
             height: isSmall ? 20 : 30,

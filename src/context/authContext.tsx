@@ -23,6 +23,7 @@ type AuthState = {
   theme: string | "light" | "dark";
   colors: any;
   snapshotWallets: string[];
+  subscriptions: any;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -44,6 +45,7 @@ const AUTH_ACTIONS = {
   SET_REFRESH_FEED: "@auth/SET_REFRESH_FEED",
   SET_THEME: "@auth/SET_THEME",
   SET_SNAPSHOT_WALLETS: "@auth/SET_SNAPSHOT_WALLETS",
+  SET_SUBSCRIPTIONS: "@auth/SET_SUBSCRIPTIONS",
 };
 
 const initialState = {
@@ -58,6 +60,7 @@ const initialState = {
   refreshFeed: null,
   snapshotWallets: [],
   theme: "light",
+  subscriptions: {},
   colors,
 };
 
@@ -105,6 +108,8 @@ function authReducer(state: AuthState, action: ContextAction) {
       return { ...state, aliasWallet: action.payload };
     case AUTH_ACTIONS.SET_SNAPSHOT_WALLETS:
       return { ...state, snapshotWallets: action.payload };
+    case AUTH_ACTIONS.SET_SUBSCRIPTIONS:
+      return { ...state, subscriptions: action.payload };
     case AUTH_ACTIONS.SET_SAVED_WALLETS:
       let savedWallets = { ...state.savedWallets };
       if (action.payload) {
