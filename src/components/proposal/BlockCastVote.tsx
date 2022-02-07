@@ -47,7 +47,7 @@ function BlockCastVote({ proposal, space, getProposal }: BlockCastVoteProps) {
   const [totalScore, setTotalScore] = useState(0);
   let VotesComponent;
 
-  if (proposal.type === "single-choice") {
+  if (proposal.type === "single-choice" || proposal.type === "basic") {
     VotesComponent = VotingSingleChoice;
   } else if (proposal.type === "ranked-choice") {
     VotesComponent = VotingRankedChoice;

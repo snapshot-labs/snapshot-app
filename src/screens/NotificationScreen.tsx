@@ -13,7 +13,9 @@ import ProposalNotification from "components/proposal/ProposalNotification";
 import { useIsFocused } from "@react-navigation/native";
 import get from "lodash/get";
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
+import Toast from "react-native-toast-message";
 import pusherConfig from "constants/pusherConfig";
+import { useToastShowConfig } from "constants/toast";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
@@ -28,6 +30,7 @@ function NotificationScreen() {
   const insets = useSafeAreaInsets();
   const [onScreen, setOnScreen] = useState(true);
   const isFocused = useIsFocused();
+  const toastShowConfig = useToastShowConfig();
 
   const init = (): void => {
     RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
@@ -41,8 +44,19 @@ function NotificationScreen() {
   };
 
   const onSubscriptionsChanged = (interests: string[]): void => {
-    console.log("CALLBACK: onSubscriptionsChanged");
-    console.log(interests);
+    try {
+      Toast.show({
+        type: "customSuccess",
+        text1: "Subscription Change - " + JSON.stringify(interests),
+        ...toastShowConfig,
+      });
+    } catch (e) {
+      Toast.show({
+        type: "customSuccess",
+        text1: "Subscription Changed",
+        ...toastShowConfig,
+      });
+    }
   };
 
   const subscribe = (interest: string): void => {
@@ -59,7 +73,19 @@ function NotificationScreen() {
   };
 
   const handleNotification = (notification: any): void => {
-    console.log(notification);
+    try {
+      Toast.show({
+        type: "customSuccess",
+        text1: JSON.stringify(notification),
+        ...toastShowConfig,
+      });
+    } catch (e) {
+      Toast.show({
+        type: "customSuccess",
+        text1: "you have received a notification",
+        ...toastShowConfig,
+      });
+    }
     if (Platform.OS === "ios") {
       console.log("CALLBACK: handleNotification (ios)");
     } else {

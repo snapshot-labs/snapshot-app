@@ -371,12 +371,12 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.VOTE_SCREEN}
         component={VoteScreen}
-        options={{ headerShown: false, ...screenSettings }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name={navigationConstants.VOTE_CONFIRM_SCREEN}
         component={VoteConfirmScreen}
-        options={{ headerShown: false, ...screenSettings }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

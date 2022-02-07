@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   backButtonTitle: {
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
-    fontSize: 21,
+    fontSize: 24,
     marginLeft: 8,
     marginTop: Platform.OS === "ios" ? 6 : 0,
   },

@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
 
 function getVotingType(type: string) {
   switch (type) {
+    case "basic":
     case "single-choice":
       return "singleChoiceVoting";
     case "approval":

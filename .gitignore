@@ -76,3 +76,4 @@ src/constants/env.ts
 src/constants/pusherConfig.ts
 
 # @end expo-cli
+android/app/google-services.json

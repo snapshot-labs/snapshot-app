@@ -33,7 +33,6 @@ import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import { useEngineState } from "context/engineContext";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 import BackButton from "components/BackButton";
-import { useNavigation } from "@react-navigation/core";
 
 const { width } = Dimensions.get("screen");
 
@@ -71,9 +70,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   buttonContainer: {
-    marginVertical: 24,
+    position: "absolute",
+    bottom: 20,
     flexDirection: "row",
-    alignItems: "center",
     paddingHorizontal: 24,
   },
   rowTitle: {
@@ -148,7 +147,7 @@ function VoteConfirmModal({
   async function snapshotWalletVote() {
     let formattedSelectedChoices = selectedChoices;
 
-    if (proposal.type === "single-choice") {
+    if (proposal.type === "single-choice" || proposal.type === "basic") {
       formattedSelectedChoices = selectedChoices[0];
     }
     const payload = {
@@ -216,6 +215,7 @@ function VoteConfirmModal({
             });
           }
         } catch (e) {
+          console.log("SNAPSHOT ERR", e);
           setLoading(false);
           Toast.show({
             type: "customError",
@@ -429,7 +429,10 @@ function VoteConfirmModal({
 
             let formattedSelectedChoices = selectedChoices;
 
-            if (proposal.type === "single-choice") {
+            if (
+              proposal.type === "single-choice" ||
+              proposal.type === "basic"
+            ) {
               formattedSelectedChoices = selectedChoices[0];
             }
 
@@ -463,6 +466,7 @@ function VoteConfirmModal({
 
                   getProposal();
                   onClose();
+                  onSuccess();
                 } else {
                   Toast.show({
                     type: "customError",
@@ -498,33 +502,25 @@ function VoteConfirmModal({
                 width: buttonWidth,
                 marginLeft: 16,
                 backgroundColor:
-                  isSnapshotWallet ||
-                  !isWalletConnect ||
-                  loading ||
-                  totalScore === 0
-                    ? colors.borderColor
+                  isSnapshotWallet || isWalletConnect || loading
+                    ? colors.bgBlue
                     : "transparent",
                 borderColor:
-                  isSnapshotWallet ||
-                  !isWalletConnect ||
-                  loading ||
-                  totalScore === 0
-                    ? colors.borderColor
+                  isSnapshotWallet || isWalletConnect || loading
+                    ? colors.bgBlue
                     : colors.textColor,
               },
             ]}
           >
             {loading ? (
-              <ActivityIndicator size="small" color={colors.textColor} />
+              <ActivityIndicator size="small" color={colors.white} />
             ) : (
               <Text
                 style={[
                   buttonStyles.buttonTitle,
                   {
                     color:
-                      (!isSnapshotWallet && !isWalletConnect) ||
-                      loading ||
-                      totalScore === 0
+                      isSnapshotWallet || isWalletConnect || loading
                         ? colors.white
                         : colors.textColor,
                   },

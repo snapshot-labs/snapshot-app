@@ -10,9 +10,9 @@ const common = StyleSheet.create({
   screenHeaderTitle: {
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
-    fontSize: 22,
+    fontSize: 24,
     paddingLeft: 16,
-    lineHeight: 22,
+    lineHeight: 24,
   },
   headerTitle: {
     color: colors.headingColor,
