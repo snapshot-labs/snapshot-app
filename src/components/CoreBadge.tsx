@@ -4,6 +4,7 @@ import i18n from "i18n-js";
 import isEmpty from "lodash/isEmpty";
 import colors from "../constants/colors";
 import { useAuthState } from "context/authContext";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   badge: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   badgeTitle: {
     fontSize: 14,
     fontFamily: "Calibre-Medium",
-    lineHeight: 23,
+    lineHeight: Device.isIos() ? 20 : 23,
     color: colors.textColor,
     textTransform: "capitalize",
   },

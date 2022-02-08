@@ -37,7 +37,6 @@ export const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: "Calibre-Medium",
     fontSize: 15,
-    marginTop: Platform.OS === "ios" ? 4 : 0,
   },
 });
 

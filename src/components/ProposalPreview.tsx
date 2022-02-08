@@ -36,6 +36,7 @@ import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { getProposalUrl } from "helpers/proposalUtils";
 import { useToastShowConfig } from "constants/toast";
 import { useEngineState } from "context/engineContext";
+import Device from "helpers/device";
 
 const { width } = Dimensions.get("screen");
 
@@ -190,6 +191,7 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
                 width: isCore
                   ? defaultAuthorTextWidth - coreWidth
                   : defaultAuthorTextWidth,
+                marginBottom: Device.isIos() ? 4 : 0,
               },
             ]}
           >

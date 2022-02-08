@@ -16,6 +16,7 @@ import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import Toast from "react-native-toast-message";
 import pusherConfig from "constants/pusherConfig";
 import { useToastShowConfig } from "constants/toast";
+import Device from "helpers/device";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
@@ -40,11 +41,29 @@ function NotificationScreen() {
       onSubscriptionsChanged
     );
 
+    if (Device.isIos()) {
+      RNPusherPushNotifications.setSubscriptions(
+        [connectedAddress],
+        (statusCode, response) => {
+          console.log(statusCode, response);
+          Toast.show({
+            type: "customSuccess",
+            text1: "SET SUB - " + JSON.stringify(response),
+            ...toastShowConfig,
+          });
+        },
+        () => {
+          console.log("Success");
+        }
+      );
+    }
+
     subscribe(connectedAddress ?? "");
   };
 
   const onSubscriptionsChanged = (interests: string[]): void => {
     try {
+      console.log("SUB CHANGED");
       Toast.show({
         type: "customSuccess",
         text1: "Subscription Change - " + JSON.stringify(interests),
@@ -73,6 +92,7 @@ function NotificationScreen() {
   };
 
   const handleNotification = (notification: any): void => {
+    console.log("HANDLE NOTIFICATION", { notification });
     try {
       Toast.show({
         type: "customSuccess",

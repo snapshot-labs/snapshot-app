@@ -119,7 +119,7 @@ function BottomSheetModal({
                       marginBottom: isEmpty(icon)
                         ? 0
                         : Platform.OS === "ios"
-                        ? 0
+                        ? 4
                         : 2,
                     },
                     destructiveButtonIndex === index

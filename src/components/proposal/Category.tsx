@@ -9,6 +9,7 @@ import { styles as buttonStyles } from "components/Button";
 import React from "react";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
+import Device from "helpers/device";
 
 interface CategoryProps {
   isSelected?: boolean;
@@ -49,6 +50,7 @@ function Category({
               textTransform: "capitalize",
               fontSize: 18,
               lineHeight: 18,
+              marginBottom: Device.isIos() ? 4 : 0,
             },
           ]}
         >
@@ -62,6 +64,7 @@ function Category({
               fontSize: 18,
               lineHeight: 18,
               marginLeft: 6,
+              marginBottom: Device.isIos() ? 4 : 0,
             }}
           >
             {categories[category]}

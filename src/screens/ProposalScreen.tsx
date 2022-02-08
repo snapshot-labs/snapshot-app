@@ -32,6 +32,7 @@ import { SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import ProposalVoteBottomSheet from "components/proposal/ProposalVoteBottomSheet";
 import ProposalVoteButton from "components/proposal/ProposalVoteButton";
+import Device from "helpers/device";
 
 interface ProposalScreenProps {
   route: {
@@ -248,6 +249,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                       color: colors.textColor,
                       marginLeft: 8,
                       marginTop: Platform.OS === "ios" ? 6 : 0,
+                      marginBottom: Device.isIos() ? 4 : 0,
                     },
                   ]}
                 >
