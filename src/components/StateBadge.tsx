@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Platform } from "react-native";
 import i18n from "i18n-js";
 import colors from "../constants/colors";
 import { useAuthState } from "context/authContext";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   container: {
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 18,
     textTransform: "capitalize",
+    marginBottom: Device.isIos() ? 4 : 0,
   },
   circle: {
     height: 12,

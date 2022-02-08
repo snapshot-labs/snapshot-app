@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ViewStyle,
   Text,
-  Platform,
   TextStyle,
   Animated,
 } from "react-native";
@@ -27,7 +26,6 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 24,
     marginLeft: 8,
-    marginTop: Platform.OS === "ios" ? 6 : 0,
   },
 });
 

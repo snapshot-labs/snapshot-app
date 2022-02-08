@@ -6,12 +6,14 @@ import { useNavigation } from "@react-navigation/native";
 import { VOTE_SCREEN } from "constants/navigation";
 import { Proposal } from "types/proposal";
 import { Space } from "types/explore";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   voteContainer: {
     padding: 16,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: Device.isIos() ? 20 : 0,
   },
   voteTitle: {
     fontFamily: "Calibre-Semibold",

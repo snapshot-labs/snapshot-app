@@ -1,4 +1,5 @@
 import { Platform, StyleSheet } from "react-native";
+import Device from "helpers/device";
 import colors from "constants/colors";
 
 const styles = StyleSheet.create({
@@ -13,12 +14,14 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     fontFamily: "Calibre-Semibold",
     fontSize: 22,
+    marginBottom: Device.isIos() ? 4 : 0,
   },
   rowValue: {
     color: colors.darkGray,
     fontFamily: "Calibre-Medium",
     fontSize: 22,
     marginLeft: "auto",
+    marginBottom: Device.isIos() ? 4 : 0,
   },
   iconContainer: {
     width: 40,
