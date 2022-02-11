@@ -1,10 +1,13 @@
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { Proposal } from "types/proposal";
 import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
 import IconFont from "components/IconFont";
 import get from "lodash/get";
+import TextTicker from "react-native-text-ticker";
+
+const { width: deviceWidth } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   container: {
@@ -18,7 +21,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     alignItems: "center",
     height: 40,
-    paddingHorizontal: 16,
   },
   background: {
     position: "absolute",
@@ -28,7 +30,6 @@ const styles = StyleSheet.create({
   choice: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
-    lineHeight: 18,
     zIndex: 1,
   },
   score: {
@@ -37,12 +38,13 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     lineHeight: 18,
     zIndex: 1,
+    marginRight: 16,
   },
   scoreSymbol: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
     lineHeight: 18,
-    marginLeft: 6,
+    marginLeft: 20,
   },
 });
 
@@ -69,38 +71,48 @@ function ProposalPreviewFinalScores({
         );
 
         const scoreSymbol = `${n(currentScore)} ${proposal?.space?.symbol}`;
-
+        const isWinningChoice = winningChoice === index;
         return (
           <View key={index} style={[styles.container]}>
             <View style={styles.textContainer}>
-              {winningChoice === index && (
-                <IconFont
-                  name="check"
-                  size={20}
-                  color={colors.textColor}
-                  style={{ marginRight: 6 }}
-                />
-              )}
-              <Text
+              <TextTicker
                 style={[
                   styles.choice,
-                  { color: colors.textColor, maxWidth: "40%" },
+                  {
+                    color: colors.textColor,
+                    width: isWinningChoice
+                      ? deviceWidth - 100
+                      : deviceWidth - 110,
+                    marginLeft: isWinningChoice ? 0 : 6,
+                  },
                 ]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
+                duration={3000}
+                loop
+                repeatSpacer={50}
+                marqueeOnMount
+                marqueeDelay={1500}
+                bounceDelay={300}
+                scrollSpeed={1000}
+                animationType="scroll"
               >
-                {choice}
-              </Text>
-              <Text
-                style={[
-                  styles.scoreSymbol,
-                  { color: colors.darkGray, maxWidth: "39%" },
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {scoreSymbol}
-              </Text>
+                {"  "}
+                {isWinningChoice && (
+                  <IconFont
+                    name="check"
+                    size={20}
+                    color={colors.textColor}
+                    style={{ marginRight: 6, marginLeft: 16 }}
+                  />
+                )}
+                {`${isWinningChoice ? `  ${choice}` : choice}`}
+                <Text
+                  style={[styles.scoreSymbol, { color: colors.darkGray }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {`   ${scoreSymbol}`}
+                </Text>
+              </TextTicker>
               <Text style={[styles.score, { color: colors.textColor }]}>
                 {calculatedScore}
               </Text>

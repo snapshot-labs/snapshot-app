@@ -92,6 +92,14 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             JSON.stringify(preferencesController.state)
           );
         }
+
+        notificationsDispatch({
+          type: NOTIFICATIONS_ACTIONS.RESET_PROPOSAL_TIMES,
+        });
+        notificationsDispatch({
+          type: NOTIFICATIONS_ACTIONS.RESET_LAST_VIEWED_NOTIFICATION,
+        });
+
         authDispatch({
           type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
           payload: {
@@ -122,12 +130,6 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
             payload: aliases[address] ? getAliasWallet(aliases[address]) : null,
           });
         }
-        notificationsDispatch({
-          type: NOTIFICATIONS_ACTIONS.RESET_PROPOSAL_TIMES,
-        });
-        notificationsDispatch({
-          type: NOTIFICATIONS_ACTIONS.RESET_LAST_VIEWED_NOTIFICATION,
-        });
       }}
     >
       <View

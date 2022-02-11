@@ -77,9 +77,10 @@ function TabNavigator() {
   const { proposalTimes, lastViewedProposal, lastViewedNotification } =
     useNotificationsState();
   const unreadNotifications = useMemo(() => {
-    if (!isWalletConnect || isEmpty(followedSpaces)) {
+    if (isEmpty(followedSpaces)) {
       return 0;
     }
+
     if (isEmpty(lastViewedProposal)) {
       return proposalTimes.length;
     }
@@ -98,7 +99,12 @@ function TabNavigator() {
     }
 
     return 0;
-  }, [proposalTimes, lastViewedProposal, lastViewedNotification]);
+  }, [
+    proposalTimes,
+    lastViewedProposal,
+    lastViewedNotification,
+    connectedAddress,
+  ]);
   const profile = profiles[connectedAddress ?? ""];
 
   return (

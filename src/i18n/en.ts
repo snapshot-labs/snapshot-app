@@ -12,7 +12,7 @@ export default {
   tapToScanAgain: "Tap to scan again",
   loginWithThisAddress: "Log in with this address",
   scannedAddress: "Scanned Address",
-  logout: "Logout",
+  logout: "Log out",
   requestingForCameraPermission: "Requesting for camera permission",
   noAccessToCamera: "No access to camera",
   requestAccessToCamera: "Request access to camera",
@@ -326,7 +326,7 @@ export default {
   enterPassword: "Enter password",
   submitPassword: "Submit password",
   import_private_key: {
-    title: "Import Account",
+    title: "Import account",
     description_one:
       "Imported accounts are viewable in your wallet but are not recoverable with your snapshot secret recovery phrase.",
     learn_more_here: "Learn more about imported accounts here.",
@@ -386,4 +386,6 @@ export default {
   unsubscribedToSpace: "Unsubscribed to {{space}}",
   unableToSubscribeToSpace: "Unable to subscribe to {{space}}",
   unableToUnsubscribeToSpace: "Unable to unsubscribe to {{space}}",
+  spaceProposalStarted: "{{space}} proposal started",
+  spaceProposalEnded: "{{space}} proposal ended",
 };

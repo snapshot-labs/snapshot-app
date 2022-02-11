@@ -37,9 +37,6 @@ function NotificationScreen() {
     RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
 
     RNPusherPushNotifications.on("notification", handleNotification);
-    RNPusherPushNotifications.setOnSubscriptionsChangedListener(
-      onSubscriptionsChanged
-    );
 
     if (Device.isIos()) {
       RNPusherPushNotifications.setSubscriptions(
@@ -59,23 +56,6 @@ function NotificationScreen() {
     }
 
     subscribe(connectedAddress ?? "");
-  };
-
-  const onSubscriptionsChanged = (interests: string[]): void => {
-    try {
-      console.log("SUB CHANGED");
-      Toast.show({
-        type: "customSuccess",
-        text1: "Subscription Change - " + JSON.stringify(interests),
-        ...toastShowConfig,
-      });
-    } catch (e) {
-      Toast.show({
-        type: "customSuccess",
-        text1: "Subscription Changed",
-        ...toastShowConfig,
-      });
-    }
   };
 
   const subscribe = (interest: string): void => {
