@@ -18,6 +18,8 @@ import { useAuthState } from "context/authContext";
 import { addressIsSnapshotWallet } from "helpers/address";
 import SubscribeToSpaceButton from "components/space/SubscribeToSpaceButton";
 
+const verified: any = require("../../../snapshot-spaces/spaces/verified.json");
+
 interface SpaceHeader {
   space: Space;
   isWalletConnect: boolean | undefined;
@@ -30,6 +32,9 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
     connectedAddress ?? "",
     snapshotWallets
   );
+  const verificationStatus = verified[space?.id] || 0;
+  const isVerified = verificationStatus === 1;
+
   return (
     <View
       style={{
@@ -41,15 +46,31 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
       <View style={{ flexDirection: "row" }}>
         <View>
           <SpaceAvatar space={space} symbolIndex="space" size={60} />
-          <Text
-            style={[
-              { marginTop: 8 },
-              common.headerTitle,
-              { color: colors.textColor },
-            ]}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            {get(space, "name")}
-          </Text>
+            <Text
+              style={[
+                { marginTop: 8 },
+                common.headerTitle,
+                { color: colors.textColor },
+              ]}
+            >
+              {get(space, "name")}
+            </Text>
+            {isVerified && (
+              <IconFont
+                name="check-verified"
+                size={22}
+                color={colors.bgGreen}
+                style={{ marginLeft: 6, marginTop: 10 }}
+              />
+            )}
+          </View>
+
           <Text style={[{ marginTop: 4 }, common.subTitle]}>
             {get(space, "id")}
           </Text>
