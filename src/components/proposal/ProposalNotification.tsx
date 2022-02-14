@@ -15,6 +15,7 @@ import { Proposal } from "types/proposal";
 import { useExploreState } from "context/exploreContext";
 import { getTimeAgoProposalNotification } from "helpers/proposalUtils";
 import { getUsername } from "helpers/profile";
+import i18n from "i18n-js";
 import SpaceAvatar from "components/SpaceAvatar";
 
 const isIOS = Platform.OS === "ios";
@@ -64,14 +65,8 @@ function ProposalNotification({
   time,
 }: ProposalNotificationProps) {
   const navigation: any = useNavigation();
-  const { colors, connectedAddress } = useAuthState();
+  const { colors } = useAuthState();
   const { profiles } = useExploreState();
-  const authorProfile = profiles[proposal?.author];
-  const authorName = getUsername(
-    proposal?.author,
-    authorProfile,
-    connectedAddress ?? ""
-  );
 
   return (
     <TouchableOpacity
@@ -99,7 +94,8 @@ function ProposalNotification({
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {proposal?.space?.name} by {authorName}
+            {i18n.t("spaceProposal", { space: proposal?.space?.name })}{" "}
+            {getTimeAgoProposalNotification(time, event)}
           </Text>
         </View>
         <View style={styles.titleContainer}>
@@ -112,14 +108,6 @@ function ProposalNotification({
             {proposal?.title}
           </Text>
         </View>
-        <Text
-          style={[
-            styles.secondaryText,
-            { marginTop: 6, color: colors.secondaryTextColor },
-          ]}
-        >
-          {getTimeAgoProposalNotification(time, event)}
-        </Text>
       </View>
     </TouchableOpacity>
   );

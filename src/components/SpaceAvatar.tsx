@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Animated } from "react-native";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
 import { Image } from "react-native";
-import { Space } from "../types/explore";
+import { Space } from "types/explore";
 import makeBlockie from "ethereum-blockies-base64";
-import colors from "constants/colors";
 import isEmpty from "lodash/isEmpty";
 
 function createUrl(

@@ -99,7 +99,7 @@ function ProposalPreviewFinalScores({
                 {isWinningChoice && (
                   <IconFont
                     name="check"
-                    size={20}
+                    size={17}
                     color={colors.textColor}
                     style={{ marginRight: 6, marginLeft: 16 }}
                   />

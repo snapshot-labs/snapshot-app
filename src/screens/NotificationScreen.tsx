@@ -160,6 +160,10 @@ function NotificationScreen() {
             didView = false;
           }
 
+          if (!proposalDetails) {
+            return null;
+          }
+
           return (
             <ProposalNotification
               proposal={proposalDetails}
