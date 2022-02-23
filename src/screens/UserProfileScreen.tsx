@@ -41,6 +41,9 @@ import StickyParallaxHeader from "react-native-sticky-parallax-header";
 import { ContextDispatch } from "types/context";
 import SpacePreview from "components/SpacePreview";
 
+const { event, ValueXY } = Animated;
+const scrollY = new ValueXY();
+
 const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
@@ -172,7 +175,7 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 function UserProfileScreen({ route }: UserProfileScreenProps) {
   const { address } = route.params;
-  const { colors, connectedAddress } = useAuthState();
+  const { colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const [checksumAddress, setChecksumAddress] = useState(address);
   const toastShowConfig = useToastShowConfig();
@@ -182,10 +185,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const userProfile = profiles[address];
   const username = get(userProfile, "ens", undefined);
   const [joinedSpaces, setJoinedSpaces] = useState([]);
-  const headerHeight = username === undefined ? 150 : 170;
-  const userProposalsFlatListRef: any = useRef();
-
-  console.log({ joinedSpaces: joinedSpaces[0] ? joinedSpaces[0].space : "" });
 
   function copyToClipboard() {
     Clipboard.setString(checksumAddress);
@@ -213,21 +212,48 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
       <StickyParallaxHeader
+        bounces={false}
         headerType="TabbedHeader"
-        header={() => (
-          <View
-            style={[
-              common.headerContainer,
-              { borderBottomColor: colors.borderColor },
-            ]}
-          >
-            <BackButton />
-          </View>
-        )}
+        header={() => {
+          const opacity = scrollY.y.interpolate({
+            inputRange: [0, 60, 90],
+            outputRange: [0, 0, 1],
+            extrapolate: "clamp",
+          });
+          const shortenedAddress = shorten(checksumAddress ?? "");
+          const userTitle = isEmpty(username)
+            ? shortenedAddress
+            : `${username} (${shortenedAddress})`;
+
+          return (
+            <View
+              style={[
+                common.headerContainer,
+                { borderBottomColor: colors.borderColor },
+              ]}
+            >
+              <BackButton />
+              <Animated.Text
+                style={{
+                  opacity,
+                  fontSize: 18,
+                  fontFamily: "Calibre-Semibold",
+                  color: colors.textColor,
+                }}
+              >
+                {userTitle}
+              </Animated.Text>
+            </View>
+          );
+        }}
         headerHeight={50}
         foregroundImage={{
           uri: `https://stamp.fyi/avatar/eth:${address}?s=60`,
         }}
+        scrollEvent={event(
+          [{ nativeEvent: { contentOffset: { y: scrollY.y } } }],
+          { useNativeDriver: false }
+        )}
         title={
           <TouchableOpacity onPress={copyToClipboard}>
             <Text style={[styles.address, { color: colors.textColor }]}>
