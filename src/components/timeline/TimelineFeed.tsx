@@ -95,9 +95,11 @@ async function getProposals(
     setLoadingFilter(false);
   }
 }
+
 interface TimelineFeedProps {
   feedScreenIsInitial: boolean;
 }
+
 function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const { followedSpaces, colors, connectedAddress } = useAuthState();
   const { profiles, spaces } = useExploreState();

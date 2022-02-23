@@ -15,21 +15,21 @@ function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
     () => (isEmpty(imgSrc) ? makeBlockie(address) : null),
     [imgSrc, address]
   );
-  const [useBlockie, setUseBlockie] = useState<string | null>(
-    isEmpty(imgSrc) ? blockie : null
-  );
-  let defaultImgSrc = { uri: isEmpty(imgSrc) ? blockie : getUrl(imgSrc) };
-  if (useBlockie) {
-    defaultImgSrc = { uri: useBlockie };
-  }
+  const [useBlockie, setUseBlockie] = useState<boolean>(false);
+  const defaultImgSrc = {
+    uri: isEmpty(imgSrc)
+      ? useBlockie
+        ? blockie
+        : `https://stamp.fyi/avatar/eth:${address}?s=${size * 2}`
+      : getUrl(imgSrc),
+  };
 
   return (
     <Image
       source={defaultImgSrc}
       style={{ width: size, height: size, borderRadius: size / 2 }}
       onError={() => {
-        const setBlockie = makeBlockie(address);
-        setUseBlockie(setBlockie);
+        setUseBlockie(true);
       }}
     />
   );

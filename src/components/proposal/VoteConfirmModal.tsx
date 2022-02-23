@@ -7,7 +7,7 @@ import {
   Linking,
   Dimensions,
   ActivityIndicator,
-  SafeAreaView,
+  TouchableNativeFeedback,
 } from "react-native";
 import i18n from "i18n-js";
 import common from "styles/common";
@@ -33,10 +33,15 @@ import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import { useEngineState } from "context/engineContext";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 import BackButton from "components/BackButton";
+import Device from "helpers/device";
 
 const { width } = Dimensions.get("screen");
 
 const buttonWidth = width / 2 - 32;
+
+const ButtonContainerComponent: any = Device.isIos()
+  ? TouchableOpacity
+  : TouchableNativeFeedback;
 
 const styles = StyleSheet.create({
   view: {
@@ -395,142 +400,146 @@ function VoteConfirmModal({
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            setLoading(false);
-            navigation.goBack();
-          }}
-        >
-          <View
-            style={[
-              buttonStyles.button,
-              { width: buttonWidth, borderColor: colors.borderColor },
-            ]}
+        <View style={buttonStyles.nativeFeedbackContainer}>
+          <ButtonContainerComponent
+            onPress={() => {
+              setLoading(false);
+              navigation.goBack();
+            }}
           >
-            <Text
-              style={[buttonStyles.buttonTitle, { color: colors.textColor }]}
+            <View
+              style={[
+                buttonStyles.button,
+                { width: buttonWidth, borderColor: colors.borderColor },
+              ]}
             >
-              {i18n.t("cancel")}
-            </Text>
-          </View>
-        </TouchableOpacity>
+              <Text
+                style={[buttonStyles.buttonTitle, { color: colors.textColor }]}
+              >
+                {i18n.t("cancel")}
+              </Text>
+            </View>
+          </ButtonContainerComponent>
+        </View>
+        <View
+          style={[buttonStyles.nativeFeedbackContainer, { marginLeft: 16 }]}
+        >
+          <ButtonContainerComponent
+            onPress={async () => {
+              if (
+                loading ||
+                (!isSnapshotWallet && !isWalletConnect) ||
+                totalScore === 0
+              ) {
+                return;
+              }
 
-        <TouchableOpacity
-          onPress={async () => {
-            if (
-              loading ||
-              (!isSnapshotWallet && !isWalletConnect) ||
-              totalScore === 0
-            ) {
-              return;
-            }
+              setLoading(true);
 
-            setLoading(true);
+              let formattedSelectedChoices = selectedChoices;
 
-            let formattedSelectedChoices = selectedChoices;
+              if (
+                proposal.type === "single-choice" ||
+                proposal.type === "basic"
+              ) {
+                formattedSelectedChoices = selectedChoices[0];
+              }
 
-            if (
-              proposal.type === "single-choice" ||
-              proposal.type === "basic"
-            ) {
-              formattedSelectedChoices = selectedChoices[0];
-            }
-
-            try {
-              if (isSnapshotWallet) {
-                await snapshotWalletVote();
-              } else {
-                const checksumAddress = ethers.utils.getAddress(
-                  connectedAddress ?? ""
-                );
-                const sign = await sendEIP712(
-                  wcConnector,
-                  checksumAddress ?? "",
-                  space,
-                  "vote",
-                  {
-                    proposal: {
-                      id: proposal.id,
-                      type: proposal.type,
-                    },
-                    choice: formattedSelectedChoices,
-                  }
-                );
-
-                if (sign) {
-                  Toast.show({
-                    type: "customSuccess",
-                    text1: i18n.t("yourVoteIsIn"),
-                    ...toastShowConfig,
-                  });
-
-                  getProposal();
-                  onClose();
-                  onSuccess();
+              try {
+                if (isSnapshotWallet) {
+                  await snapshotWalletVote();
                 } else {
-                  Toast.show({
-                    type: "customError",
-                    text1: i18n.t("unableToCastVote"),
-                    ...toastShowConfig,
+                  const checksumAddress = ethers.utils.getAddress(
+                    connectedAddress ?? ""
+                  );
+                  const sign = await sendEIP712(
+                    wcConnector,
+                    checksumAddress ?? "",
+                    space,
+                    "vote",
+                    {
+                      proposal: {
+                        id: proposal.id,
+                        type: proposal.type,
+                      },
+                      choice: formattedSelectedChoices,
+                    }
+                  );
+
+                  if (sign) {
+                    Toast.show({
+                      type: "customSuccess",
+                      text1: i18n.t("yourVoteIsIn"),
+                      ...toastShowConfig,
+                    });
+
+                    getProposal();
+                    onClose();
+                    onSuccess();
+                  } else {
+                    Toast.show({
+                      type: "customError",
+                      text1: i18n.t("unableToCastVote"),
+                      ...toastShowConfig,
+                    });
+                  }
+                }
+              } catch (e) {
+                Toast.show({
+                  type: "customError",
+                  text1: parseErrorMessage(e, i18n.t("unableToCastVote")),
+                  ...toastShowConfig,
+                });
+
+                if (isWalletConnect) {
+                  bottomSheetModalDispatch({
+                    type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                    payload: {
+                      ...bottomSheetWCErrorConfig,
+                    },
                   });
                 }
               }
-            } catch (e) {
-              Toast.show({
-                type: "customError",
-                text1: parseErrorMessage(e, i18n.t("unableToCastVote")),
-                ...toastShowConfig,
-              });
 
-              if (isWalletConnect) {
-                bottomSheetModalDispatch({
-                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                  payload: {
-                    ...bottomSheetWCErrorConfig,
-                  },
-                });
-              }
-            }
-
-            setLoading(false);
-          }}
-        >
-          <View
-            style={[
-              buttonStyles.button,
-              {
-                width: buttonWidth,
-                marginLeft: 16,
-                backgroundColor:
-                  isSnapshotWallet || isWalletConnect || loading
-                    ? colors.bgBlue
-                    : "transparent",
-                borderColor:
-                  isSnapshotWallet || isWalletConnect || loading
-                    ? colors.bgBlue
-                    : colors.textColor,
-              },
-            ]}
+              setLoading(false);
+            }}
           >
-            {loading ? (
-              <ActivityIndicator size="small" color={colors.white} />
-            ) : (
-              <Text
-                style={[
-                  buttonStyles.buttonTitle,
-                  {
-                    color:
-                      isSnapshotWallet || isWalletConnect || loading
-                        ? colors.white
-                        : colors.textColor,
-                  },
-                ]}
-              >
-                {i18n.t("vote")}
-              </Text>
-            )}
-          </View>
-        </TouchableOpacity>
+            <View
+              style={[
+                buttonStyles.button,
+                {
+                  width: buttonWidth,
+                  backgroundColor:
+                    isSnapshotWallet || isWalletConnect || loading
+                      ? colors.bgBlue
+                      : "transparent",
+                  borderColor:
+                    isSnapshotWallet || isWalletConnect || loading
+                      ? colors.bgBlue
+                      : colors.textColor,
+                },
+              ]}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <Text
+                  style={[
+                    buttonStyles.buttonTitle,
+                    {
+                      color:
+                        isSnapshotWallet || isWalletConnect || loading
+                          ? colors.white
+                          : colors.textColor,
+                    },
+                  ]}
+                >
+                  {i18n.t("vote")}
+                </Text>
+              )}
+            </View>
+          </ButtonContainerComponent>
+        </View>
       </View>
     </View>
   );

@@ -48,6 +48,7 @@ import ChangePasswordScreen from "screens/ChangePasswordScreen";
 import Device from "helpers/device";
 import VoteScreen from "screens/VoteScreen";
 import VoteConfirmScreen from "screens/VoteConfirmScreen";
+import UserProfileScreen from "screens/UserProfileScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -377,12 +378,17 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.VOTE_SCREEN}
         component={VoteScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen
         name={navigationConstants.VOTE_CONFIRM_SCREEN}
         component={VoteConfirmScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.USER_PROFILE}
+        component={UserProfileScreen}
+        options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>
   );

@@ -185,3 +185,40 @@ export const SUBSCRIPTIONS_QUERY = gql`
     }
   }
 `;
+
+export const USER_VOTES_QUERY = gql`
+  query Votes($voter: String) {
+    votes(where: { voter: $voter }) {
+      id
+      voter
+      created
+      choice
+      vp
+      vp_by_strategy
+      proposal {
+        type
+        id
+        ipfs
+        title
+        body
+        start
+        end
+        state
+        author
+        created
+        choices
+        space {
+          id
+          name
+          members
+          avatar
+          symbol
+        }
+        scores_state
+        scores_total
+        scores
+        votes
+      }
+    }
+  }
+`;

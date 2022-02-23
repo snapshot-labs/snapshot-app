@@ -14,7 +14,6 @@ import { useAuthState } from "context/authContext";
 import { Proposal } from "types/proposal";
 import { useExploreState } from "context/exploreContext";
 import { getTimeAgoProposalNotification } from "helpers/proposalUtils";
-import { getUsername } from "helpers/profile";
 import i18n from "i18n-js";
 import SpaceAvatar from "components/SpaceAvatar";
 
@@ -66,7 +65,6 @@ function ProposalNotification({
 }: ProposalNotificationProps) {
   const navigation: any = useNavigation();
   const { colors } = useAuthState();
-  const { profiles } = useExploreState();
 
   return (
     <TouchableOpacity

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
+  TouchableOpacity,
   View,
 } from "react-native";
 import UserAvatar from "../UserAvatar";
@@ -21,6 +22,9 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import ReceiptModal from "components/proposal/ReceiptModal";
+import IconFont from "components/IconFont";
+import { USER_PROFILE } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("screen");
 
@@ -55,6 +59,7 @@ function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
   const voterProfile = profiles[vote.voter];
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const navigation: any = useNavigation();
   let voterName = getUsername(vote.voter, voterProfile, connectedAddress ?? "");
   if (connectedAddress === vote.voter) {
     voterName = i18n.t("you");
@@ -67,23 +72,7 @@ function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
   return (
     <TouchableHighlight
       onPress={() => {
-        bottomSheetModalDispatch({
-          type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-          payload: {
-            options: [],
-            snapPoints: [10, 300],
-            show: true,
-            initialIndex: 1,
-            ModalContent: () => (
-              <ReceiptModal
-                onClose={() => {
-                  bottomSheetModalRef?.current?.close();
-                }}
-                authorIpfsHash={vote.id}
-              />
-            ),
-          },
-        });
+        navigation.navigate(USER_PROFILE, { address: vote.voter });
       }}
       underlayColor={colors.highlightColor}
     >
@@ -128,8 +117,31 @@ function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
             ellipsizeMode="tail"
             numberOfLines={1}
           >
-            {n(vote.balance)} {space.symbol}
+            {n(vote.balance)} {space?.symbol ?? proposal?.space?.symbol}
           </Text>
+          <TouchableOpacity
+            onPress={() => {
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  options: [],
+                  snapPoints: [10, 300],
+                  show: true,
+                  initialIndex: 1,
+                  ModalContent: () => (
+                    <ReceiptModal
+                      onClose={() => {
+                        bottomSheetModalRef?.current?.close();
+                      }}
+                      authorIpfsHash={vote.id}
+                    />
+                  ),
+                },
+              });
+            }}
+          >
+            <IconFont name="signature" size={20} color={colors.textColor} />
+          </TouchableOpacity>
         </View>
         {isQuadraticOrRankedChoice && (
           <Text

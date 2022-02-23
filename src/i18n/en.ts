@@ -389,4 +389,9 @@ export default {
   spaceProposalStarted: "{{space}} proposal started",
   spaceProposalEnded: "{{space}} proposal ended",
   spaceProposal: "{{space}} proposal",
+  votedOnProposal: 'Voted "{{choice}}" on {{title}} proposal.',
+  timeAgo: "{{timeAgo}} ago",
+  by: "by",
+  noProposalsCreated: "No proposals created.",
+  userHasNotVotedOnAnyProposal: "User has not voted on any proposal.",
 };

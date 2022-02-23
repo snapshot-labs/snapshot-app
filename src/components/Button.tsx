@@ -7,10 +7,12 @@ import {
   TextStyle,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  TouchableNativeFeedback,
+  TouchableOpacity,
 } from "react-native";
 import colors from "../constants/colors";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useAuthState } from "context/authContext";
+import Device from "helpers/device";
 
 export const styles = StyleSheet.create({
   button: {
@@ -44,6 +46,10 @@ export const styles = StyleSheet.create({
   lightButtonTitle: {
     color: colors.textColor,
   },
+  nativeFeedbackContainer: {
+    borderRadius: 60,
+    overflow: "hidden",
+  },
 });
 
 interface ButtonProps {
@@ -76,48 +82,52 @@ function Button({
   const { theme, colors } = useAuthState();
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
-    : TouchableOpacity;
+    : Device.isIos()
+    ? TouchableOpacity
+    : TouchableNativeFeedback;
 
   return (
-    <ButtonContainerComponent
-      onPress={disabled || loading ? () => {} : onPress}
-    >
-      <View
-        style={[
-          styles.button,
-          theme === "dark"
-            ? { borderColor: colors.borderColor, borderWidth: 1 }
-            : {},
-          light ? styles.lightButton : {},
-          disabled ? styles.disabled : {},
-          selected ? { borderColor: colors.textColor } : {},
-          label !== undefined ? { justifyContent: "flex-start" } : {},
-          buttonContainerStyle,
-        ]}
+    <View style={styles.nativeFeedbackContainer}>
+      <ButtonContainerComponent
+        onPress={disabled || loading ? () => {} : onPress}
       >
-        {label !== undefined && <Text style={styles.label}>{label}</Text>}
-        {loading ? (
-          <ActivityIndicator size="small" color={colors.textColor} />
-        ) : (
-          <>
-            <Text
-              {...(onlyOneLine
-                ? { numberOfLines: 1, ellipsizeMode: "tail" }
-                : {})}
-              style={[
-                styles.buttonTitle,
-                { color: colors.textColor },
-                light ? styles.lightButtonTitle : {},
-                buttonTitleStyle,
-              ]}
-            >
-              {title}
-            </Text>
-            {Icon !== undefined && <Icon />}
-          </>
-        )}
-      </View>
-    </ButtonContainerComponent>
+        <View
+          style={[
+            styles.button,
+            theme === "dark"
+              ? { borderColor: colors.borderColor, borderWidth: 1 }
+              : {},
+            light ? styles.lightButton : {},
+            disabled ? styles.disabled : {},
+            selected ? { borderColor: colors.textColor } : {},
+            label !== undefined ? { justifyContent: "flex-start" } : {},
+            buttonContainerStyle,
+          ]}
+        >
+          {label !== undefined && <Text style={styles.label}>{label}</Text>}
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.textColor} />
+          ) : (
+            <>
+              <Text
+                {...(onlyOneLine
+                  ? { numberOfLines: 1, ellipsizeMode: "tail" }
+                  : {})}
+                style={[
+                  styles.buttonTitle,
+                  { color: colors.textColor },
+                  light ? styles.lightButtonTitle : {},
+                  buttonTitleStyle,
+                ]}
+              >
+                {title}
+              </Text>
+              {Icon !== undefined && <Icon />}
+            </>
+          )}
+        </View>
+      </ButtonContainerComponent>
+    </View>
   );
 }
 

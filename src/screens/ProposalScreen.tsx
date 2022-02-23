@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  StyleSheet,
 } from "react-native";
 import { Proposal } from "types/proposal";
 import i18n from "i18n-js";
@@ -28,11 +29,11 @@ import ProposalMenu from "components/proposal/ProposalMenu";
 import { useAuthState } from "context/authContext";
 import ProposalBottomSheet from "components/proposal/ProposalBottomSheet";
 import SpaceAvatar from "components/SpaceAvatar";
-import { SPACE_SCREEN } from "constants/navigation";
+import { SPACE_SCREEN, USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
-import ProposalVoteBottomSheet from "components/proposal/ProposalVoteBottomSheet";
 import ProposalVoteButton from "components/proposal/ProposalVoteButton";
 import Device from "helpers/device";
+import { getUsername } from "helpers/profile";
 
 interface ProposalScreenProps {
   route: {
@@ -115,8 +116,18 @@ async function getResultsObj(
   setResultsLoaded(true);
 }
 
+const styles = StyleSheet.create({
+  authorTitle: {
+    marginTop: Platform.OS === "ios" ? 6 : 0,
+    marginBottom: Device.isIos() ? 4 : 0,
+    fontSize: 18,
+    fontFamily: "Calibre-Medium",
+  },
+});
+
 function ProposalScreen({ route }: ProposalScreenProps) {
-  const { colors } = useAuthState();
+  const { colors, connectedAddress } = useAuthState();
+  const { profiles } = useExploreState();
   const [proposal, setProposal] = useState<Proposal>(
     route.params.proposal ?? {}
   );
@@ -138,6 +149,12 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const insets = useSafeAreaInsets();
   const bottomSheetRef: any = useRef();
   const [showProposalBottomSheet, setShowProposalBottomSheet] = useState(false);
+  const authorProfile = profiles[proposal.author];
+  const authorName = getUsername(
+    proposal.author,
+    authorProfile,
+    connectedAddress ?? ""
+  );
 
   useEffect(() => {
     getProposal(
@@ -229,34 +246,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       ) : (
         <ScrollView scrollEnabled={scrollEnabled}>
           <View style={{ paddingHorizontal: 16 }}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate(SPACE_SCREEN, { space, showHeader: true });
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 16,
-                }}
-              >
-                <SpaceAvatar symbolIndex="space" size={28} space={space} />
-                <Text
-                  style={[
-                    common.h3,
-                    {
-                      color: colors.textColor,
-                      marginLeft: 8,
-                      marginTop: Platform.OS === "ios" ? 6 : 0,
-                      marginBottom: Device.isIos() ? 4 : 0,
-                    },
-                  ]}
-                >
-                  {proposal?.space?.name}
-                </Text>
-              </View>
-            </TouchableOpacity>
             <Text
               style={[
                 common.h1,
@@ -265,6 +254,61 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             >
               {proposal.title}
             </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(SPACE_SCREEN, {
+                    space,
+                    showHeader: true,
+                  });
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 24,
+                    marginBottom: 24,
+                  }}
+                >
+                  <SpaceAvatar symbolIndex="space" size={28} space={space} />
+                  <Text
+                    style={[
+                      styles.authorTitle,
+                      {
+                        color: colors.bgGray,
+                        marginLeft: 8,
+                      },
+                    ]}
+                  >
+                    {proposal?.space?.name}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <Text style={[styles.authorTitle, { color: colors.bgGray }]}>
+                {" "}
+                {i18n.t("by")}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(USER_PROFILE, {
+                    address: proposal?.author,
+                  });
+                }}
+              >
+                <Text
+                  style={[
+                    styles.authorTitle,
+                    {
+                      color: colors.bgGray,
+                    },
+                  ]}
+                >
+                  {" "}
+                  {authorName}
+                </Text>
+              </TouchableOpacity>
+            </View>
             <View style={{ alignSelf: "flex-start", marginBottom: 24 }}>
               <StateBadge state={proposal.state} />
             </View>

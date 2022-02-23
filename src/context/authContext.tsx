@@ -24,6 +24,7 @@ type AuthState = {
   colors: any;
   snapshotWallets: string[];
   subscriptions: any;
+  votedProposals: any;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -46,6 +47,7 @@ const AUTH_ACTIONS = {
   SET_THEME: "@auth/SET_THEME",
   SET_SNAPSHOT_WALLETS: "@auth/SET_SNAPSHOT_WALLETS",
   SET_SUBSCRIPTIONS: "@auth/SET_SUBSCRIPTIONS",
+  SET_VOTED_PROPOSALS: "@auth/SET_VOTED_PROPOSALS",
 };
 
 const initialState = {
@@ -61,6 +63,7 @@ const initialState = {
   snapshotWallets: [],
   theme: "light",
   subscriptions: {},
+  votedProposals: {},
   colors,
 };
 
@@ -158,6 +161,8 @@ function authReducer(state: AuthState, action: ContextAction) {
       const colors = getColorScheme(action.payload);
       storage.save(storage.KEYS.theme, action.payload);
       return { ...state, theme: action.payload, colors };
+    case AUTH_ACTIONS.SET_VOTED_PROPOSALS:
+      return { ...state, votedProposals: action.payload };
     case AUTH_ACTIONS.LOGOUT:
       storage.clearAll();
       return initialState;

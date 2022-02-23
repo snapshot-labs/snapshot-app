@@ -20,6 +20,8 @@ import { useExploreState } from "context/exploreContext";
 import { getUsername } from "helpers/profile";
 import CoreBadge from "../CoreBadge";
 import { useAuthState } from "context/authContext";
+import { USER_PROFILE } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -87,6 +89,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
     () => strategies.map((strategy: any) => strategy.params.symbol),
     [proposal, space]
   );
+  const navigation: any = useNavigation();
 
   return (
     <Block
@@ -112,23 +115,34 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
           <View style={styles.row}>
             <Text style={styles.rowTitle}>{i18n.t("author")}</Text>
             <View style={styles.rowValue}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <UserAvatar
-                  size={20}
-                  address={proposal.author}
-                  imgSrc={authorProfile?.image}
-                  key={`${proposal.author}${authorProfile?.image}`}
-                />
-                <Text
-                  style={[
-                    styles.rowValueText,
-                    { marginLeft: 4, color: colors.textColor },
-                  ]}
-                >
-                  {authorName}
-                </Text>
-                <CoreBadge address={proposal.author} members={space?.members} />
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(USER_PROFILE, {
+                    address: proposal?.author,
+                  });
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <UserAvatar
+                    size={20}
+                    address={proposal.author}
+                    imgSrc={authorProfile?.image}
+                    key={`${proposal.author}${authorProfile?.image}`}
+                  />
+                  <Text
+                    style={[
+                      styles.rowValueText,
+                      { marginLeft: 4, color: colors.textColor },
+                    ]}
+                  >
+                    {authorName}
+                  </Text>
+                  <CoreBadge
+                    address={proposal.author}
+                    members={space?.members}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.row}>

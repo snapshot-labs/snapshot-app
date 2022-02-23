@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import get from "lodash/get";
 import apolloClient from "helpers/apolloClient";
-import { FOLLOWS_QUERY } from "helpers/queries";
+import { FOLLOWS_QUERY, USER_VOTES_QUERY } from "helpers/queries";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
@@ -18,6 +18,7 @@ import {
 import { ContextDispatch } from "types/context";
 import { defaultHeaders, getSubscriptions } from "helpers/apiUtils";
 import isEmpty from "lodash/isEmpty";
+import reduce from "lodash/reduce";
 import TimelineFeed from "components/timeline/TimelineFeed";
 import * as Linking from "expo-linking";
 import includes from "lodash/includes";
@@ -71,6 +72,30 @@ async function getExplore(exploreDispatch: ContextDispatch) {
       payload: explore,
     });
   } catch (e) {}
+}
+
+async function getProposals(address: string, authDispatch: ContextDispatch) {
+  const query = {
+    query: USER_VOTES_QUERY,
+    variables: {
+      voter: address,
+    },
+  };
+
+  const result = await apolloClient.query(query);
+  const proposalVotes = get(result, "data.votes");
+  const votedProposals = reduce(
+    proposalVotes,
+    (proposals: any, voteProposal) => {
+      proposals[voteProposal?.proposal.id] = voteProposal;
+      return proposals;
+    },
+    {}
+  );
+  authDispatch({
+    type: AUTH_ACTIONS.SET_VOTED_PROPOSALS,
+    payload: votedProposals,
+  });
 }
 
 function FeedScreen() {
@@ -129,6 +154,7 @@ function FeedScreen() {
     if (!isInitial) {
       getFollows(connectedAddress, authDispatch, setIsInitial);
       getSubscriptions(connectedAddress ?? "", authDispatch);
+      getProposals(connectedAddress ?? "", authDispatch);
     }
   }, [connectedAddress]);
 

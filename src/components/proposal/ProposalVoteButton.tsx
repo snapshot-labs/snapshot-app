@@ -6,13 +6,11 @@ import { useNavigation } from "@react-navigation/native";
 import { VOTE_SCREEN } from "constants/navigation";
 import { Proposal } from "types/proposal";
 import { Space } from "types/explore";
-import Device from "helpers/device";
 import Button from "components/Button";
 
 const styles = StyleSheet.create({
   voteContainer: {
     marginHorizontal: 16,
-    marginBottom: Device.isIos() ? 20 : 0,
     bottom: 30,
   },
 });
@@ -38,7 +36,10 @@ function ProposalVoteButton({
           navigation.navigate(VOTE_SCREEN, { proposal, space, getProposal });
         }}
         title={i18n.t("castVote")}
-        buttonContainerStyle={{ backgroundColor: colors.bgBlue }}
+        buttonContainerStyle={{
+          backgroundColor: colors.bgBlue,
+          borderColor: colors.bgBlue,
+        }}
         buttonTitleStyle={{ color: colors.white }}
       />
     </View>
