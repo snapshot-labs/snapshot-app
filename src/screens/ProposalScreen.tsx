@@ -322,7 +322,11 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             resultsLoaded={resultsLoaded}
           />
           <View style={{ width: 10, height: 10 }} />
-          <BlockResults resultsLoaded={resultsLoaded} proposal={proposal} />
+          <BlockResults
+            resultsLoaded={resultsLoaded}
+            proposal={proposal}
+            results={results}
+          />
           <View style={{ width: 10, height: 10 }} />
           <BlockInformation proposal={proposal} space={space} />
           <View style={{ width: 10, height: 75 }} />

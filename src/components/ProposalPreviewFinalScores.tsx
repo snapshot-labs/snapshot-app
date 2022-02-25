@@ -50,10 +50,12 @@ const styles = StyleSheet.create({
 
 interface ProposalPreviewFinalScoresProps {
   proposal: Proposal;
+  results?: any;
 }
 
 function ProposalPreviewFinalScores({
   proposal,
+  results = {},
 }: ProposalPreviewFinalScoresProps) {
   const { colors } = useAuthState();
   const winningChoice = useMemo(
@@ -64,11 +66,15 @@ function ProposalPreviewFinalScores({
   return (
     <View>
       {proposal?.choices?.map((choice: string, index: number) => {
-        const currentScore = get(proposal?.scores, index, 0);
-        const calculatedScore = n(
-          (1 / proposal.scores_total) * currentScore,
-          "0.[0]%"
-        );
+        let currentScore: any = get(proposal?.scores, index, undefined);
+        if (currentScore === undefined) {
+          currentScore = parseInt(get(results?.resultsByVoteBalance, index, 0));
+        }
+        let scoresTotal = proposal.scores_total;
+        if (scoresTotal === undefined || scoresTotal === 0) {
+          scoresTotal = results?.sumOfResultsBalance ?? 0;
+        }
+        const calculatedScore = n((1 / scoresTotal) * currentScore, "0.[0]%");
 
         const scoreSymbol = `${n(currentScore)} ${proposal?.space?.symbol}`;
         const isWinningChoice = winningChoice === index;

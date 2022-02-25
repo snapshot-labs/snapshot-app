@@ -48,7 +48,7 @@ export async function getResults(space: any, proposal: any, votes: any) {
 export async function getPower(
   space: Space,
   address: string,
-  proposal: Proposal
+  proposal: Proposal | any
 ) {
   try {
     const strategies = proposal.strategies ?? space.strategies;
@@ -57,7 +57,9 @@ export async function getPower(
       strategies,
       space.network,
       [address],
-      parseInt(proposal.snapshot)
+      proposal.snapshot !== "latest"
+        ? parseInt(proposal.snapshot)
+        : proposal.snapshot
     );
     scores = scores.map((score: number) =>
       Object.values(score).reduce((a: number, b: number) => a + b, 0)

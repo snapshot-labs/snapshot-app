@@ -107,7 +107,7 @@
     "react-native-send-intent": "^1.3.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-step-indicator": "^1.0.3",
-    "react-native-sticky-parallax-header": "^0.4.1",
+    "react-native-sticky-parallax-header": "https://github.com/jm90m/sticky-parallax-header#master",
     "react-native-tab-view": "^3.1.1",
     "react-native-tcp": "^3.3.2",
     "react-native-text-size": "^4.0.0-rc.1",

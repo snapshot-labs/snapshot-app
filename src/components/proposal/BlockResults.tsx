@@ -10,16 +10,17 @@ const ts = (Date.now() / 1e3).toFixed();
 interface BlockResultsProps {
   resultsLoaded: boolean;
   proposal: any;
+  results: any;
 }
 
-function BlockResults({ resultsLoaded, proposal }: BlockResultsProps) {
+function BlockResults({ resultsLoaded, proposal, results }: BlockResultsProps) {
   return (
     <Block
       title={ts >= proposal.end ? i18n.t("results") : i18n.t("currentResults")}
       Content={
         <View style={{ padding: 24 }}>
           {resultsLoaded ? (
-            <ProposalFinalScores proposal={proposal} />
+            <ProposalFinalScores proposal={proposal} results={results} />
           ) : (
             <Placeholder
               style={{ justifyContent: "center", alignItems: "center" }}

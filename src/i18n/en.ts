@@ -394,4 +394,7 @@ export default {
   by: "by",
   noProposalsCreated: "No proposals created.",
   userHasNotVotedOnAnyProposal: "User has not voted on any proposal.",
+  noSpacesJoined: "No spaces joined.",
+  voted: "Voted",
+  votingPower: "Voting power",
 };

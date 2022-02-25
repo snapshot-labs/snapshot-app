@@ -218,6 +218,11 @@ export const USER_VOTES_QUERY = gql`
         scores_total
         scores
         votes
+        snapshot
+        strategies {
+          name
+          params
+        }
       }
     }
   }
