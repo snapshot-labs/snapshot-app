@@ -71,7 +71,7 @@ function VotedOnProposalPreview({
               title: proposal?.title,
             })}
           </Text>
-          <Text style={styles.date}>
+          <Text style={[styles.date, { color: colors.darkGray }]}>
             {i18n.t("timeAgo", { timeAgo: toNow(voter.created) })}
           </Text>
         </View>

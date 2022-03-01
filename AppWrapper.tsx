@@ -3,7 +3,6 @@ import { Platform, StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import AppNavigator from "screens/AppNavigator";
-import { ExploreProvider } from "context/exploreContext";
 import storage from "helpers/storage";
 import {
   AUTH_ACTIONS,
@@ -19,6 +18,7 @@ import {
 } from "context/notificationsContext";
 import { ENGINE_ACTIONS, useEngineDispatch } from "context/engineContext";
 import initializeEngine from "helpers/engineService";
+import Device from "helpers/device";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
@@ -185,22 +185,20 @@ function AppWrapper() {
     );
   }, []);
 
-  useEffect(() => {
-    if (theme === "light") {
-      StatusBar.setBarStyle("dark-content");
-    } else {
-      StatusBar.setBarStyle("light-content");
-    }
-    if (Platform.OS === "android") {
-      StatusBar.setBackgroundColor(colors.bgDefault);
-    }
-  }, [theme]);
-
   if (loading) {
     return <View />;
   }
 
-  return <MainApp />;
+  return (
+    <>
+      <StatusBar
+        barStyle={theme === "light" ? "dark-content" : "light-content"}
+        backgroundColor={colors.bgDefault}
+        translucent={false}
+      />
+      <MainApp />
+    </>
+  );
 }
 
 export default AppWrapper;

@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -30,13 +29,10 @@ import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
 import ProposalPreview from "components/ProposalPreview";
 import { useExploreState } from "context/exploreContext";
 import isEmpty from "lodash/isEmpty";
-import StickyParallaxHeader from "react-native-sticky-parallax-header";
 import UserSpacePreview from "components/user/UserSpacePreview";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
 import UserAvatar from "components/UserAvatar";
-
-const { event, ValueXY } = Animated;
-const scrollY = new ValueXY();
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   address: {
@@ -44,43 +40,6 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 20,
     textAlign: "center",
-  },
-  indicatorStyle: {
-    fontFamily: "Calibre-Medium",
-    color: colors.textColor,
-    backgroundColor: colors.darkGray,
-    height: 5,
-    top: 42,
-  },
-  labelStyle: {
-    fontFamily: "Calibre-Medium",
-    color: colors.textColor,
-    textTransform: "none",
-    fontSize: 18,
-    marginTop: 0,
-  },
-  tabsWrapper: {
-    paddingVertical: 0,
-  },
-  tabTextContainerStyle: {
-    backgroundColor: colors.transparent,
-    borderRadius: 30,
-    paddingVertical: 0,
-  },
-  tabTextContainerActiveStyle: {
-    backgroundColor: "transparent",
-    paddingVertical: 0,
-  },
-  tabText: {
-    fontSize: 16,
-    lineHeight: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 0,
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-  },
-  homeScreenHeader: {
-    backgroundColor: colors.bgDefault,
   },
 });
 
@@ -154,8 +113,6 @@ interface UserProfileScreenProps {
   };
 }
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 function UserProfileScreen({ route }: UserProfileScreenProps) {
   const { address } = route.params;
   const { colors } = useAuthState();
@@ -172,14 +129,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const userTitle = isEmpty(username)
     ? shortenedAddress
     : `${username}\n${shortenedAddress}`;
-  const scrollAbout = useRef(new Animated.Value(0));
-  const opacity = scrollAbout.current.interpolate({
-    inputRange: [0, 90, 150],
-    outputRange: [0, 0, 1],
-    extrapolate: "clamp",
-  });
-
-  console.log(scrollAbout);
 
   function copyToClipboard() {
     Clipboard.setString(checksumAddress);
@@ -203,224 +152,244 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   }, []);
 
   return (
-    <SafeAreaView
-      style={[common.screen, { backgroundColor: colors.bgDefault }]}
-    >
-      <View
-        style={[
-          common.headerContainer,
-          {
-            borderBottomColor: colors.borderColor,
-            zIndex: 200,
-            backgroundColor: colors.bgDefault,
-          },
-        ]}
-      >
-        <BackButton />
-        <Animated.Text
+    <>
+      {Device.isIos() && (
+        <View
           style={{
-            opacity,
-            fontSize: 18,
-            fontFamily: "Calibre-Semibold",
-            color: colors.textColor,
+            width: "100%",
+            height: 50, // For all devices, even X, XS Max
+            position: "absolute",
+            top: 0,
+            left: 0,
+            backgroundColor: colors.bgDefault,
+            zIndex: 200,
           }}
+        />
+      )}
+      <SafeAreaView
+        style={[common.screen, { backgroundColor: colors.bgDefault }]}
+      >
+        <View
+          style={[
+            common.headerContainer,
+            {
+              borderBottomColor: colors.borderColor,
+              zIndex: 200,
+              backgroundColor: colors.bgDefault,
+            },
+          ]}
         >
-          {userTitle}
-        </Animated.Text>
-      </View>
-      <Tabs.Container
-        renderHeader={() => (
-          <View
-            style={[
-              {
-                backgroundColor: colors.bgDefault,
-              },
-            ]}
+          <BackButton />
+          <Animated.Text
+            style={{
+              fontSize: 18,
+              fontFamily: "Calibre-Semibold",
+              color: colors.textColor,
+            }}
           >
+            {userTitle}
+          </Animated.Text>
+        </View>
+        <Tabs.Container
+          renderHeader={() => (
             <View
               style={[
                 {
                   backgroundColor: colors.bgDefault,
-                  alignItems: "center",
-                  marginTop: 24,
-                  marginBottom: 24,
+                  zIndex: -1,
                 },
               ]}
             >
-              <UserAvatar address={address} size={60} />
-              {!isEmpty(username) && (
-                <View style={{ marginTop: 8 }}>
-                  <Text style={[styles.address, { color: colors.textColor }]}>
-                    {username}
-                  </Text>
-                </View>
-              )}
-              <TouchableOpacity onPress={copyToClipboard}>
-                <View style={{ marginTop: 8 }}>
-                  <Text
-                    style={[styles.address, { color: colors.textColor }]}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {shorten(checksumAddress ?? "")}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              <View
+                style={[
+                  {
+                    backgroundColor: colors.bgDefault,
+                    alignItems: "center",
+                    marginTop: 24,
+                    marginBottom: 24,
+                  },
+                ]}
+              >
+                <UserAvatar address={address} size={60} />
+                {!isEmpty(username) && (
+                  <View style={{ marginTop: 8 }}>
+                    <Text style={[styles.address, { color: colors.textColor }]}>
+                      {username}
+                    </Text>
+                  </View>
+                )}
+                <TouchableOpacity onPress={copyToClipboard}>
+                  <View style={{ marginTop: 8 }}>
+                    <Text
+                      style={[styles.address, { color: colors.textColor }]}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {shorten(checksumAddress ?? "")}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-        headerHeight={180} // optional
-        renderTabBar={(props) => {
-          return (
-            <MaterialTabBar
-              {...props}
-              labelStyle={{
-                fontFamily: "Calibre-Medium",
-                color: colors.textColor,
-                textTransform: "none",
+          )}
+          headerHeight={130}
+          renderTabBar={(props) => {
+            return (
+              <MaterialTabBar
+                {...props}
+                contentContainerStyle={{ backgroundColor: colors.bgDefault }}
+                tabStyle={{ backgroundColor: colors.bgDefault }}
+                labelStyle={{
+                  fontFamily: "Calibre-Medium",
+                  color: colors.textColor,
+                  textTransform: "none",
+                  fontSize: 18,
+                }}
+                indicatorStyle={{
+                  backgroundColor: colors.darkGray,
+                  height: 3,
+                }}
+                inactiveColor={colors.darkGray}
+                activeColor={colors.textColor}
+                getLabelText={(name: any) => {
+                  return i18n.t(name);
+                }}
+              >
+                {props.children}
+              </MaterialTabBar>
+            );
+          }}
+        >
+          <Tabs.Tab name="proposals">
+            <Tabs.FlatList
+              data={authoredProposals}
+              renderItem={(data: any) => {
+                return (
+                  <ProposalPreview
+                    proposal={data.item}
+                    space={spaces[data.item?.space?.id]}
+                  />
+                );
               }}
-              indicatorStyle={{
-                backgroundColor: colors.darkGray,
-                height: 3,
+              ListEmptyComponent={
+                loading ? (
+                  <View />
+                ) : (
+                  <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                    <Text
+                      style={[common.subTitle, { color: colors.textColor }]}
+                    >
+                      {i18n.t("noProposalsCreated")}
+                    </Text>
+                  </View>
+                )
+              }
+              ListFooterComponent={
+                loading ? (
+                  <View
+                    style={{
+                      width: "100%",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      marginTop: 24,
+                      padding: 24,
+                      height: 150,
+                    }}
+                  >
+                    <ActivityIndicator color={colors.textColor} size="large" />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      width: "100%",
+                      height: 400,
+                      backgroundColor: colors.bgDefault,
+                    }}
+                  />
+                )
+              }
+            />
+          </Tabs.Tab>
+          <Tabs.Tab name="voted">
+            <Tabs.FlatList
+              data={proposals}
+              renderItem={(data: any) => {
+                return (
+                  <VotedOnProposalPreview
+                    proposal={data.item?.proposal}
+                    space={data.item?.proposal?.space}
+                    voter={data.item}
+                  />
+                );
               }}
-              inactiveColor={colors.darkGray}
-              getLabelText={(name: any) => {
-                return i18n.t(name);
+              ListEmptyComponent={
+                loading ? (
+                  <View />
+                ) : (
+                  <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                    <Text
+                      style={[common.subTitle, { color: colors.textColor }]}
+                    >
+                      {i18n.t("userHasNotVotedOnAnyProposal")}
+                    </Text>
+                  </View>
+                )
+              }
+              ListFooterComponent={
+                loading ? (
+                  <View
+                    style={{
+                      width: "100%",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      marginTop: 24,
+                      padding: 24,
+                      height: 150,
+                    }}
+                  >
+                    <ActivityIndicator color={colors.textColor} size="large" />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      width: "100%",
+                      height: 400,
+                      backgroundColor: colors.bgDefault,
+                    }}
+                  />
+                )
+              }
+            />
+          </Tabs.Tab>
+          <Tabs.Tab name="joinedSpaces">
+            <Tabs.FlatList
+              data={joinedSpaces}
+              renderItem={(data: any) => {
+                return (
+                  <UserSpacePreview
+                    space={data.item?.space}
+                    address={address}
+                  />
+                );
               }}
-            >
-              {props.children}
-            </MaterialTabBar>
-          );
-        }}
-      >
-        <Tabs.Tab name="proposals">
-          <Tabs.FlatList
-            data={authoredProposals}
-            renderItem={(data: any) => {
-              return (
-                <ProposalPreview
-                  proposal={data.item}
-                  space={spaces[data.item?.space?.id]}
-                />
-              );
-            }}
-            ListEmptyComponent={
-              loading ? (
-                <View />
-              ) : (
-                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                  <Text style={[common.subTitle, { color: colors.textColor }]}>
-                    {i18n.t("noProposalsCreated")}
-                  </Text>
-                </View>
-              )
-            }
-            ListFooterComponent={
-              loading ? (
-                <View
-                  style={{
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    marginTop: 24,
-                    padding: 24,
-                    height: 150,
-                  }}
-                >
-                  <ActivityIndicator color={colors.textColor} size="large" />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: "100%",
-                    height: 400,
-                    backgroundColor: colors.bgDefault,
-                  }}
-                />
-              )
-            }
-          />
-        </Tabs.Tab>
-        <Tabs.Tab name="voted">
-          <Tabs.FlatList
-            data={proposals}
-            renderItem={(data: any) => {
-              return (
-                <VotedOnProposalPreview
-                  proposal={data.item?.proposal}
-                  space={data.item?.proposal?.space}
-                  voter={data.item}
-                />
-              );
-            }}
-            ListEmptyComponent={
-              loading ? (
-                <View />
-              ) : (
-                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                  <Text style={[common.subTitle, { color: colors.textColor }]}>
-                    {i18n.t("userHasNotVotedOnAnyProposal")}
-                  </Text>
-                </View>
-              )
-            }
-            onScroll={Animated.event(
-              [
-                {
-                  nativeEvent: { contentOffset: { y: scrollAbout.current } },
-                },
-              ],
-              { useNativeDriver: true }
-            )}
-            ListFooterComponent={
-              loading ? (
-                <View
-                  style={{
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    marginTop: 24,
-                    padding: 24,
-                    height: 150,
-                  }}
-                >
-                  <ActivityIndicator color={colors.textColor} size="large" />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: "100%",
-                    height: 400,
-                    backgroundColor: colors.bgDefault,
-                  }}
-                />
-              )
-            }
-          />
-        </Tabs.Tab>
-        <Tabs.Tab name="joinedSpaces">
-          <Tabs.FlatList
-            data={joinedSpaces}
-            renderItem={(data: any) => {
-              return (
-                <UserSpacePreview space={data.item?.space} address={address} />
-              );
-            }}
-            ListEmptyComponent={
-              loading ? (
-                <View />
-              ) : (
-                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                  <Text style={[common.subTitle, { color: colors.textColor }]}>
-                    {i18n.t("noSpacesJoined")}
-                  </Text>
-                </View>
-              )
-            }
-          />
-        </Tabs.Tab>
-      </Tabs.Container>
-    </SafeAreaView>
+              ListEmptyComponent={
+                loading ? (
+                  <View />
+                ) : (
+                  <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                    <Text
+                      style={[common.subTitle, { color: colors.textColor }]}
+                    >
+                      {i18n.t("noSpacesJoined")}
+                    </Text>
+                  </View>
+                )
+              }
+            />
+          </Tabs.Tab>
+        </Tabs.Container>
+      </SafeAreaView>
+    </>
   );
 }
 
