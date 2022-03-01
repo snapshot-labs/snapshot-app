@@ -117,7 +117,16 @@ export const FOLLOWS_QUERY = gql`
       id
       follower
       space {
+        network
         id
+        name
+        symbol
+        avatar
+        members
+        strategies {
+          name
+          params
+        }
       }
     }
   }

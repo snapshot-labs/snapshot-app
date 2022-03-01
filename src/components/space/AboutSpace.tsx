@@ -21,6 +21,8 @@ import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import { getUsername, setProfiles } from "helpers/profile";
 import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
+import { USER_PROFILE } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 const { height: deviceHeight } = Dimensions.get("screen");
 
@@ -62,6 +64,7 @@ function AboutSpace({
   const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
+  const navigation = useNavigation();
   const space = Object.assign(routeSpace, get(spaces, routeSpace.id ?? "", {}));
   //@ts-ignore
   const network = networksJson[space.network] ?? {};
@@ -193,28 +196,35 @@ function AboutSpace({
                 connectedAddress ?? ""
               );
               return (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(USER_PROFILE, {
+                      address: admin,
+                    });
+                  }}
                   key={`${i}`}
-                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <UserAvatar
-                    size={20}
-                    address={admin}
-                    imgSrc={adminProfile?.image}
-                    key={`${admin}${adminProfile?.image}`}
-                  />
-                  <Text
-                    style={[
-                      styles.value,
-                      {
-                        marginBottom: i === space.strategies.length - 1 ? 0 : 4,
-                        marginLeft: 6,
-                      },
-                    ]}
-                  >
-                    {adminName}
-                  </Text>
-                </View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <UserAvatar
+                      size={20}
+                      address={admin}
+                      imgSrc={adminProfile?.image}
+                      key={`${admin}${adminProfile?.image}`}
+                    />
+                    <Text
+                      style={[
+                        styles.value,
+                        {
+                          marginBottom:
+                            i === space.strategies.length - 1 ? 0 : 4,
+                          marginLeft: 6,
+                        },
+                      ]}
+                    >
+                      {adminName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               );
             })}
           </View>
@@ -235,28 +245,35 @@ function AboutSpace({
               );
 
               return (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(USER_PROFILE, {
+                      address: member,
+                    });
+                  }}
                   key={`${i}`}
-                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <UserAvatar
-                    address={member}
-                    size={20}
-                    imgSrc={memberProfile?.image}
-                    key={`${member}${memberProfile?.image}`}
-                  />
-                  <Text
-                    style={[
-                      styles.value,
-                      {
-                        marginBottom: i === space.strategies.length - 1 ? 0 : 4,
-                        marginLeft: 6,
-                      },
-                    ]}
-                  >
-                    {memberName}
-                  </Text>
-                </View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <UserAvatar
+                      address={member}
+                      size={20}
+                      imgSrc={memberProfile?.image}
+                      key={`${member}${memberProfile?.image}`}
+                    />
+                    <Text
+                      style={[
+                        styles.value,
+                        {
+                          marginBottom:
+                            i === space.strategies.length - 1 ? 0 : 4,
+                          marginLeft: 6,
+                        },
+                      ]}
+                    >
+                      {memberName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               );
             })}
           </View>

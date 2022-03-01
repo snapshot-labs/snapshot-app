@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -32,6 +32,8 @@ import { useExploreState } from "context/exploreContext";
 import isEmpty from "lodash/isEmpty";
 import StickyParallaxHeader from "react-native-sticky-parallax-header";
 import UserSpacePreview from "components/user/UserSpacePreview";
+import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
+import UserAvatar from "components/UserAvatar";
 
 const { event, ValueXY } = Animated;
 const scrollY = new ValueXY();
@@ -170,6 +172,14 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const userTitle = isEmpty(username)
     ? shortenedAddress
     : `${username}\n${shortenedAddress}`;
+  const scrollAbout = useRef(new Animated.Value(0));
+  const opacity = scrollAbout.current.interpolate({
+    inputRange: [0, 90, 150],
+    outputRange: [0, 0, 1],
+    extrapolate: "clamp",
+  });
+
+  console.log(scrollAbout);
 
   function copyToClipboard() {
     Clipboard.setString(checksumAddress);
@@ -196,283 +206,220 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
     <SafeAreaView
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
-      <StickyParallaxHeader
-        bounces={false}
-        messageContainerStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          paddingTop: 8,
-          paddingBottom: 0,
-        }}
-        foregroundStyles={{
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-        logoImageStyle={{ borderRadius: 37 }}
-        headerType="TabbedHeader"
-        header={() => {
-          const opacity = scrollY.y.interpolate({
-            inputRange: [0, 60, 90],
-            outputRange: [0, 0, 1],
-            extrapolate: "clamp",
-          });
-          const shortenedAddress = shorten(checksumAddress ?? "");
-          const userTitle = isEmpty(username)
-            ? shortenedAddress
-            : `${username} (${shortenedAddress})`;
-
-          return (
-            <View
-              style={[
-                common.headerContainer,
-                { borderBottomColor: colors.borderColor },
-              ]}
-            >
-              <BackButton />
-              <Animated.Text
-                style={{
-                  opacity,
-                  fontSize: 18,
-                  fontFamily: "Calibre-Semibold",
-                  color: colors.textColor,
-                }}
-              >
-                {userTitle}
-              </Animated.Text>
-            </View>
-          );
-        }}
-        headerHeight={50}
-        foregroundImage={{
-          uri: `https://stamp.fyi/avatar/eth:${address}?s=60`,
-        }}
-        scrollEvent={event(
-          [{ nativeEvent: { contentOffset: { y: scrollY.y } } }],
-          { useNativeDriver: false }
-        )}
-        title={
-          <TouchableOpacity onPress={copyToClipboard}>
-            <Text style={[styles.address, { color: colors.textColor }]}>
-              {userTitle}
-            </Text>
-          </TouchableOpacity>
-        }
-        tabs={[
+      <View
+        style={[
+          common.headerContainer,
           {
-            title: i18n.t("proposals"),
-            content: (
-              <AnimatedFlatList
-                data={authoredProposals}
-                renderItem={(data: any) => {
-                  return (
-                    <ProposalPreview
-                      proposal={data.item}
-                      space={spaces[data.item?.space?.id]}
-                    />
-                  );
-                }}
-                ListEmptyComponent={
-                  loading ? (
-                    <View />
-                  ) : (
-                    <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                      <Text
-                        style={[common.subTitle, { color: colors.textColor }]}
-                      >
-                        {i18n.t("noProposalsCreated")}
-                      </Text>
-                    </View>
-                  )
-                }
-                ListFooterComponent={
-                  loading ? (
-                    <View
-                      style={{
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        marginTop: 24,
-                        padding: 24,
-                        height: 150,
-                      }}
-                    >
-                      <ActivityIndicator
-                        color={colors.textColor}
-                        size="large"
-                      />
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        width: "100%",
-                        height: 400,
-                        backgroundColor: colors.bgDefault,
-                      }}
-                    />
-                  )
-                }
-              />
-            ),
-          },
-          {
-            title: i18n.t("voted"),
-            content: (
-              <AnimatedFlatList
-                data={proposals}
-                renderItem={(data: any) => {
-                  return (
-                    <VotedOnProposalPreview
-                      proposal={data.item?.proposal}
-                      space={data.item?.proposal?.space}
-                      voter={data.item}
-                    />
-                  );
-                }}
-                ListEmptyComponent={
-                  loading ? (
-                    <View />
-                  ) : (
-                    <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                      <Text
-                        style={[common.subTitle, { color: colors.textColor }]}
-                      >
-                        {i18n.t("userHasNotVotedOnAnyProposal")}
-                      </Text>
-                    </View>
-                  )
-                }
-                ListFooterComponent={
-                  loading ? (
-                    <View
-                      style={{
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        marginTop: 24,
-                        padding: 24,
-                        height: 150,
-                      }}
-                    >
-                      <ActivityIndicator
-                        color={colors.textColor}
-                        size="large"
-                      />
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        width: "100%",
-                        height: 400,
-                        backgroundColor: colors.bgDefault,
-                      }}
-                    />
-                  )
-                }
-              />
-            ),
-          },
-          {
-            title: i18n.t("joinedSpaces"),
-            content: (
-              <FlatList
-                data={joinedSpaces}
-                renderItem={(data: any) => {
-                  const defaultProposal = {
-                    snapshot: "latest",
-                    strategies: [],
-                  };
-                  const spaceDetails = spaces[data.item?.space?.id];
-                  const proposalSnap = proposals.find((proposal: any) => {
-                    return (
-                      proposal?.proposal?.space?.id === data.item?.space.id
-                    );
-                  });
-                  const authoredProposalsSnap = authoredProposals.find(
-                    (proposal: any) => {
-                      return proposal?.space?.id === data.item?.space.id;
-                    }
-                  );
-
-                  const proposal = proposalSnap
-                    ? get(proposalSnap, "proposal", defaultProposal)
-                    : authoredProposalsSnap
-                    ? authoredProposalsSnap
-                    : defaultProposal;
-
-                  if (spaceDetails) {
-                    return (
-                      <UserSpacePreview
-                        space={spaceDetails}
-                        address={address}
-                        proposal={proposal}
-                      />
-                    );
-                  }
-
-                  return null;
-                }}
-                ListEmptyComponent={
-                  loading ? (
-                    <View />
-                  ) : (
-                    <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                      <Text
-                        style={[common.subTitle, { color: colors.textColor }]}
-                      >
-                        {i18n.t("noSpacesJoined")}
-                      </Text>
-                    </View>
-                  )
-                }
-              />
-            ),
+            borderBottomColor: colors.borderColor,
+            zIndex: 200,
+            backgroundColor: colors.bgDefault,
           },
         ]}
-        tabWrapperStyle={{ paddingVertical: 6 }}
-        parallaxHeight={150}
-        tabTextStyle={{
-          fontSize: 20,
-          lineHeight: 20,
-          paddingHorizontal: 12,
-          paddingVertical: 0,
-          color: colors.darkGray,
-          fontFamily: "Calibre-Medium",
+      >
+        <BackButton />
+        <Animated.Text
+          style={{
+            opacity,
+            fontSize: 18,
+            fontFamily: "Calibre-Semibold",
+            color: colors.textColor,
+          }}
+        >
+          {userTitle}
+        </Animated.Text>
+      </View>
+      <Tabs.Container
+        renderHeader={() => (
+          <View
+            style={[
+              {
+                backgroundColor: colors.bgDefault,
+              },
+            ]}
+          >
+            <View
+              style={[
+                {
+                  backgroundColor: colors.bgDefault,
+                  alignItems: "center",
+                  marginTop: 24,
+                  marginBottom: 24,
+                },
+              ]}
+            >
+              <UserAvatar address={address} size={60} />
+              {!isEmpty(username) && (
+                <View style={{ marginTop: 8 }}>
+                  <Text style={[styles.address, { color: colors.textColor }]}>
+                    {username}
+                  </Text>
+                </View>
+              )}
+              <TouchableOpacity onPress={copyToClipboard}>
+                <View style={{ marginTop: 8 }}>
+                  <Text
+                    style={[styles.address, { color: colors.textColor }]}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {shorten(checksumAddress ?? "")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        headerHeight={180} // optional
+        renderTabBar={(props) => {
+          return (
+            <MaterialTabBar
+              {...props}
+              labelStyle={{
+                fontFamily: "Calibre-Medium",
+                color: colors.textColor,
+                textTransform: "none",
+              }}
+              indicatorStyle={{
+                backgroundColor: colors.darkGray,
+                height: 3,
+              }}
+              inactiveColor={colors.darkGray}
+              getLabelText={(name: any) => {
+                return i18n.t(name);
+              }}
+            >
+              {props.children}
+            </MaterialTabBar>
+          );
         }}
-        tabTextActiveStyle={{
-          fontSize: 20,
-          lineHeight: 20,
-          paddingHorizontal: 12,
-          paddingVertical: 0,
-          color: colors.textColor,
-          fontFamily: "Calibre-Medium",
-        }}
-        tabTextContainerStyle={styles.tabTextContainerStyle}
-        tabTextContainerActiveStyle={styles.tabTextContainerActiveStyle}
-        tabsContainerBackgroundColor={colors.bgDefault}
-        tabsWrapperStyle={styles.tabsWrapper}
-        logoContainerStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 37.5,
-        }}
-        logoStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 60,
-        }}
-        contentContainerStyles={{
-          backgroundColor: colors.bgDefault,
-        }}
-        tabsContainerStyle={{ backgroundColor: colors.bgDefault }}
-        backgroundColor={colors.bgDefault}
-        titleStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      />
+      >
+        <Tabs.Tab name="proposals">
+          <Tabs.FlatList
+            data={authoredProposals}
+            renderItem={(data: any) => {
+              return (
+                <ProposalPreview
+                  proposal={data.item}
+                  space={spaces[data.item?.space?.id]}
+                />
+              );
+            }}
+            ListEmptyComponent={
+              loading ? (
+                <View />
+              ) : (
+                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                  <Text style={[common.subTitle, { color: colors.textColor }]}>
+                    {i18n.t("noProposalsCreated")}
+                  </Text>
+                </View>
+              )
+            }
+            ListFooterComponent={
+              loading ? (
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    marginTop: 24,
+                    padding: 24,
+                    height: 150,
+                  }}
+                >
+                  <ActivityIndicator color={colors.textColor} size="large" />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: 400,
+                    backgroundColor: colors.bgDefault,
+                  }}
+                />
+              )
+            }
+          />
+        </Tabs.Tab>
+        <Tabs.Tab name="voted">
+          <Tabs.FlatList
+            data={proposals}
+            renderItem={(data: any) => {
+              return (
+                <VotedOnProposalPreview
+                  proposal={data.item?.proposal}
+                  space={data.item?.proposal?.space}
+                  voter={data.item}
+                />
+              );
+            }}
+            ListEmptyComponent={
+              loading ? (
+                <View />
+              ) : (
+                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                  <Text style={[common.subTitle, { color: colors.textColor }]}>
+                    {i18n.t("userHasNotVotedOnAnyProposal")}
+                  </Text>
+                </View>
+              )
+            }
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: { contentOffset: { y: scrollAbout.current } },
+                },
+              ],
+              { useNativeDriver: true }
+            )}
+            ListFooterComponent={
+              loading ? (
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    marginTop: 24,
+                    padding: 24,
+                    height: 150,
+                  }}
+                >
+                  <ActivityIndicator color={colors.textColor} size="large" />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: 400,
+                    backgroundColor: colors.bgDefault,
+                  }}
+                />
+              )
+            }
+          />
+        </Tabs.Tab>
+        <Tabs.Tab name="joinedSpaces">
+          <Tabs.FlatList
+            data={joinedSpaces}
+            renderItem={(data: any) => {
+              return (
+                <UserSpacePreview space={data.item?.space} address={address} />
+              );
+            }}
+            ListEmptyComponent={
+              loading ? (
+                <View />
+              ) : (
+                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                  <Text style={[common.subTitle, { color: colors.textColor }]}>
+                    {i18n.t("noSpacesJoined")}
+                  </Text>
+                </View>
+              )
+            }
+          />
+        </Tabs.Tab>
+      </Tabs.Container>
     </SafeAreaView>
   );
 }

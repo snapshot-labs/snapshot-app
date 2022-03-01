@@ -54,35 +54,34 @@ const styles = StyleSheet.create({
 async function getVotingPower(
   space: Space,
   address: string,
-  setVotingPower: any,
-  proposal: any
+  setVotingPower: any
 ) {
   try {
-    const response = await getPower(space, address, proposal);
+    const response = await getPower(space, address, {
+      snapshot: "latest",
+      strategies: space.strategies,
+    });
     if (typeof response.totalScore === "number") {
       setVotingPower(response.totalScore);
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 interface UserSpacePreviewProps {
   space: Space | any;
   address: string;
-  proposal: any;
 }
 
-function UserSpacePreview({
-  space = {},
-  address,
-  proposal,
-}: UserSpacePreviewProps) {
+function UserSpacePreview({ space = {}, address }: UserSpacePreviewProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   const [showUnderlay, setShowUnderlay] = useState(false);
   const [votingPower, setVotingPower] = useState(0);
 
   useEffect(() => {
-    getVotingPower(space, address, setVotingPower, proposal);
+    getVotingPower(space, address, setVotingPower);
   }, []);
 
   return (
@@ -133,7 +132,7 @@ function UserSpacePreview({
               {i18n.t("votingPower")}
             </Text>
             <Text style={styles.spacePreviewFollowerCount}>
-              {n(votingPower)} {space.symbol ?? proposal?.space?.symbol}{" "}
+              {n(votingPower)} {space.symbol}
             </Text>
           </View>
         </View>
