@@ -17,6 +17,7 @@ import Toast from "react-native-toast-message";
 import pusherConfig from "constants/pusherConfig";
 import { useToastShowConfig } from "constants/toast";
 import Device from "helpers/device";
+import { ethers } from "ethers";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
@@ -34,8 +35,9 @@ function NotificationScreen() {
   const toastShowConfig = useToastShowConfig();
 
   const init = (): void => {
-    RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
+    const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
 
+    RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
     RNPusherPushNotifications.on("notification", handleNotification);
 
     if (Device.isIos()) {
@@ -55,7 +57,7 @@ function NotificationScreen() {
       );
     }
 
-    subscribe(connectedAddress ?? "");
+    subscribe(checksumAddress);
   };
 
   const subscribe = (interest: string): void => {
