@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, FlatList, Platform } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthState } from "context/authContext";
 import common from "styles/common";
@@ -12,12 +12,6 @@ import {
 import ProposalNotification from "components/proposal/ProposalNotification";
 import { useIsFocused } from "@react-navigation/native";
 import get from "lodash/get";
-import RNPusherPushNotifications from "react-native-pusher-push-notifications";
-import Toast from "react-native-toast-message";
-import pusherConfig from "constants/pusherConfig";
-import { useToastShowConfig } from "constants/toast";
-import Device from "helpers/device";
-import { ethers } from "ethers";
 
 function NotificationScreen() {
   const { colors, connectedAddress, followedSpaces } = useAuthState();
@@ -32,77 +26,10 @@ function NotificationScreen() {
   const insets = useSafeAreaInsets();
   const [onScreen, setOnScreen] = useState(true);
   const isFocused = useIsFocused();
-  const toastShowConfig = useToastShowConfig();
-
-  const init = (): void => {
-    const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
-
-    RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
-    RNPusherPushNotifications.on("notification", handleNotification);
-
-    if (Device.isIos()) {
-      RNPusherPushNotifications.setSubscriptions(
-        [connectedAddress],
-        (statusCode, response) => {
-          console.log(statusCode, response);
-          Toast.show({
-            type: "customSuccess",
-            text1: "SET SUB - " + JSON.stringify(response),
-            ...toastShowConfig,
-          });
-        },
-        () => {
-          console.log("Success");
-        }
-      );
-    }
-
-    subscribe(checksumAddress);
-  };
-
-  const subscribe = (interest: string): void => {
-    console.log(`Subscribing to "${interest}"`);
-    RNPusherPushNotifications.subscribe(
-      interest,
-      (statusCode, response) => {
-        console.error(statusCode, response, connectedAddress);
-      },
-      () => {
-        console.log(`CALLBACK: Subscribed to ${connectedAddress}`);
-      }
-    );
-  };
-
-  const handleNotification = (notification: any): void => {
-    console.log("HANDLE NOTIFICATION", { notification });
-    try {
-      Toast.show({
-        type: "customSuccess",
-        text1: JSON.stringify(notification),
-        ...toastShowConfig,
-      });
-    } catch (e) {
-      Toast.show({
-        type: "customSuccess",
-        text1: "you have received a notification",
-        ...toastShowConfig,
-      });
-    }
-    if (Platform.OS === "ios") {
-      console.log("CALLBACK: handleNotification (ios)");
-    } else {
-      console.log("CALLBACK: handleNotification (android)");
-      console.log(notification);
-    }
-  };
 
   function setOnScreenState(onScreenState: boolean) {
     setOnScreen(onScreenState);
   }
-
-  useEffect(() => {
-    init();
-  }, []);
 
   useEffect(() => {
     if (!onScreen) {

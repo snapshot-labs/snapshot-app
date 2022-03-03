@@ -135,8 +135,8 @@ android {
         applicationId 'org.snapshot'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 78
-        versionName "0.7.8"
+        versionCode 81
+        versionName "0.8.1"
     }
     splits {
         abi {
@@ -188,8 +188,11 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-core:17.4.4'
+    implementation 'com.google.firebase:firebase-messaging:20.2.3'
+    implementation 'com.pusher:push-notifications-android:1.6.2'
     implementation project(':react-native-pusher-push-notifications')
+
     implementation 'com.pusher:push-notifications-android:1.4.4'
 
     implementation project(':react-native-keychain')

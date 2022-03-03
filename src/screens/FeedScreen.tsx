@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Platform, View, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import get from "lodash/get";
 import apolloClient from "helpers/apolloClient";
@@ -24,6 +24,12 @@ import * as Linking from "expo-linking";
 import includes from "lodash/includes";
 import { PROPOSAL_SCREEN, SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
+import { ethers } from "ethers";
+import RNPusherPushNotifications from "react-native-pusher-push-notifications";
+import pusherConfig from "constants/pusherConfig";
+import Toast from "react-native-toast-message";
+import Device from "helpers/device";
+import { useToastShowConfig } from "constants/toast";
 
 async function getFollows(
   accountId: string | null | undefined,
@@ -106,6 +112,73 @@ function FeedScreen() {
   const insets = useSafeAreaInsets();
   const navigation: any = useNavigation();
   const [isInitial, setIsInitial] = useState<boolean>(true);
+  const toastShowConfig = useToastShowConfig();
+
+  const notificationsInit = (): void => {
+    const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
+
+    RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
+    RNPusherPushNotifications.on("notification", handleNotification);
+
+    if (Device.isIos()) {
+      RNPusherPushNotifications.setSubscriptions(
+        [connectedAddress],
+        (statusCode, response) => {
+          console.log(statusCode, response);
+          Toast.show({
+            type: "customSuccess",
+            text1: "SET SUB - " + JSON.stringify(response),
+            ...toastShowConfig,
+          });
+        },
+        () => {
+          console.log("Success");
+        }
+      );
+    }
+
+    subscribe(checksumAddress);
+  };
+
+  const subscribe = (interest: string): void => {
+    console.log(`Subscribing to "${interest}"`);
+    RNPusherPushNotifications.subscribe(
+      interest,
+      (statusCode, response) => {
+        console.error(statusCode, response, connectedAddress);
+      },
+      () => {
+        console.log(`CALLBACK: Subscribed to ${connectedAddress}`);
+      }
+    );
+  };
+
+  const handleNotification = (notification: any): void => {
+    try {
+      const spaceId = get(notification, "userInfo.data.spaceId", undefined);
+      const proposalId = get(
+        notification,
+        "userInfo.data.proposalId",
+        undefined
+      );
+      navigation.replace(PROPOSAL_SCREEN, {
+        proposalId,
+        spaceId,
+      });
+    } catch (e) {
+      Toast.show({
+        type: "customSuccess",
+        text1: "you have received a notification",
+        ...toastShowConfig,
+      });
+    }
+    if (Platform.OS === "ios") {
+      console.log("CALLBACK: handleNotification (ios)");
+    } else {
+      console.log("CALLBACK: handleNotification (android)");
+      console.log(notification);
+    }
+  };
 
   function navigateToScreen(url: string) {
     if (includes(url, "snapshot.org")) {
@@ -148,6 +221,7 @@ function FeedScreen() {
     getExplore(exploreDispatch);
     getSubscriptions(connectedAddress ?? "", authDispatch);
     getFollows(connectedAddress, authDispatch, setIsInitial);
+    notificationsInit();
   }, []);
 
   useEffect(() => {
