@@ -26,7 +26,7 @@ import { PROPOSAL_SCREEN, SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 import { ethers } from "ethers";
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
-import pusherConfig from "constants/pusherConfig";
+import ENV from "constants/env";
 import Toast from "react-native-toast-message";
 import Device from "helpers/device";
 import { useToastShowConfig } from "constants/toast";
@@ -117,7 +117,7 @@ function FeedScreen() {
   const notificationsInit = (): void => {
     const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
 
-    RNPusherPushNotifications.setInstanceId(pusherConfig.appId);
+    RNPusherPushNotifications.setInstanceId(ENV.PUSHER_APP_ID);
     RNPusherPushNotifications.on("notification", handleNotification);
 
     if (Device.isIos()) {
@@ -161,23 +161,13 @@ function FeedScreen() {
         "userInfo.data.proposalId",
         undefined
       );
-      navigation.replace(PROPOSAL_SCREEN, {
-        proposalId,
-        spaceId,
-      });
-    } catch (e) {
-      Toast.show({
-        type: "customSuccess",
-        text1: "you have received a notification",
-        ...toastShowConfig,
-      });
-    }
-    if (Platform.OS === "ios") {
-      console.log("CALLBACK: handleNotification (ios)");
-    } else {
-      console.log("CALLBACK: handleNotification (android)");
-      console.log(notification);
-    }
+      if (spaceId !== undefined && proposalId !== undefined) {
+        navigation.replace(PROPOSAL_SCREEN, {
+          proposalId,
+          spaceId,
+        });
+      }
+    } catch (e) {}
   };
 
   function navigateToScreen(url: string) {
