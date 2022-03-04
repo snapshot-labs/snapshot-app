@@ -3,12 +3,12 @@ import android.content.res.Configuration;
 import android.content.Intent;
 
 import android.os.Bundle;
-
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
-
+import com.b8ne.RNPusherPushNotifications.NotificationsMessagingService;
 import expo.modules.splashscreen.singletons.SplashScreen;
 import expo.modules.splashscreen.SplashScreenImageResizeMode;
 
@@ -24,9 +24,24 @@ public class MainActivity extends ReactActivity {
         sendBroadcast(intent);
     }
 
+    protected void onStart() {
+        super.onStart();
+
+        ReactInstanceManager reactInstanceManager = getReactNativeHost().getReactInstanceManager();
+        NotificationsMessagingService.read(reactInstanceManager, this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        ReactInstanceManager reactInstanceManager = getReactNativeHost().getReactInstanceManager();
+        NotificationsMessagingService.read(reactInstanceManager, this);
+    }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    // Set the theme to AppTheme BEFORE onCreate to support 
+    // Set the theme to AppTheme BEFORE onCreate to support
     // coloring the background, status bar, and navigation bar.
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
