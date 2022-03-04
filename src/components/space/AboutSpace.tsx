@@ -198,7 +198,7 @@ function AboutSpace({
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate(USER_PROFILE, {
+                    navigation.push(USER_PROFILE, {
                       address: admin,
                     });
                   }}
@@ -247,7 +247,7 @@ function AboutSpace({
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate(USER_PROFILE, {
+                    navigation.push(USER_PROFILE, {
                       address: member,
                     });
                   }}

@@ -291,7 +291,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate(USER_PROFILE, {
+                  navigation.push(USER_PROFILE, {
                     address: proposal?.author,
                   });
                 }}

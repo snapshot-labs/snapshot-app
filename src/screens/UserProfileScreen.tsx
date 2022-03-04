@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -40,6 +40,13 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 20,
     textAlign: "center",
+  },
+  indicatorStyle: {
+    fontFamily: "Calibre-Medium",
+    color: colors.textColor,
+    backgroundColor: colors.darkGray,
+    height: 5,
+    top: 42,
   },
 });
 
@@ -191,6 +198,19 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
           </Animated.Text>
         </View>
         <Tabs.Container
+          headerContainerStyle={{
+            shadowOpacity: 0,
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            borderBottomWidth: 1,
+            borderBottomColor: colors.borderColor,
+            elevation: 0,
+          }}
+          headerListener={(val) => {
+            console.log({ val });
+          }}
           renderHeader={() => (
             <View
               style={[
@@ -246,8 +266,9 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                   fontSize: 18,
                 }}
                 indicatorStyle={{
-                  backgroundColor: colors.darkGray,
+                  backgroundColor: colors.indicatorColor,
                   height: 3,
+                  borderBottomWidth: 0,
                 }}
                 inactiveColor={colors.darkGray}
                 activeColor={colors.textColor}

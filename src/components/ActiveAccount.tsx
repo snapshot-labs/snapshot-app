@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Linking,
-} from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import UserAvatar from "./UserAvatar";
-import { explorerUrl, shorten } from "helpers/miscUtils";
+import { shorten } from "helpers/miscUtils";
 import { useExploreState } from "context/exploreContext";
 import colors from "constants/colors";
 import { useToastShowConfig } from "constants/toast";
@@ -20,6 +14,8 @@ import { useAuthState } from "context/authContext";
 import common from "styles/common";
 import WalletType from "components/wallet/WalletType";
 import { ethers } from "ethers";
+import { USER_PROFILE } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -45,6 +41,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
   const profile = profiles[address];
   const ens = get(profile, "ens", undefined);
   const toastShowConfig = useToastShowConfig();
+  const navigation: any = useNavigation();
   const [checksumAddress, setChecksumAddress] = useState(address);
 
   useEffect(() => {
@@ -74,8 +71,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
       {address ? (
         <TouchableOpacity
           onPress={() => {
-            const url = explorerUrl("1", address);
-            Linking.openURL(url);
+            navigation.push(USER_PROFILE, { address });
           }}
         >
           <UserAvatar

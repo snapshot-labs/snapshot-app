@@ -18,14 +18,9 @@ target 'snapshotapp' do
   #     flipper_post_install(installer)
   #   end
   # end
-  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'RNSVG', path: '../node_modules/react-native-svg/RNSVG.podspec'
 
-  pod 'RNTextSize', :path => '../node_modules/react-native-text-size/ios'
 
-  pod 'react-native-aes', :path => '../node_modules/react-native-aes-crypto'
 
-  pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 end

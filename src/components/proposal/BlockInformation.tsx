@@ -117,7 +117,7 @@ function BlockInformation({ proposal, space }: BlockInformationProps) {
             <View style={styles.rowValue}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate(USER_PROFILE, {
+                  navigation.push(USER_PROFILE, {
                     address: proposal?.author,
                   });
                 }}

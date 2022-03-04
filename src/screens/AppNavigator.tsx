@@ -49,6 +49,7 @@ import Device from "helpers/device";
 import VoteScreen from "screens/VoteScreen";
 import VoteConfirmScreen from "screens/VoteConfirmScreen";
 import UserProfileScreen from "screens/UserProfileScreen";
+import UserProfileScreen2 from "screens/UserProfileScreen2";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -387,7 +388,7 @@ export default function () {
       />
       <Stack.Screen
         name={navigationConstants.USER_PROFILE}
-        component={UserProfileScreen}
+        component={Device.isIos() ? UserProfileScreen : UserProfileScreen2}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

@@ -72,7 +72,7 @@ function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
   return (
     <TouchableHighlight
       onPress={() => {
-        navigation.navigate(USER_PROFILE, { address: vote.voter });
+        navigation.push(USER_PROFILE, { address: vote.voter });
       }}
       underlayColor={colors.highlightColor}
     >
