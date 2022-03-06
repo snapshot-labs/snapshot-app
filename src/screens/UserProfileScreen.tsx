@@ -208,9 +208,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
             borderBottomColor: colors.borderColor,
             elevation: 0,
           }}
-          headerListener={(val) => {
-            console.log({ val });
-          }}
           renderHeader={() => (
             <View
               style={[

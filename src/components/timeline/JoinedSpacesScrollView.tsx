@@ -42,6 +42,7 @@ function JoinedSpacesScrollView({
         borderBottomWidth: 1,
         paddingBottom: 8,
         borderBottomColor: colors.borderColor,
+        minHeight: 90.9,
       }}
     >
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>

@@ -388,7 +388,7 @@ export default function () {
       />
       <Stack.Screen
         name={navigationConstants.USER_PROFILE}
-        component={Device.isIos() ? UserProfileScreen : UserProfileScreen2}
+        component={UserProfileScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>
