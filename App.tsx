@@ -17,7 +17,7 @@ import { BottomSheetModalProvider } from "context/bottomSheetModalContext";
 import { NotificationsProvider } from "context/notificationsContext";
 import { EngineProvider } from "context/engineContext";
 import SecureKeychain from "helpers/secureKeychain";
-import env from "constants/env";
+import Config from "react-native-config";
 import { ExploreProvider } from "context/exploreContext";
 
 LogBox.ignoreLogs([
@@ -43,7 +43,7 @@ export default function App() {
 
   useEffect(() => {
     _loadFontsAsync(setFontsLoaded);
-    SecureKeychain.init(env.SECURE_KEYCHAIN_SALT);
+    SecureKeychain.init(Config.SECURE_KEYCHAIN_SALT);
   }, []);
 
   if (fontsLoaded && fontLoaded) {

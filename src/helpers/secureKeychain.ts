@@ -4,7 +4,7 @@ import i18n from "i18n-js";
 import { Platform } from "react-native";
 import storage from "helpers/storage";
 import * as SecureStore from "expo-secure-store";
-import env from "constants/env";
+import Config from "react-native-config";
 import CryptoJS from "react-native-crypto-js";
 import * as LocalAuthentication from "expo-local-authentication";
 
@@ -95,7 +95,7 @@ export default {
         if (password) {
           const bytes = CryptoJS.AES.decrypt(
             password,
-            env.SECURE_KEYCHAIN_SALT
+            Config.SECURE_KEYCHAIN_SALT
           );
           return { password: bytes.toString(CryptoJS.enc.Utf8) };
         }
@@ -118,7 +118,7 @@ export default {
 
     const encryptedPass = CryptoJS.AES.encrypt(
       password,
-      env.SECURE_KEYCHAIN_SALT
+      Config.SECURE_KEYCHAIN_SALT
     ).toString();
 
     if (type === this.TYPES.BIOMETRICS) {

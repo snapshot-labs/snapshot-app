@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import env from "constants/env";
 import CryptoJS from "react-native-crypto-js";
+import Config from "react-native-config";
 
 function getKey(key: string) {
   return `SnapshotApp_${key}`;
@@ -36,7 +36,7 @@ export async function load(key: string) {
     if (encryptedText) {
       const bytes = CryptoJS.AES.decrypt(
         encryptedText,
-        env.SECURE_KEYCHAIN_SALT
+        Config.SECURE_KEYCHAIN_SALT
       );
       return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     }
@@ -53,7 +53,7 @@ export async function save(key: string, value: string) {
   ) {
     const encrypted = CryptoJS.AES.encrypt(
       value,
-      env.SECURE_KEYCHAIN_SALT
+      Config.SECURE_KEYCHAIN_SALT
     ).toString();
     return await AsyncStorage.setItem(getKey(key), encrypted);
   } else {

@@ -26,7 +26,7 @@ import { PROPOSAL_SCREEN, SPACE_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 import { ethers } from "ethers";
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
-import ENV from "constants/env";
+import Config from "react-native-config";
 import Toast from "react-native-toast-message";
 import Device from "helpers/device";
 import { useToastShowConfig } from "constants/toast";
@@ -117,7 +117,7 @@ function FeedScreen() {
   const notificationsInit = (): void => {
     const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
 
-    RNPusherPushNotifications.setInstanceId(ENV.PUSHER_APP_ID);
+    RNPusherPushNotifications.setInstanceId(Config.PUSHER_APP_ID);
     RNPusherPushNotifications.on("notification", handleNotification);
 
     if (Device.isIos()) {

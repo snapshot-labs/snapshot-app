@@ -79,3 +79,4 @@ src/constants/pusherConfig.ts
 android/app/google-services.json
 snapshot-spaces
 ios/AppCenter-Config.plist
+.env
