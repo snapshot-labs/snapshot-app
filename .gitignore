@@ -78,3 +78,4 @@ src/constants/pusherConfig.ts
 # @end expo-cli
 android/app/google-services.json
 snapshot-spaces
+ios/AppCenter-Config.plist

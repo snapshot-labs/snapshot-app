@@ -93,8 +93,6 @@ const tagsStyles = (colors: any) => ({
     borderRightColor: colors.borderColor,
   },
   td: {
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
     paddingHorizontal: 13,
     paddingVertical: 6,
     fontFamily: "Calibre-Medium",
@@ -102,17 +100,20 @@ const tagsStyles = (colors: any) => ({
     borderBottomColor: colors.borderColor,
     borderRightWidth: 1,
     borderRightColor: colors.borderColor,
+    color: colors.textColor,
   },
   table: {
     borderWidth: 1,
-    borderColor: colors.borderColor,
+    borderLeftColor: colors.borderColor,
+    borderTopColor: colors.borderColor,
     borderRightWidth: 0,
     borderBottomWidth: 0,
   },
   blockquote: {
     borderLeftWidth: 5.5,
     borderLeftColor: colors.blockQuotesBorder,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
+    margin: 8,
   },
 });
 
