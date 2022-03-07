@@ -80,3 +80,6 @@ android/app/google-services.json
 snapshot-spaces
 .env
 
+# react-native-config codegen
+ios/tmp.xcconfig
+
