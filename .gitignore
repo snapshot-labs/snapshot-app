@@ -78,5 +78,7 @@ src/constants/pusherConfig.ts
 # @end expo-cli
 android/app/google-services.json
 snapshot-spaces
-ios/AppCenter-Config.plist
 .env
+# react-native-config codegen
+ios/tmp.xcconfig
+
