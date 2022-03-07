@@ -1,4 +1,22 @@
 PODS:
+  - appcenter-analytics (4.4.3):
+    - AppCenter/Analytics (~> 4.0)
+    - AppCenterReactNativeShared (~> 4.0)
+    - React-Core
+  - appcenter-core (4.4.3):
+    - AppCenterReactNativeShared (~> 4.0)
+    - React-Core
+  - appcenter-crashes (4.4.3):
+    - AppCenter/Crashes (~> 4.0)
+    - AppCenterReactNativeShared (~> 4.0)
+    - React-Core
+  - AppCenter/Analytics (4.3.0):
+    - AppCenter/Core
+  - AppCenter/Core (4.3.0)
+  - AppCenter/Crashes (4.3.0):
+    - AppCenter/Core
+  - AppCenterReactNativeShared (4.3.0):
+    - AppCenter/Core (= 4.3.0)
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
   - EXApplication (3.2.0):
@@ -387,6 +405,9 @@ PODS:
     - ZXingObjC/Core
 
 DEPENDENCIES:
+  - appcenter-analytics (from `../node_modules/appcenter-analytics/ios`)
+  - appcenter-core (from `../node_modules/appcenter/ios`)
+  - appcenter-crashes (from `../node_modules/appcenter-crashes/ios`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
   - EXBarCodeScanner (from `../node_modules/expo-barcode-scanner/ios`)
@@ -461,11 +482,19 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AppCenter
+    - AppCenterReactNativeShared
     - boost-for-react-native
     - PushNotifications
     - ZXingObjC
 
 EXTERNAL SOURCES:
+  appcenter-analytics:
+    :path: "../node_modules/appcenter-analytics/ios"
+  appcenter-core:
+    :path: "../node_modules/appcenter/ios"
+  appcenter-crashes:
+    :path: "../node_modules/appcenter-crashes/ios"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
@@ -606,6 +635,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AppCenter: 883369ab78427b0561c688158d689dfe1f993ea9
+  appcenter-analytics: 1b32062da2e250c5e1396c678df8c6011ccbcf5a
+  appcenter-core: 6ea4754df4a3d8917a5803e2681a58179d7f7a21
+  appcenter-crashes: b079913ac0f0059e6cf39b7a805135223e508666
+  AppCenterReactNativeShared: a821c7287a296486889ef6339317b701febb0695
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   EXApplication: 9ff2a206009d6e55bca6c20b3f33d07986b51ef3
