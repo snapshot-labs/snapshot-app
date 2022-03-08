@@ -18,7 +18,7 @@ import { useAuthState } from "context/authContext";
 import { addressIsSnapshotWallet } from "helpers/address";
 import SubscribeToSpaceButton from "components/space/SubscribeToSpaceButton";
 
-const verified: any = require("../../../snapshot-spaces/spaces/verified.json");
+const verified: any = require("../../constants/verifiedSpaces.json");
 
 interface SpaceHeader {
   space: Space;
