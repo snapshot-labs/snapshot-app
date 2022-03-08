@@ -5,6 +5,7 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "eject": "expo eject",
+    "preinstall": "git submodule update --init --remote",
     "postinstall": "rn-nodeify --install --hack"
   },
   "dependencies": {
