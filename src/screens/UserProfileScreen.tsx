@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -33,6 +33,10 @@ import UserSpacePreview from "components/user/UserSpacePreview";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
 import UserAvatar from "components/UserAvatar";
 import Device from "helpers/device";
+import { Proposal } from "types/proposal";
+import uniqBy from "lodash/uniqBy";
+
+const LOAD_BY = 10;
 
 const styles = StyleSheet.create({
   address: {
@@ -66,14 +70,17 @@ async function getVotedProposals(address: string, setProposals: any) {
 
 async function getAuthoredProposals(
   address: string,
-  setAuthoredProposals: any
+  setAuthoredProposals: any,
+  loadCount: number,
+  proposals: Proposal[],
+  setLoadCount?: (loadCount: number) => void
 ) {
   try {
     const query = {
       query: PROPOSALS_QUERY,
       variables: {
-        first: 100,
-        skip: 0,
+        first: LOAD_BY,
+        skip: loadCount,
         author_in: [address],
         space_in: [],
         state: "all",
@@ -81,8 +88,17 @@ async function getAuthoredProposals(
     };
 
     const result = await apolloClient.query(query);
-    const proposals = get(result, "data.proposals", []);
-    setAuthoredProposals(proposals);
+    const nextProposals = get(result, "data.proposals", []);
+
+    if (loadCount === 0) {
+      setAuthoredProposals(nextProposals);
+    } else {
+      const newProposals = uniqBy([...proposals, ...nextProposals], "id");
+      setAuthoredProposals(newProposals);
+      if (setLoadCount) {
+        setLoadCount(loadCount + LOAD_BY);
+      }
+    }
   } catch (e) {}
 }
 
@@ -94,7 +110,7 @@ async function getProposals(
 ) {
   setLoading(true);
   await getVotedProposals(address, setProposals);
-  await getAuthoredProposals(address, setAuthoredProposals);
+  await getAuthoredProposals(address, setAuthoredProposals, 0, []);
   setLoading(false);
 }
 
@@ -128,6 +144,10 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const toastShowConfig = useToastShowConfig();
   const [proposals, setProposals] = useState([]);
   const [authoredProposals, setAuthoredProposals] = useState([]);
+  const [authoredProposalsLoadCount, setAuthoredProposalsLoadCount] =
+    useState<number>(LOAD_BY);
+  const [loadingAuthoredProposals, setLoadingMoreAuthoredProposals] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const userProfile = profiles[address];
   const username = get(userProfile, "ens", undefined);
@@ -303,7 +323,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                 )
               }
               ListFooterComponent={
-                loading ? (
+                loading || loadingAuthoredProposals ? (
                   <View
                     style={{
                       width: "100%",
@@ -320,12 +340,24 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                   <View
                     style={{
                       width: "100%",
-                      height: 400,
+                      height: 150,
                       backgroundColor: colors.bgDefault,
                     }}
                   />
                 )
               }
+              onEndReachedThreshold={0.6}
+              onEndReached={async () => {
+                setLoadingMoreAuthoredProposals(true);
+                await getAuthoredProposals(
+                  address,
+                  setAuthoredProposals,
+                  authoredProposalsLoadCount,
+                  authoredProposals,
+                  setAuthoredProposalsLoadCount
+                );
+                setLoadingMoreAuthoredProposals(false);
+              }}
             />
           </Tabs.Tab>
           <Tabs.Tab name="voted">
