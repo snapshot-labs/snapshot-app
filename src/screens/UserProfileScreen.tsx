@@ -233,7 +233,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
               style={[
                 {
                   backgroundColor: colors.bgDefault,
-                  zIndex: -1,
                 },
               ]}
             >

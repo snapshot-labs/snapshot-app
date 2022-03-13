@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, ViewStyle } from "react-native";
 import i18n from "i18n-js";
 import { Proposal } from "types/proposal";
 import { Space } from "types/explore";
@@ -19,6 +19,7 @@ interface BlockCastVoteProps {
   proposal: Proposal;
   space: Space;
   getProposal: () => void;
+  voteButtonStyle?: ViewStyle;
 }
 
 async function loadPower(
@@ -34,7 +35,17 @@ async function loadPower(
   }
 }
 
-function BlockCastVote({ proposal, space, getProposal }: BlockCastVoteProps) {
+function BlockCastVote({
+  proposal,
+  space,
+  getProposal,
+  voteButtonStyle = {
+    position: "absolute",
+    bottom: 20,
+    width: "100%",
+    paddingHorizontal: 16,
+  },
+}: BlockCastVoteProps) {
   const { colors } = useAuthState();
   const { connectedAddress, isWalletConnect, snapshotWallets } = useAuthState();
   const [selectedChoices, setSelectedChoices] = useState<any>([]);
@@ -86,14 +97,7 @@ function BlockCastVote({ proposal, space, getProposal }: BlockCastVoteProps) {
             />
           </ScrollView>
 
-          <View
-            style={{
-              position: "absolute",
-              bottom: 20,
-              width: "100%",
-              paddingHorizontal: 16,
-            }}
-          >
+          <View style={voteButtonStyle}>
             <Button
               title={i18n.t("vote")}
               onPress={() => {
@@ -130,6 +134,7 @@ function BlockCastVote({ proposal, space, getProposal }: BlockCastVoteProps) {
       </>
     );
   }
+
   return (
     <View
       style={[common.alignItemsCenter, common.justifyCenter, { width: "100%" }]}

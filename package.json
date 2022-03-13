@@ -85,6 +85,7 @@
     "react-native": "~0.63.4",
     "react-native-aes-crypto": "^2.0.0",
     "react-native-calendars": "^1.1267.0",
+    "react-native-card-stack-swiper": "^1.2.5",
     "react-native-collapsible-header-views": "^1.1.2",
     "react-native-collapsible-tab-view": "^4.5.2",
     "react-native-confetti": "^0.1.0",
@@ -209,5 +210,5 @@
     "tls": false
   },
   "name": "snapshot-app",
-  "version": "0.8.7"
+  "version": "0.8.9"
 }

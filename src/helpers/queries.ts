@@ -68,6 +68,7 @@ export const PROPOSALS_QUERY = gql`
         avatar
         symbol
       }
+      type
       scores_state
       scores_total
       scores

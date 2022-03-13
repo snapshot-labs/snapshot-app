@@ -49,7 +49,7 @@ import Device from "helpers/device";
 import VoteScreen from "screens/VoteScreen";
 import VoteConfirmScreen from "screens/VoteConfirmScreen";
 import UserProfileScreen from "screens/UserProfileScreen";
-import UserProfileScreen2 from "screens/UserProfileScreen2";
+import SnapShotScreen from "screens/SnapShotScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -145,6 +145,24 @@ function TabNavigator() {
           title: "",
           tabBarIcon: ({ color }) => (
             <IconFont name="search" color={color} size={ICON_SIZE} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Post"
+        component={SnapShotScreen}
+        options={{
+          title: "",
+          tabBarIcon: ({ color }) => (
+            <View
+              style={{
+                borderRadius: 30,
+                backgroundColor: colors.yellow,
+                padding: 4,
+              }}
+            >
+              <IconFont name="snapshot" size={28} color={colors.white} />
+            </View>
           ),
         }}
       />
