@@ -397,4 +397,12 @@ export default {
   noSpacesJoined: "No spaces joined.",
   voted: "Voted",
   votingPower: "Voting power",
+  yourRecentActivity: "Your recent activity",
+  viewProposal: "View proposal",
+  winner: "WINNER",
+  currentWinner: "CURRENT WINNER",
+  followers: "Followers",
+  following: "Following",
+  proposal: "Proposal",
+  follow: "Follow",
 };

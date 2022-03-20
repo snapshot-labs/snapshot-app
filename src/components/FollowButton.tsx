@@ -153,12 +153,12 @@ function FollowButton({ space }: FollowButtonProps) {
           );
 
           typedMessageManager.setMessageStatusSigned(messageId, rawSig);
-
           await signClient.send({
             address: checksumAddress,
             sig: rawSig,
             data: snapshotData,
           });
+
 
           authDispatch({
             type: AUTH_ACTIONS.SET_ALIAS,

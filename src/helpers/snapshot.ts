@@ -10,9 +10,9 @@ export async function getResults(space: any, proposal: any, votes: any) {
     /* Get scores */
     if (proposal.state !== "pending") {
       const scores = await getScores(
-        space.id,
+        space?.id,
         strategies,
-        space.network,
+        space?.network,
         voters,
         parseInt(proposal.snapshot)
       );
@@ -29,7 +29,6 @@ export async function getResults(space: any, proposal: any, votes: any) {
         .filter((vote: any) => vote.balance > 0);
     }
 
-    /* Get results */
     //@ts-ignore
     const votingClass = new voting[proposal.type](proposal, votes, strategies);
     const results = {
@@ -41,7 +40,7 @@ export async function getResults(space: any, proposal: any, votes: any) {
     return { votes, results };
   } catch (e) {
     console.log("GET RESULTS ERROR", e);
-    return e;
+    return { votes, results: {} };
   }
 }
 

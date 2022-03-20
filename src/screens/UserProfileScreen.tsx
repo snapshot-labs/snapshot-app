@@ -22,6 +22,7 @@ import {
   FOLLOWS_QUERY,
   PROPOSALS_QUERY,
   USER_VOTES_QUERY,
+  WALLET_FOLLOWS,
 } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
@@ -35,6 +36,8 @@ import UserAvatar from "components/UserAvatar";
 import Device from "helpers/device";
 import { Proposal } from "types/proposal";
 import uniqBy from "lodash/uniqBy";
+import devApolloClient from "helpers/devApolloClient";
+import FollowSection from "components/user/FollowSection";
 
 const LOAD_BY = 10;
 
@@ -43,7 +46,6 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
     fontSize: 20,
-    textAlign: "center",
   },
   indicatorStyle: {
     fontFamily: "Calibre-Medium",
@@ -53,6 +55,19 @@ const styles = StyleSheet.create({
     top: 42,
   },
 });
+
+async function getWalletFollows(address: string) {
+  try {
+    const query = {
+      query: WALLET_FOLLOWS,
+      variables: {
+        follower: address,
+      },
+    };
+    const result = await devApolloClient.query(query);
+    console.log(result.data.walletFollows);
+  } catch (e) {}
+}
 
 async function getVotedProposals(address: string, setProposals: any) {
   const query = {
@@ -152,10 +167,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const userProfile = profiles[address];
   const username = get(userProfile, "ens", undefined);
   const [joinedSpaces, setJoinedSpaces] = useState([]);
-  const shortenedAddress = shorten(checksumAddress ?? "");
-  const userTitle = isEmpty(username)
-    ? shortenedAddress
-    : `${username}\n${shortenedAddress}`;
 
   function copyToClipboard() {
     Clipboard.setString(checksumAddress);
@@ -176,6 +187,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   useEffect(() => {
     getProposals(address, setProposals, setAuthoredProposals, setLoading);
     getFollows(address, setJoinedSpaces);
+    getWalletFollows(address);
   }, []);
 
   return (
@@ -200,22 +212,13 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
           style={[
             common.headerContainer,
             {
-              borderBottomColor: colors.borderColor,
+              borderBottomColor: "transparent",
               zIndex: 200,
               backgroundColor: colors.bgDefault,
             },
           ]}
         >
           <BackButton />
-          <Animated.Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Calibre-Semibold",
-              color: colors.textColor,
-            }}
-          >
-            {userTitle}
-          </Animated.Text>
         </View>
         <Tabs.Container
           headerContainerStyle={{
@@ -246,25 +249,35 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                   },
                 ]}
               >
-                <UserAvatar address={address} size={60} />
-                {!isEmpty(username) && (
-                  <View style={{ marginTop: 8 }}>
-                    <Text style={[styles.address, { color: colors.textColor }]}>
-                      {username}
-                    </Text>
+                <View style={{ flexDirection: "row" }}>
+                  <UserAvatar address={address} size={60} />
+                  <View style={{ marginLeft: 8 }}>
+                    {!isEmpty(username) && (
+                      <View style={{ marginTop: 8 }}>
+                        <Text
+                          style={[styles.address, { color: colors.textColor }]}
+                        >
+                          {username}
+                        </Text>
+                      </View>
+                    )}
+                    <TouchableOpacity onPress={copyToClipboard}>
+                      <View style={{ marginTop: 8 }}>
+                        <Text
+                          style={[styles.address, { color: colors.textColor }]}
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {shorten(checksumAddress ?? "")}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
-                )}
-                <TouchableOpacity onPress={copyToClipboard}>
-                  <View style={{ marginTop: 8 }}>
-                    <Text
-                      style={[styles.address, { color: colors.textColor }]}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {shorten(checksumAddress ?? "")}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                </View>
+                <FollowSection
+                  followAddress={checksumAddress}
+                  authoredProposalsCount={authoredProposals.length}
+                />
               </View>
             </View>
           )}

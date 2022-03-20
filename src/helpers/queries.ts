@@ -101,6 +101,11 @@ export const PROPOSAL_VOTES_QUERY = gql`
         id
         name
         symbol
+        network
+        strategies {
+          name
+          params
+        }
       }
     }
     votes(first: 10000, where: { proposal: $id }) {
@@ -234,6 +239,28 @@ export const USER_VOTES_QUERY = gql`
           params
         }
       }
+    }
+  }
+`;
+
+export const WALLET_FOLLOWS = gql`
+  query WalletFollows($follower: String) {
+    walletFollows(where: { follower: $follower }) {
+      id
+      follower
+      wallet
+      created
+    }
+  }
+`;
+
+export const WALLET_FOLLOWERS = gql`
+  query WalletFollows($wallet: String) {
+    walletFollows(where: { wallet: $wallet }) {
+      id
+      follower
+      wallet
+      created
     }
   }
 `;

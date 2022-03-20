@@ -27,8 +27,17 @@ import {
   aliasTypes,
 } from "@snapshot-labs/snapshot.js/src/sign/types";
 import WalletConnect from "@walletconnect/client";
+import {
+  WalletFollow,
+  walletFollowTypes,
+  WalletUnfollow,
+} from "helpers/voting/walletTypes";
 
-const hubs = ["https://hub.snapshot.org", "https://testnet.snapshot.org"];
+const hubs = [
+  "https://hub.snapshot.org",
+  "https://testnet.snapshot.org",
+  "http://localhost:8000",
+];
 
 const NAME = "snapshot";
 const VERSION = "0.1.4";
@@ -41,7 +50,7 @@ export const domain = {
 class Client {
   readonly address: string;
 
-  constructor(address: string = hubs[0]) {
+  constructor(address: string = hubs[2]) {
     this.address = address;
   }
 
@@ -201,9 +210,23 @@ class Client {
       "Unsubscribe"
     );
   }
+
+  async followWallet(web3: Wallet, address: string, message: WalletFollow) {
+    return await this.sign(web3, address, message, walletFollowTypes, "Follow");
+  }
+
+  async unfollowWallet(web3: Wallet, address: string, message: WalletUnfollow) {
+    return await this.sign(
+      web3,
+      address,
+      message,
+      walletFollowTypes,
+      "Unfollow"
+    );
+  }
 }
 const hubUrl = "https://hub.snapshot.org";
 
-const signClient = new Client(hubUrl);
+const signClient = new Client(hubs[2]);
 
 export default signClient;

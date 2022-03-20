@@ -1,6 +1,6 @@
 import { useAuthState } from "context/authContext";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Proposal } from "types/proposal";
 import { setProfiles } from "helpers/profile";
 import {
@@ -13,7 +13,7 @@ import {
 import ProposalPreview from "components/ProposalPreview";
 import common from "styles/common";
 import i18n from "i18n-js";
-import { PROPOSALS_QUERY } from "helpers/queries";
+import { PROPOSALS_QUERY, USER_VOTES_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import uniqBy from "lodash/uniqBy";
@@ -31,8 +31,24 @@ import {
   useNotificationsDispatch,
 } from "context/notificationsContext";
 import { ContextDispatch } from "types/context";
+import Carousel from "react-native-snap-carousel";
+import Device from "helpers/device";
+import RecentVotedProposalPreview from "components/proposal/RecentVotedProposalsPreview";
 
 const LOAD_BY = 100;
+
+async function getVotedProposals(address: string, setProposals: any) {
+  const query = {
+    query: USER_VOTES_QUERY,
+    variables: {
+      voter: address,
+    },
+  };
+
+  const result = await apolloClient.query(query);
+  const proposalVotes = get(result, "data.votes", []);
+  setProposals(proposalVotes);
+}
 
 async function getProposals(
   followedSpaces: any,
@@ -113,9 +129,11 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const [joinedSpacesFilter, setJoinedSpacesFilter] = useState(
     proposal.getStateFilters()[0]
   );
+  const [votedProposals, setVotedProposals] = useState([]);
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const notificationsDispatch = useNotificationsDispatch();
+  const carouselRef = useRef();
 
   function onChangeFilter(newFilter: string) {
     setLoadCount(0);
@@ -153,6 +171,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
     } else {
       setIsInitial(false);
     }
+    getVotedProposals(connectedAddress ?? "", setVotedProposals);
   }, []);
 
   useEffect(() => {
@@ -175,6 +194,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
     } else {
       setIsInitial(false);
     }
+    getVotedProposals(connectedAddress ?? "", setVotedProposals);
   }, [followedSpaces]);
 
   useEffect(() => {
@@ -233,52 +253,96 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
           />
         }
         ListHeaderComponent={
-          <TimelineHeader
-            isInitial={isInitial || feedScreenIsInitial}
-            joinedSpacesFilter={joinedSpacesFilter}
-            showBottomSheetModal={() => {
-              const stateFilters = proposal.getStateFilters();
-              const allFilter = stateFilters[0];
-              const activeFilter = stateFilters[1];
-              const pendingFilter = stateFilters[2];
-              const closedFilter = stateFilters[3];
-              const options = [
-                allFilter.text,
-                activeFilter.text,
-                pendingFilter.text,
-                closedFilter.text,
-              ];
-              const setFilter = setJoinedSpacesFilter;
-              bottomSheetModalDispatch({
-                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                payload: {
-                  options,
-                  snapPoints: [10, 250],
-                  show: true,
-                  key: "timeline-proposal-filters",
-                  initialIndex: 1,
-                  destructiveButtonIndex: -1,
-                  onPressOption: (index: number) => {
-                    setLoadingFilter(true);
-                    if (index === 0) {
-                      setFilter(allFilter);
-                      onChangeFilter(allFilter.key);
-                    } else if (index === 1) {
-                      setFilter(activeFilter);
-                      onChangeFilter(activeFilter.key);
-                    } else if (index === 2) {
-                      setFilter(pendingFilter);
-                      onChangeFilter(pendingFilter.key);
-                    } else if (index === 3) {
-                      setFilter(closedFilter);
-                      onChangeFilter(closedFilter.key);
-                    }
-                    bottomSheetModalRef?.current?.close();
+          <>
+            <TimelineHeader
+              isInitial={isInitial || feedScreenIsInitial}
+              joinedSpacesFilter={joinedSpacesFilter}
+              showBottomSheetModal={() => {
+                const stateFilters = proposal.getStateFilters();
+                const allFilter = stateFilters[0];
+                const activeFilter = stateFilters[1];
+                const pendingFilter = stateFilters[2];
+                const closedFilter = stateFilters[3];
+                const options = [
+                  allFilter.text,
+                  activeFilter.text,
+                  pendingFilter.text,
+                  closedFilter.text,
+                ];
+                const setFilter = setJoinedSpacesFilter;
+                bottomSheetModalDispatch({
+                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                  payload: {
+                    options,
+                    snapPoints: [10, 250],
+                    show: true,
+                    key: "timeline-proposal-filters",
+                    initialIndex: 1,
+                    destructiveButtonIndex: -1,
+                    onPressOption: (index: number) => {
+                      setLoadingFilter(true);
+                      if (index === 0) {
+                        setFilter(allFilter);
+                        onChangeFilter(allFilter.key);
+                      } else if (index === 1) {
+                        setFilter(activeFilter);
+                        onChangeFilter(activeFilter.key);
+                      } else if (index === 2) {
+                        setFilter(pendingFilter);
+                        onChangeFilter(pendingFilter.key);
+                      } else if (index === 3) {
+                        setFilter(closedFilter);
+                        onChangeFilter(closedFilter.key);
+                      }
+                      bottomSheetModalRef?.current?.close();
+                    },
                   },
-                },
-              });
-            }}
-          />
+                });
+              }}
+              RecentActivityComponent={
+                <>
+                  {votedProposals.length > 0 && (
+                    <>
+                      <View
+                        style={{
+                          paddingLeft: 16,
+                          paddingTop: 16,
+                          paddingBottom: 0,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Calibre-Semibold",
+                            color: colors.textColor,
+                            fontSize: 18,
+                          }}
+                        >
+                          {i18n.t("yourRecentActivity")}
+                        </Text>
+                      </View>
+                      <Carousel
+                        ref={carouselRef}
+                        data={votedProposals}
+                        renderItem={({ item }) => {
+                          return (
+                            <RecentVotedProposalPreview
+                              proposal={item.proposal}
+                              space={spaces[item?.proposal.space?.id]}
+                            />
+                          );
+                        }}
+                        itemWidth={300}
+                        sliderWidth={Device.getDeviceWidth()}
+                        enableMomentum={true}
+                        loop={true}
+                        decelerationRate={0.9}
+                      />
+                    </>
+                  )}
+                </>
+              }
+            />
+          </>
         }
         data={followedSpaces.length > 0 ? proposals : []}
         renderItem={(data) => {

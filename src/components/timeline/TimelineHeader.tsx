@@ -19,12 +19,14 @@ interface TimelineHeaderProps {
   joinedSpacesFilter: { key: string; text: string };
   showBottomSheetModal: (showBottomSheetModal: boolean) => void;
   isInitial: boolean;
+  RecentActivityComponent?: any;
 }
 
 function TimelineHeader({
   joinedSpacesFilter,
   showBottomSheetModal,
   isInitial,
+  RecentActivityComponent = null,
 }: TimelineHeaderProps) {
   const { followedSpaces, colors } = useAuthState();
   return (
@@ -64,6 +66,7 @@ function TimelineHeader({
                 },
               ]}
             >
+              {RecentActivityComponent}
               <ProposalFilters
                 filter={joinedSpacesFilter}
                 showBottomSheetModal={showBottomSheetModal}

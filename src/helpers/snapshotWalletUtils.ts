@@ -14,6 +14,7 @@ import {
   subscribeTypes,
 } from "@snapshot-labs/snapshot.js/src/sign/types";
 import { domain } from "helpers/signClient";
+import { walletFollowTypes } from "helpers/voting/walletTypes";
 
 export function getSnapshotDataForSign(
   checksumAddress: string,
@@ -203,6 +204,31 @@ export function getSnapshotDataForSign(
       types: updatedTypes,
       message: snapshotHubMessage,
       primaryType: "Unsubscribe",
+    };
+    return { snapshotData, signData };
+  } else if (type === "followWallet") {
+    const snapshotHubMessage = {
+      from: checksumAddress,
+      wallet: payload.wallet,
+      timestamp,
+    };
+    const snapshotData = {
+      domain,
+      types: walletFollowTypes,
+      message: snapshotHubMessage,
+    };
+    const updatedTypes = {
+      ...snapshotData.types,
+      EIP712Domain: [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+      ],
+    };
+    const signData: any = {
+      domain,
+      types: updatedTypes,
+      message: snapshotHubMessage,
+      primaryType: "Follow",
     };
     return { snapshotData, signData };
   }
