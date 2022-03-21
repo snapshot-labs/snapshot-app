@@ -11,14 +11,14 @@ export interface WalletUnfollow {
 }
 
 export const walletFollowTypes = {
-  Follow: [
+  WalletFollow: [
     { name: "from", type: "address" },
     { name: "wallet", type: "string" },
   ],
 };
 
 export const walletUnfollowTypes = {
-  Unfollow: [
+  WalletUnfollow: [
     { name: "from", type: "address" },
     { name: "wallet", type: "string" },
   ],

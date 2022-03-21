@@ -6,7 +6,7 @@ import {
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
-  uri: `http://localhost:8000/graphql`,
+  uri: `https://snap-hack-hub.herokuapp.com/graphql`,
 });
 
 const devApolloClient = new ApolloClient({

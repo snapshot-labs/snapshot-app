@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useAuthState } from "context/authContext";
 import i18n from "i18n-js";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
@@ -16,25 +16,39 @@ import { useNavigation } from "@react-navigation/core";
 
 interface FollowUserButton {
   followAddress: string;
+  getFollowers: () => void;
+  walletFollowers: any[];
 }
 
-function FollowUserButton({ followAddress }: FollowUserButton) {
+function FollowUserButton({
+  followAddress,
+  getFollowers,
+  walletFollowers,
+}: FollowUserButton) {
   const { colors, connectedAddress } = useAuthState();
   const { keyRingController, typedMessageManager } = useEngineState();
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const isFollowing = walletFollowers.find((walletFollow) => {
+    return (
+      walletFollow.follower.toLowerCase() === connectedAddress?.toLowerCase()
+    );
+  });
+
   return (
     <TouchableOpacity
       onPress={async () => {
         try {
           if (keyRingController.isUnlocked()) {
+            setLoading(true);
             const checksumAddress = ethers.utils.getAddress(
               connectedAddress ?? ""
             );
             const { snapshotData, signData } = getSnapshotDataForSign(
               checksumAddress,
-              "followWallet",
+              isFollowing !== undefined ? "unfollowWallet" : "followWallet",
               { wallet: followAddress }
             );
 
@@ -60,11 +74,13 @@ function FollowUserButton({ followAddress }: FollowUserButton) {
             );
             typedMessageManager.setMessageStatusSigned(messageId, rawSig);
 
-            const sig = await signClient.send({
+            await signClient.send({
               address: checksumAddress,
               sig: rawSig,
               data: snapshotData,
             });
+
+            getFollowers();
           } else {
             bottomSheetModalDispatch({
               type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
@@ -89,6 +105,7 @@ function FollowUserButton({ followAddress }: FollowUserButton) {
         } catch (e) {
           console.log("FOLOW ERRRO", e);
         }
+        setLoading(false);
       }}
     >
       <View
@@ -98,18 +115,25 @@ function FollowUserButton({ followAddress }: FollowUserButton) {
           paddingHorizontal: 30,
           paddingVertical: 16,
           borderColor: colors.bgBlue,
+          width: 150,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <Text
-          style={{
-            fontFamily: "Calibre-Medium",
-            fontSize: 18,
-            color: colors.textColor,
-            textTransform: "uppercase",
-          }}
-        >
-          {i18n.t("follow")}
-        </Text>
+        {loading ? (
+          <ActivityIndicator color={colors.textColor} />
+        ) : (
+          <Text
+            style={{
+              fontFamily: "Calibre-Medium",
+              fontSize: 18,
+              color: colors.textColor,
+              textTransform: "uppercase",
+            }}
+          >
+            {isFollowing !== undefined ? i18n.t("unfollow") : i18n.t("follow")}
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );

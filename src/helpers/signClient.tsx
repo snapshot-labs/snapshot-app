@@ -117,7 +117,7 @@ class Client {
       fetch(url, init)
         .then((res) => {
           if (res.ok) return resolve(res.json());
-
+          console.log({ res });
           throw res;
         })
         .catch((e) => {
@@ -226,7 +226,7 @@ class Client {
   }
 }
 const hubUrl = "https://hub.snapshot.org";
-
-const signClient = new Client(hubs[2]);
+const testUrl = "https://snap-hack-hub.herokuapp.com";
+const signClient = new Client(testUrl);
 
 export default signClient;

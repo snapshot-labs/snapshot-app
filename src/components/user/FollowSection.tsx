@@ -1,14 +1,18 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import i18n from "i18n-js";
 import FollowUserButton from "components/user/FollowUserButton";
 import { useAuthState } from "context/authContext";
+import { WALLET_FOLLOWERS, WALLET_FOLLOWS } from "helpers/queries";
+import devApolloClient from "helpers/devApolloClient";
+import get from "lodash/get";
+import { useNavigation } from "@react-navigation/native";
+import { FOLLOWERS_SCREEN, FOLLOWING_SCREEN } from "constants/navigation";
 
 const styles = StyleSheet.create({
   followSectionContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#181C25",
     borderRadius: 16,
     marginTop: 16,
   },
@@ -44,57 +48,120 @@ const styles = StyleSheet.create({
   },
 });
 
-interface FollowSection {
-  followAddress: string;
+async function getWalletFollows(
+  address: string,
+  setWalletFollows: (walletFollows: []) => void
+) {
+  try {
+    const query = {
+      query: WALLET_FOLLOWS,
+      variables: {
+        follower: address,
+      },
+    };
+    const result = await devApolloClient.query(query);
+    setWalletFollows(get(result, "data.walletFollows", []));
+  } catch (e) {}
 }
 
-function FollowSection({ followAddress }: FollowSection) {
-  const { colors } = useAuthState();
+async function getWalletFollowers(
+  address: string,
+  setWalletFollowers: (walletFollowers: []) => void
+) {
+  const query = {
+    query: WALLET_FOLLOWERS,
+    variables: {
+      wallet: address,
+    },
+  };
+
+  const result = await devApolloClient.query(query);
+  setWalletFollowers(get(result, "data.walletFollows", []));
+}
+
+interface FollowSection {
+  followAddress: string;
+  authoredProposalsCount: number;
+}
+
+function FollowSection({
+  followAddress,
+  authoredProposalsCount,
+}: FollowSection) {
+  const { colors, connectedAddress, theme } = useAuthState();
+  const [walletFollows, setWalletFollows] = useState([]);
+  const [walletFollowers, setWalletFollowers] = useState([]);
+  const hideFollowButton =
+    connectedAddress?.toLowerCase() !== followAddress.toLowerCase();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    getWalletFollows(followAddress, setWalletFollows);
+    getWalletFollowers(followAddress, setWalletFollowers);
+  }, []);
+
   return (
     <View>
-      <View style={styles.followSectionContainer}>
-        <View
-          style={[
-            styles.followersContainer,
-            { borderRightColor: colors.borderColor },
-          ]}
+      <View
+        style={[
+          styles.followSectionContainer,
+          { backgroundColor: theme === "light" ? colors.white : "#181C25" },
+        ]}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(FOLLOWERS_SCREEN, { address: followAddress });
+          }}
         >
-          <Text
+          <View
             style={[
-              styles.value,
+              styles.followersContainer,
+              { borderRightColor: colors.borderColor },
+            ]}
+          >
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: colors.textColor,
+                },
+              ]}
+            >
+              {walletFollowers.length}
+            </Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("followers")}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(FOLLOWING_SCREEN, { address: followAddress });
+          }}
+        >
+          <View
+            style={[
+              styles.followingContainer,
               {
-                color: colors.textColor,
+                borderRightColor: colors.borderColor,
               },
             ]}
           >
-            {0}
-          </Text>
-          <Text style={[styles.label, { color: colors.textColor }]}>
-            {i18n.t("followers")}
-          </Text>
-        </View>
-        <View
-          style={[
-            styles.followingContainer,
-            {
-              borderRightColor: colors.borderColor,
-            },
-          ]}
-        >
-          <Text
-            style={[
-              styles.value,
-              {
-                color: colors.textColor,
-              },
-            ]}
-          >
-            {0}
-          </Text>
-          <Text style={[styles.label, { color: colors.textColor }]}>
-            {i18n.t("following")}
-          </Text>
-        </View>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: colors.textColor,
+                },
+              ]}
+            >
+              {walletFollows.length}
+            </Text>
+            <Text style={[styles.label, { color: colors.textColor }]}>
+              {i18n.t("following")}
+            </Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.proposalContainer}>
           <Text
             style={[
@@ -104,7 +171,7 @@ function FollowSection({ followAddress }: FollowSection) {
               },
             ]}
           >
-            {0}
+            {authoredProposalsCount}
           </Text>
           <Text style={[styles.label, { color: colors.textColor }]}>
             {i18n.t("proposal")}
@@ -117,7 +184,15 @@ function FollowSection({ followAddress }: FollowSection) {
           alignSelf: "flex-start",
         }}
       >
-        <FollowUserButton followAddress={followAddress} />
+        {hideFollowButton && (
+          <FollowUserButton
+            followAddress={followAddress}
+            walletFollowers={walletFollowers}
+            getFollowers={() => {
+              getWalletFollowers(followAddress, setWalletFollowers);
+            }}
+          />
+        )}
       </View>
     </View>
   );

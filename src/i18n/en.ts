@@ -405,4 +405,7 @@ export default {
   following: "Following",
   proposal: "Proposal",
   follow: "Follow",
+  unfollow: "Unfollow",
+  addressFollowing: "{{address}} following",
+  addressFollowers: "{{address}} followers",
 };

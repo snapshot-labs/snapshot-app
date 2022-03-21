@@ -50,6 +50,8 @@ import VoteScreen from "screens/VoteScreen";
 import VoteConfirmScreen from "screens/VoteConfirmScreen";
 import UserProfileScreen from "screens/UserProfileScreen";
 import SnapShotScreen from "screens/SnapShotScreen";
+import FollowingScreen from "screens/FollowingScreen";
+import FollowersScreen from "screens/FollowersScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -407,6 +409,16 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.USER_PROFILE}
         component={UserProfileScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.FOLLOWING_SCREEN}
+        component={FollowingScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.FOLLOWERS_SCREEN}
+        component={FollowersScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>
