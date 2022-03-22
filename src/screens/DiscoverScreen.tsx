@@ -1,34 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
-import UserAvatar from "components/UserAvatar";
-import isEmpty from "lodash/isEmpty";
-import { shorten } from "helpers/miscUtils";
-import FollowSection from "components/user/FollowSection";
 import i18n from "i18n-js";
-import ProposalPreview from "components/ProposalPreview";
 import common from "styles/common";
-import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
-import UserSpacePreview from "components/user/UserSpacePreview";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
 import orderBy from "lodash/orderBy";
 import { getFilteredSpaces } from "helpers/searchUtils";
-import { ALL_WALLET_FOLLOWS, WALLET_FOLLOWS } from "helpers/queries";
+import { ALL_WALLET_FOLLOWS } from "helpers/queries";
 import devApolloClient from "helpers/devApolloClient";
-import BackButton from "components/BackButton";
 import SpacePreview from "components/SpacePreview";
 import CategoriesScrollView from "components/CategoriesScrollView";
-import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import UserWalletPreview from "components/explore/UserWalletPreview";
-import RecentVotedProposalPreview from "components/proposal/RecentVotedProposalsPreview";
 import Device from "helpers/device";
 import Carousel from "react-native-snap-carousel";
 
@@ -47,13 +31,6 @@ function DiscoverScreen() {
   const { spaces } = useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState("");
-  const [currentExplore, setCurrentExplore] = useState<{
-    key: string;
-    text: string;
-  }>({
-    key: "spaces",
-    text: i18n.t("spaces"),
-  });
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [wallets, setWallets] = useState([]);
@@ -108,6 +85,7 @@ function DiscoverScreen() {
         </Text>
       </View>
       <Tabs.Container
+        pagerProps={{ scrollEnabled: Device.isIos() }}
         headerContainerStyle={{
           shadowOpacity: 0,
           shadowOffset: {
@@ -228,7 +206,7 @@ function DiscoverScreen() {
               </View>
             }
             renderItem={(data: any) => {
-              return <UserWalletPreview userData={data.item} />;
+              return null;
             }}
             ListEmptyComponent={
               loading ? (
