@@ -1,18 +1,16 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import SpaceAvatar from "components/SpaceAvatar";
 import { useAuthState } from "context/authContext";
 import * as Progress from "react-native-progress";
 import get from "lodash/get";
-import { getResults } from "helpers/snapshot";
-import apolloClient from "helpers/apolloClient";
-import { PROPOSAL_VOTES_QUERY } from "helpers/queries";
 import { n } from "helpers/miscUtils";
-import StateBadge from "components/StateBadge";
 import i18n from "i18n-js";
-import isEmpty from "lodash/isEmpty";
 import { PROPOSAL_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
+import { Space } from "types/explore";
+import { Proposal } from "types/proposal";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   header: {
@@ -31,6 +29,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 8,
     marginRight: 24,
+  },
+  viewProposalClosedText: {
+    fontSize: 14,
+    fontFamily: "Calibre-Semibold",
+    textTransform: "uppercase",
+    marginBottom: Device.isIos() ? 10 : 0,
   },
   proposalTitleContainer: {
     flexDirection: "row",
@@ -61,60 +65,42 @@ const styles = StyleSheet.create({
   },
   winningTitle: {
     fontFamily: "Calibre-Semibold",
-    fontSize: 18,
+    fontSize: 14,
   },
   winningTitleContainer: {
     marginTop: 16,
   },
 });
 
-function RecentVotedProposalPreview({ space, proposal }) {
+interface RecentVotedProposalsPreviewProps {
+  space: Space;
+  proposal: Proposal;
+  totalVotedProposals: number;
+  index: number;
+}
+
+function RecentVotedProposalPreview({
+  space,
+  proposal,
+  totalVotedProposals,
+  index,
+}: RecentVotedProposalsPreviewProps) {
   const { colors } = useAuthState();
-  const [results, setResults] = useState<any>({});
-  const winningChoiceTitle = get(
-    proposal.choices,
-    results.winningChoiceIndex,
-    ""
+  const winningChoiceIndex = useMemo(
+    () => proposal?.scores?.indexOf(Math.max(...proposal.scores)),
+    [proposal]
   );
+  const winningChoiceTitle = get(proposal.choices, winningChoiceIndex, "");
+  const scoresTotal = proposal.scores_total;
+  const currentScore: any = get(
+    proposal?.scores,
+    winningChoiceIndex,
+    undefined
+  );
+  const calculatedScore = (1 / scoresTotal) * currentScore;
+  const formattedCalculatedScore = n(calculatedScore, "0.[0]%");
   const navigation: any = useNavigation();
-
-  async function getResultsObj() {
-    try {
-      const result = await apolloClient.query({
-        query: PROPOSAL_VOTES_QUERY,
-        variables: {
-          id: proposal.id,
-        },
-      });
-      const votes = get(result, "data.votes", []);
-      const updatedProposal = get(result, "data.proposal", {});
-      const response = await getResults(
-        updatedProposal.space,
-        { ...proposal, ...updatedProposal },
-        votes
-      );
-
-      const highestResultIndex = response.results?.resultsByVoteBalance.indexOf(
-        Math.max(...response.results?.resultsByVoteBalance)
-      );
-      const winningChoicePercentage =
-        ((100 / response.results?.sumOfResultsBalance) *
-          response.results?.resultsByVoteBalance[highestResultIndex]) /
-        1e2;
-
-      setResults({
-        winningChoicePercentage,
-        winningChoiceIndex: highestResultIndex,
-      });
-    } catch (e) {
-      console.log("RESULTS ERROR", e);
-    }
-  }
-
-  useEffect(() => {
-    getResultsObj();
-  }, []);
-
+  const totalVotedProposalsIndicators = new Array(totalVotedProposals).fill(1);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -128,14 +114,16 @@ function RecentVotedProposalPreview({ space, proposal }) {
         ]}
       >
         <View style={styles.header}>
-          <StateBadge state={proposal.state} />
+          <Text style={styles.viewProposalClosedText}>
+            {i18n.t("closedProposalsYouVoted")}
+          </Text>
           <View
             style={[
               styles.viewProposalContainer,
-              { backgroundColor: colors.borderColor },
+              { backgroundColor: "#F3F4F7" },
             ]}
           >
-            <Text style={[styles.viewProposal, { color: colors.textColor }]}>
+            <Text style={[styles.viewProposal, { color: "#444C5F" }]}>
               {i18n.t("viewProposal")}
             </Text>
           </View>
@@ -156,44 +144,54 @@ function RecentVotedProposalPreview({ space, proposal }) {
           </Text>
         </View>
         <View style={styles.winningTitleContainer}>
-          <Text style={[styles.winningTitle, { color: colors.textColor }]}>
-            {proposal.state === "active"
-              ? i18n.t("currentWinner")
-              : i18n.t("winner")}
+          <Text style={[styles.winningTitle, { color: "#A1A9BA" }]}>
+            {i18n.t("winner")}
           </Text>
         </View>
-        {!isEmpty(results) && (
-          <View>
-            <View style={styles.winningResultTextContainer}>
-              <Text
-                style={[styles.winningResultText, { color: colors.textColor }]}
-              >
-                {winningChoiceTitle}
-              </Text>
-              <Text
-                style={[styles.winningResultText, { color: colors.textColor }]}
-              >
-                {n(
-                  !results.winningChoicePercentage
-                    ? 0
-                    : results.winningChoicePercentage,
-                  "0.[00]%"
-                )}
-              </Text>
-            </View>
-            <Progress.Bar
-              progress={
-                !results?.winningChoicePercentage
-                  ? 0
-                  : results.winningChoicePercentage
-              }
-              color={colors.bgBlue}
-              unfilledColor={colors.borderColor}
-              width={null}
-              borderColor="transparent"
-            />
+        <View>
+          <View style={styles.winningResultTextContainer}>
+            <Text
+              style={[styles.winningResultText, { color: colors.textColor }]}
+            >
+              {winningChoiceTitle}
+            </Text>
+            <Text
+              style={[styles.winningResultText, { color: colors.textColor }]}
+            >
+              {formattedCalculatedScore}
+            </Text>
           </View>
-        )}
+          <Progress.Bar
+            progress={calculatedScore}
+            color={colors.bgBlue}
+            unfilledColor={colors.borderColor}
+            width={null}
+            borderColor="transparent"
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 16,
+            justifyContent: "center",
+          }}
+        >
+          {totalVotedProposalsIndicators.map((d, i) => {
+            return (
+              <View
+                key={i}
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor:
+                    i === index ? colors.darkGray : colors.borderColor,
+                  marginRight: 4,
+                }}
+              />
+            );
+          })}
+        </View>
       </View>
     </TouchableOpacity>
   );

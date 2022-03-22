@@ -50,7 +50,7 @@ export const domain = {
 class Client {
   readonly address: string;
 
-  constructor(address: string = hubs[2]) {
+  constructor(address: string = hubs[0]) {
     this.address = address;
   }
 
@@ -226,7 +226,6 @@ class Client {
   }
 }
 const hubUrl = "https://hub.snapshot.org";
-const testUrl = "https://snap-hack-hub.herokuapp.com";
-const signClient = new Client(testUrl);
+const signClient = new Client(hubUrl);
 
 export default signClient;

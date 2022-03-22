@@ -52,6 +52,7 @@ import UserProfileScreen from "screens/UserProfileScreen";
 import SnapShotScreen from "screens/SnapShotScreen";
 import FollowingScreen from "screens/FollowingScreen";
 import FollowersScreen from "screens/FollowersScreen";
+import DiscoverScreen from "screens/DiscoverScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -142,7 +143,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Explore"
-        component={ExploreScreen}
+        component={DiscoverScreen}
         options={{
           title: "",
           tabBarIcon: ({ color }) => (

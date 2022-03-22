@@ -264,3 +264,22 @@ export const WALLET_FOLLOWERS = gql`
     }
   }
 `;
+
+export const ALL_WALLET_FOLLOWS = gql`
+  query WalletFollows {
+    walletFollows {
+      id
+      follower
+      wallet
+      created
+    }
+  }
+`;
+
+export const DELEGATORS = gql`
+  query DelegatorFor($delegator: String) {
+    delegations(where: { delegator: $delegator }) {
+      space
+    }
+  }
+`;

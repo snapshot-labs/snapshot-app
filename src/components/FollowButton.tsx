@@ -132,6 +132,7 @@ function FollowButton({ space }: FollowButtonProps) {
         const alias = {
           [connectedAddress.toLowerCase()]: wallet.privateKey,
         };
+
         try {
           const messageId = await typedMessageManager.addUnapprovedMessage(
             {
@@ -158,7 +159,6 @@ function FollowButton({ space }: FollowButtonProps) {
             sig: rawSig,
             data: snapshotData,
           });
-
 
           authDispatch({
             type: AUTH_ACTIONS.SET_ALIAS,

@@ -36,7 +36,6 @@ import UserAvatar from "components/UserAvatar";
 import Device from "helpers/device";
 import { Proposal } from "types/proposal";
 import uniqBy from "lodash/uniqBy";
-import devApolloClient from "helpers/devApolloClient";
 import FollowSection from "components/user/FollowSection";
 
 const LOAD_BY = 10;
@@ -55,19 +54,6 @@ const styles = StyleSheet.create({
     top: 42,
   },
 });
-
-async function getWalletFollows(address: string) {
-  try {
-    const query = {
-      query: WALLET_FOLLOWS,
-      variables: {
-        follower: address,
-      },
-    };
-    const result = await devApolloClient.query(query);
-    console.log(result.data.walletFollows);
-  } catch (e) {}
-}
 
 async function getVotedProposals(address: string, setProposals: any) {
   const query = {
@@ -187,7 +173,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   useEffect(() => {
     getProposals(address, setProposals, setAuthoredProposals, setLoading);
     getFollows(address, setJoinedSpaces);
-    getWalletFollows(address);
   }, []);
 
   return (

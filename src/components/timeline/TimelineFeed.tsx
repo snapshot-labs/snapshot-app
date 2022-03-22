@@ -47,7 +47,13 @@ async function getVotedProposals(address: string, setProposals: any) {
 
   const result = await apolloClient.query(query);
   const proposalVotes = get(result, "data.votes", []);
-  setProposals(proposalVotes);
+  const filteredProposalVotes = proposalVotes
+    .filter((votedProposal: any) => {
+      return votedProposal.proposal.state === "closed";
+    })
+    .slice(0, 5);
+
+  setProposals(filteredProposalVotes);
 }
 
 async function getProposals(
@@ -323,15 +329,24 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                       <Carousel
                         ref={carouselRef}
                         data={votedProposals}
-                        renderItem={({ item }) => {
+                        renderItem={({ item, index }) => {
+                          const proposalIndex = votedProposals.findIndex(
+                            (votedProposal: any) => {
+                              return (
+                                votedProposal.proposal.id === item.proposal.id
+                              );
+                            }
+                          );
                           return (
                             <RecentVotedProposalPreview
                               proposal={item.proposal}
                               space={spaces[item?.proposal.space?.id]}
+                              totalVotedProposals={votedProposals.length}
+                              index={proposalIndex}
                             />
                           );
                         }}
-                        itemWidth={300}
+                        itemWidth={Device.getDeviceWidth()}
                         sliderWidth={Device.getDeviceWidth()}
                         enableMomentum={true}
                         loop={true}

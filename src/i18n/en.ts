@@ -408,4 +408,9 @@ export default {
   unfollow: "Unfollow",
   addressFollowing: "{{address}} following",
   addressFollowers: "{{address}} followers",
+  discover: "Discover",
+  wallets: "Wallets",
+  noWalletsFound: "No wallets found",
+  popularWallets: "Popular wallets",
+  closedProposalsYouVoted: "Closed Proposals You Voted",
 };
