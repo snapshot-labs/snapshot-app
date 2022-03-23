@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/core";
 import { Fade, Placeholder, PlaceholderMedia } from "rn-placeholder";
 import { useExploreState } from "context/exploreContext";
 import isEmpty from "lodash/isEmpty";
+import i18n from "i18n-js";
 
 const styles = StyleSheet.create({
   spaceName: {
@@ -21,6 +22,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 2,
     width: 66,
+  },
+  spacesJoinedTitle: {
+    fontSize: 20,
+    fontFamily: "Calibre-Semibold",
+    paddingLeft: 16,
+    paddingBottom: 8,
+    paddingTop: 16,
   },
 });
 
@@ -36,76 +44,80 @@ function JoinedSpacesScrollView({
   const navigation: any = useNavigation();
 
   return (
-    <View
-      style={{
-        marginTop: 8,
-        borderBottomWidth: 1,
-        paddingBottom: 8,
-        borderBottomColor: colors.borderColor,
-        minHeight: 90.9,
-      }}
-    >
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {useLoader
-          ? new Array(1).fill(1).map((v, index: number) => {
-              return (
-                <Placeholder
-                  key={index}
-                  Animation={Fade}
-                  Left={(props) => (
-                    <PlaceholderMedia
-                      isRound={true}
-                      style={[props.style, { marginLeft: 8 }]}
-                      size={65}
-                    />
-                  )}
-                  style={{ alignItems: "center" }}
-                />
-              );
-            })
-          : followedSpaces.map((space, i) => {
-              const spaceDetails = spaces[space?.space?.id];
-              if (isEmpty(spaceDetails)) {
-                return;
-              }
-              return (
-                <View
-                  key={i}
-                  style={{
-                    marginLeft: 8,
-                    marginRight: i === followedSpaces.length - 1 ? 16 : 0,
-                  }}
-                >
-                  <SpaceAvatarButton
-                    onPress={() => {
-                      navigation.navigate(SPACE_SCREEN, {
-                        space: { id: space?.space?.id, ...spaceDetails },
-                      });
-                    }}
-                    size={64}
-                    space={spaceDetails}
+    <View>
+      <Text style={styles.spacesJoinedTitle}>{i18n.t("spacesYouJoined")}</Text>
+      <View
+        style={{
+          marginTop: 8,
+          paddingBottom: 8,
+          minHeight: 90.9,
+        }}
+      >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {useLoader
+            ? new Array(1).fill(1).map((v, index: number) => {
+                return (
+                  <Placeholder
+                    key={index}
+                    Animation={Fade}
+                    Left={(props) => (
+                      <PlaceholderMedia
+                        isRound={true}
+                        style={[props.style, { marginLeft: 8 }]}
+                        size={65}
+                      />
+                    )}
+                    style={{ alignItems: "center" }}
                   />
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate(SPACE_SCREEN, {
-                        space: { id: space?.space?.id, ...spaceDetails },
-                      });
+                );
+              })
+            : followedSpaces.map((space, i) => {
+                const spaceDetails = spaces[space?.space?.id];
+                if (isEmpty(spaceDetails)) {
+                  return;
+                }
+                return (
+                  <View
+                    key={i}
+                    style={{
+                      marginLeft: 8,
+                      marginRight: i === followedSpaces.length - 1 ? 16 : 0,
                     }}
                   >
-                    <View>
-                      <Text
-                        ellipsizeMode="tail"
-                        style={[styles.spaceName, { color: colors.textColor }]}
-                        numberOfLines={1}
-                      >
-                        {spaceDetails.name}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-      </ScrollView>
+                    <SpaceAvatarButton
+                      onPress={() => {
+                        navigation.navigate(SPACE_SCREEN, {
+                          space: { id: space?.space?.id, ...spaceDetails },
+                        });
+                      }}
+                      size={64}
+                      space={spaceDetails}
+                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate(SPACE_SCREEN, {
+                          space: { id: space?.space?.id, ...spaceDetails },
+                        });
+                      }}
+                    >
+                      <View>
+                        <Text
+                          ellipsizeMode="tail"
+                          style={[
+                            styles.spaceName,
+                            { color: colors.textColor },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {spaceDetails.name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+        </ScrollView>
+      </View>
     </View>
   );
 }

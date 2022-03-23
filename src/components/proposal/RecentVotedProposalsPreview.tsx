@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/core";
 import { Space } from "types/explore";
 import { Proposal } from "types/proposal";
 import Device from "helpers/device";
+import IconFont from "components/IconFont";
 
 const styles = StyleSheet.create({
   header: {
@@ -60,8 +61,8 @@ const styles = StyleSheet.create({
   winningResultTextContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 8,
-    marginTop: 8,
+    marginBottom: 18,
+    marginTop: 18,
   },
   winningTitle: {
     fontFamily: "Calibre-Semibold",
@@ -114,7 +115,9 @@ function RecentVotedProposalPreview({
         ]}
       >
         <View style={styles.header}>
-          <Text style={styles.viewProposalClosedText}>
+          <Text
+            style={[styles.viewProposalClosedText, { color: colors.textColor }]}
+          >
             {i18n.t("closedProposalsYouVoted")}
           </Text>
           <View
@@ -150,11 +153,24 @@ function RecentVotedProposalPreview({
         </View>
         <View>
           <View style={styles.winningResultTextContainer}>
-            <Text
-              style={[styles.winningResultText, { color: colors.textColor }]}
-            >
-              {winningChoiceTitle}
-            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  backgroundColor: "rgba(249, 187, 96, 0.3)",
+                  paddingHorizontal: 6,
+                  paddingVertical: 4,
+                  marginRight: 4,
+                  borderRadius: 6,
+                }}
+              >
+                <IconFont name="signature" size={12} color={"#F7A426"} />
+              </View>
+              <Text
+                style={[styles.winningResultText, { color: colors.textColor }]}
+              >
+                {winningChoiceTitle}
+              </Text>
+            </View>
             <Text
               style={[styles.winningResultText, { color: colors.textColor }]}
             >
@@ -167,6 +183,7 @@ function RecentVotedProposalPreview({
             unfilledColor={colors.borderColor}
             width={null}
             borderColor="transparent"
+            height={4}
           />
         </View>
         <View
@@ -185,7 +202,7 @@ function RecentVotedProposalPreview({
                   height: 8,
                   borderRadius: 4,
                   backgroundColor:
-                    i === index ? colors.darkGray : colors.borderColor,
+                    i === index ? colors.textColor : colors.borderColor,
                   marginRight: 4,
                 }}
               />

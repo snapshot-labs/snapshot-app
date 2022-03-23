@@ -413,4 +413,5 @@ export default {
   noWalletsFound: "No wallets found",
   popularWallets: "Popular wallets",
   closedProposalsYouVoted: "Closed Proposals You Voted",
+  spacesYouJoined: "Spaces you joined",
 };

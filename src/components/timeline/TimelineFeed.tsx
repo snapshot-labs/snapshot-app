@@ -8,6 +8,7 @@ import {
   FlatList,
   RefreshControl,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import ProposalPreview from "components/ProposalPreview";
@@ -34,6 +35,12 @@ import { ContextDispatch } from "types/context";
 import Carousel from "react-native-snap-carousel";
 import Device from "helpers/device";
 import RecentVotedProposalPreview from "components/proposal/RecentVotedProposalsPreview";
+import IconFont from "components/IconFont";
+import isEmpty from "lodash/isEmpty";
+import { shorten } from "helpers/miscUtils";
+import UserAvatar from "components/UserAvatar";
+import { USER_PROFILE } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 const LOAD_BY = 100;
 
@@ -140,6 +147,9 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const notificationsDispatch = useNotificationsDispatch();
   const carouselRef = useRef();
+  const profile = profiles[connectedAddress];
+  const ens = get(profile, "ens", undefined);
+  const navigation: any = useNavigation();
 
   function onChangeFilter(newFilter: string) {
     setLoadCount(0);
@@ -225,14 +235,52 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
         style={[
           common.headerContainer,
           {
-            borderBottomColor: colors.borderColor,
+            borderBottomColor: "transparent",
             backgroundColor: colors.bgDefault,
           },
         ]}
       >
-        <Text style={[common.screenHeaderTitle, { color: colors.textColor }]}>
-          {i18n.t("timeline")}
-        </Text>
+        <IconFont
+          name="snapshot"
+          color={colors.yellow}
+          size={30}
+          style={{ marginLeft: 16 }}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push(USER_PROFILE, { address: connectedAddress });
+          }}
+          style={{ marginLeft: "auto" }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              marginRight: 16,
+              alignItems: "center",
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: colors.borderColor,
+              paddingHorizontal: 8,
+              paddingVertical: 6,
+            }}
+          >
+            <UserAvatar
+              size={20}
+              address={connectedAddress}
+              imgSrc={profile?.image}
+              key={`${connectedAddress}${profile?.image}`}
+            />
+            <Text
+              style={{
+                fontFamily: "Calibre-Medium",
+                fontSize: 18,
+                marginLeft: 4,
+              }}
+            >
+              {isEmpty(ens) ? shorten(connectedAddress ?? "") : ens}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
       <FlatList
         key={connectedAddress}
@@ -320,7 +368,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                           style={{
                             fontFamily: "Calibre-Semibold",
                             color: colors.textColor,
-                            fontSize: 18,
+                            fontSize: 20,
                           }}
                         >
                           {i18n.t("yourRecentActivity")}

@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     borderBottomWidth: 1,
   },
+  timelineTitle: {
+    fontFamily: "Calibre-Semibold",
+    fontSize: 20,
+    paddingLeft: 16,
+  },
 });
 
 interface TimelineHeaderProps {
@@ -61,16 +66,19 @@ function TimelineHeader({
               style={[
                 styles.proposalFiltersContainer,
                 {
-                  borderBottomColor: colors.borderColor,
+                  borderBottomColor: "transparent",
                   backgroundColor: colors.bgDefault,
                 },
               ]}
             >
               {RecentActivityComponent}
-              <ProposalFilters
-                filter={joinedSpacesFilter}
-                showBottomSheetModal={showBottomSheetModal}
-              />
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={styles.timelineTitle}>Timeline</Text>
+                <ProposalFilters
+                  filter={joinedSpacesFilter}
+                  showBottomSheetModal={showBottomSheetModal}
+                />
+              </View>
             </View>
           ) : (
             <View />
