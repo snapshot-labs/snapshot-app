@@ -91,6 +91,8 @@ function authReducer(state: AuthState, action: ContextAction) {
         storage.save(storage.KEYS.savedWallets, JSON.stringify(savedWallets));
       }
 
+      console.log({ savedWallets });
+
       return {
         ...state,
         connectedAddress,

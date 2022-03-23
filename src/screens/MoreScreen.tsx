@@ -88,7 +88,8 @@ function MoreScreen() {
   const navigation: any = useNavigation();
   const authDispatch = useAuthDispatch();
   const savedWalletKeys = Object.keys(savedWallets).filter(
-    (address: string) => address !== connectedAddress
+    (address: string) =>
+      address.toLowerCase() !== connectedAddress.toLowerCase()
   );
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();

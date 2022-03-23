@@ -77,7 +77,6 @@ function ActiveAccount({ address }: ActiveAccountProps) {
           <UserAvatar
             size={60}
             address={address}
-            imgSrc={profile?.image}
             key={`${address}${profile?.image}`}
           />
           <View style={{ position: "absolute", bottom: -4, right: -10 }}>

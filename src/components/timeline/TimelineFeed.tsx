@@ -45,22 +45,24 @@ import { useNavigation } from "@react-navigation/native";
 const LOAD_BY = 100;
 
 async function getVotedProposals(address: string, setProposals: any) {
-  const query = {
-    query: USER_VOTES_QUERY,
-    variables: {
-      voter: address,
-    },
-  };
+  try {
+    const query = {
+      query: USER_VOTES_QUERY,
+      variables: {
+        voter: address,
+      },
+    };
 
-  const result = await apolloClient.query(query);
-  const proposalVotes = get(result, "data.votes", []);
-  const filteredProposalVotes = proposalVotes
-    .filter((votedProposal: any) => {
-      return votedProposal.proposal.state === "closed";
-    })
-    .slice(0, 5);
+    const result = await apolloClient.query(query);
+    const proposalVotes = get(result, "data.votes", []);
+    const filteredProposalVotes = proposalVotes
+      .filter((votedProposal: any) => {
+        return votedProposal.proposal.state === "closed";
+      })
+      .slice(0, 5);
 
-  setProposals(filteredProposalVotes);
+    setProposals(filteredProposalVotes);
+  } catch (e) {}
 }
 
 async function getProposals(
