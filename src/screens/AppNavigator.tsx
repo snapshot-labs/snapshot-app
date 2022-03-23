@@ -212,7 +212,6 @@ function TabNavigator() {
               <UserAvatar
                 size={24}
                 address={connectedAddress}
-                imgSrc={profile?.image}
                 key={`${connectedAddress}${profile?.image}`}
               />
             ) : (

@@ -269,7 +269,6 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
             <UserAvatar
               size={20}
               address={connectedAddress}
-              imgSrc={profile?.image}
               key={`${connectedAddress}${profile?.image}`}
             />
             <Text
