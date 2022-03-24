@@ -248,40 +248,42 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
           size={30}
           style={{ marginLeft: 16 }}
         />
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(USER_PROFILE, { address: connectedAddress });
-          }}
-          style={{ marginLeft: "auto" }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              marginRight: 16,
-              alignItems: "center",
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: colors.borderColor,
-              paddingHorizontal: 8,
-              paddingVertical: 6,
+        {!isEmpty(connectedAddress) && (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push(USER_PROFILE, { address: connectedAddress });
             }}
+            style={{ marginLeft: "auto" }}
           >
-            <UserAvatar
-              size={20}
-              address={connectedAddress}
-              key={`${connectedAddress}${profile?.image}`}
-            />
-            <Text
+            <View
               style={{
-                fontFamily: "Calibre-Medium",
-                fontSize: 18,
-                marginLeft: 4,
+                flexDirection: "row",
+                marginRight: 16,
+                alignItems: "center",
+                borderRadius: 16,
+                borderWidth: 1,
+                borderColor: colors.borderColor,
+                paddingHorizontal: 8,
+                paddingVertical: 6,
               }}
             >
-              {isEmpty(ens) ? shorten(connectedAddress ?? "") : ens}
-            </Text>
-          </View>
-        </TouchableOpacity>
+              <UserAvatar
+                size={20}
+                address={connectedAddress}
+                key={`${connectedAddress}${profile?.image}`}
+              />
+              <Text
+                style={{
+                  fontFamily: "Calibre-Medium",
+                  fontSize: 18,
+                  marginLeft: 4,
+                }}
+              >
+                {isEmpty(ens) ? shorten(connectedAddress ?? "") : ens}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
       <FlatList
         key={connectedAddress}

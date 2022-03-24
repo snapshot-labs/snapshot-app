@@ -43,7 +43,7 @@ function WalletType({ address, size }: WalletTypeProps) {
       ? { uri: `https://registry.walletconnect.org/logo/md/${walletId}.jpeg` }
       : walletConnectLogo;
 
-  if (walletName === CUSTOM_WALLET_NAME) {
+  if (walletName === CUSTOM_WALLET_NAME || walletName === "") {
     return <View />;
   }
 

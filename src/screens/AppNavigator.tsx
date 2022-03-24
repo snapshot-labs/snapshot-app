@@ -53,6 +53,7 @@ import SnapShotScreen from "screens/SnapShotScreen";
 import FollowingScreen from "screens/FollowingScreen";
 import FollowersScreen from "screens/FollowersScreen";
 import DiscoverScreen from "screens/DiscoverScreen";
+import WelcomeScreen from "screens/WelcomeScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -260,7 +261,7 @@ export default function () {
     >
       <Stack.Screen
         name={navigationConstants.LANDING_SCREEN}
-        component={LandingScreen}
+        component={WelcomeScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen

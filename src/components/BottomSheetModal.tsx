@@ -47,6 +47,8 @@ interface BottomSheetModalProps {
   enablePanDownToClose?: boolean;
   BackDropRenderer?: any;
   icons?: { name: string; size?: number; color?: string }[];
+  bottomSheetViewComponentProps?: any;
+  TitleComponent?: React.FunctionComponent | undefined;
 }
 
 function BottomSheetModal({
@@ -61,6 +63,8 @@ function BottomSheetModal({
   enablePanDownToClose = true,
   BackDropRenderer = undefined,
   icons = [],
+  bottomSheetViewComponentProps = {},
+  TitleComponent = undefined,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   let BottomSheetViewComponent: any = BottomSheetView;
@@ -83,7 +87,8 @@ function BottomSheetModal({
       index={initialIndex}
       handleIndicatorStyle={{ backgroundColor: colors.textColor }}
     >
-      <BottomSheetViewComponent>
+      {TitleComponent !== undefined && <TitleComponent />}
+      <BottomSheetViewComponent {...bottomSheetViewComponentProps}>
         {ModalContent !== undefined && <ModalContent />}
         {options.map((option: string, index: number) => {
           const icon = get(icons, index);

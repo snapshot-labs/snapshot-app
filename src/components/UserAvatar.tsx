@@ -24,6 +24,10 @@ function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
       : getUrl(imgSrc),
   };
 
+  if (isEmpty(address)) {
+    return null;
+  }
+
   return (
     <Image
       source={defaultImgSrc}

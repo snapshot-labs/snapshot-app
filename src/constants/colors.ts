@@ -12,6 +12,7 @@ const defaultColors = {
   categoriesBgColor: "#eef2f5",
   yellow: "rgba(243,176,78, 1)",
   blockQuotesBorder: "#dfe2e5",
+  blueButtonBg: "#3772FF",
 };
 const light = {
   borderColor: "#d0d7de",

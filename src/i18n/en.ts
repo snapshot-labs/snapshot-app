@@ -414,4 +414,10 @@ export default {
   popularWallets: "Popular wallets",
   closedProposalsYouVoted: "Closed Proposals You Voted",
   spacesYouJoined: "Spaces you joined",
+  welcomeToSnapshot: "Welcome to snapshot",
+  trackWallet: "Track wallet",
+  selectWallet: "Select Wallet",
+  trackAnyWallet: "Track any wallet",
+  pasteOrScanYourENSEthereumAddress: "Paste or scan your ENS, Ethereum Address",
+  ensOrAddress: "ENS or address",
 };

@@ -55,6 +55,7 @@ export const styles = StyleSheet.create({
 interface ButtonProps {
   onPress: () => void;
   title: string;
+  primary?: boolean;
   buttonContainerStyle?: ViewStyle;
   buttonTitleStyle?: TextStyle;
   disabled?: boolean;
@@ -78,6 +79,7 @@ function Button({
   onlyOneLine = false,
   selected = false,
   label = undefined,
+  primary = false,
 }: ButtonProps) {
   const { theme, colors } = useAuthState();
   const ButtonContainerComponent = disabled
@@ -101,6 +103,12 @@ function Button({
             disabled ? styles.disabled : {},
             selected ? { borderColor: colors.textColor } : {},
             label !== undefined ? { justifyContent: "flex-start" } : {},
+            primary
+              ? {
+                  backgroundColor: colors.blueButtonBg,
+                  borderColor: colors.blueButtonBg,
+                }
+              : {},
             buttonContainerStyle,
           ]}
         >
@@ -109,6 +117,7 @@ function Button({
             <ActivityIndicator size="small" color={colors.textColor} />
           ) : (
             <>
+              {Icon !== undefined && <Icon />}
               <Text
                 {...(onlyOneLine
                   ? { numberOfLines: 1, ellipsizeMode: "tail" }
@@ -117,12 +126,12 @@ function Button({
                   styles.buttonTitle,
                   { color: colors.textColor },
                   light ? styles.lightButtonTitle : {},
+                  primary ? { color: colors.white } : {},
                   buttonTitleStyle,
                 ]}
               >
                 {title}
               </Text>
-              {Icon !== undefined && <Icon />}
             </>
           )}
         </View>

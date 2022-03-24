@@ -62,6 +62,9 @@ function bottomSheetModalReducer(
           action?.payload?.enablePanDownToClose === undefined
             ? true
             : action?.payload?.enablePanDownToClose,
+        bottomSheetViewComponentProps:
+          action.payload.bottomSheetViewComponentProps ?? {},
+        TitleComponent: action.payload.TitleComponent ?? undefined,
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -105,6 +108,10 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
               scroll={!!bottomSheetModal.scroll}
               icons={bottomSheetModal.icons ?? []}
               enablePanDownToClose={bottomSheetModal.enablePanDownToClose}
+              bottomSheetViewComponentProps={
+                bottomSheetModal.bottomSheetViewComponentProps ?? {}
+              }
+              TitleComponent={bottomSheetModal.TitleComponent ?? undefined}
               {...bottomSheetModal}
             />
           )}
