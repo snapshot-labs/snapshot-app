@@ -8,7 +8,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import i18n from "i18n-js";
@@ -545,7 +544,7 @@ function WelcomeScreen() {
                   },
                   key: "track-wallet",
                   show: true,
-                  snapPoints: [10, 250],
+                  snapPoints: [10, Device.isIos() ? 500 : 250],
                   options: [],
                   icons: [],
                 },
