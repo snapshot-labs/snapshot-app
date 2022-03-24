@@ -132,6 +132,7 @@ function FollowButton({ space }: FollowButtonProps) {
         const alias = {
           [connectedAddress.toLowerCase()]: wallet.privateKey,
         };
+
         try {
           const messageId = await typedMessageManager.addUnapprovedMessage(
             {
@@ -153,7 +154,6 @@ function FollowButton({ space }: FollowButtonProps) {
           );
 
           typedMessageManager.setMessageStatusSigned(messageId, rawSig);
-
           await signClient.send({
             address: checksumAddress,
             sig: rawSig,

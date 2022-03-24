@@ -50,6 +50,9 @@ import VoteScreen from "screens/VoteScreen";
 import VoteConfirmScreen from "screens/VoteConfirmScreen";
 import UserProfileScreen from "screens/UserProfileScreen";
 import SnapShotScreen from "screens/SnapShotScreen";
+import FollowingScreen from "screens/FollowingScreen";
+import FollowersScreen from "screens/FollowersScreen";
+import DiscoverScreen from "screens/DiscoverScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -140,7 +143,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Explore"
-        component={ExploreScreen}
+        component={DiscoverScreen}
         options={{
           title: "",
           tabBarIcon: ({ color }) => (
@@ -209,7 +212,6 @@ function TabNavigator() {
               <UserAvatar
                 size={24}
                 address={connectedAddress}
-                imgSrc={profile?.image}
                 key={`${connectedAddress}${profile?.image}`}
               />
             ) : (
@@ -407,6 +409,16 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.USER_PROFILE}
         component={UserProfileScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.FOLLOWING_SCREEN}
+        component={FollowingScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.FOLLOWERS_SCREEN}
+        component={FollowersScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

@@ -146,7 +146,6 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
           <UserAvatar
             size={40}
             address={address}
-            imgSrc={profile?.image}
             key={`${address}${profile?.image}`}
           />
           <View style={{ position: "absolute", bottom: -2, right: -6 }}>

@@ -30,6 +30,7 @@ import Config from "react-native-config";
 import Toast from "react-native-toast-message";
 import Device from "helpers/device";
 import { useToastShowConfig } from "constants/toast";
+import { CUSTOM_WALLET_NAME } from "constants/wallets";
 
 async function getFollows(
   accountId: string | null | undefined,
@@ -81,31 +82,33 @@ async function getExplore(exploreDispatch: ContextDispatch) {
 }
 
 async function getProposals(address: string, authDispatch: ContextDispatch) {
-  const query = {
-    query: USER_VOTES_QUERY,
-    variables: {
-      voter: address,
-    },
-  };
+  try {
+    const query = {
+      query: USER_VOTES_QUERY,
+      variables: {
+        voter: address,
+      },
+    };
 
-  const result = await apolloClient.query(query);
-  const proposalVotes = get(result, "data.votes");
-  const votedProposals = reduce(
-    proposalVotes,
-    (proposals: any, voteProposal) => {
-      proposals[voteProposal?.proposal.id] = voteProposal;
-      return proposals;
-    },
-    {}
-  );
-  authDispatch({
-    type: AUTH_ACTIONS.SET_VOTED_PROPOSALS,
-    payload: votedProposals,
-  });
+    const result = await apolloClient.query(query);
+    const proposalVotes = get(result, "data.votes");
+    const votedProposals = reduce(
+      proposalVotes,
+      (proposals: any, voteProposal) => {
+        proposals[voteProposal?.proposal.id] = voteProposal;
+        return proposals;
+      },
+      {}
+    );
+    authDispatch({
+      type: AUTH_ACTIONS.SET_VOTED_PROPOSALS,
+      payload: votedProposals,
+    });
+  } catch (e) {}
 }
 
 function FeedScreen() {
-  const { colors, connectedAddress } = useAuthState();
+  const { colors, connectedAddress, savedWallets } = useAuthState();
   const { spaces } = useExploreState();
   const authDispatch = useAuthDispatch();
   const exploreDispatch = useExploreDispatch();
@@ -115,29 +118,31 @@ function FeedScreen() {
   const toastShowConfig = useToastShowConfig();
 
   const notificationsInit = (): void => {
-    const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
+    if (savedWallets[connectedAddress]?.name !== CUSTOM_WALLET_NAME) {
+      const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
 
-    RNPusherPushNotifications.setInstanceId(Config.PUSHER_APP_ID);
-    RNPusherPushNotifications.on("notification", handleNotification);
+      RNPusherPushNotifications.setInstanceId(Config.PUSHER_APP_ID);
+      RNPusherPushNotifications.on("notification", handleNotification);
 
-    if (Device.isIos()) {
-      RNPusherPushNotifications.setSubscriptions(
-        [connectedAddress],
-        (statusCode, response) => {
-          console.log(statusCode, response);
-          Toast.show({
-            type: "customSuccess",
-            text1: "SET SUB - " + JSON.stringify(response),
-            ...toastShowConfig,
-          });
-        },
-        () => {
-          console.log("Success");
-        }
-      );
+      if (Device.isIos()) {
+        RNPusherPushNotifications.setSubscriptions(
+          [connectedAddress],
+          (statusCode, response) => {
+            console.log(statusCode, response);
+            Toast.show({
+              type: "customSuccess",
+              text1: "SET SUB - " + JSON.stringify(response),
+              ...toastShowConfig,
+            });
+          },
+          () => {
+            console.log("Success");
+          }
+        );
+      }
+
+      subscribe(checksumAddress);
     }
-
-    subscribe(checksumAddress);
   };
 
   const subscribe = (interest: string): void => {

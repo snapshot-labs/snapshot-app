@@ -13,18 +13,25 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     borderBottomWidth: 1,
   },
+  timelineTitle: {
+    fontFamily: "Calibre-Semibold",
+    fontSize: 20,
+    paddingLeft: 16,
+  },
 });
 
 interface TimelineHeaderProps {
   joinedSpacesFilter: { key: string; text: string };
   showBottomSheetModal: (showBottomSheetModal: boolean) => void;
   isInitial: boolean;
+  RecentActivityComponent?: any;
 }
 
 function TimelineHeader({
   joinedSpacesFilter,
   showBottomSheetModal,
   isInitial,
+  RecentActivityComponent = null,
 }: TimelineHeaderProps) {
   const { followedSpaces, colors } = useAuthState();
   return (
@@ -59,15 +66,19 @@ function TimelineHeader({
               style={[
                 styles.proposalFiltersContainer,
                 {
-                  borderBottomColor: colors.borderColor,
+                  borderBottomColor: "transparent",
                   backgroundColor: colors.bgDefault,
                 },
               ]}
             >
-              <ProposalFilters
-                filter={joinedSpacesFilter}
-                showBottomSheetModal={showBottomSheetModal}
-              />
+              {RecentActivityComponent}
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={styles.timelineTitle}>Timeline</Text>
+                <ProposalFilters
+                  filter={joinedSpacesFilter}
+                  showBottomSheetModal={showBottomSheetModal}
+                />
+              </View>
             </View>
           ) : (
             <View />

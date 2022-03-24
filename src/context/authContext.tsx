@@ -12,7 +12,7 @@ import { CUSTOM_WALLET_NAME, SNAPSHOT_WALLET } from "constants/wallets";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
-  connectedAddress: null | string | undefined;
+  connectedAddress: string;
   isWalletConnect: undefined | boolean;
   aliases: { [id: string]: string };
   androidAppUrl: string | null;
@@ -90,6 +90,8 @@ function authReducer(state: AuthState, action: ContextAction) {
         };
         storage.save(storage.KEYS.savedWallets, JSON.stringify(savedWallets));
       }
+
+      console.log({ savedWallets });
 
       return {
         ...state,

@@ -60,30 +60,35 @@ async function fetchWallets(
     const currentWallet = walletsMap[currentWalletKey];
     if (currentWallet.mobile.native !== "") {
       if (Platform.OS === "android") {
-        if (currentWallet.name && currentWallet.name.includes("Rainbow")) {
-          continue;
-        }
-        const androidAppArray = get(currentWallet, "app.android", "").split(
-          "id="
-        );
-        const androidAppUrl = get(androidAppArray, 1, undefined);
-
-        if (androidAppUrl) {
-          const isAppInstalled = await SendIntentAndroid.isAppInstalled(
-            androidAppUrl
-          );
-          if (isAppInstalled) {
-            wallets.push(currentWallet);
+        try {
+          if (currentWallet.name && currentWallet.name.includes("Rainbow")) {
+            continue;
           }
-        } else {
-          const isAppInstalled = await Linking.canOpenURL(
-            currentWallet.mobile.native
-          );
+          const androidAppLink = get(currentWallet, "app.android", "") ?? "";
+          const androidAppArray = androidAppLink.split("id=");
 
-          if (isAppInstalled) {
-            wallets.push(currentWallet);
+          const androidAppUrl = get(androidAppArray, 1, undefined);
+
+          if (androidAppUrl) {
+            const isAppInstalled = await SendIntentAndroid.isAppInstalled(
+              androidAppUrl
+            );
+            if (isAppInstalled) {
+              wallets.push(currentWallet);
+            }
+          } else {
+            const nativeMobile = currentWallet.mobile.native;
+            if (nativeMobile) {
+              const isAppInstalled = await Linking.canOpenURL(
+                currentWallet.mobile.native
+              );
+
+              if (isAppInstalled) {
+                wallets.push(currentWallet);
+              }
+            }
           }
-        }
+        } catch (e) {}
       } else {
         try {
           const isAppInstalled = await Linking.canOpenURL(
