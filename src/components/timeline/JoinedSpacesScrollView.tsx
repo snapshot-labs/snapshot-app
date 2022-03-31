@@ -45,7 +45,9 @@ function JoinedSpacesScrollView({
 
   return (
     <View>
-      <Text style={styles.spacesJoinedTitle}>{i18n.t("spacesYouJoined")}</Text>
+      <Text style={[styles.spacesJoinedTitle, { color: colors.textColor }]}>
+        {i18n.t("spacesYouJoined")}
+      </Text>
       <View
         style={{
           marginTop: 8,

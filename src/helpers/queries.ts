@@ -61,12 +61,22 @@ export const PROPOSALS_QUERY = gql`
       author
       created
       choices
+      snapshot
       space {
         id
         name
         members
         avatar
         symbol
+        network
+        strategies {
+          name
+          params
+        }
+      }
+      strategies {
+        name
+        params
       }
       type
       scores_state

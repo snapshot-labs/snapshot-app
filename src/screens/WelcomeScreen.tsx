@@ -45,13 +45,13 @@ import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    marginTop: 60,
+    justifyContent: "center",
   },
   welcomeText: {
     fontFamily: "Calibre-Semibold",
     fontSize: 28,
     marginTop: 24,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   logoWelcomeTextContainer: {
     alignItems: "center",
@@ -75,6 +75,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     marginTop: 4,
+  },
+  description: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    marginBottom: 24,
   },
 });
 
@@ -166,6 +171,9 @@ function WelcomeScreen() {
             <IconFont name="snapshot" size={40} color={colors.yellow} />
           </View>
           <Text style={styles.welcomeText}>{i18n.t("welcomeToSnapshot")}</Text>
+          <Text style={[styles.description, { color: colors.darkGray }]}>
+            {i18n.t("whereDecisionsGetMade")}
+          </Text>
         </View>
         <View style={styles.actionButtonContainer}>
           <Button
@@ -336,8 +344,9 @@ function WelcomeScreen() {
                                     borderWidth: 1,
                                     borderRadius: 16,
                                     paddingVertical: 8,
-                                    paddingHorizontal: 16,
-                                    minWidth: 125,
+                                    paddingLeft: 8,
+                                    paddingRight: 16,
+                                    width: 125,
                                   }}
                                 >
                                   <Image
@@ -346,17 +355,20 @@ function WelcomeScreen() {
                                     }}
                                     style={{
                                       marginRight: 16,
-                                      width: 50,
-                                      height: 50,
-                                      borderRadius: 25,
+                                      width: 28,
+                                      height: 28,
+                                      borderRadius: 14,
                                       backgroundColor: colors.white,
+                                      marginBottom: 8,
                                     }}
                                   />
                                   <Text
-                                    style={[
-                                      common.defaultText,
-                                      { color: colors.textColor },
-                                    ]}
+                                    style={{
+                                      color: colors.textColor,
+                                      fontFamily: "Calibre-Semibold",
+                                      fontSize: 18,
+                                      marginLeft: 4,
+                                    }}
                                   >
                                     {wallet.name}
                                   </Text>
@@ -370,7 +382,7 @@ function WelcomeScreen() {
                     );
                   },
                   options: [],
-                  snapPoints: [10, 250],
+                  snapPoints: [10, 185],
                   show: true,
                   key: "connect-wallet",
                   icons: [],

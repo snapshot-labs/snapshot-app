@@ -24,6 +24,11 @@ function VotingSingleChoice({
               }}
               title={choice}
               selected={selectedChoices[0] === i + 1}
+              buttonContainerStyle={{
+                borderRadius: 12,
+                justifyContent: "flex-start",
+              }}
+              nativeFeedbackContainerStyle={{ borderRadius: 12 }}
             />
           </View>
         );

@@ -23,6 +23,7 @@ const light = {
   indicatorColor: defaultColors.darkGray,
   settingsIconBgColor: "rgba(0,0,0,.2)",
   categoriesBgColor: "#eef2f5",
+  votingPowerBgColor: "#F3F4F7",
 };
 
 const dark = {
@@ -34,6 +35,7 @@ const dark = {
   indicatorColor: defaultColors.white,
   settingsIconBgColor: "rgba(255,255,255,.2)",
   categoriesBgColor: "rgba(255,255,255,.05)",
+  votingPowerBgColor: "#181C25",
 };
 
 const colorScheme: any = { ...defaultColors, ...light };

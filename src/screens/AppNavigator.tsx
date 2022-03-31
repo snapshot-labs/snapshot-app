@@ -11,8 +11,6 @@ import { useAuthState } from "context/authContext";
 import { isOldIphone } from "helpers/phoneUtils";
 import FeedScreen from "./FeedScreen";
 import * as navigationConstants from "constants/navigation";
-import LandingScreen from "./LandingScreen";
-import ExploreScreen from "./ExploreScreen";
 import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
@@ -34,6 +32,7 @@ import UserAvatar from "components/UserAvatar";
 import colors from "constants/colors";
 import { useExploreState } from "context/exploreContext";
 import { useNotificationsState } from "context/notificationsContext";
+import { CUSTOM_WALLET_NAME } from "constants/wallets";
 import WalletSetupScreen from "screens/WalletSetupScreen";
 import ChoosePasswordScreen from "screens/ChoosePasswordScreen";
 import SeedPhraseBackupStep1Screen from "screens/seedPhraseBackup/SeedPhraseBackupStep1Screen";
@@ -54,6 +53,7 @@ import FollowingScreen from "screens/FollowingScreen";
 import FollowersScreen from "screens/FollowersScreen";
 import DiscoverScreen from "screens/DiscoverScreen";
 import WelcomeScreen from "screens/WelcomeScreen";
+import ExploreScreen from "screens/ExploreScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -77,7 +77,7 @@ const Tab = createBottomTabNavigator();
 const ICON_SIZE = 28;
 
 function TabNavigator() {
-  const { colors, connectedAddress, isWalletConnect, followedSpaces } =
+  const { colors, connectedAddress, followedSpaces, savedWallets } =
     useAuthState();
   const { profiles } = useExploreState();
   const { proposalTimes, lastViewedProposal, lastViewedNotification } =
@@ -112,6 +112,8 @@ function TabNavigator() {
     connectedAddress,
   ]);
   const profile = profiles[connectedAddress ?? ""];
+  const walletName: any = get(savedWallets, `${connectedAddress}.name`, "");
+  const isCustomWallet = walletName === CUSTOM_WALLET_NAME || walletName === "";
 
   return (
     <Tab.Navigator
@@ -144,7 +146,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Explore"
-        component={DiscoverScreen}
+        component={ExploreScreen}
         options={{
           title: "",
           tabBarIcon: ({ color }) => (
@@ -152,24 +154,30 @@ function TabNavigator() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Post"
-        component={SnapShotScreen}
-        options={{
-          title: "",
-          tabBarIcon: ({ color }) => (
-            <View
-              style={{
-                borderRadius: 30,
-                backgroundColor: colors.yellow,
-                padding: 4,
-              }}
-            >
-              <IconFont name="snapshot" size={28} color={colors.white} />
-            </View>
-          ),
-        }}
-      />
+      {!isCustomWallet && (
+        <Tab.Screen
+          name="Snapshot"
+          component={SnapShotScreen}
+          options={{
+            title: "",
+            tabBarStyle: { display: "none" },
+            tabBarIcon: ({ color }) => (
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  backgroundColor: colors.yellow,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconFont name="snapshot" size={28} color={colors.white} />
+              </View>
+            ),
+          }}
+        />
+      )}
       <Tab.Screen
         name="Notifications"
         component={NotificationScreen}

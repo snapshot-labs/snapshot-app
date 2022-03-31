@@ -73,7 +73,11 @@ function TimelineHeader({
             >
               {RecentActivityComponent}
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={styles.timelineTitle}>Timeline</Text>
+                <Text
+                  style={[styles.timelineTitle, { color: colors.textColor }]}
+                >
+                  Timeline
+                </Text>
                 <ProposalFilters
                   filter={joinedSpacesFilter}
                   showBottomSheetModal={showBottomSheetModal}

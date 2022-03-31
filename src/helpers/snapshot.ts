@@ -68,7 +68,7 @@ export async function getPower(
       totalScore: scores.reduce((a: number, b: number) => a + b, 0),
     };
   } catch (e) {
-    console.log(e);
+    console.log("POWER ERROR", e);
     return e;
   }
 }

@@ -37,6 +37,11 @@ function VotingApproval({
               }}
               title={choice}
               selected={selectedChoices.includes(i + 1)}
+              buttonContainerStyle={{
+                borderRadius: 12,
+                justifyContent: "flex-start",
+              }}
+              nativeFeedbackContainerStyle={{ borderRadius: 12 }}
             />
           </View>
         );

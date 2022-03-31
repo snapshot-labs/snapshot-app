@@ -277,6 +277,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                   fontFamily: "Calibre-Medium",
                   fontSize: 18,
                   marginLeft: 4,
+                  color: colors.textColor,
                 }}
               >
                 {isEmpty(ens) ? shorten(connectedAddress ?? "") : ens}

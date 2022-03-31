@@ -57,6 +57,7 @@ interface ButtonProps {
   title: string;
   primary?: boolean;
   buttonContainerStyle?: ViewStyle;
+  nativeFeedbackContainerStyle?: ViewStyle;
   buttonTitleStyle?: TextStyle;
   disabled?: boolean;
   light?: boolean;
@@ -72,6 +73,7 @@ function Button({
   title,
   buttonTitleStyle,
   buttonContainerStyle,
+  nativeFeedbackContainerStyle,
   disabled = false,
   light = false,
   Icon = undefined,
@@ -89,7 +91,9 @@ function Button({
     : TouchableNativeFeedback;
 
   return (
-    <View style={styles.nativeFeedbackContainer}>
+    <View
+      style={[styles.nativeFeedbackContainer, nativeFeedbackContainerStyle]}
+    >
       <ButtonContainerComponent
         onPress={disabled || loading ? () => {} : onPress}
       >
@@ -101,7 +105,7 @@ function Button({
               : {},
             light ? styles.lightButton : {},
             disabled ? styles.disabled : {},
-            selected ? { borderColor: colors.textColor } : {},
+            selected ? { borderColor: colors.blueButtonBg } : {},
             label !== undefined ? { justifyContent: "flex-start" } : {},
             primary
               ? {
@@ -114,7 +118,10 @@ function Button({
         >
           {label !== undefined && <Text style={styles.label}>{label}</Text>}
           {loading ? (
-            <ActivityIndicator size="small" color={colors.textColor} />
+            <ActivityIndicator
+              size="small"
+              color={primary ? colors.white : colors.textColor}
+            />
           ) : (
             <>
               {Icon !== undefined && <Icon />}

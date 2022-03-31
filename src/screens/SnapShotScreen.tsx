@@ -1,34 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Platform,
-  Dimensions,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Proposal } from "types/proposal";
-import moment from "moment-timezone";
-import { PROPOSALS_QUERY } from "helpers/queries";
+import { PROPOSALS_QUERY, USER_VOTES_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import { useAuthState } from "context/authContext";
 import { getStateFilters } from "constants/proposal";
-import CardStack, { Card } from "react-native-card-stack-swiper";
 import common from "styles/common";
-import { SPACE_SCREEN, USER_PROFILE } from "constants/navigation";
-import SpaceAvatar from "components/SpaceAvatar";
-import i18n from "i18n-js";
-import { useNavigation } from "@react-navigation/native";
-import { getUsername } from "helpers/profile";
-import { useExploreState } from "context/exploreContext";
-import Device from "helpers/device";
-import BlockCastVote from "components/proposal/BlockCastVote";
+import Button from "components/Button";
 import uniqBy from "lodash/uniqBy";
-
-const { width, height } = Dimensions.get("screen");
+import ProposalCard from "components/snapshot/ProposalCard";
+import isEmpty from "lodash/isEmpty";
+import i18n from "i18n-js";
+import IconFont from "components/IconFont";
+import { useNavigation } from "@react-navigation/native";
+import differenceBy from "lodash/differenceBy";
+import { ethers } from "ethers";
+import { VOTE_SCREEN } from "constants/navigation";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import CastVoteModal from "components/snapshot/CastVoteModal";
 
 const stateFilters = getStateFilters();
 const LOAD_BY = 100;
@@ -37,63 +39,119 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  card: {
-    borderWidth: 1,
-    borderRadius: 5,
-    shadowColor: "rgba(0,0,0,0.5)",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.5,
-    width,
-    height,
+  proposalsLeftContainer: {
+    backgroundColor: "rgba(249, 187, 96, 0.3)",
+    padding: 9,
+    borderRadius: 8,
+    marginLeft: 16,
+  },
+  proposalsLeftText: {
+    fontFamily: "Calibre-Semibold",
+    color: "rgba(247, 164, 38, 1)",
   },
   authorTitle: {
-    marginTop: Device.isIos() ? 6 : 0,
-    marginBottom: Device.isIos() ? 4 : 0,
     fontSize: 18,
     fontFamily: "Calibre-Medium",
+  },
+  closeButtonContainer: {
+    marginLeft: "auto",
+    marginRight: 16,
+    padding: 4,
+    height: 35,
+    width: 35,
+    borderRadius: 17.5,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  actionButtonsContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: 0,
+    paddingBottom: 49,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 999,
   },
 });
 
 async function getProposals(
   followedSpaces: any,
-  proposals: Proposal[],
-  setProposals: (proposals: Proposal[]) => void
+  setProposals: (proposals: Proposal[]) => void,
+  setCurrentProposal: (proposal: any) => void,
+  connectedAddress: string,
+  setLoading: (loading: boolean) => void
 ) {
-  const sevenDaysAgo = parseInt(
-    (moment().subtract(7, "days").valueOf() / 1e3).toFixed()
-  );
+  setLoading(true);
+  const checksumAddress = ethers.utils.getAddress(connectedAddress);
   const query = {
     query: PROPOSALS_QUERY,
     variables: {
       first: LOAD_BY,
       skip: 0,
       space_in: followedSpaces.map((follow: any) => follow.space.id),
-      start_gt: sevenDaysAgo,
-      end_gt: sevenDaysAgo,
       state: stateFilters[1].key,
     },
   };
+  const userVotesQuery = {
+    query: USER_VOTES_QUERY,
+    variables: {
+      voter: checksumAddress,
+    },
+  };
+
   try {
     const result = await apolloClient.query(query);
-    setProposals(uniqBy(get(result, "data.proposals", []), "id"));
+    const proposals: any = uniqBy(get(result, "data.proposals", []), "id");
+    const userVotesResult = await apolloClient.query(userVotesQuery);
+    const proposalVotes = get(userVotesResult, "data.votes", []).map(
+      (votedProposal) => {
+        return votedProposal.proposal;
+      }
+    );
+    const filteredProposals: any = differenceBy(proposals, proposalVotes, "id");
+
+    const currentProposal = filteredProposals.shift();
+    setProposals(filteredProposals);
+    setCurrentProposal(currentProposal);
   } catch (e) {
     console.log(e);
   }
+  setLoading(false);
 }
 
 function SnapShotScreen() {
   const { followedSpaces, colors, connectedAddress } = useAuthState();
   const [proposals, setProposals] = useState<Proposal[]>([]);
-  const { profiles, spaces } = useExploreState();
-  const swiperRef = useRef();
-  const navigation = useNavigation();
+  const [currentProposal, setCurrentProposal] = useState<Proposal | undefined>(
+    undefined
+  );
+  const [loading, setLoading] = useState(false);
+  const navigation: any = useNavigation();
+  const proposalsBackdrop =
+    proposals.length >= 3
+      ? new Array(3).fill(1)
+      : new Array(proposals.length).fill(1);
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
 
   useEffect(() => {
-    getProposals(followedSpaces, proposals, setProposals);
-  }, [connectedAddress]);
+    if (followedSpaces.length > 0) {
+      getProposals(
+        followedSpaces,
+        setProposals,
+        setCurrentProposal,
+        connectedAddress,
+        setLoading
+      );
+    } else {
+      setProposals([]);
+      setCurrentProposal(undefined);
+      setLoading(false);
+    }
+  }, [followedSpaces, connectedAddress]);
 
   return (
     <SafeAreaView
@@ -104,138 +162,193 @@ function SnapShotScreen() {
         },
       ]}
     >
-      <CardStack
-        style={styles.content}
-        ref={swiperRef}
-        renderNoMoreCards={() => {
-          return (
-            <View
+      <View
+        style={[
+          common.headerContainer,
+          { borderBottomColor: colors.borderColor },
+        ]}
+      >
+        <View style={styles.proposalsLeftContainer}>
+          <Text style={styles.proposalsLeftText}>
+            {i18n.t("proposalsLeft", { count: proposals.length })}
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Feed");
+          }}
+          style={{ marginLeft: "auto" }}
+        >
+          <View
+            style={[
+              styles.closeButtonContainer,
+              {
+                borderColor: colors.borderColor,
+              },
+            ]}
+          >
+            <IconFont name={"close"} size={18} color={colors.textColor} />
+          </View>
+        </TouchableOpacity>
+      </View>
+      {isEmpty(currentProposal) ? (
+        loading ? (
+          <View
+            style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
+          >
+            <ActivityIndicator color={colors.textColor} size="large" />
+          </View>
+        ) : (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              paddingTop: 60,
+            }}
+          >
+            <Text
               style={{
-                justifyContent: "center",
-                alignItems: "center",
-                paddingTop: 60,
+                fontFamily: "Calibre-Medium",
+                fontSize: 22,
+                color: colors.textColor,
+                marginBottom: 24,
               }}
             >
-              <Text
-                style={{
-                  fontFamily: "Calibre-Medium",
-                  fontSize: 16,
-                  color: colors.textColor,
+              {followedSpaces.length > 0
+                ? i18n.t("youHaveViewedAllTheLatestProposals")
+                : i18n.t("youNeedToJoinSpace")}
+            </Text>
+            {followedSpaces.length > 0 && (
+              <Button
+                primary
+                onPress={() => {
+                  getProposals(
+                    followedSpaces,
+                    setProposals,
+                    setCurrentProposal,
+                    connectedAddress,
+                    setLoading
+                  );
                 }}
-              >
-                You have viewed all the latest proposals
-              </Text>
-            </View>
-          );
-        }}
-      >
-        {proposals.map((proposal, index: number) => {
-          const authorProfile = profiles[proposal.author];
-          const authorName = getUsername(
-            proposal.author,
-            authorProfile,
-            connectedAddress ?? ""
-          );
-
-          return (
-            <Card
-              style={[
-                styles.card,
-                {
-                  backgroundColor: colors.bgDefault,
-                  borderColor: colors.borderColor,
-                },
-              ]}
-              key={`${index}`}
+                title={"View latest proposals again"}
+              />
+            )}
+          </View>
+        )
+      ) : (
+        <View style={{ flex: 1 }}>
+          <View style={{ paddingHorizontal: 16, flex: 1 }}>
+            <ScrollView
+              contentContainerStyle={{ marginTop: 24 }}
+              showsVerticalScrollIndicator={false}
             >
-              <ScrollView style={{ flex: 1 }}>
-                <View style={{ paddingHorizontal: 16 }}>
-                  <Text
-                    style={[
-                      common.h1,
-                      {
-                        marginBottom: 8,
-                        marginTop: 16,
-                        color: colors.textColor,
-                      },
-                    ]}
-                  >
-                    {proposal.title}
-                  </Text>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate(SPACE_SCREEN, {
-                          space: proposal.space,
-                          showHeader: true,
-                        });
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <SpaceAvatar
-                          symbolIndex="space"
-                          size={28}
-                          space={proposal.space}
-                        />
-                        <Text
-                          style={[
-                            styles.authorTitle,
-                            {
-                              color: colors.bgGray,
-                              marginLeft: 8,
-                            },
-                          ]}
-                        >
-                          {proposal?.space?.name}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <Text
-                      style={[styles.authorTitle, { color: colors.bgGray }]}
-                    >
-                      {" "}
-                      {i18n.t("by")}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.push(USER_PROFILE, {
-                          address: proposal?.author,
-                        });
-                      }}
-                    >
-                      <Text
-                        style={[
-                          styles.authorTitle,
-                          {
-                            color: colors.bgGray,
-                          },
-                        ]}
-                      >
-                        {" "}
-                        {authorName}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={{ flex: 1, height: "100%" }}>
-                    <BlockCastVote
-                      proposal={proposal}
-                      space={spaces[proposal.space.id]}
-                      getProposal={() => {}}
-                      voteButtonStyle={{ marginTop: 20, paddingHorizontal: 16 }}
-                    />
-                  </View>
+              <View>
+                {proposalsBackdrop.map((c, i) => (
+                  <View
+                    key={i}
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 16,
+                      padding: 18,
+                      position: "absolute",
+                      marginTop: (i + 1) * -6,
+                      width: `${100 - (i + 1) * 6}%`,
+                      zIndex: -1 * (i + 1),
+                      alignSelf: "center",
+                      backgroundColor: colors.bgDefault,
+                      borderColor: colors.borderColor,
+                    }}
+                  />
+                ))}
+                <View
+                  style={{
+                    zIndex: 10,
+                    backgroundColor: colors.bgDefault,
+                    borderRadius: 16,
+                    paddingBottom: 150,
+                  }}
+                >
+                  <ProposalCard proposal={currentProposal} />
                 </View>
-                <View style={{ width: 10, height: 30 }} />
-              </ScrollView>
-            </Card>
-          );
-        })}
-      </CardStack>
+              </View>
+            </ScrollView>
+          </View>
+          <View
+            style={[
+              styles.actionButtonsContainer,
+              {
+                borderTopColor: colors.borderColor,
+                backgroundColor: colors.bgDefault,
+              },
+            ]}
+          >
+            <Button
+              title={"Skip"}
+              onPress={() => {
+                const newCurrentProposal: Proposal | undefined =
+                  proposals.shift();
+                setCurrentProposal(newCurrentProposal);
+              }}
+              Icon={() => (
+                <IconFont
+                  name={"close"}
+                  size={20}
+                  color={colors.darkGray}
+                  style={{ marginRight: 4 }}
+                />
+              )}
+              buttonContainerStyle={{ width: 115 }}
+            />
+            <View style={{ width: 10, height: 10 }} />
+            <Button
+              title={i18n.t("vote")}
+              onPress={() => {
+                bottomSheetModalDispatch({
+                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                  payload: {
+                    bottomSheetViewComponentProps: {
+                      style: {
+                        zIndex: 1000,
+                      },
+                    },
+                    ModalContent: () => {
+                      return (
+                        <CastVoteModal
+                          proposal={currentProposal}
+                          space={currentProposal.space}
+                          getProposal={() => {
+                            const newCurrentProposal: Proposal | undefined =
+                              proposals.shift();
+                            setCurrentProposal(newCurrentProposal);
+                          }}
+                          navigation={navigation}
+                        />
+                      );
+                    },
+                    options: [],
+                    snapPoints: [10, 500],
+                    show: true,
+                    icons: [],
+                    initialIndex: 1,
+                    destructiveButtonIndex: -1,
+                  },
+                });
+              }}
+              primary
+              Icon={() => (
+                <IconFont
+                  name={"signature"}
+                  size={20}
+                  color={colors.white}
+                  style={{ marginRight: 4 }}
+                />
+              )}
+              buttonContainerStyle={{ width: 115 }}
+            />
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

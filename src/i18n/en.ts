@@ -1,10 +1,13 @@
+import { Text } from "react-native";
+import React from "react";
+
 export default {
   dashboard: "Dashboard",
   mySpaces: "My spaces",
   members: "members",
   explore: "Explore",
   logIn: "Log in",
-  connectWallet: "Connect Wallet",
+  connectWallet: "Connect wallet",
   orUseACustomWallet: "Or use a custom wallet",
   getWallet: "Get {{walletName}}",
   customWalletReadOnly: "Custom wallet (read only)",
@@ -414,10 +417,16 @@ export default {
   popularWallets: "Popular wallets",
   closedProposalsYouVoted: "Closed Proposals You Voted",
   spacesYouJoined: "Spaces you joined",
-  welcomeToSnapshot: "Welcome to snapshot",
+  welcomeToSnapshot: "Welcome to Snapshot",
   trackWallet: "Track wallet",
-  selectWallet: "Select Wallet",
+  selectWallet: "Select wallet",
   trackAnyWallet: "Track any wallet",
   pasteOrScanYourENSEthereumAddress: "Paste or scan your ENS, Ethereum Address",
   ensOrAddress: "ENS or address",
+  whereDecisionsGetMade: "Where decisions get made",
+  timeLeft: "Time left",
+  proposalsLeft: "{{count}} proposals left",
+  youHaveViewedAllTheLatestProposals:
+    "You have viewed all the latest proposals",
+  youNeedToJoinSpaces: "You need to join a space to few active proposals.",
 };

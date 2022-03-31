@@ -21,7 +21,7 @@ const tagsStyles = (colors: any) => ({
     marginTop: 0,
     marginBottom: 16,
     paddingTop: 0,
-    color: colors.darkGray,
+    color: colors.textColor,
     fontFamily: "Calibre-Medium",
     lineHeight: 30,
   },
@@ -59,19 +59,19 @@ const tagsStyles = (colors: any) => ({
     marginLeft: 0,
     marginTop: 0,
     lineHeight: 30,
-    color: colors.darkGray,
+    color: colors.textColor,
   },
   ol: {
     marginLeft: 0,
     marginTop: 0,
     fontSize: 20,
     fontFamily: "Calibre-Semibold",
-    color: colors.darkGray,
+    color: colors.textColor,
     alignSelf: "flex-start",
     lineHeight: 30,
   },
   li: {
-    color: colors.darkGray,
+    color: colors.textColor,
     fontFamily: "Calibre-Medium",
   },
   code: {
@@ -118,7 +118,7 @@ const tagsStyles = (colors: any) => ({
 });
 
 const baseStyle = {
-  fontSize: 22,
+  fontSize: 18,
 };
 const remarkable = new Remarkable({
   html: false,

@@ -381,7 +381,7 @@ function VoteConfirmModal({
           >
             <View style={styles.linkContainer}>
               <Text style={[styles.rowValue, { color: colors.textColor }]}>
-                {n(proposal.snapshot, "0,0")}
+                {proposal.snapshot}
               </Text>
               <IconFont
                 name="external-link"

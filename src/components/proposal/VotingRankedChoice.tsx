@@ -108,7 +108,12 @@ function VotingRankedChoice({
                   title={`(${getNumberWithOrdinal(index + 1)}) ${item.title}`}
                   onPress={() => {}}
                   onlyOneLine
-                  buttonContainerStyle={{ width: width - 50 }}
+                  buttonContainerStyle={{
+                    width: width - 50,
+                    borderRadius: 12,
+                    justifyContent: "flex-start",
+                  }}
+                  nativeFeedbackContainerStyle={{ borderRadius: 12 }}
                   selected
                 />
                 <TouchableOpacity
