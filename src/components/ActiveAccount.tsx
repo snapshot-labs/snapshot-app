@@ -16,6 +16,7 @@ import WalletType from "components/wallet/WalletType";
 import { ethers } from "ethers";
 import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
+import appConstants from "constants/app";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -105,7 +106,10 @@ function ActiveAccount({ address }: ActiveAccountProps) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {shorten(checksumAddress ?? "")}
+              {address.toLowerCase() ===
+              appConstants.ANONYMOUS_ADDRESS.toLowerCase()
+                ? i18n.t("anonymous")
+                : shorten(checksumAddress ?? "")}
             </Text>
           </View>
         </TouchableOpacity>

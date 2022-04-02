@@ -41,6 +41,7 @@ import Device from "helpers/device";
 import { ethers } from "ethers";
 import { EXPLORE_ACTIONS, useExploreDispatch } from "context/exploreContext";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import appConstants from "constants/app";
 
 const styles = StyleSheet.create({
   content: {
@@ -346,7 +347,8 @@ function WelcomeScreen() {
                                     paddingVertical: 8,
                                     paddingLeft: 8,
                                     paddingRight: 16,
-                                    width: 125,
+                                    width: 115,
+                                    height: 92,
                                   }}
                                 >
                                   <Image
@@ -359,7 +361,7 @@ function WelcomeScreen() {
                                       height: 28,
                                       borderRadius: 14,
                                       backgroundColor: colors.white,
-                                      marginBottom: 8,
+                                      marginBottom: 16,
                                     }}
                                   />
                                   <Text
@@ -382,7 +384,7 @@ function WelcomeScreen() {
                     );
                   },
                   options: [],
-                  snapPoints: [10, 185],
+                  snapPoints: [10, 250],
                   show: true,
                   key: "connect-wallet",
                   icons: [],
@@ -572,6 +574,60 @@ function WelcomeScreen() {
               />
             )}
           />
+          <View
+            style={{
+              marginTop: 16,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Calibre-Medium",
+                fontSize: 18,
+                color: colors.darkGray,
+                textTransform: "uppercase",
+              }}
+            >
+              {i18n.t("or")}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                authDispatch({
+                  type: AUTH_ACTIONS.SET_CONNECTED_ADDRESS,
+                  payload: {
+                    connectedAddress: appConstants.ANONYMOUS_ADDRESS,
+                    addToStorage: true,
+                    addToSavedWallets: true,
+                  },
+                });
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: HOME_SCREEN }],
+                });
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 12,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Calibre-Semibold",
+                    fontSize: 22,
+                    color: colors.textColor,
+                    marginRight: 6,
+                  }}
+                >
+                  {i18n.t("takeATour")}
+                </Text>
+                <IconFont name="go" size={28} color={colors.textColor} />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>

@@ -1,6 +1,3 @@
-import { Text } from "react-native";
-import React from "react";
-
 export default {
   dashboard: "Dashboard",
   mySpaces: "My spaces",
@@ -429,4 +426,7 @@ export default {
   youHaveViewedAllTheLatestProposals:
     "You have viewed all the latest proposals",
   youNeedToJoinSpaces: "You need to join a space to few active proposals.",
+  or: "Or",
+  takeATour: "Take a tour",
+  anonymous: "Anonymous",
 };

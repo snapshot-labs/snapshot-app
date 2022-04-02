@@ -52,8 +52,10 @@ import SnapShotScreen from "screens/SnapShotScreen";
 import FollowingScreen from "screens/FollowingScreen";
 import FollowersScreen from "screens/FollowersScreen";
 import DiscoverScreen from "screens/DiscoverScreen";
+import appConstants from "constants/app";
 import WelcomeScreen from "screens/WelcomeScreen";
 import ExploreScreen from "screens/ExploreScreen";
+import AllFeedScreen from "screens/AllFeedScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -136,7 +138,12 @@ function TabNavigator() {
     >
       <Tab.Screen
         name="Feed"
-        component={FeedScreen}
+        component={
+          connectedAddress.toLowerCase() ===
+          appConstants.ANONYMOUS_ADDRESS.toLowerCase()
+            ? AllFeedScreen
+            : FeedScreen
+        }
         options={{
           title: "",
           tabBarIcon: ({ color }) => (

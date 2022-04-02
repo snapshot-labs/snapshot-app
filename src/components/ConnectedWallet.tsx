@@ -32,6 +32,8 @@ import {
 } from "context/notificationsContext";
 import WalletType from "components/wallet/WalletType";
 import { ethers } from "ethers";
+import appConstants from "constants/app";
+import i18n from "i18n-js";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -164,7 +166,10 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {shorten(checksumAddress ?? "")}
+              {address.toLowerCase() ===
+              appConstants.ANONYMOUS_ADDRESS.toLowerCase()
+                ? i18n.t("anonymous")
+                : shorten(checksumAddress ?? "")}
             </Text>
           </View>
         </View>

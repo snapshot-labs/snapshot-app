@@ -379,7 +379,8 @@ function MoreScreen() {
               });
             } else {
               const newSavedWallets = { ...savedWallets };
-              delete newSavedWallets[connectedAddress];
+              delete newSavedWallets[connectedAddress.toLowerCase()];
+
               try {
                 if (isWalletConnect) {
                   await wcConnector.killSession();
@@ -398,12 +399,12 @@ function MoreScreen() {
               const savedWalletKeys = Object.keys(newSavedWallets);
 
               if (savedWalletKeys.length === 0) {
-                authDispatch({
-                  type: AUTH_ACTIONS.LOGOUT,
-                });
                 navigation.reset({
                   index: 0,
                   routes: [{ name: LANDING_SCREEN }],
+                });
+                authDispatch({
+                  type: AUTH_ACTIONS.LOGOUT,
                 });
               } else {
                 const nextAddress = savedWalletKeys[0];

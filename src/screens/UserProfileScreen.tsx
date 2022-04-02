@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import common from "styles/common";
@@ -22,7 +21,6 @@ import {
   FOLLOWS_QUERY,
   PROPOSALS_QUERY,
   USER_VOTES_QUERY,
-  WALLET_FOLLOWS,
 } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
