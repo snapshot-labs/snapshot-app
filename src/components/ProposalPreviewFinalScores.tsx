@@ -102,7 +102,6 @@ function ProposalPreviewFinalScores({
         const scoreSymbol = `${n(currentScore)} ${proposal?.space?.symbol}`;
         const isWinningChoice = winningChoice === index;
 
-        console.log({ choice, calculatedScore, currentScore });
         return (
           <View key={index} style={[styles.container]}>
             <View style={styles.textContainer}>
