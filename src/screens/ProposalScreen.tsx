@@ -109,7 +109,6 @@ async function getResultsObj(
   setResultsLoaded: (resultsLoaded: boolean) => void
 ) {
   const response = await getResults(space, proposal, votes);
-  console.log(JSON.stringify(response));
   if (response.votes) {
     setVotes(response.votes);
     setResults(response.results);
