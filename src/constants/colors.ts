@@ -13,6 +13,8 @@ const defaultColors = {
   yellow: "rgba(243,176,78, 1)",
   blockQuotesBorder: "#dfe2e5",
   blueButtonBg: "#3772FF",
+  secondaryGray: "#A1A9BA",
+  disabledButtonBg: "rgba(55, 114, 255, 0.5)",
 };
 const light = {
   borderColor: "#d0d7de",

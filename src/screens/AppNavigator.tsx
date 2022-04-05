@@ -51,7 +51,6 @@ import UserProfileScreen from "screens/UserProfileScreen";
 import SnapShotScreen from "screens/SnapShotScreen";
 import FollowingScreen from "screens/FollowingScreen";
 import FollowersScreen from "screens/FollowersScreen";
-import DiscoverScreen from "screens/DiscoverScreen";
 import appConstants from "constants/app";
 import WelcomeScreen from "screens/WelcomeScreen";
 import ExploreScreen from "screens/ExploreScreen";

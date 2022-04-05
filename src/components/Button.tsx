@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
   },
   disabled: {
-    backgroundColor: colors.borderColor,
+    backgroundColor: colors.disabledButtonBg,
   },
   buttonTitle: {
     color: colors.white,
@@ -83,7 +83,7 @@ function Button({
   label = undefined,
   primary = false,
 }: ButtonProps) {
-  const { theme, colors } = useAuthState();
+  const { colors } = useAuthState();
   const ButtonContainerComponent = disabled
     ? TouchableWithoutFeedback
     : Device.isIos()
@@ -100,9 +100,6 @@ function Button({
         <View
           style={[
             styles.button,
-            theme === "dark"
-              ? { borderColor: colors.borderColor, borderWidth: 1 }
-              : {},
             light ? styles.lightButton : {},
             disabled ? styles.disabled : {},
             selected ? { borderColor: colors.blueButtonBg } : {},

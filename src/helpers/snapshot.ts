@@ -1,7 +1,8 @@
 import { getScores } from "@snapshot-labs/snapshot.js/src/utils";
 import voting from "./voting";
-import { Space } from "../types/explore";
-import { Proposal } from "../types/proposal";
+import { Space } from "types/explore";
+import { Proposal } from "types/proposal";
+import { ethers } from "ethers";
 
 export async function getResults(space: any, proposal: any, votes: any) {
   try {
@@ -51,21 +52,23 @@ export async function getPower(
 ) {
   try {
     const strategies = proposal.strategies ?? space.strategies;
+    const checksumAddress = ethers.utils.getAddress(address);
     let scores: any = await getScores(
       space.id ?? "",
       strategies,
       space.network,
-      [address],
+      [checksumAddress],
       proposal.snapshot !== "latest"
         ? parseInt(proposal.snapshot)
         : proposal.snapshot
     );
-    scores = scores.map((score: number) =>
-      Object.values(score).reduce((a: number, b: number) => a + b, 0)
+    const scoresByStrategy = strategies.map(
+      (strategy, i) => scores[i][checksumAddress] || 0
     );
+
     return {
-      scores,
-      totalScore: scores.reduce((a: number, b: number) => a + b, 0),
+      scoresByStrategy,
+      totalScore: scoresByStrategy.reduce((a, b: any) => a + b, 0),
     };
   } catch (e) {
     console.log("POWER ERROR", e);

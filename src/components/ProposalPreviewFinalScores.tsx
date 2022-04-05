@@ -6,6 +6,7 @@ import { useAuthState } from "context/authContext";
 import IconFont from "components/IconFont";
 import get from "lodash/get";
 import TextTicker from "react-native-text-ticker";
+import { STATES } from "constants/proposal";
 
 const { width: deviceWidth } = Dimensions.get("screen");
 
@@ -58,26 +59,50 @@ function ProposalPreviewFinalScores({
   results = {},
 }: ProposalPreviewFinalScoresProps) {
   const { colors } = useAuthState();
-  const winningChoice = useMemo(
-    () => proposal?.scores?.indexOf(Math.max(...proposal.scores)),
-    [proposal]
-  );
+  const winningChoice = useMemo(() => {
+    if (proposal.state === STATES.closed) {
+      if (Math.max(...proposal?.scores) === 0) {
+        return -1;
+      }
+      return proposal?.scores?.indexOf(Math.max(...proposal.scores));
+    } else {
+      if (Math.max(...results?.resultsByVoteBalance) === 0) {
+        return -1;
+      }
+      return results?.resultsByVoteBalance?.indexOf(
+        Math.max(...results?.resultsByVoteBalance)
+      );
+    }
+  }, [proposal, results]);
+  const choices = proposal?.choices
+    .map((choice, i) => ({ index: i, choice }))
+    .sort(
+      (a, b) =>
+        get(results?.resultsByVoteBalance, b.index, 0) -
+        get(results?.resultsByVoteBalance, a.index, 0)
+    );
 
   return (
     <View>
-      {proposal?.choices?.map((choice: string, index: number) => {
-        let currentScore: any = get(proposal?.scores, index, undefined);
-        if (currentScore === undefined) {
-          currentScore = parseInt(get(results?.resultsByVoteBalance, index, 0));
+      {choices.map(({ choice, index }) => {
+        let currentScore: any = get(proposal.scores, index, undefined);
+        if (currentScore === undefined || results?.resultsByVoteBalance) {
+          currentScore = get(results?.resultsByVoteBalance, index, 0);
         }
         let scoresTotal = proposal.scores_total;
-        if (scoresTotal === undefined || scoresTotal === 0) {
+        if (
+          scoresTotal === undefined ||
+          scoresTotal === 0 ||
+          results?.sumOfResultsBalance
+        ) {
           scoresTotal = results?.sumOfResultsBalance ?? 0;
         }
         const calculatedScore = n((1 / scoresTotal) * currentScore, "0.[0]%");
 
         const scoreSymbol = `${n(currentScore)} ${proposal?.space?.symbol}`;
         const isWinningChoice = winningChoice === index;
+
+        console.log({ choice, calculatedScore, currentScore });
         return (
           <View key={index} style={[styles.container]}>
             <View style={styles.textContainer}>

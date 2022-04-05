@@ -62,6 +62,7 @@ export const PROPOSALS_QUERY = gql`
       created
       choices
       snapshot
+      network
       space {
         id
         name
@@ -71,12 +72,14 @@ export const PROPOSALS_QUERY = gql`
         network
         strategies {
           name
+          network
           params
         }
       }
       strategies {
         name
         params
+        network
       }
       type
       scores_state
@@ -106,6 +109,7 @@ export const PROPOSAL_VOTES_QUERY = gql`
       strategies {
         name
         params
+        network
       }
       space {
         id
@@ -115,6 +119,7 @@ export const PROPOSAL_VOTES_QUERY = gql`
         strategies {
           name
           params
+          network
         }
       }
     }
@@ -142,6 +147,7 @@ export const FOLLOWS_QUERY = gql`
         strategies {
           name
           params
+          network
         }
       }
     }
@@ -186,6 +192,7 @@ export const SPACES_QUERY = gql`
       strategies {
         name
         params
+        network
       }
       validation {
         name
@@ -247,6 +254,7 @@ export const USER_VOTES_QUERY = gql`
         strategies {
           name
           params
+          network
         }
       }
     }

@@ -83,9 +83,6 @@ function VotingRankedChoice({
 
   return (
     <View>
-      <Text style={[common.subTitle, { marginBottom: 16 }]}>
-        {i18n.t("longPressToDragAndDrop")}
-      </Text>
       <DragSortableView
         dataSource={proposalChoices}
         parentWidth={width - 32}
@@ -109,9 +106,11 @@ function VotingRankedChoice({
                   onPress={() => {}}
                   onlyOneLine
                   buttonContainerStyle={{
-                    width: width - 50,
+                    width: width - 28,
                     borderRadius: 12,
                     justifyContent: "flex-start",
+                    paddingVertical: 14,
+                    paddingHorizontal: 9,
                   }}
                   nativeFeedbackContainerStyle={{ borderRadius: 12 }}
                   selected
@@ -160,7 +159,14 @@ function VotingRankedChoice({
                   setSelectedChoices
                 );
               }}
-              buttonContainerStyle={{ width: "100%" }}
+              buttonContainerStyle={{
+                width: "100%",
+                borderRadius: 12,
+                justifyContent: "flex-start",
+                paddingVertical: 14,
+                paddingHorizontal: 9,
+              }}
+              nativeFeedbackContainerStyle={{ borderRadius: 12 }}
             />
           </View>
         );

@@ -24,7 +24,6 @@ import IconFont from "components/IconFont";
 import { useNavigation } from "@react-navigation/native";
 import differenceBy from "lodash/differenceBy";
 import { ethers } from "ethers";
-import { VOTE_SCREEN } from "constants/navigation";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
@@ -41,9 +40,12 @@ const styles = StyleSheet.create({
   },
   proposalsLeftContainer: {
     backgroundColor: "rgba(249, 187, 96, 0.3)",
-    padding: 9,
+    padding: 6,
     borderRadius: 8,
     marginLeft: 16,
+    height: 26,
+    alignItems: "center",
+    justifyContent: "center",
   },
   proposalsLeftText: {
     fontFamily: "Calibre-Semibold",
@@ -68,13 +70,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: 0,
-    paddingBottom: 49,
+    paddingBottom: 35,
     paddingTop: 16,
     borderTopWidth: 1,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 999,
+  },
+  castVoteTitle: {
+    marginTop: 16,
+    fontSize: 22,
+    fontFamily: "Calibre-Semibold",
+    textAlign: "center",
+  },
+  castVoteSubtitle: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 9,
   },
 });
 
@@ -132,10 +146,11 @@ function SnapShotScreen() {
   const [loading, setLoading] = useState(false);
   const navigation: any = useNavigation();
   const proposalsBackdrop =
-    proposals.length >= 3
-      ? new Array(3).fill(1)
+    proposals.length >= 2
+      ? new Array(2).fill(1)
       : new Array(proposals.length).fill(1);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const bottomSheetModalRef = useBottomSheetModalRef();
 
   useEffect(() => {
     if (followedSpaces.length > 0) {
@@ -163,10 +178,7 @@ function SnapShotScreen() {
       ]}
     >
       <View
-        style={[
-          common.headerContainer,
-          { borderBottomColor: colors.borderColor },
-        ]}
+        style={[common.headerContainer, { borderBottomColor: "transparent" }]}
       >
         <View style={styles.proposalsLeftContainer}>
           <Text style={styles.proposalsLeftText}>
@@ -240,27 +252,10 @@ function SnapShotScreen() {
         <View style={{ flex: 1 }}>
           <View style={{ paddingHorizontal: 16, flex: 1 }}>
             <ScrollView
-              contentContainerStyle={{ marginTop: 24 }}
+              contentContainerStyle={{ paddingTop: 24 }}
               showsVerticalScrollIndicator={false}
             >
               <View>
-                {proposalsBackdrop.map((c, i) => (
-                  <View
-                    key={i}
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 16,
-                      padding: 18,
-                      position: "absolute",
-                      marginTop: (i + 1) * -6,
-                      width: `${100 - (i + 1) * 6}%`,
-                      zIndex: -1 * (i + 1),
-                      alignSelf: "center",
-                      backgroundColor: colors.bgDefault,
-                      borderColor: colors.borderColor,
-                    }}
-                  />
-                ))}
                 <View
                   style={{
                     zIndex: 10,
@@ -271,6 +266,24 @@ function SnapShotScreen() {
                 >
                   <ProposalCard proposal={currentProposal} />
                 </View>
+                {proposalsBackdrop.map((c, i) => (
+                  <View
+                    key={i}
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 16,
+                      padding: 18,
+                      position: "absolute",
+                      top: (i + 1) * -6,
+                      width: `${100 - (i + 1) * 6}%`,
+                      zIndex: -1 * (i + 1),
+                      alignSelf: "center",
+                      backgroundColor: colors.bgDefault,
+                      borderColor: colors.borderColor,
+                      overflow: "visible",
+                    }}
+                  />
+                ))}
               </View>
             </ScrollView>
           </View>
@@ -293,24 +306,47 @@ function SnapShotScreen() {
               Icon={() => (
                 <IconFont
                   name={"close"}
-                  size={20}
+                  size={14}
                   color={colors.darkGray}
                   style={{ marginRight: 4 }}
                 />
               )}
-              buttonContainerStyle={{ width: 115 }}
+              buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
+              buttonContainerStyle={{
+                width: 85,
+                height: 42,
+                paddingVertical: 8,
+              }}
             />
             <View style={{ width: 10, height: 10 }} />
             <Button
               title={i18n.t("vote")}
+              buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
               onPress={() => {
+                const choicesLength = currentProposal?.choices?.length ?? 0;
+                const maxSnapPoint =
+                  choicesLength > 3 ? 50 + choicesLength * 5 : 50;
+                const snapPoint =
+                  maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
                 bottomSheetModalDispatch({
                   type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                   payload: {
-                    bottomSheetViewComponentProps: {
-                      style: {
-                        zIndex: 1000,
-                      },
+                    TitleComponent: () => {
+                      return (
+                        <View>
+                          <Text style={styles.castVoteTitle}>
+                            {i18n.t("castYourVote")}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.castVoteSubtitle,
+                              { color: colors.secondaryGray },
+                            ]}
+                          >
+                            {i18n.t("selectOptionAndConfirmVote")}
+                          </Text>
+                        </View>
+                      );
                     },
                     ModalContent: () => {
                       return (
@@ -321,17 +357,20 @@ function SnapShotScreen() {
                             const newCurrentProposal: Proposal | undefined =
                               proposals.shift();
                             setCurrentProposal(newCurrentProposal);
+                            bottomSheetModalRef?.current?.close();
                           }}
                           navigation={navigation}
                         />
                       );
                     },
                     options: [],
-                    snapPoints: [10, 500],
+                    snapPoints: [10, snapPoint, "95%"],
                     show: true,
+                    scroll: true,
                     icons: [],
                     initialIndex: 1,
                     destructiveButtonIndex: -1,
+                    key: `snapshot-screen-vote-proposal-${currentProposal?.id}`,
                   },
                 });
               }}
@@ -339,12 +378,16 @@ function SnapShotScreen() {
               Icon={() => (
                 <IconFont
                   name={"signature"}
-                  size={20}
+                  size={14}
                   color={colors.white}
-                  style={{ marginRight: 4 }}
+                  style={{ marginRight: 6.5 }}
                 />
               )}
-              buttonContainerStyle={{ width: 115 }}
+              buttonContainerStyle={{
+                width: 98,
+                height: 42,
+                paddingVertical: 8,
+              }}
             />
           </View>
         </View>

@@ -24,9 +24,10 @@ const tagsStyles = (colors: any) => ({
     color: colors.textColor,
     fontFamily: "Calibre-Medium",
     lineHeight: 30,
+    fontSize: 18,
   },
   h1: {
-    fontSize: 30,
+    fontSize: 35,
     fontFamily: "Calibre-Semibold",
     color: colors.textColor,
   },
@@ -36,12 +37,12 @@ const tagsStyles = (colors: any) => ({
     color: colors.textColor,
   },
   h3: {
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: "Calibre-Semibold",
     color: colors.textColor,
   },
   h4: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "Calibre-Semibold",
     color: colors.textColor,
   },
@@ -51,7 +52,7 @@ const tagsStyles = (colors: any) => ({
     color: colors.darkGray,
   },
   h6: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Calibre-Semibold",
     color: colors.darkGray,
   },

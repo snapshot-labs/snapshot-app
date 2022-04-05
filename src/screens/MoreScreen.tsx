@@ -13,6 +13,7 @@ import i18n from "i18n-js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   CONNECT_ACCOUNT_SCREEN,
+  HOME_SCREEN,
   IMPORT_FROM_PRIVATE_KEY_SCREEN,
   LANDING_SCREEN,
   SETTINGS_SCREEN,
@@ -49,6 +50,8 @@ import {
   NOTIFICATIONS_ACTIONS,
   useNotificationsDispatch,
 } from "context/notificationsContext";
+import ConnectWalletButton from "components/wallet/ConnectWalletButton";
+import TrackWalletButton from "components/wallet/TrackWalletButton";
 
 const { width } = Dimensions.get("screen");
 
@@ -241,17 +244,20 @@ function MoreScreen() {
             <ActivityIndicator color={colors.textColor} size="large" />
           </View>
         )}
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate(CONNECT_ACCOUNT_SCREEN);
-          }}
-        >
-          <View style={{ marginTop: 16, paddingLeft: 16 }}>
-            <Text style={[common.h4, { color: colors.textColor }]}>
-              {i18n.t("addWallet")}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <View style={{ paddingHorizontal: 16, marginTop: 24 }}>
+          <ConnectWalletButton
+            onSuccess={() => {
+              bottomSheetModalRef.current.close();
+            }}
+          />
+        </View>
+        <View style={{ paddingHorizontal: 16, marginTop: 24 }}>
+          <TrackWalletButton
+            onSuccess={() => {
+              bottomSheetModalRef.current.close();
+            }}
+          />
+        </View>
         {passwordSet ? (
           <>
             <TouchableOpacity

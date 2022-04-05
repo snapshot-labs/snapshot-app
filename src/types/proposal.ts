@@ -1,16 +1,12 @@
+import { Space } from "types/explore";
+
 export type Proposal = {
   author: string;
   body: string;
   created: number;
   end: number;
   id: string;
-  space: {
-    id: string;
-    name: string;
-    members: [];
-    avatar: string;
-    symbol: string;
-  };
+  space: Space;
   start: number;
   state: string;
   title: string;

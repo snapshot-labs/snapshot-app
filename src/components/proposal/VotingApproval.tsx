@@ -40,6 +40,8 @@ function VotingApproval({
               buttonContainerStyle={{
                 borderRadius: 12,
                 justifyContent: "flex-start",
+                paddingVertical: 14,
+                paddingHorizontal: 9,
               }}
               nativeFeedbackContainerStyle={{ borderRadius: 12 }}
             />

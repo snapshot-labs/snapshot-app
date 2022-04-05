@@ -425,8 +425,9 @@ export default {
   proposalsLeft: "{{count}} proposals left",
   youHaveViewedAllTheLatestProposals:
     "You have viewed all the latest proposals",
-  youNeedToJoinSpaces: "You need to join a space to few active proposals.",
+  youNeedToJoinSpace: "You need to join a space to view active proposals.",
   or: "Or",
   takeATour: "Take a tour",
   anonymous: "Anonymous",
+  selectOptionAndConfirmVote: "Select option and confirm vote",
 };

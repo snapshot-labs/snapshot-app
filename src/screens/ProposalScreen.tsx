@@ -109,6 +109,7 @@ async function getResultsObj(
   setResultsLoaded: (resultsLoaded: boolean) => void
 ) {
   const response = await getResults(space, proposal, votes);
+  console.log(JSON.stringify(response));
   if (response.votes) {
     setVotes(response.votes);
     setResults(response.results);
@@ -139,7 +140,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const navigation: any = useNavigation();
   const [results, setResults] = useState({});
   const [resultsLoaded, setResultsLoaded] = useState<boolean>(false);
-  const [scrollEnabled, setScrollEnabled] = useState<boolean>(true);
   const [proposalError, setProposalError] = useState<boolean>(false);
   const { spaces } = useExploreState();
   const space: any = useMemo(
@@ -244,7 +244,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           </Text>
         </View>
       ) : (
-        <ScrollView scrollEnabled={scrollEnabled}>
+        <ScrollView>
           <View style={{ paddingHorizontal: 16 }}>
             <Text
               style={[
