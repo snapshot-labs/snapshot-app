@@ -44,6 +44,10 @@ function VotingApproval({
                 paddingHorizontal: 9,
               }}
               nativeFeedbackContainerStyle={{ borderRadius: 12 }}
+              buttonTitleStyle={{
+                fontFamily: "Calibre-Semibold",
+                fontSize: 18,
+              }}
             />
           </View>
         );

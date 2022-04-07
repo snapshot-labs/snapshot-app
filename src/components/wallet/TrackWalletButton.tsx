@@ -7,7 +7,7 @@ import {
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import Device from "helpers/device";
-import Input from "components/Input";
+import BottomSheetTextInput from "components/BottomSheetTextInput";
 import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "constants/navigation";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Button from "components/Button";
@@ -54,14 +54,15 @@ function TrackWalletButton({ onSuccess }: TrackWalletButtonProps) {
         bottomSheetModalDispatch({
           type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
           payload: {
-            scroll: true,
-            bottomSheetViewComponentProps: {
-              horizontal: true,
-            },
             TitleComponent: () => {
               return (
                 <View>
-                  <Text style={styles.selectWalletTitle}>
+                  <Text
+                    style={[
+                      styles.selectWalletTitle,
+                      { color: colors.textColor },
+                    ]}
+                  >
                     {i18n.t("trackAnyWallet")}
                   </Text>
                   <Text
@@ -88,7 +89,7 @@ function TrackWalletButton({ onSuccess }: TrackWalletButtonProps) {
                   }}
                 >
                   <View style={{ marginVertical: 16 }}>
-                    <Input
+                    <BottomSheetTextInput
                       value={trackAddress}
                       onChangeText={(text) => {
                         setTrackAddress(text);
@@ -196,7 +197,7 @@ function TrackWalletButton({ onSuccess }: TrackWalletButtonProps) {
             },
             key: "track-wallet",
             show: true,
-            snapPoints: [10, Device.isIos() ? 500 : 250],
+            snapPoints: [10, 250],
             options: [],
             icons: [],
           },

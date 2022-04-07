@@ -138,7 +138,6 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const authDispatch = useAuthDispatch();
-  const navigation = useNavigation();
 
   useEffect(() => {
     fetchWallets(setWallets);
@@ -146,7 +145,8 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
   return (
     <Button
       onPress={() => {
-        const maxSnapPoint = wallets.length > 0 ? wallets.length * 125 : 250;
+        const maxSnapPoint =
+          wallets.length > 0 ? wallets.length * 100 + 30 : 250;
         const snapPoint =
           maxSnapPoint > Device.getDeviceHeight() ? "90%" : maxSnapPoint;
         bottomSheetModalDispatch({

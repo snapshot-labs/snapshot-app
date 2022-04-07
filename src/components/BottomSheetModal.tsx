@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Keyboard,
   Platform,
   StyleSheet,
   Text,
@@ -49,6 +50,7 @@ interface BottomSheetModalProps {
   icons?: { name: string; size?: number; color?: string }[];
   bottomSheetViewComponentProps?: any;
   TitleComponent?: React.FunctionComponent | undefined;
+  bottomSheetProps?: any;
 }
 
 function BottomSheetModal({
@@ -64,6 +66,7 @@ function BottomSheetModal({
   BackDropRenderer = undefined,
   icons = [],
   bottomSheetViewComponentProps = {},
+  bottomSheetProps = {},
   TitleComponent = undefined,
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
@@ -86,6 +89,12 @@ function BottomSheetModal({
       }
       index={initialIndex}
       handleIndicatorStyle={{ backgroundColor: colors.textColor }}
+      onChange={(index) => {
+        if (index < 0) {
+          Keyboard?.dismiss();
+        }
+      }}
+      {...bottomSheetProps}
     >
       {TitleComponent !== undefined && <TitleComponent />}
       <BottomSheetViewComponent {...bottomSheetViewComponentProps}>

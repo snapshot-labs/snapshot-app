@@ -13,7 +13,7 @@ import { PROPOSALS_QUERY, USER_VOTES_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import { useAuthState } from "context/authContext";
-import { getStateFilters } from "constants/proposal";
+import { getStateFilters, VOTING_TYPES } from "constants/proposal";
 import common from "styles/common";
 import Button from "components/Button";
 import uniqBy from "lodash/uniqBy";
@@ -29,7 +29,9 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
+import colors from "constants/colors";
 import CastVoteModal from "components/snapshot/CastVoteModal";
+import { VOTE_CONFIRM_SCREEN, VOTE_SCREEN } from "constants/navigation";
 
 const stateFilters = getStateFilters();
 const LOAD_BY = 100;
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
   },
   proposalsLeftText: {
     fontFamily: "Calibre-Semibold",
-    color: "rgba(247, 164, 38, 1)",
+    color: colors.baseYellow2,
   },
   authorTitle: {
     fontSize: 18,
@@ -292,7 +294,7 @@ function SnapShotScreen() {
               styles.actionButtonsContainer,
               {
                 borderTopColor: colors.borderColor,
-                backgroundColor: colors.bgDefault,
+                backgroundColor: colors.navBarBg,
               },
             ]}
           >
@@ -328,6 +330,11 @@ function SnapShotScreen() {
                   choicesLength > 3 ? 50 + choicesLength * 5 : 50;
                 const snapPoint =
                   maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
+                const voteSubtitle =
+                  currentProposal?.type === VOTING_TYPES.rankedChoice
+                    ? i18n.t("selectAndDragOptionsToSortYourVote")
+                    : i18n.t("selectOptionAndConfirmVote");
+
                 bottomSheetModalDispatch({
                   type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                   payload: {
@@ -343,7 +350,7 @@ function SnapShotScreen() {
                               { color: colors.secondaryGray },
                             ]}
                           >
-                            {i18n.t("selectOptionAndConfirmVote")}
+                            {voteSubtitle}
                           </Text>
                         </View>
                       );
@@ -366,7 +373,7 @@ function SnapShotScreen() {
                     options: [],
                     snapPoints: [10, snapPoint, "95%"],
                     show: true,
-                    scroll: true,
+                    scroll: currentProposal?.type !== VOTING_TYPES.rankedChoice,
                     icons: [],
                     initialIndex: 1,
                     destructiveButtonIndex: -1,

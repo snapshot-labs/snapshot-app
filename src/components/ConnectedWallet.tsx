@@ -68,9 +68,9 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
   const authDispatch = useAuthDispatch();
   const engineDispatch = useEngineDispatch();
   const notificationsDispatch = useNotificationsDispatch();
-  const profile = profiles[address];
+  const profile = profiles[address.toLowerCase()];
   const ens = get(profile, "ens", undefined);
-  const walletName = get(savedWallets, `${address}.name`);
+  const walletName = get(savedWallets, `${address.toLowerCase()}.name`);
   const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
   const [checksumAddress, setChecksumAddress] = useState(address);
 

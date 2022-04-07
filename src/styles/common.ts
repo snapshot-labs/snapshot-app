@@ -30,16 +30,19 @@ const common = StyleSheet.create({
     color: colors.headingColor,
   },
   h1: {
-    fontSize: 36,
-    fontWeight: "500",
+    fontSize: 35,
+    fontFamily: "Calibre-Semibold",
+  },
+  h2: {
+    fontSize: 28,
     fontFamily: "Calibre-Semibold",
   },
   h3: {
-    fontSize: 26,
+    fontSize: 22,
     fontFamily: "Calibre-Semibold",
   },
   h4: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "Calibre-Semibold",
   },
   headerContainer: {

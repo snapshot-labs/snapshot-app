@@ -179,7 +179,10 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
       <View
         style={[
           styles.proposalPreviewContainer,
-          { borderColor: colors.borderColor },
+          {
+            borderColor: colors.borderColor,
+            backgroundColor: colors.bgDefault,
+          },
         ]}
       >
         <View style={styles.header}>

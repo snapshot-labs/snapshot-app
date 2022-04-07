@@ -6,6 +6,7 @@ import { ContextDispatch } from "../types/context";
 import { EXPLORE_ACTIONS } from "../context/exploreContext";
 import { shorten } from "./miscUtils";
 import i18n from "i18n-js";
+import { ethers } from "ethers";
 
 function get3BoxProfiles(addresses: string[]) {
   return new Promise((resolove, reject) => {
@@ -76,7 +77,9 @@ function lookupAddresses(addresses: string[]) {
 }
 
 export async function getProfiles(addresses: string[]) {
-  addresses = addresses.slice(0, 1000);
+  addresses = addresses.slice(0, 1000).map((address) => {
+    return ethers.utils.getAddress(address);
+  });
   let ensNames: any = {};
   let _3BoxProfiles: any = {};
   try {
@@ -89,8 +92,9 @@ export async function getProfiles(addresses: string[]) {
   }
 
   const profiles = Object.fromEntries(
-    addresses.map((address: string) => [address, {}])
+    addresses.map((address: string) => [address.toLowerCase(), {}])
   );
+
   return Object.fromEntries(
     Object.entries(profiles).map(([address, profile]: any) => {
       profile = _3BoxProfiles[address.toLowerCase()] || {};

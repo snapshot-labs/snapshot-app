@@ -55,6 +55,7 @@ import appConstants from "constants/app";
 import WelcomeScreen from "screens/WelcomeScreen";
 import ExploreScreen from "screens/ExploreScreen";
 import AllFeedScreen from "screens/AllFeedScreen";
+import ProposalScreenNew from "screens/ProposalScreenNew";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -125,7 +126,7 @@ function TabNavigator() {
         headerShown: false,
         tabBarActiveTintColor: colors.textColor,
         tabBarStyle: {
-          backgroundColor: colors.bgDefault,
+          backgroundColor: colors.navBarBg,
           shadowOpacity: 0,
           height: isOldIphone() ? 60 : Platform.OS === "android" ? 68 : 90,
           borderTopWidth: 1,

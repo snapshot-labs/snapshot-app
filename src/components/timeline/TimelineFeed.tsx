@@ -381,7 +381,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                       <Carousel
                         ref={carouselRef}
                         data={votedProposals}
-                        renderItem={({ item, index }) => {
+                        renderItem={({ item }) => {
                           const proposalIndex = votedProposals.findIndex(
                             (votedProposal: any) => {
                               return (

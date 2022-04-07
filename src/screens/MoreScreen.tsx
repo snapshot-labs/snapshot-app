@@ -52,6 +52,7 @@ import {
 } from "context/notificationsContext";
 import ConnectWalletButton from "components/wallet/ConnectWalletButton";
 import TrackWalletButton from "components/wallet/TrackWalletButton";
+import { ethers } from "ethers";
 
 const { width } = Dimensions.get("screen");
 
@@ -190,7 +191,10 @@ function MoreScreen() {
     const profilesArray = Object.keys(profiles);
     const addressArray: string[] = Object.keys(savedWallets);
     const filteredArray = addressArray.filter((address) => {
-      return !profilesArray.includes(address);
+      return (
+        !profilesArray.includes(address.toLowerCase()) &&
+        ethers.utils.isAddress(address)
+      );
     });
 
     if (filteredArray.length > 0) {

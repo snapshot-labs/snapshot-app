@@ -8,34 +8,42 @@ export const STATES = {
 
 export const getStateFilters = () => [
   { key: "all", text: i18n.t("all") },
-  { key: "active", text: i18n.t("active") },
-  { key: "pending", text: i18n.t("pending") },
-  { key: "closed", text: i18n.t("closed") },
+  { key: STATES.active, text: i18n.t("active") },
+  { key: STATES.pending, text: i18n.t("pending") },
+  { key: STATES.closed, text: i18n.t("closed") },
 ];
+
+export const VOTING_TYPES = {
+  singleChoice: "single-choice",
+  approval: "approval",
+  quadratic: "quadratic",
+  rankedChoice: "ranked-choice",
+  weighted: "weighted",
+};
 
 export const getVotingTypes = () => [
   {
-    key: "single-choice",
+    key: VOTING_TYPES.singleChoice,
     text: i18n.t("singleChoiceVoting"),
     description: i18n.t("singleChoiceVotingDescription"),
   },
   {
-    key: "approval",
+    key: VOTING_TYPES.approval,
     text: i18n.t("approvalVoting"),
     description: i18n.t("approvalVotingDescription"),
   },
   {
-    key: "quadratic",
+    key: VOTING_TYPES.quadratic,
     text: i18n.t("quadraticVoting"),
     description: i18n.t("quadraticVotingDescription"),
   },
   {
-    key: "ranked-choice",
+    key: VOTING_TYPES.rankedChoice,
     text: i18n.t("rankedChoiceVoting"),
     description: i18n.t("rankedChoiceVotingDescription"),
   },
   {
-    key: "weighted",
+    key: VOTING_TYPES.weighted,
     text: i18n.t("weightedVoting"),
     description: i18n.t("weightedVotingDescription"),
   },
@@ -51,4 +59,5 @@ export default {
   getVotingTypes,
   getStateFilters,
   NOTIFICATION_EVENTS,
+  VOTING_TYPES,
 };

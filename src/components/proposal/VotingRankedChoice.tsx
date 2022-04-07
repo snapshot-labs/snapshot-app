@@ -1,15 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { View, Dimensions, TouchableOpacity, Text } from "react-native";
-import { DragSortableView } from "react-native-drag-sort";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { getNumberWithOrdinal } from "helpers/numUtils";
-import i18n from "i18n-js";
 import Button from "../Button";
 import IconFont from "../IconFont";
 import { useAuthState } from "context/authContext";
 import compact from "lodash/compact";
-import common from "styles/common";
+import colors from "constants/colors";
+import DraggableFlatList from "react-native-draggable-flatlist";
 
-const { width } = Dimensions.get("screen");
+const styles = StyleSheet.create({
+  rankedChoiceSelected: {
+    backgroundColor: "transparent",
+    borderRadius: 12,
+    justifyContent: "flex-start",
+    paddingVertical: 14,
+    paddingHorizontal: 9,
+    alignItems: "center",
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: colors.blueButtonBg,
+  },
+  rankedChoiceOrderNumber: {
+    backgroundColor: "rgba(55, 114, 255, 0.3)",
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    marginHorizontal: 9,
+    borderRadius: 6,
+  },
+  rankedChoiceOrderNumberText: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 14,
+    color: colors.blueButtonBg,
+  },
+  rankedChoiceSelectedText: {
+    fontFamily: "Calibre-Semibold",
+    fontSize: 18,
+  },
+  removeButtonTouchable: { position: "absolute", right: 16, top: 16 },
+  removeButtonContainer: {
+    height: 18,
+    width: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.blueButtonBg,
+    borderRadius: 9,
+  },
+});
 
 function getRemovedChoices(
   originalChoices: string[],
@@ -83,17 +119,14 @@ function VotingRankedChoice({
 
   return (
     <View>
-      <DragSortableView
-        dataSource={proposalChoices}
-        parentWidth={width - 32}
-        childrenWidth={width - 32}
-        childrenHeight={70}
-        scaleStatus={"scaleY"}
-        onDataChange={(data: any) => {
+      <DraggableFlatList
+        data={proposalChoices}
+        onDragEnd={({ data }) => {
+          setProposalChoices(data);
           setSelectedChoicesIndex(proposal.choices, data, setSelectedChoices);
         }}
-        keyExtractor={(item, index) => `${item}${index}`} // FlatList作用一样，优化
-        renderItem={(item, index) => {
+        keyExtractor={(item, index) => `${item}${index}`}
+        renderItem={({ item, index, drag }) => {
           return (
             <>
               <View
@@ -101,20 +134,28 @@ function VotingRankedChoice({
                   paddingBottom: 10,
                 }}
               >
-                <Button
-                  title={`(${getNumberWithOrdinal(index + 1)}) ${item.title}`}
-                  onPress={() => {}}
-                  onlyOneLine
-                  buttonContainerStyle={{
-                    width: width - 28,
-                    borderRadius: 12,
-                    justifyContent: "flex-start",
-                    paddingVertical: 14,
-                    paddingHorizontal: 9,
-                  }}
-                  nativeFeedbackContainerStyle={{ borderRadius: 12 }}
-                  selected
-                />
+                <TouchableOpacity onLongPress={drag}>
+                  <View style={styles.rankedChoiceSelected}>
+                    <IconFont
+                      name="draggable"
+                      color={colors.blueButtonBg}
+                      size={18}
+                    />
+                    <View style={styles.rankedChoiceOrderNumber}>
+                      <Text style={styles.rankedChoiceOrderNumberText}>
+                        {getNumberWithOrdinal(index + 1)}
+                      </Text>
+                    </View>
+                    <Text
+                      style={[
+                        styles.rankedChoiceSelectedText,
+                        { color: colors.textColor },
+                      ]}
+                    >
+                      {item.title}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     const copyArray = [...proposalChoices].filter(
@@ -129,9 +170,11 @@ function VotingRankedChoice({
                       setSelectedChoices
                     );
                   }}
-                  style={{ position: "absolute", right: 16, top: 16 }}
+                  style={styles.removeButtonTouchable}
                 >
-                  <IconFont name="close" color={colors.textColor} size={20} />
+                  <View style={styles.removeButtonContainer}>
+                    <IconFont name="close" color={colors.white} size={11} />
+                  </View>
                 </TouchableOpacity>
               </View>
             </>
@@ -167,6 +210,10 @@ function VotingRankedChoice({
                 paddingHorizontal: 9,
               }}
               nativeFeedbackContainerStyle={{ borderRadius: 12 }}
+              buttonTitleStyle={{
+                fontFamily: "Calibre-Semibold",
+                fontSize: 18,
+              }}
             />
           </View>
         );

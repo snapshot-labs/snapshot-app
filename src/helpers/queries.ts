@@ -86,6 +86,7 @@ export const PROPOSALS_QUERY = gql`
       scores_total
       scores
       votes
+      quorum
     }
   }
 `;
@@ -183,11 +184,13 @@ export const SPACES_QUERY = gql`
       admins
       categories
       plugins
+      followersCount
       voting {
         delay
         period
         type
         quorum
+        hideAbstain
       }
       strategies {
         name

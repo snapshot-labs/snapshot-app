@@ -13,6 +13,8 @@ import MarkdownBody from "components/proposal/MarkdownBody";
 import { n, toNow } from "helpers/miscUtils";
 import { getPower } from "helpers/snapshot";
 import UserAvatar from "components/UserAvatar";
+import colors from "constants/colors";
+import common from "styles/common";
 
 const styles = StyleSheet.create({
   proposalCardContainer: {
@@ -21,21 +23,26 @@ const styles = StyleSheet.create({
     padding: 18,
     minHeight: Device.getDeviceHeight(),
   },
-  proposalCardHeader: {
-    flexDirection: "row",
+  spaceTitleAuthorTitleContainer: {
+    marginLeft: 9,
   },
   authorTitle: {
     fontSize: 14,
-    fontFamily: "Calibre-Medium",
+    fontFamily: "Calibre-Semibold",
   },
   spaceTitle: {
-    fontSize: 22,
+    fontSize: 14,
     fontFamily: "Calibre-Semibold",
   },
   proposalTitle: {
     fontSize: 22,
     fontFamily: "Calibre-Medium",
     marginTop: 28,
+  },
+  startedTimeText: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 14,
+    color: colors.secondaryGray,
   },
   timeLeftTitle: {
     fontSize: 14,
@@ -56,7 +63,7 @@ const styles = StyleSheet.create({
   },
   proposalEndText: {
     fontFamily: "Calibre-Semibold",
-    color: "rgba(39, 174, 96, 1)",
+    color: colors.baseGreen2,
     fontSize: 14,
   },
   votingPowerContainer: {
@@ -102,7 +109,9 @@ function ProposalCard({ proposal }: ProposalCardProps) {
     connectedAddress ?? ""
   );
   const navigation: any = useNavigation();
-  const proposalEnd = toNow(proposal?.end ?? 0);
+  const proposalEnd = i18n.t("endsInTimeAgo", {
+    timeAgo: toNow(proposal?.end),
+  });
 
   useEffect(() => {
     loadPower(connectedAddress, proposal, setTotalScore);
@@ -115,44 +124,44 @@ function ProposalCard({ proposal }: ProposalCardProps) {
         { backgroundColor: colors.bgDefault, borderColor: colors.borderColor },
       ]}
     >
-      <View style={styles.proposalTimeLeftContainer}>
-        <View style={styles.proposalEndContainer}>
-          <Text style={styles.proposalEndText}>{proposalEnd}</Text>
-        </View>
-        <View
-          style={[
-            styles.votingPowerContainer,
-            { backgroundColor: colors.votingPowerBgColor },
-          ]}
-        >
-          <UserAvatar address={connectedAddress} size={14} />
-          <Text style={[styles.votingPowerText, { color: colors.textColor }]}>
-            {n(totalScore)} {proposal?.space?.symbol}
-          </Text>
-        </View>
-      </View>
-      <View style={styles.proposalCardHeader}>
+      <View style={common.row}>
         <SpaceAvatar
           size={35}
           space={proposal?.space}
           symbolIndex="space"
           key={proposal?.space?.name}
         />
-        <View style={{ marginLeft: 9 }}>
-          <Text style={[styles.spaceTitle, { color: colors.textColor }]}>
-            {proposal?.space?.name}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push(USER_PROFILE, {
-                address: proposal?.author,
-              });
-            }}
-          >
-            <Text style={[styles.authorTitle, { color: colors.secondaryGray }]}>
-              {i18n.t("by")} {authorName}
+        <View style={styles.spaceTitleAuthorTitleContainer}>
+          <View style={common.row}>
+            <Text style={[styles.spaceTitle, { color: colors.textColor }]}>
+              {proposal?.space?.name}
             </Text>
-          </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: "Calibre-Semibold",
+                fontSize: 14,
+                color: colors.secondaryGray,
+              }}
+            >
+              {` ${i18n.t("by")} `}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.push(USER_PROFILE, {
+                  address: proposal?.author,
+                });
+              }}
+            >
+              <Text style={[styles.authorTitle, { color: colors.textColor }]}>
+                {authorName}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <Text style={styles.startedTimeText}>
+              {i18n.t("startedTimeAgo", { timeAgo: toNow(proposal.start) })}
+            </Text>
+          </View>
         </View>
       </View>
       <View>
@@ -167,6 +176,22 @@ function ProposalCard({ proposal }: ProposalCardProps) {
             marginVertical: 28,
           }}
         />
+        <View style={styles.proposalTimeLeftContainer}>
+          <View style={styles.proposalEndContainer}>
+            <Text style={styles.proposalEndText}>{proposalEnd}</Text>
+          </View>
+          <View
+            style={[
+              styles.votingPowerContainer,
+              { backgroundColor: colors.votingPowerBgColor },
+            ]}
+          >
+            <UserAvatar address={connectedAddress} size={14} />
+            <Text style={[styles.votingPowerText, { color: colors.textColor }]}>
+              {n(totalScore)} {proposal?.space?.symbol}
+            </Text>
+          </View>
+        </View>
         <MarkdownBody body={proposal?.body ?? ""} />
       </View>
     </View>

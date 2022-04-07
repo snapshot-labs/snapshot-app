@@ -166,7 +166,7 @@ export default {
   share: "Share",
   startedTimeAgo: "started {{timeAgo}} ago",
   endedTimeAgo: "ended {{timeAgo}} ago",
-  endsInTimeAgo: "ends in {{timeAgo}}",
+  endsInTimeAgo: "Ends in {{timeAgo}}",
   startsInTimeAgo: "starts in {{timeAgo}}",
   noNewNotifications: "No new notifications",
   createWallet: "Creating wallet...",
@@ -412,7 +412,7 @@ export default {
   wallets: "Wallets",
   noWalletsFound: "No wallets found",
   popularWallets: "Popular wallets",
-  closedProposalsYouVoted: "Closed Proposals You Voted",
+  closedProposalsYouVoted: "Closed   Proposals You Voted",
   spacesYouJoined: "Spaces you joined",
   welcomeToSnapshot: "Welcome to Snapshot",
   trackWallet: "Track wallet",
@@ -430,4 +430,7 @@ export default {
   takeATour: "Take a tour",
   anonymous: "Anonymous",
   selectOptionAndConfirmVote: "Select option and confirm vote",
+  selectAndDragOptionsToSortYourVote:
+    "Select and drag options to sort your vote",
+  info: "Info",
 };

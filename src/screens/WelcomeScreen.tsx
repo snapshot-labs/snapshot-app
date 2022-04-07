@@ -50,7 +50,9 @@ function WelcomeScreen() {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={common.screen}>
+    <SafeAreaView
+      style={[common.screen, { backgroundColor: colors.bgDefault }]}
+    >
       <View style={styles.content}>
         <View style={styles.logoWelcomeTextContainer}>
           <View
@@ -61,7 +63,9 @@ function WelcomeScreen() {
           >
             <IconFont name="snapshot" size={40} color={colors.yellow} />
           </View>
-          <Text style={styles.welcomeText}>{i18n.t("welcomeToSnapshot")}</Text>
+          <Text style={[styles.welcomeText, { color: colors.textColor }]}>
+            {i18n.t("welcomeToSnapshot")}
+          </Text>
           <Text style={[styles.description, { color: colors.darkGray }]}>
             {i18n.t("whereDecisionsGetMade")}
           </Text>

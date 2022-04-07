@@ -9115,10 +9115,10 @@ react-native-device-info@^8.4.1:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.4.1.tgz#21d1cf0c7bc8476a20c82f0dde968f1660261674"
   integrity sha512-O+G0wUXAc3196CUAs/C/ugIvIUvTMPvw7gixStZyXOpOGwGQKWx6if1YV1qLD5oPldxSvg17CdgB91yOLniKEA==
 
-react-native-drag-sort@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/react-native-drag-sort/-/react-native-drag-sort-2.4.4.tgz#7c7aeea8729423a920b8db5900ea3c704ee1ff29"
-  integrity sha512-MixkgMzybt8tn9m850YK5VOSlicytV41mOp/b1gAE7cK94bou27ApvVJH9oCM61vY5EN6g9VT5PwLOahbYc+BQ==
+react-native-draggable-flatlist@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-3.0.7.tgz#1baba5101a8fa85efaadef33e2e109d51f5fb331"
+  integrity sha512-osza+3J14OOlTBJpwUyGXyUyXoo7imUMy1SzjMhotVAjb8Gul/vmOJf0hScuwgaZvRZXAFqa55DBAldoCW73FQ==
 
 react-native-emoji@^1.8.0:
   version "1.8.0"

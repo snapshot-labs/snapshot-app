@@ -15,7 +15,6 @@ import ProposalPreview from "../components/ProposalPreview";
 import { Proposal } from "types/proposal";
 import common from "../styles/common";
 import i18n from "i18n-js";
-import colors from "../constants/colors";
 import proposal from "../constants/proposal";
 import ProposalFilters from "components/proposal/ProposalFilters";
 import {
@@ -24,17 +23,9 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackButton from "components/BackButton";
+import { useAuthState } from "context/authContext";
 
 const LOAD_BY = 6;
-
-const styles = StyleSheet.create({
-  timelineTitle: {
-    fontFamily: "Calibre-Semibold",
-    fontSize: 22,
-  },
-  feedHeader: { paddingHorizontal: 16 },
-});
 
 async function getProposals(
   loadCount: number,
@@ -70,6 +61,7 @@ async function getProposals(
 }
 
 function AllFeedScreen() {
+  const { colors } = useAuthState();
   const [loadCount, setLoadCount] = useState<number>(0);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -102,6 +94,7 @@ function AllFeedScreen() {
           common.containerHorizontalPadding,
           {
             backgroundColor: colors.bgDefault,
+            borderColor: colors.borderColor,
           },
         ]}
       >

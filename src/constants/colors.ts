@@ -3,7 +3,7 @@ const defaultColors = {
   black: "#111111",
   darkGray: "#576069",
   bgPurple: "rgba(124,58,237, 1)",
-  bgGreen: "#21B66F",
+  bgGreen: "#27AE60",
   bgGray: "#6B7280",
   bgBlue: "#384aff",
   bgLightGray: "#f6f8fa",
@@ -13,31 +13,40 @@ const defaultColors = {
   yellow: "rgba(243,176,78, 1)",
   blockQuotesBorder: "#dfe2e5",
   blueButtonBg: "#3772FF",
+  darkBlueButtonBg: "#0049F5",
   secondaryGray: "#A1A9BA",
   disabledButtonBg: "rgba(55, 114, 255, 0.5)",
+  baseGreen: "#27AE60",
+  baseGreen2: "#219653",
+  baseYellow: "#F9BB60",
+  baseYellow2: "#F7A426",
+  basePurple: "#BB6BD9",
+  basePurple2: "#9B51E0",
 };
 const light = {
-  borderColor: "#d0d7de",
+  borderColor: "#C1C6D7",
   headingColor: "#111111",
   textColor: "#111111",
   secondaryTextColor: defaultColors.darkGray,
-  bgDefault: "#fff",
+  bgDefault: "#FCFCFC",
   indicatorColor: defaultColors.darkGray,
   settingsIconBgColor: "rgba(0,0,0,.2)",
   categoriesBgColor: "#eef2f5",
   votingPowerBgColor: "#F3F4F7",
+  navBarBg: "#F3F4F7",
 };
 
 const dark = {
-  borderColor: "rgb(66, 66, 66)",
+  borderColor: "#333948",
   headingColor: defaultColors.white,
   textColor: defaultColors.white,
   secondaryTextColor: defaultColors.darkGray,
-  bgDefault: "#121212",
+  bgDefault: "#08090C",
   indicatorColor: defaultColors.white,
   settingsIconBgColor: "rgba(255,255,255,.2)",
   categoriesBgColor: "rgba(255,255,255,.05)",
   votingPowerBgColor: "#181C25",
+  navBarBg: "#181C25",
 };
 
 const colorScheme: any = { ...defaultColors, ...light };
