@@ -165,7 +165,7 @@ function authReducer(state: AuthState, action: ContextAction) {
       return { ...state, votedProposals: action.payload };
     case AUTH_ACTIONS.LOGOUT: {
       storage.clearAll();
-      return { ...state };
+      return { ...initialState, theme: state.theme };
     }
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

@@ -139,7 +139,7 @@ function TabNavigator() {
       <Tab.Screen
         name="Feed"
         component={
-          connectedAddress.toLowerCase() ===
+          connectedAddress?.toLowerCase() ===
           appConstants.ANONYMOUS_ADDRESS.toLowerCase()
             ? AllFeedScreen
             : FeedScreen

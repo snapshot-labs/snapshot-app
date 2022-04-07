@@ -109,7 +109,7 @@ function Button({
                   backgroundColor: colors.blueButtonBg,
                   borderColor: colors.blueButtonBg,
                 }
-              : {},
+              : { borderColor: colors.borderColor },
             buttonContainerStyle,
           ]}
         >

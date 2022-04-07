@@ -106,7 +106,7 @@ function ActiveAccount({ address }: ActiveAccountProps) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {address.toLowerCase() ===
+              {address?.toLowerCase() ===
               appConstants.ANONYMOUS_ADDRESS.toLowerCase()
                 ? i18n.t("anonymous")
                 : shorten(checksumAddress ?? "")}

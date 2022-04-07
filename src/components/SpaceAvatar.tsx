@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Animated } from "react-native";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
-import { Image } from "react-native";
+import { Image, View } from "react-native";
 import { Space } from "types/explore";
 import makeBlockie from "ethereum-blockies-base64";
 import isEmpty from "lodash/isEmpty";
@@ -32,17 +31,11 @@ interface AvatarProps {
   symbolIndex?: string | number;
   size: number;
   space?: Space | { id?: string; avatar: string };
-  isAnimated?: boolean;
-  animatedProps?: any;
 }
 
-function SpaceAvatar({
-  symbolIndex,
-  space,
-  size,
-  isAnimated,
-  animatedProps,
-}: AvatarProps) {
+function SpaceAvatar({ symbolIndex, space, size }: AvatarProps) {
+  if (isEmpty(space)) return <View />;
+
   const url = createUrl(symbolIndex, space);
   const [blockie, setBlockie] = useState<string | null>(
     isEmpty(url) ? makeBlockie(space?.id ?? "") : null
@@ -51,21 +44,6 @@ function SpaceAvatar({
 
   if (blockie) {
     imgSrc = { uri: blockie };
-  }
-
-  if (isAnimated) {
-    return (
-      <Animated.View {...animatedProps}>
-        <Image
-          source={imgSrc}
-          style={{ flex: 1, width: null, height: null, borderRadius: size / 2 }}
-          onError={() => {
-            const blockie = makeBlockie(space?.id ?? "");
-            setBlockie(blockie);
-          }}
-        />
-      </Animated.View>
-    );
   }
 
   return (

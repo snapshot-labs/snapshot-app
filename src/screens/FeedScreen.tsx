@@ -118,7 +118,10 @@ function FeedScreen() {
   const toastShowConfig = useToastShowConfig();
 
   const notificationsInit = (): void => {
-    if (savedWallets[connectedAddress]?.name !== CUSTOM_WALLET_NAME) {
+    if (
+      savedWallets[connectedAddress]?.name !== CUSTOM_WALLET_NAME &&
+      !isEmpty(connectedAddress)
+    ) {
       const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
 
       RNPusherPushNotifications.setInstanceId(Config.PUSHER_APP_ID);
@@ -220,7 +223,7 @@ function FeedScreen() {
   }, []);
 
   useEffect(() => {
-    if (!isInitial) {
+    if (!isInitial && !isEmpty(connectedAddress)) {
       getFollows(connectedAddress, authDispatch, setIsInitial);
       getSubscriptions(connectedAddress ?? "", authDispatch);
       getProposals(connectedAddress ?? "", authDispatch);

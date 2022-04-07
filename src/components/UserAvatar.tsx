@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
-import { Image } from "react-native";
+import { Image, View } from "react-native";
 import isEmpty from "lodash/isEmpty";
 import makeBlockie from "ethereum-blockies-base64";
 
@@ -25,7 +25,7 @@ function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
   };
 
   if (isEmpty(address)) {
-    return null;
+    return <View />;
   }
 
   return (
