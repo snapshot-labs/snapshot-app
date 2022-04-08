@@ -17,6 +17,7 @@ import { ethers } from "ethers";
 import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import appConstants from "constants/app";
+import {getUserProfile} from "helpers/profile";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -36,10 +37,10 @@ interface ActiveAccountProps {
   address: string;
 }
 
-function ActiveAccount({ address }: ActiveAccountProps) {
+function ActiveAccount({ address = "" }: ActiveAccountProps) {
   const { colors } = useAuthState();
   const { profiles } = useExploreState();
-  const profile = profiles[address];
+  const profile = getUserProfile(address, profiles);
   const ens = get(profile, "ens", undefined);
   const toastShowConfig = useToastShowConfig();
   const navigation: any = useNavigation();

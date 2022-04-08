@@ -225,8 +225,8 @@ function FeedScreen() {
   useEffect(() => {
     if (!isInitial && !isEmpty(connectedAddress)) {
       getFollows(connectedAddress, authDispatch, setIsInitial);
-      getSubscriptions(connectedAddress ?? "", authDispatch);
-      getProposals(connectedAddress ?? "", authDispatch);
+      getSubscriptions(connectedAddress, authDispatch);
+      getProposals(connectedAddress, authDispatch);
     }
   }, [connectedAddress]);
 

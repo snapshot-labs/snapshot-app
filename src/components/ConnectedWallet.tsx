@@ -34,6 +34,7 @@ import WalletType from "components/wallet/WalletType";
 import { ethers } from "ethers";
 import appConstants from "constants/app";
 import i18n from "i18n-js";
+import { getUserProfile } from "helpers/profile";
 
 const styles = StyleSheet.create({
   connectedAddressContainer: {
@@ -60,7 +61,7 @@ interface ConnectedWalletProps {
   address: string;
 }
 
-function ConnectedWallet({ address }: ConnectedWalletProps) {
+function ConnectedWallet({ address = "" }: ConnectedWalletProps) {
   const { savedWallets, aliases, colors, snapshotWallets }: any =
     useAuthState();
   const { preferencesController } = useEngineState();
@@ -68,9 +69,9 @@ function ConnectedWallet({ address }: ConnectedWalletProps) {
   const authDispatch = useAuthDispatch();
   const engineDispatch = useEngineDispatch();
   const notificationsDispatch = useNotificationsDispatch();
-  const profile = profiles[address.toLowerCase()];
+  const profile = getUserProfile(address, profiles);
   const ens = get(profile, "ens", undefined);
-  const walletName = get(savedWallets, `${address.toLowerCase()}.name`);
+  const walletName = get(savedWallets, `${address?.toLowerCase()}.name`);
   const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
   const [checksumAddress, setChecksumAddress] = useState(address);
 

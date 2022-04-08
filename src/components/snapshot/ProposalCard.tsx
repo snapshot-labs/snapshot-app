@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import SpaceAvatar from "components/SpaceAvatar";
-import { getUsername } from "helpers/profile";
+import { getUsername, getUserProfile } from "helpers/profile";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
 import Device from "helpers/device";
@@ -99,9 +99,9 @@ interface ProposalCardProps {
 }
 
 function ProposalCard({ proposal }: ProposalCardProps) {
-  const { colors, connectedAddress, theme } = useAuthState();
+  const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
-  const authorProfile = profiles[proposal?.author ?? ""];
+  const authorProfile = getUserProfile(proposal?.author, profiles);
   const [totalScore, setTotalScore] = useState(0);
   const authorName = getUsername(
     proposal?.author ?? "",

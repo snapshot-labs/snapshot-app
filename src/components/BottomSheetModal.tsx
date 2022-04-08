@@ -83,6 +83,7 @@ function BottomSheetModal({
       animateOnMount
       backgroundStyle={{
         backgroundColor: colors.bgDefault,
+        borderRadius: 20,
       }}
       backdropComponent={
         BackDropRenderer !== undefined ? BackDropRenderer : renderBackdrop

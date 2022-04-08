@@ -18,7 +18,7 @@ import colors from "constants/colors";
 import networksJson from "@snapshot-labs/snapshot.js/src/networks.json";
 import { n } from "helpers/miscUtils";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import { getUsername, setProfiles } from "helpers/profile";
+import { getUsername, getUserProfile, setProfiles } from "helpers/profile";
 import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
 import { USER_PROFILE } from "constants/navigation";
@@ -189,7 +189,7 @@ function AboutSpace({
               {i18n.t("admins")}
             </Text>
             {space.admins.map((admin: string, i: number) => {
-              const adminProfile = profiles[admin];
+              const adminProfile = getUserProfile(admin, profiles);
               const adminName = getUsername(
                 admin,
                 adminProfile,
@@ -237,7 +237,7 @@ function AboutSpace({
               {i18n.t("authors")}
             </Text>
             {space.members.map((member: string, i: number) => {
-              const memberProfile = profiles[member];
+              const memberProfile = getUserProfile(member, profiles);
               const memberName = getUsername(
                 member,
                 memberProfile,

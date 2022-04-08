@@ -15,7 +15,7 @@ import colors from "constants/colors";
 import { Space } from "types/explore";
 import { Proposal } from "types/proposal";
 import { useAuthState } from "context/authContext";
-import { getUsername } from "helpers/profile";
+import { getUsername, getUserProfile } from "helpers/profile";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
@@ -56,7 +56,7 @@ interface VoteRowProps {
 
 function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
   const { connectedAddress, colors } = useAuthState();
-  const voterProfile = profiles[vote.voter];
+  const voterProfile = getUserProfile(vote.voter, profiles);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
   const navigation: any = useNavigation();

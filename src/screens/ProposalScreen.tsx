@@ -33,7 +33,7 @@ import { SPACE_SCREEN, USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import ProposalVoteButton from "components/proposal/ProposalVoteButton";
 import Device from "helpers/device";
-import { getUsername } from "helpers/profile";
+import { getUsername, getUserProfile } from "helpers/profile";
 
 interface ProposalScreenProps {
   route: {
@@ -148,7 +148,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const insets = useSafeAreaInsets();
   const bottomSheetRef: any = useRef();
   const [showProposalBottomSheet, setShowProposalBottomSheet] = useState(false);
-  const authorProfile = profiles[proposal.author];
+  const authorProfile = getUserProfile(proposal.author, profiles);
   const authorName = getUsername(
     proposal.author,
     authorProfile,

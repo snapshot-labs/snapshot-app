@@ -18,7 +18,7 @@ import removeMd from "remove-markdown";
 import i18n from "i18n-js";
 import { useExploreState } from "context/exploreContext";
 import { Space } from "types/explore";
-import { getUsername } from "helpers/profile";
+import { getUsername, getUserProfile } from "helpers/profile";
 import isEmpty from "lodash/isEmpty";
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import SpaceAvatar from "./SpaceAvatar";
@@ -145,7 +145,7 @@ function ProposalPreview({ proposal, space }: ProposalPreviewProps) {
     () => getPeriod(proposal.state, proposal.start, proposal.end, proposal),
     [proposal]
   );
-  const authorProfile = profiles[proposal.author];
+  const authorProfile = getUserProfile(proposal.author, profiles);
   const authorName = getUsername(
     proposal.author,
     authorProfile,

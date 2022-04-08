@@ -146,7 +146,7 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
     <Button
       onPress={() => {
         const maxSnapPoint =
-          wallets.length > 0 ? wallets.length * 100 + 30 : 250;
+          wallets.length > 0 ? wallets.length * 84 + 60 : 250;
         const snapPoint =
           maxSnapPoint > Device.getDeviceHeight() ? "90%" : maxSnapPoint;
         bottomSheetModalDispatch({

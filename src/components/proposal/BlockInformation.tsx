@@ -17,7 +17,7 @@ import { Space } from "types/explore";
 import UserAvatar from "../UserAvatar";
 import SpaceAvatar from "../SpaceAvatar";
 import { useExploreState } from "context/exploreContext";
-import { getUsername } from "helpers/profile";
+import { getUsername, getUserProfile } from "helpers/profile";
 import CoreBadge from "../CoreBadge";
 import { useAuthState } from "context/authContext";
 import { USER_PROFILE } from "constants/navigation";
@@ -72,7 +72,7 @@ interface BlockInformationProps {
 function BlockInformation({ proposal, space }: BlockInformationProps) {
   const { profiles } = useExploreState();
   const { connectedAddress, colors } = useAuthState();
-  const authorProfile = profiles[proposal.author];
+  const authorProfile = getUserProfile(proposal.author, profiles);
   const authorName = getUsername(
     proposal.author,
     authorProfile,

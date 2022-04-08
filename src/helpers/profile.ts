@@ -2,10 +2,11 @@
 import namehash from "eth-ens-namehash";
 import getProvider from "@snapshot-labs/snapshot.js/src/utils/provider";
 import { subgraphRequest, call } from "@snapshot-labs/snapshot.js/src/utils";
-import { ContextDispatch } from "../types/context";
-import { EXPLORE_ACTIONS } from "../context/exploreContext";
+import { ContextDispatch } from "types/context";
+import { EXPLORE_ACTIONS } from "context/exploreContext";
 import { shorten } from "./miscUtils";
 import i18n from "i18n-js";
+import toLower from "lodash/toLower";
 import { ethers } from "ethers";
 
 function get3BoxProfiles(addresses: string[]) {
@@ -125,7 +126,7 @@ export function getUsername(
   connectedAddress?: string,
   short: boolean = true
 ) {
-  if (address === connectedAddress) {
+  if (toLower(address) === toLower(connectedAddress)) {
     return i18n.t("you");
   }
 
@@ -139,4 +140,8 @@ export function getUsername(
   }
 
   return short ? shorten(address) : address;
+}
+
+export function getUserProfile(address: string, profiles: any) {
+  return profiles[toLower(address)];
 }
