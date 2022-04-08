@@ -31,9 +31,7 @@ import {
   useAuthDispatch,
   useAuthState,
 } from "context/authContext";
-import { HOME_SCREEN } from "constants/navigation";
 import IconFont from "components/IconFont";
-import { useNavigation } from "@react-navigation/core";
 import { MetaMask } from "constants/wallets";
 
 const defaultWallets = [MetaMask];
@@ -43,7 +41,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginHorizontal: 14,
     borderWidth: 1,
-    borderRadius: 6,
+    borderRadius: 9,
     padding: 14,
     flexDirection: "row",
     alignItems: "center",

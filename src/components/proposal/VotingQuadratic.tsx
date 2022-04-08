@@ -12,11 +12,12 @@ import { percentageOfTotal } from "helpers/voting/quadratic";
 import { Proposal } from "types/proposal";
 import { useAuthState } from "context/authContext";
 import isEmpty from "lodash/isEmpty";
+import BottomSheetTextInput from "components/BottomSheetTextInput";
 
 const { width } = Dimensions.get("screen");
 
-const inputWidth = 40;
-const miniButtonWidth = 40;
+const inputWidth = 33;
+const miniButtonWidth = 34;
 const percentageWidth = 60;
 const blockPadding = 46;
 
@@ -34,52 +35,50 @@ function percentage(i: number, selectedChoices: { [index: number]: number }) {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    borderRadius: 24,
-    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    backgroundColor: colors.bgDefault,
-    borderColor: colors.borderColor,
-    borderWidth: 1,
-    width: "100%",
     marginBottom: 10,
-    height: 50,
+    height: 48,
+    paddingHorizontal: 6,
   },
   choiceContainer: {
-    paddingLeft: 16,
     paddingVertical: 16,
     width:
       width - inputWidth - 2 * miniButtonWidth - percentageWidth - blockPadding,
   },
   choice: {
-    fontFamily: "Calibre-Medium",
-    color: colors.textColor,
+    fontFamily: "Calibre-Semibold",
     fontSize: 18,
   },
   choiceValueContainer: {
     flexDirection: "row",
     marginLeft: "auto",
+    borderRadius: 6,
+    height: 38,
   },
   miniButton: {
     width: miniButtonWidth,
-    borderLeftColor: colors.borderColor,
-    borderLeftWidth: 1,
-    borderRightColor: colors.borderColor,
-    borderRightWidth: 1,
-    height: 50,
     justifyContent: "center",
     alignItems: "center",
+    height: 38,
   },
   miniButtonTitle: {
-    fontSize: 18,
+    fontSize: 28,
+    lineHeight: 38,
     fontFamily: "Calibre-Medium",
-    color: colors.textColor,
+    alignSelf: "center",
+    textAlignVertical: "center",
   },
   percentage: {
+    fontSize: 18,
+    fontFamily: "Calibre-Semibold",
     paddingLeft: 6,
-    paddingRight: 6,
-    alignSelf: "center",
-    width: percentageWidth,
+    paddingRight: 9,
+  },
+  choicePercentageContainer: {
+    flexDirection: "row",
+    marginLeft: "auto",
+    alignItems: "center",
   },
 });
 
@@ -135,102 +134,84 @@ function VotingQuadratic({
                 {choice}
               </Text>
             </View>
-            <View
-              style={[
-                styles.choiceValueContainer,
-                { backgroundColor: "transparent" },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  const newSelectedChoices = { ...selectedChoices };
-                  removeVote(i + 1, newSelectedChoices);
-                  setSelectedChoices(newSelectedChoices);
-                }}
-              >
-                <View
-                  style={[
-                    styles.miniButton,
-                    {
-                      borderRightColor: selected
-                        ? colors.textColor
-                        : colors.borderColor,
-                      borderLeftColor: selected
-                        ? colors.textColor
-                        : colors.borderColor,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.miniButtonTitle,
-                      { color: colors.textColor },
-                    ]}
-                  >
-                    -
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TextInput
-                style={{
-                  width: inputWidth,
-                  paddingLeft: 10,
-                  fontFamily: "Calibre-Medium",
-                  color: colors.textColor,
-                  fontSize: 18,
-                }}
-                value={`${selectedChoiceValue}`}
-                keyboardType="number-pad"
-                onChangeText={(text) => {
-                  const parsedInt = parseInt(text);
-                  const newSelectedChoices = { ...selectedChoices };
-                  if (isNaN(parsedInt)) {
-                    newSelectedChoices[i + 1] = 0;
-                  } else {
-                    newSelectedChoices[i + 1] = parsedInt;
-                  }
-                  setSelectedChoices(newSelectedChoices);
-                }}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  const newSelectedChoices = { ...selectedChoices };
-                  addVote(i + 1, newSelectedChoices);
-                  setSelectedChoices(newSelectedChoices);
-                }}
-              >
-                <View
-                  style={[
-                    styles.miniButton,
-                    {
-                      borderRightColor: selected
-                        ? colors.textColor
-                        : colors.borderColor,
-                      borderLeftColor: selected
-                        ? colors.textColor
-                        : colors.borderColor,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.miniButtonTitle,
-                      { color: colors.textColor },
-                    ]}
-                  >
-                    +
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <Text
-                style={[
-                  styles.miniButtonTitle,
-                  styles.percentage,
-                  { color: colors.textColor },
-                ]}
-              >
+            <View style={styles.choicePercentageContainer}>
+              <Text style={[styles.percentage, { color: colors.textColor }]}>
                 {percentage(i, selectedChoices)}%
               </Text>
+              <View
+                style={[
+                  styles.choiceValueContainer,
+                  {
+                    backgroundColor: selected
+                      ? "rgba(55, 114, 255, 0.3)"
+                      : "rgba(193, 198, 215, 0.3)",
+                  },
+                ]}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    const newSelectedChoices = { ...selectedChoices };
+                    removeVote(i + 1, newSelectedChoices);
+                    setSelectedChoices(newSelectedChoices);
+                  }}
+                >
+                  <View style={styles.miniButton}>
+                    <Text
+                      style={[
+                        styles.miniButtonTitle,
+                        { color: colors.textColor, marginBottom: 4 },
+                      ]}
+                    >
+                      -
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <BottomSheetTextInput
+                  style={{
+                    width: inputWidth,
+                    fontFamily: "Calibre-Medium",
+                    color: colors.textColor,
+                    fontSize: 18,
+                    backgroundColor: colors.white,
+                    margin: 0,
+                    padding: 6,
+                    textAlign: "center",
+                    lineHeight: 18,
+                    height: 30,
+                    marginTop: 4,
+                  }}
+                  value={`${selectedChoiceValue}`}
+                  keyboardType="number-pad"
+                  onChangeText={(text) => {
+                    const parsedInt = parseInt(text);
+                    const newSelectedChoices = { ...selectedChoices };
+                    if (isNaN(parsedInt)) {
+                      newSelectedChoices[i + 1] = 0;
+                    } else {
+                      newSelectedChoices[i + 1] = parsedInt;
+                    }
+                    setSelectedChoices(newSelectedChoices);
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    const newSelectedChoices = { ...selectedChoices };
+                    addVote(i + 1, newSelectedChoices);
+                    setSelectedChoices(newSelectedChoices);
+                  }}
+                >
+                  <View style={styles.miniButton}>
+                    <Text
+                      style={[
+                        styles.miniButtonTitle,
+                        { color: colors.textColor, marginBottom: 2 },
+                      ]}
+                    >
+                      +
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         );

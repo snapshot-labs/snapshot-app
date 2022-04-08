@@ -48,6 +48,7 @@ function VotingApproval({
                 fontFamily: "Calibre-Semibold",
                 fontSize: 18,
               }}
+              onlyOneLine
             />
           </View>
         );

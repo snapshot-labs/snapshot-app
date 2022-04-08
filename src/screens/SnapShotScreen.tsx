@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: 0,
-    paddingBottom: 35,
+    paddingBottom: 49,
     paddingTop: 16,
     borderTopWidth: 1,
     width: "100%",
@@ -171,7 +171,7 @@ function SnapShotScreen() {
   }, [followedSpaces, connectedAddress]);
 
   return (
-    <SafeAreaView
+    <View
       style={[
         common.screen,
         {
@@ -179,227 +179,238 @@ function SnapShotScreen() {
         },
       ]}
     >
-      <View
-        style={[common.headerContainer, { borderBottomColor: "transparent" }]}
+      <SafeAreaView
+        style={[
+          common.screen,
+          {
+            backgroundColor: colors.bgDefault,
+          },
+        ]}
       >
-        <View style={styles.proposalsLeftContainer}>
-          <Text style={styles.proposalsLeftText}>
-            {i18n.t("proposalsLeft", { count: proposals.length })}
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Feed");
-          }}
-          style={{ marginLeft: "auto" }}
+        <View
+          style={[common.headerContainer, { borderBottomColor: "transparent" }]}
         >
-          <View
-            style={[
-              styles.closeButtonContainer,
-              {
-                borderColor: colors.borderColor,
-              },
-            ]}
-          >
-            <IconFont name={"close"} size={18} color={colors.textColor} />
-          </View>
-        </TouchableOpacity>
-      </View>
-      {isEmpty(currentProposal) ? (
-        loading ? (
-          <View
-            style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
-          >
-            <ActivityIndicator color={colors.textColor} size="large" />
-          </View>
-        ) : (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              paddingTop: 60,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "Calibre-Medium",
-                fontSize: 22,
-                color: colors.textColor,
-                marginBottom: 24,
-              }}
-            >
-              {followedSpaces.length > 0
-                ? i18n.t("youHaveViewedAllTheLatestProposals")
-                : i18n.t("youNeedToJoinSpace")}
+          <View style={styles.proposalsLeftContainer}>
+            <Text style={styles.proposalsLeftText}>
+              {i18n.t("proposalsLeft", { count: proposals.length })}
             </Text>
-            {followedSpaces.length > 0 && (
-              <Button
-                primary
-                onPress={() => {
-                  getProposals(
-                    followedSpaces,
-                    setProposals,
-                    setCurrentProposal,
-                    connectedAddress,
-                    setLoading
-                  );
-                }}
-                title={"View latest proposals again"}
-              />
-            )}
           </View>
-        )
-      ) : (
-        <View style={{ flex: 1 }}>
-          <View style={{ paddingHorizontal: 16, flex: 1 }}>
-            <ScrollView
-              contentContainerStyle={{ paddingTop: 24 }}
-              showsVerticalScrollIndicator={false}
-            >
-              <View>
-                <View
-                  style={{
-                    zIndex: 10,
-                    backgroundColor: colors.bgDefault,
-                    borderRadius: 16,
-                    paddingBottom: 150,
-                  }}
-                >
-                  <ProposalCard proposal={currentProposal} />
-                </View>
-                {proposalsBackdrop.map((c, i) => (
-                  <View
-                    key={i}
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 16,
-                      padding: 18,
-                      position: "absolute",
-                      top: (i + 1) * -6,
-                      width: `${100 - (i + 1) * 6}%`,
-                      zIndex: -1 * (i + 1),
-                      alignSelf: "center",
-                      backgroundColor: colors.bgDefault,
-                      borderColor: colors.borderColor,
-                      overflow: "visible",
-                    }}
-                  />
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-          <View
-            style={[
-              styles.actionButtonsContainer,
-              {
-                borderTopColor: colors.borderColor,
-                backgroundColor: colors.navBarBg,
-              },
-            ]}
-          >
-            <Button
-              title={"Skip"}
-              onPress={() => {
-                const newCurrentProposal: Proposal | undefined =
-                  proposals.shift();
-                setCurrentProposal(newCurrentProposal);
-              }}
-              Icon={() => (
-                <IconFont
-                  name={"close"}
-                  size={14}
-                  color={colors.darkGray}
-                  style={{ marginRight: 4 }}
-                />
-              )}
-              buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
-              buttonContainerStyle={{
-                width: 85,
-                height: 42,
-                paddingVertical: 8,
-              }}
-            />
-            <View style={{ width: 10, height: 10 }} />
-            <Button
-              title={i18n.t("vote")}
-              buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
-              onPress={() => {
-                const choicesLength = currentProposal?.choices?.length ?? 0;
-                const maxSnapPoint =
-                  choicesLength > 3 ? 50 + choicesLength * 5 : 50;
-                const snapPoint =
-                  maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
-                const voteSubtitle =
-                  currentProposal?.type === VOTING_TYPES.rankedChoice
-                    ? i18n.t("selectAndDragOptionsToSortYourVote")
-                    : i18n.t("selectOptionAndConfirmVote");
 
-                bottomSheetModalDispatch({
-                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                  payload: {
-                    TitleComponent: () => {
-                      return (
-                        <View>
-                          <Text style={styles.castVoteTitle}>
-                            {i18n.t("castYourVote")}
-                          </Text>
-                          <Text
-                            style={[
-                              styles.castVoteSubtitle,
-                              { color: colors.secondaryGray },
-                            ]}
-                          >
-                            {voteSubtitle}
-                          </Text>
-                        </View>
-                      );
-                    },
-                    ModalContent: () => {
-                      return (
-                        <CastVoteModal
-                          proposal={currentProposal}
-                          space={currentProposal.space}
-                          getProposal={() => {
-                            const newCurrentProposal: Proposal | undefined =
-                              proposals.shift();
-                            setCurrentProposal(newCurrentProposal);
-                            bottomSheetModalRef?.current?.close();
-                          }}
-                          navigation={navigation}
-                        />
-                      );
-                    },
-                    options: [],
-                    snapPoints: [10, snapPoint, "95%"],
-                    show: true,
-                    scroll: currentProposal?.type !== VOTING_TYPES.rankedChoice,
-                    icons: [],
-                    initialIndex: 1,
-                    destructiveButtonIndex: -1,
-                    key: `snapshot-screen-vote-proposal-${currentProposal?.id}`,
-                  },
-                });
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Feed");
+            }}
+            style={{ marginLeft: "auto" }}
+          >
+            <View
+              style={[
+                styles.closeButtonContainer,
+                {
+                  borderColor: colors.borderColor,
+                },
+              ]}
+            >
+              <IconFont name={"close"} size={18} color={colors.textColor} />
+            </View>
+          </TouchableOpacity>
+        </View>
+        {isEmpty(currentProposal) ? (
+          loading ? (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 1,
               }}
-              primary
-              Icon={() => (
-                <IconFont
-                  name={"signature"}
-                  size={14}
-                  color={colors.white}
-                  style={{ marginRight: 6.5 }}
+            >
+              <ActivityIndicator color={colors.textColor} size="large" />
+            </View>
+          ) : (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                paddingTop: 60,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Calibre-Medium",
+                  fontSize: 22,
+                  color: colors.textColor,
+                  marginBottom: 24,
+                }}
+              >
+                {followedSpaces.length > 0
+                  ? i18n.t("youHaveViewedAllTheLatestProposals")
+                  : i18n.t("youNeedToJoinSpace")}
+              </Text>
+              {followedSpaces.length > 0 && (
+                <Button
+                  primary
+                  onPress={() => {
+                    getProposals(
+                      followedSpaces,
+                      setProposals,
+                      setCurrentProposal,
+                      connectedAddress,
+                      setLoading
+                    );
+                  }}
+                  title={"View latest proposals again"}
                 />
               )}
-              buttonContainerStyle={{
-                width: 98,
-                height: 42,
-                paddingVertical: 8,
-              }}
-            />
+            </View>
+          )
+        ) : (
+          <View style={{ flex: 1 }}>
+            <View style={{ paddingHorizontal: 16, flex: 1 }}>
+              <ScrollView
+                contentContainerStyle={{ paddingTop: 24 }}
+                showsVerticalScrollIndicator={false}
+              >
+                <View>
+                  <View
+                    style={{
+                      zIndex: 10,
+                      backgroundColor: colors.bgDefault,
+                      borderRadius: 16,
+                      paddingBottom: 150,
+                    }}
+                  >
+                    <ProposalCard proposal={currentProposal} />
+                  </View>
+                  {proposalsBackdrop.map((c, i) => (
+                    <View
+                      key={i}
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 16,
+                        padding: 18,
+                        position: "absolute",
+                        top: (i + 1) * -6,
+                        width: `${100 - (i + 1) * 6}%`,
+                        zIndex: -1 * (i + 1),
+                        alignSelf: "center",
+                        backgroundColor: colors.bgDefault,
+                        borderColor: colors.borderColor,
+                        overflow: "visible",
+                      }}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
           </View>
-        </View>
-      )}
-    </SafeAreaView>
+        )}
+      </SafeAreaView>
+      <View
+        style={[
+          styles.actionButtonsContainer,
+          {
+            borderTopColor: colors.borderColor,
+            backgroundColor: colors.navBarBg,
+          },
+        ]}
+      >
+        <Button
+          title={"Skip"}
+          onPress={() => {
+            const newCurrentProposal: Proposal | undefined = proposals.shift();
+            setCurrentProposal(newCurrentProposal);
+          }}
+          Icon={() => (
+            <IconFont
+              name={"close"}
+              size={14}
+              color={colors.darkGray}
+              style={{ marginRight: 4 }}
+            />
+          )}
+          buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
+          buttonContainerStyle={{
+            width: 85,
+            height: 42,
+            paddingVertical: 8,
+          }}
+        />
+        <View style={{ width: 10, height: 10 }} />
+        <Button
+          title={i18n.t("vote")}
+          buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
+          onPress={() => {
+            const choicesLength = currentProposal?.choices?.length ?? 0;
+            const maxSnapPoint =
+              choicesLength > 3 ? 50 + choicesLength * 5 : 50;
+            const snapPoint = maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
+            const voteSubtitle =
+              currentProposal?.type === VOTING_TYPES.rankedChoice
+                ? i18n.t("selectAndDragOptionsToSortYourVote")
+                : i18n.t("selectOptionAndConfirmVote");
+
+            bottomSheetModalDispatch({
+              type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+              payload: {
+                TitleComponent: () => {
+                  return (
+                    <View>
+                      <Text style={styles.castVoteTitle}>
+                        {i18n.t("castYourVote")}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.castVoteSubtitle,
+                          { color: colors.secondaryGray },
+                        ]}
+                      >
+                        {voteSubtitle}
+                      </Text>
+                    </View>
+                  );
+                },
+                ModalContent: () => {
+                  return (
+                    <CastVoteModal
+                      proposal={currentProposal}
+                      space={currentProposal.space}
+                      getProposal={() => {
+                        const newCurrentProposal: Proposal | undefined =
+                          proposals.shift();
+                        setCurrentProposal(newCurrentProposal);
+                        bottomSheetModalRef?.current?.close();
+                      }}
+                      navigation={navigation}
+                    />
+                  );
+                },
+                options: [],
+                snapPoints: [10, snapPoint, "95%"],
+                show: true,
+                scroll: currentProposal?.type !== VOTING_TYPES.rankedChoice,
+                icons: [],
+                initialIndex: 1,
+                destructiveButtonIndex: -1,
+                key: `snapshot-screen-vote-proposal-${currentProposal?.id}`,
+              },
+            });
+          }}
+          primary
+          Icon={() => (
+            <IconFont
+              name={"signature"}
+              size={14}
+              color={colors.white}
+              style={{ marginRight: 6.5 }}
+            />
+          )}
+          buttonContainerStyle={{
+            width: 98,
+            height: 42,
+            paddingVertical: 8,
+          }}
+        />
+      </View>
+    </View>
   );
 }
 
