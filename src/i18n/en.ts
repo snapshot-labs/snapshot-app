@@ -433,4 +433,7 @@ export default {
   selectAndDragOptionsToSortYourVote:
     "Select and drag options to sort your vote",
   info: "Info",
+  youHave: "You have",
+  countNotifications: "{{count}} notifications",
+  today: "today",
 };

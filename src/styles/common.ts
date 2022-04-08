@@ -65,7 +65,7 @@ const common = StyleSheet.create({
     height: 50,
   },
   containerHorizontalPadding: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
   },
   containerVerticalPadding: {
     paddingVertical: 16,

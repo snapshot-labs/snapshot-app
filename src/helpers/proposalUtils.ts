@@ -4,6 +4,7 @@ import i18n from "i18n-js";
 import { toNow } from "helpers/miscUtils";
 import { NOTIFICATION_EVENTS, STATES } from "constants/proposal";
 import { Space } from "types/explore";
+import toLower from "lodash/toLower";
 
 export function getTimeAgo(proposal: Proposal) {
   const today = parseInt((moment().valueOf() / 1e3).toFixed());
@@ -30,15 +31,15 @@ export function getTimeAgoProposalNotification(time: number, event: string) {
 
   if (event === NOTIFICATION_EVENTS.PROPOSAL_START) {
     if (time >= today) {
-      return i18n.t("startsInTimeAgo", { timeAgo: toNow(time) });
+      return toLower(i18n.t("startsInTimeAgo", { timeAgo: toNow(time) }));
     } else {
-      return i18n.t("startedTimeAgo", { timeAgo: toNow(time) });
+      return toLower(i18n.t("startedTimeAgo", { timeAgo: toNow(time) }));
     }
   } else {
     if (time >= today) {
-      return i18n.t("endsInTimeAgo", { timeAgo: toNow(time) });
+      return toLower(i18n.t("endsInTimeAgo", { timeAgo: toNow(time) }));
     } else {
-      return i18n.t("endedTimeAgo", { timeAgo: toNow(time) });
+      return toLower(i18n.t("endedTimeAgo", { timeAgo: toNow(time) }));
     }
   }
 }

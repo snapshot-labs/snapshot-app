@@ -102,14 +102,14 @@ function Button({
             styles.button,
             light ? styles.lightButton : {},
             disabled ? styles.disabled : {},
-            selected ? { borderColor: colors.blueButtonBg } : {},
-            label !== undefined ? { justifyContent: "flex-start" } : {},
             primary
               ? {
                   backgroundColor: colors.blueButtonBg,
                   borderColor: colors.blueButtonBg,
                 }
               : { borderColor: colors.borderColor },
+            selected ? { borderColor: colors.blueButtonBg } : {},
+            label !== undefined ? { justifyContent: "flex-start" } : {},
             buttonContainerStyle,
           ]}
         >
