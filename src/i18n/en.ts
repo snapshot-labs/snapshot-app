@@ -436,4 +436,6 @@ export default {
   youHave: "You have",
   countNotifications: "{{count}} notifications",
   today: "today",
+  skip: "Skip",
+  viewLatestProposalsAgain: "View latest proposals again"
 };

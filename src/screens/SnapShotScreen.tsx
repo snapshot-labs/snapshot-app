@@ -135,7 +135,9 @@ async function getProposals(
     setProposals(filteredProposals);
     setCurrentProposal(currentProposal);
   } catch (e) {
-    console.log(e);
+    setProposals([]);
+    setCurrentProposal(undefined);
+    setLoading(false);
   }
   setLoading(false);
 }
@@ -231,7 +233,8 @@ function SnapShotScreen() {
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                paddingTop: 60,
+                width: "100%",
+                paddingHorizontal: 16,
               }}
             >
               <Text
@@ -258,7 +261,7 @@ function SnapShotScreen() {
                       setLoading
                     );
                   }}
-                  title={"View latest proposals again"}
+                  title={i18n.t("viewLatestProposalsAgain")}
                 />
               )}
             </View>
@@ -305,112 +308,120 @@ function SnapShotScreen() {
           </View>
         )}
       </SafeAreaView>
-      <View
-        style={[
-          styles.actionButtonsContainer,
-          {
-            borderTopColor: colors.borderColor,
-            backgroundColor: colors.navBarBg,
-          },
-        ]}
-      >
-        <Button
-          title={"Skip"}
-          onPress={() => {
-            const newCurrentProposal: Proposal | undefined = proposals.shift();
-            setCurrentProposal(newCurrentProposal);
-          }}
-          Icon={() => (
-            <IconFont
-              name={"close"}
-              size={14}
-              color={colors.darkGray}
-              style={{ marginRight: 4 }}
-            />
-          )}
-          buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
-          buttonContainerStyle={{
-            width: 85,
-            height: 42,
-            paddingVertical: 8,
-          }}
-        />
-        <View style={{ width: 10, height: 10 }} />
-        <Button
-          title={i18n.t("vote")}
-          buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
-          onPress={() => {
-            const choicesLength = currentProposal?.choices?.length ?? 0;
-            const maxSnapPoint = choicesLength * 59 + 260;
-            const snapPoint =
-              maxSnapPoint > Device.getDeviceHeight() ? "100%" : maxSnapPoint;
-            const voteSubtitle =
-              currentProposal?.type === VOTING_TYPES.rankedChoice
-                ? i18n.t("selectAndDragOptionsToSortYourVote")
-                : i18n.t("selectOptionAndConfirmVote");
+      {!isEmpty(currentProposal) && (
+        <View
+          style={[
+            styles.actionButtonsContainer,
+            {
+              borderTopColor: colors.borderColor,
+              backgroundColor: colors.navBarBg,
+            },
+          ]}
+        >
+          <Button
+            title={i18n.t("skip")}
+            onPress={() => {
+              const newCurrentProposal: Proposal | undefined =
+                proposals.shift();
+              setCurrentProposal(newCurrentProposal);
+            }}
+            Icon={() => (
+              <IconFont
+                name={"close"}
+                size={14}
+                color={colors.darkGray}
+                style={{ marginRight: 4 }}
+              />
+            )}
+            buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
+            buttonContainerStyle={{
+              width: 85,
+              height: 42,
+              paddingVertical: 8,
+            }}
+          />
+          <View style={{ width: 10, height: 10 }} />
+          <Button
+            title={i18n.t("vote")}
+            buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
+            onPress={() => {
+              const choicesLength = currentProposal?.choices?.length ?? 0;
+              const maxSnapPoint = choicesLength * 59 + 260;
+              const snapPoint =
+                maxSnapPoint > Device.getDeviceHeight() ? "100%" : maxSnapPoint;
+              const voteSubtitle =
+                currentProposal?.type === VOTING_TYPES.rankedChoice
+                  ? i18n.t("selectAndDragOptionsToSortYourVote")
+                  : i18n.t("selectOptionAndConfirmVote");
 
-            bottomSheetModalDispatch({
-              type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-              payload: {
-                TitleComponent: () => {
-                  return (
-                    <View>
-                      <Text style={styles.castVoteTitle}>
-                        {i18n.t("castYourVote")}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.castVoteSubtitle,
-                          { color: colors.secondaryGray },
-                        ]}
-                      >
-                        {voteSubtitle}
-                      </Text>
-                    </View>
-                  );
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  TitleComponent: () => {
+                    return (
+                      <View>
+                        <Text
+                          style={[
+                            styles.castVoteTitle,
+                            { color: colors.textColor },
+                          ]}
+                        >
+                          {i18n.t("castYourVote")}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.castVoteSubtitle,
+                            { color: colors.secondaryGray },
+                          ]}
+                        >
+                          {voteSubtitle}
+                        </Text>
+                      </View>
+                    );
+                  },
+                  ModalContent: () => {
+                    return (
+                      <CastVoteModal
+                        proposal={currentProposal}
+                        space={currentProposal.space}
+                        getProposal={() => {
+                          const newCurrentProposal: Proposal | undefined =
+                            proposals.shift();
+                          setCurrentProposal(newCurrentProposal);
+                          bottomSheetModalRef?.current?.close();
+                        }}
+                        navigation={navigation}
+                      />
+                    );
+                  },
+                  options: [],
+                  snapPoints: [10, snapPoint],
+                  show: true,
+                  scroll: currentProposal?.type !== VOTING_TYPES.rankedChoice,
+                  icons: [],
+                  initialIndex: 1,
+                  destructiveButtonIndex: -1,
+                  key: `snapshot-screen-vote-proposal-${currentProposal?.id}`,
                 },
-                ModalContent: () => {
-                  return (
-                    <CastVoteModal
-                      proposal={currentProposal}
-                      space={currentProposal.space}
-                      getProposal={() => {
-                        const newCurrentProposal: Proposal | undefined =
-                          proposals.shift();
-                        setCurrentProposal(newCurrentProposal);
-                        bottomSheetModalRef?.current?.close();
-                      }}
-                      navigation={navigation}
-                    />
-                  );
-                },
-                options: [],
-                snapPoints: [10, snapPoint],
-                show: true,
-                scroll: currentProposal?.type !== VOTING_TYPES.rankedChoice,
-                icons: [],
-                initialIndex: 1,
-                destructiveButtonIndex: -1,
-                key: `snapshot-screen-vote-proposal-${currentProposal?.id}`,
-              },
-            });
-          }}
-          primary
-          Icon={() => (
-            <IconFont
-              name={"signature"}
-              size={14}
-              color={colors.white}
-              style={{ marginRight: 6.5 }}
-            />
-          )}
-          buttonContainerStyle={{
-            width: 98,
-            height: 42,
-            paddingVertical: 8,
-          }}
-        />
-      </View>
+              });
+            }}
+            primary
+            Icon={() => (
+              <IconFont
+                name={"signature"}
+                size={14}
+                color={colors.white}
+                style={{ marginRight: 6.5 }}
+              />
+            )}
+            buttonContainerStyle={{
+              width: 98,
+              height: 42,
+              paddingVertical: 8,
+            }}
+          />
+        </View>
+      )}
     </View>
   );
 }

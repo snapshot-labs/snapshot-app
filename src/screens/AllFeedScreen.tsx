@@ -94,7 +94,7 @@ function AllFeedScreen() {
           common.containerHorizontalPadding,
           {
             backgroundColor: colors.bgDefault,
-            borderColor: colors.borderColor,
+            borderBottomColor: colors.borderColor,
           },
         ]}
       >

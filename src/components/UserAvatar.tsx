@@ -11,6 +11,10 @@ interface UserAvatarProps {
 }
 
 function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
+  if (isEmpty(address)) {
+    return <View />;
+  }
+
   const blockie = useMemo(
     () => (isEmpty(imgSrc) ? makeBlockie(address) : null),
     [imgSrc, address]
@@ -23,10 +27,6 @@ function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
         : `https://stamp.fyi/avatar/eth:${address}?s=${size * 2}`
       : getUrl(imgSrc),
   };
-
-  if (isEmpty(address)) {
-    return <View />;
-  }
 
   return (
     <Image

@@ -62,7 +62,12 @@ function ProposalVoteButton({
               TitleComponent: () => {
                 return (
                   <View>
-                    <Text style={styles.castVoteTitle}>
+                    <Text
+                      style={[
+                        styles.castVoteTitle,
+                        { color: colors.textColor },
+                      ]}
+                    >
                       {i18n.t("castYourVote")}
                     </Text>
                     <Text
