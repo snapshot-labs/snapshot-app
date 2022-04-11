@@ -5,7 +5,7 @@ import {
   Linking,
   Platform,
   Text,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   StyleSheet,
 } from "react-native";
@@ -26,6 +26,7 @@ import {
 } from "helpers/walletConnectUtils";
 import { convertArrayBufferToHex, generateKey, uuid } from "helpers/miscUtils";
 import storage from "helpers/storage";
+import { OPTION_BORDER_RADIUS } from "styles/values";
 import {
   AUTH_ACTIONS,
   useAuthDispatch,
@@ -38,10 +39,10 @@ const defaultWallets = [MetaMask];
 
 const styles = StyleSheet.create({
   walletOption: {
-    marginTop: 16,
+    marginTop: 9,
     marginHorizontal: 14,
     borderWidth: 1,
-    borderRadius: 9,
+    borderRadius: OPTION_BORDER_RADIUS,
     padding: 14,
     flexDirection: "row",
     alignItems: "center",
@@ -153,7 +154,12 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
             scroll: true,
             TitleComponent: () => {
               return (
-                <Text style={styles.selectWalletTitle}>
+                <Text
+                  style={[
+                    styles.selectWalletTitle,
+                    { color: colors.textColor },
+                  ]}
+                >
                   {i18n.t("selectWallet")}
                 </Text>
               );
@@ -163,7 +169,7 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
                 <View>
                   {wallets.length === 0 &&
                     defaultWallets.map((wallet) => (
-                      <TouchableOpacity
+                      <TouchableWithoutFeedback
                         key={wallet.id}
                         onPress={() => {
                           Linking.openURL(wallet.mobile.universal);
@@ -199,11 +205,11 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
                             })}
                           </Text>
                         </View>
-                      </TouchableOpacity>
+                      </TouchableWithoutFeedback>
                     ))}
                   {wallets.map((wallet) => {
                     return (
-                      <TouchableOpacity
+                      <TouchableWithoutFeedback
                         key={wallet.id}
                         onPress={async () => {
                           const newConnector: any = new WalletConnect({
@@ -363,7 +369,7 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
                             {wallet.name}
                           </Text>
                         </View>
-                      </TouchableOpacity>
+                      </TouchableWithoutFeedback>
                     );
                   })}
                 </View>

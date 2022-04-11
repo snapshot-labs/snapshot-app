@@ -197,7 +197,7 @@ function TrackWalletButton({ onSuccess }: TrackWalletButtonProps) {
             },
             key: "track-wallet",
             show: true,
-            snapPoints: [10, 250],
+            snapPoints: [10, 280],
             options: [],
             icons: [],
           },

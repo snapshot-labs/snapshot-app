@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import Button from "../Button";
+import { OPTION_BORDER_RADIUS } from "styles/values";
 
 interface VotingApprovalProps {
   proposal: any;
@@ -38,12 +39,14 @@ function VotingApproval({
               title={choice}
               selected={selectedChoices.includes(i + 1)}
               buttonContainerStyle={{
-                borderRadius: 12,
+                borderRadius: OPTION_BORDER_RADIUS,
                 justifyContent: "flex-start",
                 paddingVertical: 14,
                 paddingHorizontal: 9,
               }}
-              nativeFeedbackContainerStyle={{ borderRadius: 12 }}
+              nativeFeedbackContainerStyle={{
+                borderRadius: OPTION_BORDER_RADIUS,
+              }}
               buttonTitleStyle={{
                 fontFamily: "Calibre-Semibold",
                 fontSize: 18,

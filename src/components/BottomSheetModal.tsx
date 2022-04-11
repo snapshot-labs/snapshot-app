@@ -51,6 +51,7 @@ interface BottomSheetModalProps {
   bottomSheetViewComponentProps?: any;
   TitleComponent?: React.FunctionComponent | undefined;
   bottomSheetProps?: any;
+  setBottomSheetShow: () => void;
 }
 
 function BottomSheetModal({
@@ -68,6 +69,7 @@ function BottomSheetModal({
   bottomSheetViewComponentProps = {},
   bottomSheetProps = {},
   TitleComponent = undefined,
+  setBottomSheetShow = () => {},
 }: BottomSheetModalProps) {
   const { colors } = useAuthState();
   let BottomSheetViewComponent: any = BottomSheetView;
@@ -82,7 +84,7 @@ function BottomSheetModal({
       enablePanDownToClose={enablePanDownToClose}
       animateOnMount
       backgroundStyle={{
-        backgroundColor: colors.bgDefault,
+        backgroundColor: colors.navBarBg,
         borderRadius: 20,
       }}
       backdropComponent={
@@ -93,6 +95,7 @@ function BottomSheetModal({
       onChange={(index) => {
         if (index < 0) {
           Keyboard?.dismiss();
+          setBottomSheetShow();
         }
       }}
       {...bottomSheetProps}

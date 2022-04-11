@@ -8,7 +8,6 @@ import React, {
   useEffect,
 } from "react";
 import { ContextAction, ContextDispatch } from "types/context";
-
 import BottomSheetModal from "components/BottomSheetModal";
 
 type BottomSheetModalState = {
@@ -30,9 +29,11 @@ const BottomSheetModalDispatchContext = createContext<
   ContextDispatch | undefined
 >(undefined);
 const BottomSheetModalRefContext = createContext<any>(undefined);
+const BottomSheetModalShowRefContext = createContext<any>(undefined);
 
 const BOTTOM_SHEET_MODAL_ACTIONS = {
   SET_BOTTOM_SHEET_MODAL: "@bottomSheetModal/SET_BOTTOM_SHEET_MODAL",
+  HIDE_BOTTOM_SHEET_MODAL: "@bottomSheetModal/HIDE_BOTTOM_SHEET_MODAL",
 };
 
 const initialState = {
@@ -68,6 +69,8 @@ function bottomSheetModalReducer(
         TitleComponent: action.payload.TitleComponent ?? undefined,
         bottomSheetProps: action.payload.bottomSheetProps ?? {},
       };
+    case BOTTOM_SHEET_MODAL_ACTIONS.HIDE_BOTTOM_SHEET_MODAL:
+      return { ...state, show: false };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }
@@ -84,43 +87,50 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
   );
   const [showBottomSheetModal, setShowBottomSheetModal] = useState(false);
   const bottomSheetModalRef: any = useRef();
+  const bottomSheetModalShowRef = useRef(false);
 
   useEffect(() => {
     setShowBottomSheetModal(bottomSheetModal.show);
     if (bottomSheetModal.show) {
       //@ts-ignore
       bottomSheetModalRef?.current?.snapToIndex(1);
+      bottomSheetModalShowRef.current = true;
     }
   }, [bottomSheetModal]);
 
   return (
-    <BottomSheetModalRefContext.Provider value={bottomSheetModalRef}>
-      <BottomSheetModalContext.Provider value={bottomSheetModal}>
-        <BottomSheetModalDispatchContext.Provider value={setBottomSheetModal}>
-          {children}
-          {showBottomSheetModal && (
-            <BottomSheetModal
-              key={bottomSheetModal.key}
-              bottomSheetRef={bottomSheetModalRef}
-              onPressOption={bottomSheetModal.onPressOption}
-              options={bottomSheetModal.options}
-              snapPoints={bottomSheetModal.snapPoints}
-              initialIndex={bottomSheetModal.initialIndex}
-              ModalContent={bottomSheetModal.ModalContent}
-              scroll={!!bottomSheetModal.scroll}
-              icons={bottomSheetModal.icons ?? []}
-              enablePanDownToClose={bottomSheetModal.enablePanDownToClose}
-              bottomSheetViewComponentProps={
-                bottomSheetModal.bottomSheetViewComponentProps ?? {}
-              }
-              TitleComponent={bottomSheetModal.TitleComponent ?? undefined}
-              bottomSheetProps={bottomSheetModal.bottomSheetProps ?? {}}
-              {...bottomSheetModal}
-            />
-          )}
-        </BottomSheetModalDispatchContext.Provider>
-      </BottomSheetModalContext.Provider>
-    </BottomSheetModalRefContext.Provider>
+    <BottomSheetModalShowRefContext.Provider value={bottomSheetModalShowRef}>
+      <BottomSheetModalRefContext.Provider value={bottomSheetModalRef}>
+        <BottomSheetModalContext.Provider value={bottomSheetModal}>
+          <BottomSheetModalDispatchContext.Provider value={setBottomSheetModal}>
+            {children}
+            {showBottomSheetModal && (
+              <BottomSheetModal
+                key={bottomSheetModal.key}
+                bottomSheetRef={bottomSheetModalRef}
+                onPressOption={bottomSheetModal.onPressOption}
+                options={bottomSheetModal.options}
+                snapPoints={bottomSheetModal.snapPoints}
+                initialIndex={bottomSheetModal.initialIndex}
+                ModalContent={bottomSheetModal.ModalContent}
+                scroll={!!bottomSheetModal.scroll}
+                icons={bottomSheetModal.icons ?? []}
+                enablePanDownToClose={bottomSheetModal.enablePanDownToClose}
+                bottomSheetViewComponentProps={
+                  bottomSheetModal.bottomSheetViewComponentProps ?? {}
+                }
+                TitleComponent={bottomSheetModal.TitleComponent ?? undefined}
+                bottomSheetProps={bottomSheetModal.bottomSheetProps ?? {}}
+                setBottomSheetShow={() => {
+                  bottomSheetModalShowRef.current = false;
+                }}
+                {...bottomSheetModal}
+              />
+            )}
+          </BottomSheetModalDispatchContext.Provider>
+        </BottomSheetModalContext.Provider>
+      </BottomSheetModalRefContext.Provider>
+    </BottomSheetModalShowRefContext.Provider>
   );
 }
 
@@ -152,11 +162,21 @@ function useBottomSheetModalRef() {
   return context;
 }
 
+function useBottomSheetModalShowRef() {
+  const context = useContext(BottomSheetModalShowRefContext);
+  if (context === undefined) {
+    throw new Error("Unable to find BottomSheetModalShowRefContext");
+  }
+
+  return context;
+}
+
 export {
   BottomSheetModalProvider,
   useBottomSheetModalState,
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
+  useBottomSheetModalShowRef,
   BottomSheetModalState,
   BOTTOM_SHEET_MODAL_ACTIONS,
 };

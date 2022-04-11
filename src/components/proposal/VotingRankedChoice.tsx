@@ -7,6 +7,7 @@ import { useAuthState } from "context/authContext";
 import compact from "lodash/compact";
 import colors from "constants/colors";
 import DraggableFlatList from "react-native-draggable-flatlist";
+import { OPTION_BORDER_RADIUS } from "styles/values";
 
 const styles = StyleSheet.create({
   rankedChoiceSelected: {
@@ -204,12 +205,14 @@ function VotingRankedChoice({
               }}
               buttonContainerStyle={{
                 width: "100%",
-                borderRadius: 12,
+                borderRadius: OPTION_BORDER_RADIUS,
                 justifyContent: "flex-start",
                 paddingVertical: 14,
                 paddingHorizontal: 9,
               }}
-              nativeFeedbackContainerStyle={{ borderRadius: 12 }}
+              nativeFeedbackContainerStyle={{
+                borderRadius: OPTION_BORDER_RADIUS,
+              }}
               buttonTitleStyle={{
                 fontFamily: "Calibre-Semibold",
                 fontSize: 18,

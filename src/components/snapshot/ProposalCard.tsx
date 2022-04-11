@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import SpaceAvatar from "components/SpaceAvatar";
 import { getUsername, getUserProfile } from "helpers/profile";
 import { useAuthState } from "context/authContext";
@@ -84,13 +90,20 @@ const styles = StyleSheet.create({
 async function loadPower(
   connectedAddress: string,
   proposal: Proposal,
-  setTotalScore: (totalScore: number) => void
+  setTotalScore: (totalScore: number) => void,
+  setLoadingPower: (loadingPower: boolean) => void
 ) {
-  if (!connectedAddress || !proposal.author) return;
-  const response = await getPower(proposal.space, connectedAddress, proposal);
+  setLoadingPower(true);
+  try {
+    if (!connectedAddress || !proposal.author) return;
+    const response = await getPower(proposal.space, connectedAddress, proposal);
 
-  if (typeof response.totalScore === "number") {
-    setTotalScore(response.totalScore);
+    if (typeof response.totalScore === "number") {
+      setTotalScore(response.totalScore);
+    }
+  } catch (e) {
+  } finally {
+    setLoadingPower(false);
   }
 }
 
@@ -103,6 +116,7 @@ function ProposalCard({ proposal }: ProposalCardProps) {
   const { profiles } = useExploreState();
   const authorProfile = getUserProfile(proposal?.author, profiles);
   const [totalScore, setTotalScore] = useState(0);
+  const [loadingPower, setLoadingPower] = useState(false);
   const authorName = getUsername(
     proposal?.author ?? "",
     authorProfile,
@@ -114,7 +128,7 @@ function ProposalCard({ proposal }: ProposalCardProps) {
   });
 
   useEffect(() => {
-    loadPower(connectedAddress, proposal, setTotalScore);
+    loadPower(connectedAddress, proposal, setTotalScore, setLoadingPower);
   }, [proposal]);
 
   return (
@@ -180,17 +194,23 @@ function ProposalCard({ proposal }: ProposalCardProps) {
           <View style={styles.proposalEndContainer}>
             <Text style={styles.proposalEndText}>{proposalEnd}</Text>
           </View>
-          <View
-            style={[
-              styles.votingPowerContainer,
-              { backgroundColor: colors.votingPowerBgColor },
-            ]}
-          >
-            <UserAvatar address={connectedAddress} size={14} />
-            <Text style={[styles.votingPowerText, { color: colors.textColor }]}>
-              {n(totalScore)} {proposal?.space?.symbol}
-            </Text>
-          </View>
+          {loadingPower ? (
+            <ActivityIndicator color={colors.textColor} size="small" />
+          ) : (
+            <View
+              style={[
+                styles.votingPowerContainer,
+                { backgroundColor: colors.votingPowerBgColor },
+              ]}
+            >
+              <UserAvatar address={connectedAddress} size={14} />
+              <Text
+                style={[styles.votingPowerText, { color: colors.textColor }]}
+              >
+                {n(totalScore)} {proposal?.space?.symbol}
+              </Text>
+            </View>
+          )}
         </View>
         <MarkdownBody body={proposal?.body ?? ""} />
       </View>

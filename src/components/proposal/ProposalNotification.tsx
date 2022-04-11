@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Platform,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import colors from "constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "constants/navigation";
@@ -71,7 +65,6 @@ const styles = StyleSheet.create({
     height: viewCircleDimensions,
     width: viewCircleDimensions,
     borderRadius: viewCircleDimensions / 2,
-    backgroundColor: colors.blueButtonBg,
     marginRight: 18,
     alignSelf: "center",
   },
@@ -104,9 +97,18 @@ function ProposalNotification({
         });
       }}
     >
-      <View style={[styles.container]}>
+      <View
+        style={[styles.container, { borderBottomColor: colors.borderColor }]}
+      >
         <View style={styles.authorContainer}>
-          {!didView && <View style={styles.viewCircle} />}
+          <View
+            style={[
+              styles.viewCircle,
+              {
+                backgroundColor: didView ? "transparent" : colors.blueButtonBg,
+              },
+            ]}
+          />
           <View style={styles.spaceAvatarContainer}>
             <SpaceAvatar
               symbolIndex="space"

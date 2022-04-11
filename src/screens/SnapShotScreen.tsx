@@ -32,6 +32,7 @@ import {
 import colors from "constants/colors";
 import CastVoteModal from "components/snapshot/CastVoteModal";
 import { VOTE_CONFIRM_SCREEN, VOTE_SCREEN } from "constants/navigation";
+import Device from "helpers/device";
 
 const stateFilters = getStateFilters();
 const LOAD_BY = 100;
@@ -340,9 +341,9 @@ function SnapShotScreen() {
           buttonTitleStyle={{ textTransform: "uppercase", fontSize: 14 }}
           onPress={() => {
             const choicesLength = currentProposal?.choices?.length ?? 0;
-            const maxSnapPoint =
-              choicesLength > 3 ? 50 + choicesLength * 5 : 50;
-            const snapPoint = maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
+            const maxSnapPoint = choicesLength * 59 + 260;
+            const snapPoint =
+              maxSnapPoint > Device.getDeviceHeight() ? "100%" : maxSnapPoint;
             const voteSubtitle =
               currentProposal?.type === VOTING_TYPES.rankedChoice
                 ? i18n.t("selectAndDragOptionsToSortYourVote")
@@ -384,7 +385,7 @@ function SnapShotScreen() {
                   );
                 },
                 options: [],
-                snapPoints: [10, snapPoint, "95%"],
+                snapPoints: [10, snapPoint],
                 show: true,
                 scroll: currentProposal?.type !== VOTING_TYPES.rankedChoice,
                 icons: [],

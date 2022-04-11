@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Platform, View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { Platform, View, Text, StyleSheet, BackHandler } from "react-native";
 import {
   createStackNavigator,
   TransitionPresets,
@@ -55,7 +55,11 @@ import appConstants from "constants/app";
 import WelcomeScreen from "screens/WelcomeScreen";
 import ExploreScreen from "screens/ExploreScreen";
 import AllFeedScreen from "screens/AllFeedScreen";
-import ProposalScreenNew from "screens/ProposalScreenNew";
+import {
+  useBottomSheetModalRef,
+  useBottomSheetModalShowRef,
+} from "context/bottomSheetModalContext";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -84,6 +88,8 @@ function TabNavigator() {
   const { profiles } = useExploreState();
   const { proposalTimes, lastViewedProposal, lastViewedNotification } =
     useNotificationsState();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalShowRef = useBottomSheetModalShowRef();
   const unreadNotifications = useMemo(() => {
     if (isEmpty(followedSpaces)) {
       return 0;
@@ -116,6 +122,27 @@ function TabNavigator() {
   const profile = profiles[connectedAddress ?? ""];
   const walletName: any = get(savedWallets, `${connectedAddress}.name`, "");
   const isCustomWallet = walletName === CUSTOM_WALLET_NAME || walletName === "";
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const backAction = () => {
+      if (bottomSheetModalShowRef.current) {
+        bottomSheetModalRef.current?.close();
+      } else {
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        }
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <Tab.Navigator
@@ -161,30 +188,28 @@ function TabNavigator() {
           ),
         }}
       />
-      {!isCustomWallet && (
-        <Tab.Screen
-          name="Snapshot"
-          component={SnapShotScreen}
-          options={{
-            title: "",
-            tabBarStyle: { display: "none" },
-            tabBarIcon: ({ color }) => (
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  backgroundColor: colors.yellow,
-                  borderRadius: 20,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <IconFont name="snapshot" size={28} color={colors.white} />
-              </View>
-            ),
-          }}
-        />
-      )}
+      <Tab.Screen
+        name="Snapshot"
+        component={SnapShotScreen}
+        options={{
+          title: "",
+          tabBarStyle: { display: "none" },
+          tabBarIcon: ({ color }) => (
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                backgroundColor: colors.yellow,
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <IconFont name="snapshot" size={28} color={colors.white} />
+            </View>
+          ),
+        }}
+      />
       <Tab.Screen
         name="Notifications"
         component={NotificationScreen}

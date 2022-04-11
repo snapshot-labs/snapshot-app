@@ -84,11 +84,7 @@ function Button({
   primary = false,
 }: ButtonProps) {
   const { colors } = useAuthState();
-  const ButtonContainerComponent = disabled
-    ? TouchableWithoutFeedback
-    : Device.isIos()
-    ? TouchableOpacity
-    : TouchableNativeFeedback;
+  const ButtonContainerComponent = TouchableWithoutFeedback;
 
   return (
     <View
