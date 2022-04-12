@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.blueButtonBg,
   },
+  screenHeader: {
+    paddingBottom: 22,
+  },
 });
 
 function NotificationScreen() {
@@ -44,6 +47,7 @@ function NotificationScreen() {
   const lastViewedProposalIndex = useRef(Infinity);
   const insets = useSafeAreaInsets();
   const [onScreen, setOnScreen] = useState(true);
+  const [showBorder, setShowBorder] = useState(false);
   const isFocused = useIsFocused();
   const unreadNotifications = useMemo(() => {
     if (isEmpty(followedSpaces)) {
@@ -109,7 +113,15 @@ function NotificationScreen() {
           backgroundColor: colors.bgDefault,
         }}
       >
-        <View style={[common.containerHorizontalPadding]}>
+        <View
+          style={[
+            common.containerHorizontalPadding,
+            showBorder
+              ? { borderBottomWidth: 1, borderBottomColor: colors.borderColor }
+              : {},
+            styles.screenHeader,
+          ]}
+        >
           <Text style={[common.h1, { color: colors.textColor }]}>
             {i18n.t("notifications")}
           </Text>
@@ -172,6 +184,18 @@ function NotificationScreen() {
             </Text>
           </View>
         }
+        onScroll={(event) => {
+          const y = event.nativeEvent.contentOffset.y;
+          if (y > 80) {
+            if (!showBorder) {
+              setShowBorder(true);
+            }
+          } else {
+            if (showBorder) {
+              setShowBorder(false);
+            }
+          }
+        }}
         ListFooterComponent={
           <View
             style={{
