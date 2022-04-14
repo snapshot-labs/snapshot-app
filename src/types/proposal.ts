@@ -13,7 +13,7 @@ export type Proposal = {
   snapshot: string;
   type: string;
   strategies: any;
-  choices?: string[];
+  choices: string[];
   votes: number;
   scores_state: string;
   scores_total: number;

@@ -442,5 +442,6 @@ export default {
   accounts: "Accounts",
   connected: "Connected",
   addNewAccount: "Add new account",
-
+  voters: "Voters",
+  seeMore: "See more",
 };

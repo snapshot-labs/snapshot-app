@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     padding: 14,
-    paddingBottom: 28,
+    paddingBottom: 18,
   },
   currentUserVoteContainer: {
     marginTop: 18,
@@ -73,7 +73,7 @@ function ProposalResultsBlock({
   votingPower,
 }: ProposalResultsBlockProps) {
   const { colors, connectedAddress } = useAuthState();
-  const choices = proposal?.choices
+  const choices = proposal.choices
     .map((choice, i) => ({ index: i, choice }))
     .sort(
       (a, b) =>
@@ -81,8 +81,6 @@ function ProposalResultsBlock({
         get(results?.resultsByVoteBalance, a.index, 0)
     );
   const currentUserVote = getCurrentUserVote(votes, connectedAddress);
-
-  console.log({ currentUserVote });
 
   return (
     <View
@@ -137,7 +135,12 @@ function ProposalResultsBlock({
               >
                 {` ${i18n.t("voted")} `}
               </Text>
-              <Text style={[styles.voteText, { color: colors.textColor }]}>
+              <Text
+                style={[
+                  styles.voteText,
+                  { color: colors.textColor, width: 200 },
+                ]}
+              >
                 {getChoiceString(proposal, currentUserVote.choice)}
               </Text>
             </View>

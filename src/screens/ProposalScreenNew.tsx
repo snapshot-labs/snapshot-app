@@ -36,6 +36,7 @@ import ProposalResultsBlock from "components/proposal/ProposalResultsBlock";
 import { getVotingPower } from "helpers/proposalUtils";
 import UserVotingPower from "components/proposal/UserVotingPower";
 import { n } from "helpers/miscUtils";
+import ProposalVotersBlock from "components/proposal/ProposalVotersBlock";
 
 const styles = StyleSheet.create({
   proposalTitle: {
@@ -344,13 +345,8 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                   votes={votes}
                   votingPower={`${n(votingPower)} ${proposal.space?.symbol}`}
                 />
-                <View style={{ width: 10, height: 10 }} />
-                <BlockVotes
-                  proposal={proposal}
-                  votes={votes}
-                  space={space}
-                  resultsLoaded={resultsLoaded}
-                />
+                <View style={{ width: 10, height: 24 }} />
+                <ProposalVotersBlock proposal={proposal} votes={votes} />
               </View>
             </Tabs.ScrollView>
           </Tabs.Tab>

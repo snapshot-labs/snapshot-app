@@ -35,7 +35,7 @@ function UserVotingPower({ address, symbol, score }: UserVotingPowerProps) {
         { backgroundColor: colors.votingPowerBgColor },
       ]}
     >
-      <UserAvatar address={address} size={14} />
+      <UserAvatar address={address} size={18} />
       <Text style={[styles.votingPowerText, { color: colors.textColor }]}>
         {n(score)} {symbol}
       </Text>
