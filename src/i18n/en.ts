@@ -444,4 +444,6 @@ export default {
   addNewAccount: "Add new account",
   voters: "Voters",
   seeMore: "See more",
+  noStrategies: "No strategies",
+  created: "Created",
 };

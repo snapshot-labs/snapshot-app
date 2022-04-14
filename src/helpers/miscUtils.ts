@@ -67,7 +67,7 @@ export function shorten(str: string, key?: any): string {
 }
 
 export function dateFormat(number, format?: string | undefined) {
-  let setFormat = "MMM DD, YYYY HH:mm";
+  let setFormat = "MMM DD, YYYY • hh:mm A";
   return moment(number * 1e3).format(format ?? setFormat);
 }
 

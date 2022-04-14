@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
@@ -37,6 +38,8 @@ import { getVotingPower } from "helpers/proposalUtils";
 import UserVotingPower from "components/proposal/UserVotingPower";
 import { n } from "helpers/miscUtils";
 import ProposalVotersBlock from "components/proposal/ProposalVotersBlock";
+import ProposalInfoBlock from "components/proposal/ProposalInfoBlock";
+import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
 
 const styles = StyleSheet.create({
   proposalTitle: {
@@ -171,8 +174,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
     () => getSpace(spaces, proposal, route.params.spaceId),
     [spaces, proposal]
   );
-  const insets = useSafeAreaInsets();
-  const bottomSheetRef: any = useRef();
   const [votingPower, setVotingPower] = useState(0);
   const authorProfile = profiles[proposal.author];
   const authorName = getUsername(
@@ -233,129 +234,173 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             />
           </View>
         </View>
-        <Tabs.Container
-          renderHeader={() => {
-            return (
-              <View
-                style={[
-                  styles.proposalHeader,
-                  { backgroundColor: colors.bgDefault },
-                ]}
-              >
-                <Text
-                  style={[styles.proposalTitle, { color: colors.textColor }]}
+        {proposalFullyLoading ? (
+          <View
+            style={[
+              common.containerHorizontalPadding,
+              common.containerVerticalPadding,
+            ]}
+          >
+            <ActivityIndicator size="large" color={colors.textColor} />
+          </View>
+        ) : proposalError ? (
+          <View
+            style={[
+              common.justifyCenter,
+              common.alignItemsCenter,
+              { marginTop: 50 },
+            ]}
+          >
+            <Text style={[common.h4, { color: colors.darkGray }]}>
+              {i18n.t("unableToFindProposal")}
+            </Text>
+          </View>
+        ) : (
+          <Tabs.Container
+            renderHeader={() => {
+              return (
+                <View
+                  style={[
+                    styles.proposalHeader,
+                    { backgroundColor: colors.bgDefault },
+                  ]}
                 >
-                  {proposal.title}
-                </Text>
-                <View>
-                  <View style={styles.proposalAuthorSpaceContainer}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate(SPACE_SCREEN, {
-                          space,
-                          showHeader: true,
-                        });
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                  <Text
+                    style={[styles.proposalTitle, { color: colors.textColor }]}
+                  >
+                    {proposal.title}
+                  </Text>
+                  <View>
+                    <View style={styles.proposalAuthorSpaceContainer}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate(SPACE_SCREEN, {
+                            space,
+                            showHeader: true,
+                          });
                         }}
                       >
-                        <SpaceAvatar
-                          symbolIndex="space"
-                          size={18}
-                          space={space}
-                        />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <SpaceAvatar
+                            symbolIndex="space"
+                            size={18}
+                            space={space}
+                          />
+                          <Text
+                            style={[
+                              styles.authorTitle,
+                              {
+                                color: colors.textColor,
+                                marginLeft: 8,
+                              },
+                            ]}
+                          >
+                            {proposal?.space?.name}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <Text
+                        style={[
+                          styles.authorTitle,
+                          { color: colors.secondaryGray },
+                        ]}
+                      >
+                        {" "}
+                        {i18n.t("by")}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.push(USER_PROFILE, {
+                            address: proposal?.author,
+                          });
+                        }}
+                      >
                         <Text
                           style={[
                             styles.authorTitle,
                             {
                               color: colors.textColor,
-                              marginLeft: 8,
                             },
                           ]}
                         >
-                          {proposal?.space?.name}
+                          {" "}
+                          {authorName}
                         </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <Text
-                      style={[
-                        styles.authorTitle,
-                        { color: colors.secondaryGray },
-                      ]}
-                    >
-                      {" "}
-                      {i18n.t("by")}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.push(USER_PROFILE, {
-                          address: proposal?.author,
-                        });
-                      }}
-                    >
-                      <Text
-                        style={[
-                          styles.authorTitle,
-                          {
-                            color: colors.textColor,
-                          },
-                        ]}
-                      >
-                        {" "}
-                        {authorName}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={{ alignSelf: "flex-start" }}>
-                    <ProposalState proposal={proposal} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ alignSelf: "flex-start" }}>
+                      <ProposalState proposal={proposal} />
+                    </View>
                   </View>
                 </View>
-              </View>
-            );
-          }}
-          headerContainerStyle={[
-            common.tabBarContainer,
-            { borderBottomColor: colors.borderColor },
-          ]}
-          renderTabBar={(props) => {
-            return <BaseTabBar {...props} />;
-          }}
-        >
-          <Tabs.Tab name="about">
-            <Tabs.ScrollView>
-              <View
-                style={[common.containerHorizontalPadding, { marginTop: 28 }]}
-              >
-                <MarkdownBody body={proposal.body} />
-              </View>
-            </Tabs.ScrollView>
-          </Tabs.Tab>
-          <Tabs.Tab name="results">
-            <Tabs.ScrollView>
-              <View
-                style={[common.containerHorizontalPadding, { marginTop: 28 }]}
-              >
-                <ProposalResultsBlock
-                  proposal={proposal}
-                  results={results}
-                  votes={votes}
-                  votingPower={`${n(votingPower)} ${proposal.space?.symbol}`}
-                />
-                <View style={{ width: 10, height: 24 }} />
-                <ProposalVotersBlock proposal={proposal} votes={votes} />
-              </View>
-            </Tabs.ScrollView>
-          </Tabs.Tab>
-          <Tabs.Tab name="info">
-            <Tabs.ScrollView>
-              <BlockInformation proposal={proposal} space={space} />
-            </Tabs.ScrollView>
-          </Tabs.Tab>
-        </Tabs.Container>
+              );
+            }}
+            headerContainerStyle={[
+              common.tabBarContainer,
+              { borderBottomColor: colors.borderColor },
+            ]}
+            renderTabBar={(props) => {
+              return <BaseTabBar {...props} />;
+            }}
+          >
+            <Tabs.Tab name="about">
+              <Tabs.ScrollView>
+                <View
+                  style={[common.containerHorizontalPadding, { marginTop: 28 }]}
+                >
+                  <MarkdownBody body={proposal.body} />
+                </View>
+              </Tabs.ScrollView>
+            </Tabs.Tab>
+            <Tabs.Tab name="results">
+              <Tabs.ScrollView>
+                {resultsLoaded ? (
+                  <View
+                    style={[
+                      common.containerHorizontalPadding,
+                      { marginTop: 28 },
+                    ]}
+                  >
+                    <ProposalResultsBlock
+                      proposal={proposal}
+                      results={results}
+                      votes={votes}
+                      votingPower={`${n(votingPower)} ${
+                        proposal.space?.symbol
+                      }`}
+                    />
+                    <View style={{ width: 10, height: 24 }} />
+                    <ProposalVotersBlock proposal={proposal} votes={votes} />
+                  </View>
+                ) : (
+                  <View
+                    style={[
+                      common.justifyCenter,
+                      common.alignItemsCenter,
+                      { width: "100%", marginTop: 28 },
+                    ]}
+                  >
+                    <ActivityIndicator size="large" color={colors.textColor} />
+                  </View>
+                )}
+              </Tabs.ScrollView>
+            </Tabs.Tab>
+            <Tabs.Tab name="info">
+              <Tabs.ScrollView>
+                <View
+                  style={[common.containerHorizontalPadding, { marginTop: 28 }]}
+                >
+                  <ProposalInfoBlock proposal={proposal} />
+                </View>
+              </Tabs.ScrollView>
+            </Tabs.Tab>
+          </Tabs.Container>
+        )}
       </SafeAreaView>
     </>
   );
