@@ -15,7 +15,7 @@ import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
 import SpaceScreen from "./SpaceScreen";
-import ProposalScreen from "./ProposalScreen";
+import ProposalScreen from "./ProposalScreenNew";
 import CustomWalletScreen from "./CustomWalletScreen";
 import NetworkScreen from "./NetworkScreen";
 import StrategyScreen from "./StrategyScreen";
@@ -32,7 +32,6 @@ import UserAvatar from "components/UserAvatar";
 import colors from "constants/colors";
 import { useExploreState } from "context/exploreContext";
 import { useNotificationsState } from "context/notificationsContext";
-import { CUSTOM_WALLET_NAME } from "constants/wallets";
 import WalletSetupScreen from "screens/WalletSetupScreen";
 import ChoosePasswordScreen from "screens/ChoosePasswordScreen";
 import SeedPhraseBackupStep1Screen from "screens/seedPhraseBackup/SeedPhraseBackupStep1Screen";
@@ -55,11 +54,13 @@ import appConstants from "constants/app";
 import WelcomeScreen from "screens/WelcomeScreen";
 import ExploreScreen from "screens/ExploreScreen";
 import AllFeedScreen from "screens/AllFeedScreen";
+import ProfileScreen from "screens/ProfileScreen";
 import {
   useBottomSheetModalRef,
   useBottomSheetModalShowRef,
 } from "context/bottomSheetModalContext";
 import { useNavigation } from "@react-navigation/native";
+import AddNewAccountScreen from "screens/AddNewAccountScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -83,8 +84,7 @@ const Tab = createBottomTabNavigator();
 const ICON_SIZE = 28;
 
 function TabNavigator() {
-  const { colors, connectedAddress, followedSpaces, savedWallets } =
-    useAuthState();
+  const { colors, connectedAddress, followedSpaces } = useAuthState();
   const { profiles } = useExploreState();
   const { proposalTimes, lastViewedProposal, lastViewedNotification } =
     useNotificationsState();
@@ -120,8 +120,6 @@ function TabNavigator() {
     connectedAddress,
   ]);
   const profile = profiles[connectedAddress ?? ""];
-  const walletName: any = get(savedWallets, `${connectedAddress}.name`, "");
-  const isCustomWallet = walletName === CUSTOM_WALLET_NAME || walletName === "";
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -245,7 +243,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="More"
-        component={MoreScreen}
+        component={ProfileScreen}
         options={{
           title: "",
           tabBarIcon: ({ color }) =>
@@ -460,6 +458,11 @@ export default function () {
       <Stack.Screen
         name={navigationConstants.FOLLOWERS_SCREEN}
         component={FollowersScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.ADD_NEW_ACCOUNT_SCREEN}
+        component={AddNewAccountScreen}
         options={{ headerShown: false, ...screenSettings }}
       />
     </Stack.Navigator>

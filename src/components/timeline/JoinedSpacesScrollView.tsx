@@ -24,11 +24,12 @@ const styles = StyleSheet.create({
     width: 66,
   },
   spacesJoinedTitle: {
-    fontSize: 20,
+    fontSize: 14,
     fontFamily: "Calibre-Semibold",
     paddingLeft: 16,
     paddingBottom: 8,
     paddingTop: 16,
+    textTransform: "uppercase",
   },
 });
 
@@ -46,7 +47,7 @@ function JoinedSpacesScrollView({
   return (
     <View>
       <Text style={[styles.spacesJoinedTitle, { color: colors.textColor }]}>
-        {i18n.t("spacesYouJoined")}
+        {i18n.t("joinedSpaces")}
       </Text>
       <View
         style={{

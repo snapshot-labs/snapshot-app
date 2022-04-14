@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   proposalEndContainer: {
     padding: 6,
     borderRadius: 6,
-    backgroundColor: "rgba(33, 150, 83, 0.2)",
+    backgroundColor: colors.baseGreenBg,
     justifyContent: "center",
     alignItems: "center",
   },

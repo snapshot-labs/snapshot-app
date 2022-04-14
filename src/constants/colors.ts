@@ -18,10 +18,12 @@ const defaultColors = {
   disabledButtonBg: "rgba(55, 114, 255, 0.5)",
   baseGreen: "#27AE60",
   baseGreen2: "#219653",
+  baseGreenBg: "rgba(33, 150, 83, 0.2)",
   baseYellow: "#F9BB60",
   baseYellow2: "#F7A426",
   basePurple: "#BB6BD9",
   basePurple2: "#9B51E0",
+  basePurpleBg: "rgba(155, 81, 224, 0.2)",
 };
 const light = {
   borderColor: "#C1C6D7",

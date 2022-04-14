@@ -29,6 +29,13 @@ import BlockInformation from "components/proposal/BlockInformation";
 import { getResults } from "helpers/snapshot";
 import { SPACE_SCREEN, USER_PROFILE } from "constants/navigation";
 import SpaceAvatar from "components/SpaceAvatar";
+import BaseTabBar from "components/tabBar/BaseTabBar";
+import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
+import ProposalState from "components/proposal/ProposalState";
+import ProposalResultsBlock from "components/proposal/ProposalResultsBlock";
+import { getVotingPower } from "helpers/proposalUtils";
+import UserVotingPower from "components/proposal/UserVotingPower";
+import { n } from "helpers/miscUtils";
 
 const styles = StyleSheet.create({
   proposalTitle: {
@@ -42,6 +49,12 @@ const styles = StyleSheet.create({
   authorTitle: {
     fontFamily: "Calibre-Semibold",
     fontSize: 14,
+  },
+  proposalAuthorSpaceContainer: {
+    flexDirection: "row",
+    marginTop: 22,
+    marginBottom: 11,
+    alignItems: "center",
   },
 });
 
@@ -126,6 +139,17 @@ async function getResultsObj(
   setResultsLoaded(true);
 }
 
+async function getUserVotingPower(
+  connectedAddress: string,
+  proposal: Proposal,
+  setVotingPower: (votingPower: number) => void
+) {
+  try {
+    const votingPower = await getVotingPower(connectedAddress, proposal);
+    setVotingPower(votingPower);
+  } catch (e) {}
+}
+
 function ProposalScreen({ route }: ProposalScreenProps) {
   const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
@@ -148,7 +172,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   );
   const insets = useSafeAreaInsets();
   const bottomSheetRef: any = useRef();
-  const [showProposalBottomSheet, setShowProposalBottomSheet] = useState(false);
+  const [votingPower, setVotingPower] = useState(0);
   const authorProfile = profiles[proposal.author];
   const authorName = getUsername(
     proposal.author,
@@ -178,167 +202,166 @@ function ProposalScreen({ route }: ProposalScreenProps) {
         setResults,
         setResultsLoaded
       );
+      getUserVotingPower(connectedAddress, proposal, setVotingPower);
     }
   }, [loaded]);
 
   return (
-    <SafeAreaView
-      style={[common.screen, { backgroundColor: colors.bgDefault }]}
-    >
-      <View
-        style={[
-          common.headerContainer,
-          common.justifySpaceBetween,
-          {
-            borderBottomColor: "transparent",
-            backgroundColor: colors.bgDefault,
-          },
-        ]}
+    <>
+      <IPhoneTopSafeAreaViewBackground />
+      <SafeAreaView
+        style={[common.screen, { backgroundColor: colors.bgDefault }]}
       >
-        <BackButton />
-      </View>
-      <Tabs.Container
-        renderHeader={() => {
-          return (
-            <View style={styles.proposalHeader}>
-              <Text style={[styles.proposalTitle, { color: colors.textColor }]}>
-                {proposal.title}
-              </Text>
-              <View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate(SPACE_SCREEN, {
-                        space,
-                        showHeader: true,
-                      });
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginTop: 24,
-                        marginBottom: 24,
+        <View
+          style={[
+            common.headerContainer,
+            common.justifySpaceBetween,
+            {
+              borderBottomColor: "transparent",
+              backgroundColor: colors.bgDefault,
+              zIndex: 99,
+            },
+          ]}
+        >
+          <BackButton />
+          <View style={common.containerHorizontalPadding}>
+            <UserVotingPower
+              address={connectedAddress}
+              score={votingPower}
+              symbol={proposal?.space?.symbol ?? ""}
+            />
+          </View>
+        </View>
+        <Tabs.Container
+          renderHeader={() => {
+            return (
+              <View
+                style={[
+                  styles.proposalHeader,
+                  { backgroundColor: colors.bgDefault },
+                ]}
+              >
+                <Text
+                  style={[styles.proposalTitle, { color: colors.textColor }]}
+                >
+                  {proposal.title}
+                </Text>
+                <View>
+                  <View style={styles.proposalAuthorSpaceContainer}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate(SPACE_SCREEN, {
+                          space,
+                          showHeader: true,
+                        });
                       }}
                     >
-                      <SpaceAvatar
-                        symbolIndex="space"
-                        size={18}
-                        space={space}
-                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <SpaceAvatar
+                          symbolIndex="space"
+                          size={18}
+                          space={space}
+                        />
+                        <Text
+                          style={[
+                            styles.authorTitle,
+                            {
+                              color: colors.textColor,
+                              marginLeft: 8,
+                            },
+                          ]}
+                        >
+                          {proposal?.space?.name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <Text
+                      style={[
+                        styles.authorTitle,
+                        { color: colors.secondaryGray },
+                      ]}
+                    >
+                      {" "}
+                      {i18n.t("by")}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.push(USER_PROFILE, {
+                          address: proposal?.author,
+                        });
+                      }}
+                    >
                       <Text
                         style={[
                           styles.authorTitle,
                           {
                             color: colors.textColor,
-                            marginLeft: 8,
                           },
                         ]}
                       >
-                        {proposal?.space?.name}
+                        {" "}
+                        {authorName}
                       </Text>
-                    </View>
-                  </TouchableOpacity>
-                  <Text
-                    style={[
-                      styles.authorTitle,
-                      { color: colors.secondaryGray },
-                    ]}
-                  >
-                    {" "}
-                    {i18n.t("by")}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.push(USER_PROFILE, {
-                        address: proposal?.author,
-                      });
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.authorTitle,
-                        {
-                          color: colors.textColor,
-                        },
-                      ]}
-                    >
-                      {" "}
-                      {authorName}
-                    </Text>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ alignSelf: "flex-start" }}>
+                    <ProposalState proposal={proposal} />
+                  </View>
                 </View>
               </View>
-            </View>
-          );
-        }}
-        headerContainerStyle={{
-          shadowOpacity: 0,
-          shadowOffset: {
-            width: 0,
-            height: 0,
-          },
-          borderBottomWidth: 1,
-          borderBottomColor: colors.borderColor,
-          elevation: 0,
-        }}
-        renderTabBar={(props) => {
-          return (
-            <MaterialTabBar
-              {...props}
-              contentContainerStyle={{ backgroundColor: colors.bgDefault }}
-              tabStyle={{ backgroundColor: colors.bgDefault }}
-              labelStyle={{
-                fontFamily: "Calibre-Medium",
-                color: colors.textColor,
-                textTransform: "none",
-                fontSize: 18,
-              }}
-              indicatorStyle={{
-                backgroundColor: colors.indicatorColor,
-                height: 3,
-                borderBottomWidth: 0,
-              }}
-              inactiveColor={colors.darkGray}
-              activeColor={colors.textColor}
-              getLabelText={(name: any) => {
-                return i18n.t(name);
-              }}
-            >
-              {props.children}
-            </MaterialTabBar>
-          );
-        }}
-      >
-        <Tabs.Tab name="about">
-          <Tabs.ScrollView>
-            <MarkdownBody body={proposal.body} />
-          </Tabs.ScrollView>
-        </Tabs.Tab>
-        <Tabs.Tab name="results">
-          <Tabs.ScrollView>
-            <BlockResults
-              resultsLoaded={resultsLoaded}
-              proposal={proposal}
-              results={results}
-            />
-            <View style={{ width: 10, height: 10 }} />
-            <BlockVotes
-              proposal={proposal}
-              votes={votes}
-              space={space}
-              resultsLoaded={resultsLoaded}
-            />
-          </Tabs.ScrollView>
-        </Tabs.Tab>
-        <Tabs.Tab name="info">
-          <Tabs.ScrollView>
-            <BlockInformation proposal={proposal} space={space} />
-          </Tabs.ScrollView>
-        </Tabs.Tab>
-      </Tabs.Container>
-    </SafeAreaView>
+            );
+          }}
+          headerContainerStyle={[
+            common.tabBarContainer,
+            { borderBottomColor: colors.borderColor },
+          ]}
+          renderTabBar={(props) => {
+            return <BaseTabBar {...props} />;
+          }}
+        >
+          <Tabs.Tab name="about">
+            <Tabs.ScrollView>
+              <View
+                style={[common.containerHorizontalPadding, { marginTop: 28 }]}
+              >
+                <MarkdownBody body={proposal.body} />
+              </View>
+            </Tabs.ScrollView>
+          </Tabs.Tab>
+          <Tabs.Tab name="results">
+            <Tabs.ScrollView>
+              <View
+                style={[common.containerHorizontalPadding, { marginTop: 28 }]}
+              >
+                <ProposalResultsBlock
+                  proposal={proposal}
+                  results={results}
+                  votes={votes}
+                  votingPower={`${n(votingPower)} ${proposal.space?.symbol}`}
+                />
+                <View style={{ width: 10, height: 10 }} />
+                <BlockVotes
+                  proposal={proposal}
+                  votes={votes}
+                  space={space}
+                  resultsLoaded={resultsLoaded}
+                />
+              </View>
+            </Tabs.ScrollView>
+          </Tabs.Tab>
+          <Tabs.Tab name="info">
+            <Tabs.ScrollView>
+              <BlockInformation proposal={proposal} space={space} />
+            </Tabs.ScrollView>
+          </Tabs.Tab>
+        </Tabs.Container>
+      </SafeAreaView>
+    </>
   );
 }
 

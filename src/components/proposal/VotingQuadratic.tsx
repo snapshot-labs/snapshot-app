@@ -13,6 +13,8 @@ import { Proposal } from "types/proposal";
 import { useAuthState } from "context/authContext";
 import isEmpty from "lodash/isEmpty";
 import BottomSheetTextInput from "components/BottomSheetTextInput";
+import Device from "helpers/device";
+import Input from "components/Input";
 
 const { width } = Dimensions.get("screen");
 
@@ -103,6 +105,8 @@ function VotingQuadratic({
   setSelectedChoices,
 }: VotingQuadraticProps) {
   const { colors } = useAuthState();
+  const TextInputComponent = Device.isIos() ? BottomSheetTextInput : Input;
+
   useEffect(() => {
     if (isEmpty(selectedChoices)) {
       setSelectedChoices({});
@@ -119,7 +123,6 @@ function VotingQuadratic({
               styles.buttonContainer,
               {
                 borderColor: colors.borderColor,
-                backgroundColor: colors.bgDefault,
               },
               selected ? { borderColor: colors.textColor } : {},
             ]}
@@ -166,7 +169,7 @@ function VotingQuadratic({
                     </Text>
                   </View>
                 </TouchableOpacity>
-                <BottomSheetTextInput
+                <TextInputComponent
                   style={{
                     width: inputWidth,
                     fontFamily: "Calibre-Medium",

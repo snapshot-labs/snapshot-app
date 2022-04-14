@@ -5,6 +5,7 @@ import { toNow } from "helpers/miscUtils";
 import { NOTIFICATION_EVENTS, STATES } from "constants/proposal";
 import { Space } from "types/explore";
 import toLower from "lodash/toLower";
+import { getPower } from "helpers/snapshot";
 
 export function getTimeAgo(proposal: Proposal) {
   const today = parseInt((moment().valueOf() / 1e3).toFixed());
@@ -91,4 +92,20 @@ export function sortProposals(proposals: Proposal[] = []): {
 
 export function getProposalUrl(proposal: Proposal, space: Space) {
   return `https://snapshot.org/#/${space.id}/proposal/${proposal.id}`;
+}
+
+export async function getVotingPower(
+  connectedAddress: string,
+  proposal: Proposal
+) {
+  try {
+    if (!connectedAddress || !proposal.author) return;
+    const response = await getPower(proposal.space, connectedAddress, proposal);
+
+    if (typeof response.totalScore === "number") {
+      return response.totalScore;
+    }
+  } catch (e) {
+    return 0;
+  }
 }

@@ -108,6 +108,21 @@ const common = StyleSheet.create({
     height: 50,
     ...fontStyles.normal,
   },
+  modalTitle: {
+    marginTop: 16,
+    fontSize: 22,
+    fontFamily: "Calibre-Semibold",
+    textAlign: "center",
+  },
+  tabBarContainer: {
+    shadowOpacity: 0,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    borderBottomWidth: 1,
+    elevation: 0,
+  },
 });
 
 export default common;

@@ -8,6 +8,7 @@ import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import Device from "helpers/device";
 import BottomSheetTextInput from "components/BottomSheetTextInput";
+import Input from "components/Input";
 import { HOME_SCREEN, QR_CODE_SCANNER_SCREEN } from "constants/navigation";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Button from "components/Button";
@@ -47,6 +48,7 @@ function TrackWalletButton({ onSuccess }: TrackWalletButtonProps) {
   const navigation = useNavigation();
   const authDispatch = useAuthDispatch();
   const exploreDispatch = useExploreDispatch();
+  const TextInputComponent = Device.isIos() ? BottomSheetTextInput : Input;
 
   return (
     <Button
@@ -89,7 +91,7 @@ function TrackWalletButton({ onSuccess }: TrackWalletButtonProps) {
                   }}
                 >
                   <View style={{ marginVertical: 16 }}>
-                    <BottomSheetTextInput
+                    <TextInputComponent
                       value={trackAddress}
                       onChangeText={(text) => {
                         setTrackAddress(text);

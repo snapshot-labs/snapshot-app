@@ -92,7 +92,6 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
   useEffect(() => {
     setShowBottomSheetModal(bottomSheetModal.show);
     if (bottomSheetModal.show) {
-      //@ts-ignore
       bottomSheetModalRef?.current?.snapToIndex(1);
       bottomSheetModalShowRef.current = true;
     }

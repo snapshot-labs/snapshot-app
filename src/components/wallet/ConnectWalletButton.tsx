@@ -145,7 +145,7 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
     <Button
       onPress={() => {
         const maxSnapPoint =
-          wallets.length > 0 ? wallets.length * 84 + 60 : 250;
+          wallets.length > 0 ? wallets.length * 84 + 90 : 250;
         const snapPoint =
           maxSnapPoint > Device.getDeviceHeight() ? "90%" : maxSnapPoint;
         bottomSheetModalDispatch({
@@ -160,13 +160,13 @@ function ConnectWalletButton({ onSuccess }: ConnectWalletButtonProps) {
                     { color: colors.textColor },
                   ]}
                 >
-                  {i18n.t("selectWallet")}
+                  {i18n.t("connectWallet")}
                 </Text>
               );
             },
             ModalContent: () => {
               return (
-                <View>
+                <View style={{ marginTop: 22 }}>
                   {wallets.length === 0 &&
                     defaultWallets.map((wallet) => (
                       <TouchableWithoutFeedback

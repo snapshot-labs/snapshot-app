@@ -7,12 +7,9 @@ import {
   TextStyle,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  TouchableNativeFeedback,
-  TouchableOpacity,
 } from "react-native";
 import colors from "../constants/colors";
 import { useAuthState } from "context/authContext";
-import Device from "helpers/device";
 
 export const styles = StyleSheet.create({
   button: {
@@ -100,8 +97,12 @@ function Button({
             disabled ? styles.disabled : {},
             primary
               ? {
-                  backgroundColor: colors.blueButtonBg,
-                  borderColor: colors.blueButtonBg,
+                  backgroundColor: disabled
+                    ? colors.disabledButtonBg
+                    : colors.blueButtonBg,
+                  borderColor: disabled
+                    ? colors.disabledButtonBg
+                    : colors.blueButtonBg,
                 }
               : { borderColor: colors.borderColor },
             selected ? { borderColor: colors.blueButtonBg } : {},

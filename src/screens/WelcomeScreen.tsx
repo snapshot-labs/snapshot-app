@@ -1,5 +1,11 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import i18n from "i18n-js";
 import common from "styles/common";
@@ -14,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import appConstants from "constants/app";
 import ConnectWalletButton from "components/wallet/ConnectWalletButton";
 import TrackWalletButton from "components/wallet/TrackWalletButton";
+import { useBottomSheetModalRef } from "context/bottomSheetModalContext";
 
 const styles = StyleSheet.create({
   content: {
@@ -46,8 +53,23 @@ const styles = StyleSheet.create({
 
 function WelcomeScreen() {
   const { colors } = useAuthState();
+  const bottomSheetModalRef = useBottomSheetModalRef();
   const authDispatch = useAuthDispatch();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const backAction = () => {
+      bottomSheetModalRef.current?.close();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <SafeAreaView

@@ -35,6 +35,7 @@ import Device from "helpers/device";
 import { Proposal } from "types/proposal";
 import uniqBy from "lodash/uniqBy";
 import FollowSection from "components/user/FollowSection";
+import BaseTabBar from "components/tabBar/BaseTabBar";
 
 const LOAD_BY = 10;
 
@@ -179,7 +180,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
         <View
           style={{
             width: "100%",
-            height: 50, // For all devices, even X, XS Max
+            height: 40, // For all devices, even X, XS Max
             position: "absolute",
             top: 0,
             left: 0,
@@ -266,31 +267,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
           )}
           headerHeight={130}
           renderTabBar={(props) => {
-            return (
-              <MaterialTabBar
-                {...props}
-                contentContainerStyle={{ backgroundColor: colors.bgDefault }}
-                tabStyle={{ backgroundColor: colors.bgDefault }}
-                labelStyle={{
-                  fontFamily: "Calibre-Medium",
-                  color: colors.textColor,
-                  textTransform: "none",
-                  fontSize: 18,
-                }}
-                indicatorStyle={{
-                  backgroundColor: colors.indicatorColor,
-                  height: 3,
-                  borderBottomWidth: 0,
-                }}
-                inactiveColor={colors.darkGray}
-                activeColor={colors.textColor}
-                getLabelText={(name: any) => {
-                  return i18n.t(name);
-                }}
-              >
-                {props.children}
-              </MaterialTabBar>
-            );
+            return <BaseTabBar {...props} />;
           }}
         >
           <Tabs.Tab name="proposals">

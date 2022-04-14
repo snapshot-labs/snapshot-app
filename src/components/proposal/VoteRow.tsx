@@ -82,12 +82,7 @@ function VoteRow({ vote, profiles, space, proposal }: VoteRowProps) {
       >
         <View style={styles.rowValueContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <UserAvatar
-              size={20}
-              address={vote.voter}
-              imgSrc={voterProfile?.image}
-              key={`${vote.voter}${voterProfile?.image}`}
-            />
+            <UserAvatar size={20} address={vote.voter} key={`${vote.voter}`} />
             <Text
               style={[
                 styles.rowText,

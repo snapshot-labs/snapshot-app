@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, View, TouchableWithoutFeedback, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
@@ -17,19 +17,23 @@ import { ethers } from "ethers";
 import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import appConstants from "constants/app";
-import {getUserProfile} from "helpers/profile";
+import { getUserProfile } from "helpers/profile";
 
 const styles = StyleSheet.create({
   connectedEns: {
     color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-    fontSize: 24,
-    marginTop: 16,
+    fontFamily: "Calibre-Semibold",
+    fontSize: 22,
+    marginTop: 9,
   },
   address: {
-    color: colors.textColor,
     fontFamily: "Calibre-Medium",
-    fontSize: 20,
+    fontSize: 14,
+  },
+  addressContainer: {
+    borderRadius: 4,
+    marginTop: 9,
+    padding: 4,
   },
 });
 
@@ -49,8 +53,11 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
   useEffect(() => {
     try {
       const checksumAddress = ethers.utils.getAddress(address ?? "");
-      setChecksumAddress(checksumAddress);
-    } catch (e) {}
+      const shortenedAddress = shorten(checksumAddress ?? "");
+      setChecksumAddress(shortenedAddress);
+    } catch (e) {
+      setChecksumAddress(address);
+    }
   }, [address]);
 
   const copyToClipboard = () => {
@@ -71,20 +78,22 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
       ]}
     >
       {address ? (
-        <TouchableOpacity
+        <TouchableWithoutFeedback
           onPress={() => {
             navigation.push(USER_PROFILE, { address });
           }}
         >
-          <UserAvatar
-            size={60}
-            address={address}
-            key={`${address}${profile?.image}`}
-          />
-          <View style={{ position: "absolute", bottom: -4, right: -10 }}>
-            <WalletType address={address} />
+          <View>
+            <UserAvatar
+              size={60}
+              address={address}
+              key={`${address}${profile?.image}`}
+            />
+            <View style={{ position: "absolute", bottom: -4, right: -10 }}>
+              <WalletType address={address} />
+            </View>
           </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       ) : (
         <View />
       )}
@@ -95,25 +104,28 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
           common.alignItemsCenter,
         ]}
       >
-        {!isEmpty(ens) && (
-          <Text style={[styles.connectedEns, { color: colors.textColor }]}>
-            {ens}
-          </Text>
-        )}
-        <TouchableOpacity onPress={copyToClipboard}>
-          <View style={isEmpty(ens) ? { marginTop: 16 } : { marginTop: 8 }}>
+        <Text style={[styles.connectedEns, { color: colors.textColor }]}>
+          {isEmpty(ens) ? checksumAddress : ens}
+        </Text>
+        <TouchableWithoutFeedback onPress={copyToClipboard}>
+          <View
+            style={[
+              styles.addressContainer,
+              { backgroundColor: colors.navBarBg },
+            ]}
+          >
             <Text
-              style={[styles.address, { color: colors.textColor }]}
+              style={[styles.address, { color: colors.secondaryGray }]}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
               {address?.toLowerCase() ===
               appConstants.ANONYMOUS_ADDRESS.toLowerCase()
                 ? i18n.t("anonymous")
-                : shorten(checksumAddress ?? "")}
+                : checksumAddress}
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       </View>
     </View>
   );

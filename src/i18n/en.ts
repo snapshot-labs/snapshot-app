@@ -418,7 +418,7 @@ export default {
   trackWallet: "Track wallet",
   selectWallet: "Select wallet",
   trackAnyWallet: "Track any wallet",
-  pasteOrScanYourENSEthereumAddress: "Paste or scan your ENS, Ethereum Address",
+  pasteOrScanYourENSEthereumAddress: "Paste or scan your ENS, Ethereum address",
   ensOrAddress: "ENS or address",
   whereDecisionsGetMade: "Where decisions get made",
   timeLeft: "Time left",
@@ -437,5 +437,10 @@ export default {
   countNotifications: "{{count}} notifications",
   today: "today",
   skip: "Skip",
-  viewLatestProposalsAgain: "View latest proposals again"
+  viewLatestProposalsAgain: "View latest proposals again",
+  activity: "Activity",
+  accounts: "Accounts",
+  connected: "Connected",
+  addNewAccount: "Add new account",
+
 };
