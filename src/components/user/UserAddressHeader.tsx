@@ -5,7 +5,7 @@ import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "components/UserAvatar";
 import { shorten } from "helpers/miscUtils";
 import { useExploreState } from "context/exploreContext";
 import colors from "constants/colors";
@@ -14,9 +14,6 @@ import { useAuthState } from "context/authContext";
 import common from "styles/common";
 import WalletType from "components/wallet/WalletType";
 import { ethers } from "ethers";
-import { USER_PROFILE } from "constants/navigation";
-import { useNavigation } from "@react-navigation/native";
-import appConstants from "constants/app";
 import { getUserProfile } from "helpers/profile";
 
 const styles = StyleSheet.create({
@@ -37,17 +34,16 @@ const styles = StyleSheet.create({
   },
 });
 
-interface ActiveAccountProps {
+interface UserAddressHeaderProps {
   address: string;
 }
 
-function ActiveAccount({ address = "" }: ActiveAccountProps) {
+function UserAddressHeader({ address = "" }: UserAddressHeaderProps) {
   const { colors } = useAuthState();
   const { profiles } = useExploreState();
   const profile = getUserProfile(address, profiles);
   const ens = get(profile, "ens", undefined);
   const toastShowConfig = useToastShowConfig();
-  const navigation: any = useNavigation();
   const [checksumAddress, setChecksumAddress] = useState(shorten(address));
 
   useEffect(() => {
@@ -77,26 +73,16 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
         { paddingBottom: 6, marginTop: 16 },
       ]}
     >
-      {address ? (
-        <TouchableWithoutFeedback
-          onPress={() => {
-            navigation.push(USER_PROFILE, { address });
-          }}
-        >
-          <View>
-            <UserAvatar
-              size={60}
-              address={address}
-              key={`${address}${profile?.image}`}
-            />
-            <View style={{ position: "absolute", bottom: -4, right: -10 }}>
-              <WalletType address={address} />
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      ) : (
-        <View />
-      )}
+      <View>
+        <UserAvatar
+          size={60}
+          address={address}
+          key={`${address}${profile?.image}`}
+        />
+        <View style={{ position: "absolute", bottom: -4, right: -10 }}>
+          <WalletType address={address} />
+        </View>
+      </View>
       <View
         style={[
           common.containerHorizontalPadding,
@@ -119,10 +105,7 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {address?.toLowerCase() ===
-              appConstants.ANONYMOUS_ADDRESS.toLowerCase()
-                ? i18n.t("anonymous")
-                : checksumAddress}
+              {checksumAddress}
             </Text>
           </View>
         </TouchableWithoutFeedback>
@@ -131,4 +114,4 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
   );
 }
 
-export default ActiveAccount;
+export default UserAddressHeader;

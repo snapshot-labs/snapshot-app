@@ -24,6 +24,7 @@ const defaultColors = {
   basePurple: "#BB6BD9",
   basePurple2: "#9B51E0",
   basePurpleBg: "rgba(155, 81, 224, 0.2)",
+  baseBlue: "#0049F5",
 };
 const light = {
   borderColor: "#C1C6D7",

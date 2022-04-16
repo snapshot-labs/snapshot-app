@@ -8,43 +8,37 @@ import devApolloClient from "helpers/devApolloClient";
 import get from "lodash/get";
 import { useNavigation } from "@react-navigation/native";
 import { FOLLOWERS_SCREEN, FOLLOWING_SCREEN } from "constants/navigation";
+import { ethers } from "ethers";
 
 const styles = StyleSheet.create({
   followSectionContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 16,
-    marginTop: 16,
+    marginTop: 12,
   },
   followersContainer: {
     paddingLeft: 16,
     paddingRight: 8,
     marginVertical: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRightWidth: 1,
+    justifyContent: "flex-start",
   },
   label: {
     fontFamily: "Calibre-Medium",
-    textTransform: "uppercase",
     marginTop: 4,
   },
   value: {
     fontFamily: "Calibre-Semibold",
+    fontSize: 18,
   },
   followingContainer: {
     paddingHorizontal: 8,
     marginVertical: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRightWidth: 1,
   },
   proposalContainer: {
     paddingHorizontal: 8,
     paddingRight: 16,
     marginVertical: 4,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 
@@ -81,14 +75,11 @@ async function getWalletFollowers(
 
 interface FollowSection {
   followAddress: string;
-  authoredProposalsCount: number;
+  votesCount: number;
 }
 
-function FollowSection({
-  followAddress,
-  authoredProposalsCount,
-}: FollowSection) {
-  const { colors, connectedAddress, theme } = useAuthState();
+function FollowSection({ followAddress, votesCount }: FollowSection) {
+  const { colors, connectedAddress } = useAuthState();
   const [walletFollows, setWalletFollows] = useState([]);
   const [walletFollowers, setWalletFollowers] = useState([]);
   const hideFollowButton =
@@ -96,29 +87,22 @@ function FollowSection({
   const navigation = useNavigation();
 
   useEffect(() => {
-    getWalletFollows(followAddress, setWalletFollows);
-    getWalletFollowers(followAddress, setWalletFollowers);
+    try {
+      const checksumAddress = ethers.utils.getAddress(followAddress ?? "");
+      getWalletFollows(checksumAddress, setWalletFollows);
+      getWalletFollowers(checksumAddress, setWalletFollowers);
+    } catch (e) {}
   }, []);
 
   return (
     <View>
-      <View
-        style={[
-          styles.followSectionContainer,
-          { backgroundColor: theme === "light" ? colors.white : "#181C25" },
-        ]}
-      >
+      <View style={styles.followSectionContainer}>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate(FOLLOWERS_SCREEN, { address: followAddress });
           }}
         >
-          <View
-            style={[
-              styles.followersContainer,
-              { borderRightColor: colors.borderColor },
-            ]}
-          >
+          <View style={styles.followersContainer}>
             <Text
               style={[
                 styles.value,
@@ -129,7 +113,7 @@ function FollowSection({
             >
               {walletFollowers.length}
             </Text>
-            <Text style={[styles.label, { color: colors.textColor }]}>
+            <Text style={[styles.label, { color: colors.secondaryGray }]}>
               {i18n.t("followers")}
             </Text>
           </View>
@@ -139,14 +123,7 @@ function FollowSection({
             navigation.navigate(FOLLOWING_SCREEN, { address: followAddress });
           }}
         >
-          <View
-            style={[
-              styles.followingContainer,
-              {
-                borderRightColor: colors.borderColor,
-              },
-            ]}
-          >
+          <View style={styles.followingContainer}>
             <Text
               style={[
                 styles.value,
@@ -157,7 +134,7 @@ function FollowSection({
             >
               {walletFollows.length}
             </Text>
-            <Text style={[styles.label, { color: colors.textColor }]}>
+            <Text style={[styles.label, { color: colors.secondaryGray }]}>
               {i18n.t("following")}
             </Text>
           </View>
@@ -171,17 +148,16 @@ function FollowSection({
               },
             ]}
           >
-            {authoredProposalsCount}
+            {votesCount}
           </Text>
-          <Text style={[styles.label, { color: colors.textColor }]}>
-            {i18n.t("proposal")}
+          <Text style={[styles.label, { color: colors.secondaryGray }]}>
+            {i18n.t("votes")}
           </Text>
         </View>
       </View>
       <View
         style={{
           marginTop: 16,
-          alignSelf: "flex-start",
         }}
       >
         {hideFollowButton && (

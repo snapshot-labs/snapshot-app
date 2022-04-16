@@ -23,8 +23,14 @@ import IconFont from "components/IconFont";
 import { SETTINGS_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 import AccountsButton from "components/profile/AccountsButton";
+import FollowSection from "components/user/FollowSection";
 
-async function getVotedProposals(address: string, setVotedProposals: any) {
+async function getVotedProposals(
+  address: string,
+  setVotedProposals: any,
+  setLoadingVotedProposals: (loading: boolean) => void
+) {
+  setLoadingVotedProposals(true);
   try {
     const query = {
       query: USER_VOTES_QUERY,
@@ -39,6 +45,8 @@ async function getVotedProposals(address: string, setVotedProposals: any) {
     setVotedProposals(proposalVotes);
   } catch (e) {
     setVotedProposals([]);
+  } finally {
+    setLoadingVotedProposals(false);
   }
 }
 
@@ -47,7 +55,8 @@ function ProfileScreen() {
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const authDispatch = useAuthDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loadingFollows, setLoadingFollows] = useState(false);
+  const [loadingVotedProposals, setLoadingVotedProposals] = useState(false);
   const [votedProposals, setVotedProposals] = useState([]);
   const navigation: any = useNavigation();
 
@@ -64,8 +73,12 @@ function ProfileScreen() {
     if (filteredArray.length > 0) {
       setProfiles(filteredArray, exploreDispatch);
     }
-    getVotedProposals(connectedAddress, setVotedProposals);
-    getFollows(connectedAddress, authDispatch, setLoading);
+    getVotedProposals(
+      connectedAddress,
+      setVotedProposals,
+      setLoadingVotedProposals
+    );
+    getFollows(connectedAddress, authDispatch, setLoadingFollows);
   }, [connectedAddress]);
 
   return (
@@ -106,24 +119,33 @@ function ProfileScreen() {
                 ]}
               >
                 <ActiveAccount address={connectedAddress} />
-                <Button
-                  onPress={() => {
-                    navigation.navigate(SETTINGS_SCREEN);
-                  }}
-                  title={i18n.t("settings")}
-                  buttonTitleStyle={{
-                    textTransform: "uppercase",
-                    fontSize: 14,
-                  }}
-                  Icon={() => (
-                    <IconFont
-                      name={"gear"}
-                      size={22}
-                      color={colors.textColor}
-                    />
-                  )}
-                  buttonContainerStyle={{ width: 173, paddingVertical: 9 }}
+                <FollowSection
+                  followAddress={connectedAddress}
+                  votesCount={votedProposals.length}
                 />
+                <View style={{ marginTop: 16 }}>
+                  <Button
+                    onPress={() => {
+                      navigation.navigate(SETTINGS_SCREEN);
+                    }}
+                    title={i18n.t("settings")}
+                    buttonTitleStyle={{
+                      textTransform: "uppercase",
+                      fontSize: 14,
+                    }}
+                    Icon={() => (
+                      <IconFont
+                        name={"gear"}
+                        size={22}
+                        color={colors.textColor}
+                      />
+                    )}
+                    buttonContainerStyle={{
+                      width: 173,
+                      paddingVertical: 9,
+                    }}
+                  />
+                </View>
               </View>
             );
           }}
@@ -133,7 +155,7 @@ function ProfileScreen() {
         >
           <Tabs.Tab name="about">
             <Tabs.ScrollView>
-              <JoinedSpacesScrollView />
+              <JoinedSpacesScrollView useLoader={loadingFollows} />
             </Tabs.ScrollView>
           </Tabs.Tab>
           <Tabs.Tab name="activity">
@@ -149,7 +171,7 @@ function ProfileScreen() {
                 );
               }}
               ListEmptyComponent={
-                loading ? (
+                loadingVotedProposals ? (
                   <View />
                 ) : (
                   <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
@@ -162,7 +184,7 @@ function ProfileScreen() {
                 )
               }
               ListFooterComponent={
-                loading ? (
+                loadingVotedProposals ? (
                   <View
                     style={{
                       width: "100%",

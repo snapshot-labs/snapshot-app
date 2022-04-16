@@ -29,6 +29,7 @@ import { useEngineState } from "context/engineContext";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import { ethers } from "ethers";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
+import SecondaryButton from "components/SecondaryButton";
 
 async function followSpace(
   isFollowingSpace: any,
@@ -214,7 +215,7 @@ function FollowButton({ space }: FollowButtonProps) {
   }
 
   return (
-    <Button
+    <SecondaryButton
       onPress={async () => {
         setButtonLoading(true);
         try {
@@ -328,7 +329,7 @@ function FollowButton({ space }: FollowButtonProps) {
       title={isFollowingSpace ? i18n.t("joined") : i18n.t("join")}
       buttonContainerStyle={{ width: 120 }}
       loading={buttonLoading}
-      primary
+      selected={!!isFollowingSpace}
     />
   );
 }

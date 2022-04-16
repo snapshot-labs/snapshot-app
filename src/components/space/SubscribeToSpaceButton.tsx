@@ -21,6 +21,7 @@ import {
 } from "context/bottomSheetModalContext";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import { useNavigation } from "@react-navigation/native";
+import IconButton from "components/IconButton";
 
 interface SubscribeToSpaceButtonProps {
   space: Space;
@@ -48,8 +49,16 @@ function SubscribeToSpaceButton({ space }: SubscribeToSpaceButtonProps) {
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const navigation: any = useNavigation();
 
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="small" color={colors.textColor} />
+      </View>
+    );
+  }
+
   return (
-    <TouchableOpacity
+    <IconButton
       onPress={async () => {
         try {
           setLoading(true);
@@ -184,19 +193,9 @@ function SubscribeToSpaceButton({ space }: SubscribeToSpaceButtonProps) {
         }
         setLoading(false);
       }}
-    >
-      <View style={{ marginRight: 16 }}>
-        {loading ? (
-          <ActivityIndicator size="small" color={colors.textColor} />
-        ) : (
-          <IconFont
-            name={isSubscribed ? "notifications_active" : "notifications-none"}
-            size={30}
-            color={colors.textColor}
-          />
-        )}
-      </View>
-    </TouchableOpacity>
+      name={isSubscribed ? "notifications_active" : "notifications-none"}
+      iconSize={18}
+    />
   );
 }
 

@@ -20,7 +20,6 @@ import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import common from "styles/common";
 import IconFont from "components/IconFont";
-import moment from "moment-timezone";
 import { dateFormat, explorerUrl, n } from "helpers/miscUtils";
 
 const styles = StyleSheet.create({
@@ -94,7 +93,6 @@ function ProposalInfoBlock({ proposal }: ProposalInfoBlockProps) {
     strategiesNames.length > 0
       ? strategiesNames.join(", ")
       : i18n.t("noStrategies");
-  const created = moment(proposal.created).format("MMM DD, YYYY HH:mm A");
 
   return (
     <View

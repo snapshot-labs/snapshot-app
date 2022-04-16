@@ -23,6 +23,7 @@ import UserAvatar from "../UserAvatar";
 import { useAuthState } from "context/authContext";
 import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
+import { ethers } from "ethers";
 
 const { height: deviceHeight } = Dimensions.get("screen");
 
@@ -64,7 +65,7 @@ function AboutSpace({
   const { connectedAddress, colors } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   const space = Object.assign(routeSpace, get(spaces, routeSpace.id ?? "", {}));
   //@ts-ignore
   const network = networksJson[space.network] ?? {};
@@ -75,9 +76,12 @@ function AboutSpace({
     const profilesArray = Object.keys(profiles);
     const addressArray = [...(space.admins ?? []), ...(space.members ?? [])];
     const filteredArray = addressArray.filter((address) => {
-      return !profilesArray.includes(address);
+      return profilesArray.includes(address.toLowerCase());
     });
-    setProfiles(filteredArray, exploreDispatch);
+
+    if (filteredArray.length > 0) {
+      setProfiles(filteredArray, exploreDispatch);
+    }
   }, [space]);
 
   return (

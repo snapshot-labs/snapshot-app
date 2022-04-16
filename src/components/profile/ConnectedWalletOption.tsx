@@ -73,7 +73,7 @@ function ConnectedWalletOption({
   const ens = get(profile, "ens", undefined);
   const walletName = get(savedWallets, `${address?.toLowerCase()}.name`);
   const isSnapshotWallet = addressIsSnapshotWallet(address, snapshotWallets);
-  const [checksumAddress, setChecksumAddress] = useState(address);
+  const [checksumAddress, setChecksumAddress] = useState(shorten(address));
   const bottomSheetModalRef = useBottomSheetModalRef();
 
   useEffect(() => {

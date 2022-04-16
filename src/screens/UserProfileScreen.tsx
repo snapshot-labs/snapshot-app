@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import common from "styles/common";
 import { useAuthState } from "context/authContext";
-import { shorten } from "helpers/miscUtils";
 import { ethers } from "ethers";
 import i18n from "i18n-js";
-import colors from "constants/colors";
 import { useToastShowConfig } from "constants/toast";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
@@ -27,32 +19,16 @@ import get from "lodash/get";
 import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
 import ProposalPreview from "components/ProposalPreview";
 import { useExploreState } from "context/exploreContext";
-import isEmpty from "lodash/isEmpty";
 import UserSpacePreview from "components/user/UserSpacePreview";
-import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
-import UserAvatar from "components/UserAvatar";
-import Device from "helpers/device";
+import { Tabs } from "react-native-collapsible-tab-view";
 import { Proposal } from "types/proposal";
 import uniqBy from "lodash/uniqBy";
 import FollowSection from "components/user/FollowSection";
 import BaseTabBar from "components/tabBar/BaseTabBar";
+import UserAddressHeader from "components/user/UserAddressHeader";
+import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
 
 const LOAD_BY = 10;
-
-const styles = StyleSheet.create({
-  address: {
-    color: colors.textColor,
-    fontFamily: "Calibre-Medium",
-    fontSize: 20,
-  },
-  indicatorStyle: {
-    fontFamily: "Calibre-Medium",
-    color: colors.textColor,
-    backgroundColor: colors.darkGray,
-    height: 5,
-    top: 42,
-  },
-});
 
 async function getVotedProposals(address: string, setProposals: any) {
   const query = {
@@ -139,9 +115,7 @@ interface UserProfileScreenProps {
 function UserProfileScreen({ route }: UserProfileScreenProps) {
   const { address } = route.params;
   const { colors } = useAuthState();
-  const { spaces, profiles } = useExploreState();
-  const [checksumAddress, setChecksumAddress] = useState(address);
-  const toastShowConfig = useToastShowConfig();
+  const { spaces } = useExploreState();
   const [proposals, setProposals] = useState([]);
   const [authoredProposals, setAuthoredProposals] = useState([]);
   const [authoredProposalsLoadCount, setAuthoredProposalsLoadCount] =
@@ -149,25 +123,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const [loadingAuthoredProposals, setLoadingMoreAuthoredProposals] =
     useState<boolean>(false);
   const [loading, setLoading] = useState(false);
-  const userProfile = profiles[address];
-  const username = get(userProfile, "ens", undefined);
   const [joinedSpaces, setJoinedSpaces] = useState([]);
-
-  function copyToClipboard() {
-    Clipboard.setString(checksumAddress);
-    Toast.show({
-      type: "default",
-      text1: i18n.t("publicAddressCopiedToClipboard"),
-      ...toastShowConfig,
-    });
-  }
-
-  useEffect(() => {
-    try {
-      const checksumAddress = ethers.utils.getAddress(address ?? "");
-      setChecksumAddress(checksumAddress);
-    } catch (e) {}
-  }, [address]);
 
   useEffect(() => {
     getProposals(address, setProposals, setAuthoredProposals, setLoading);
@@ -176,19 +132,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
 
   return (
     <>
-      {Device.isIos() && (
-        <View
-          style={{
-            width: "100%",
-            height: 40, // For all devices, even X, XS Max
-            position: "absolute",
-            top: 0,
-            left: 0,
-            backgroundColor: colors.bgDefault,
-            zIndex: 200,
-          }}
-        />
-      )}
+      <IPhoneTopSafeAreaViewBackground />
       <SafeAreaView
         style={[common.screen, { backgroundColor: colors.bgDefault }]}
       >
@@ -205,16 +149,10 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
           <BackButton />
         </View>
         <Tabs.Container
-          headerContainerStyle={{
-            shadowOpacity: 0,
-            shadowOffset: {
-              width: 0,
-              height: 0,
-            },
-            borderBottomWidth: 1,
-            borderBottomColor: colors.borderColor,
-            elevation: 0,
-          }}
+          headerContainerStyle={[
+            common.tabBarContainer,
+            { borderBottomColor: colors.borderColor },
+          ]}
           renderHeader={() => (
             <View
               style={[
@@ -233,34 +171,10 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                   },
                 ]}
               >
-                <View style={{ flexDirection: "row" }}>
-                  <UserAvatar address={address} size={60} />
-                  <View style={{ marginLeft: 8 }}>
-                    {!isEmpty(username) && (
-                      <View style={{ marginTop: 8 }}>
-                        <Text
-                          style={[styles.address, { color: colors.textColor }]}
-                        >
-                          {username}
-                        </Text>
-                      </View>
-                    )}
-                    <TouchableOpacity onPress={copyToClipboard}>
-                      <View style={{ marginTop: 8 }}>
-                        <Text
-                          style={[styles.address, { color: colors.textColor }]}
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {shorten(checksumAddress ?? "")}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                <UserAddressHeader address={address} />
                 <FollowSection
-                  followAddress={checksumAddress}
-                  authoredProposalsCount={authoredProposals.length}
+                  followAddress={address}
+                  votesCount={proposals.length}
                 />
               </View>
             </View>

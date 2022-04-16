@@ -27,6 +27,9 @@ export async function getFollows(
   authDispatch?: ContextDispatch,
   setLoading?: (loading: boolean) => void
 ) {
+  if (setLoading) {
+    setLoading(true);
+  }
   if (accountId) {
     const query = {
       query: FOLLOWS_QUERY,

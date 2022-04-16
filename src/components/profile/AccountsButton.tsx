@@ -82,7 +82,7 @@ function AccountsButton() {
                   />
                   {savedWalletKeys.map((address: string, i: number) => {
                     return (
-                      <>
+                      <View key={address}>
                         <ConnectedWalletOption
                           address={address}
                           key={address}
@@ -95,7 +95,7 @@ function AccountsButton() {
                               : { backgroundColor: "transparent" },
                           ]}
                         />
-                      </>
+                      </View>
                     );
                   })}
                   <Button

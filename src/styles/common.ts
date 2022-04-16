@@ -91,6 +91,9 @@ const common = StyleSheet.create({
   alignItemsCenter: {
     alignItems: "center",
   },
+  marginLeftAuto: {
+    marginLeft: "auto",
+  },
   modalHeader: {
     paddingBottom: 16,
     borderBottomWidth: 1,

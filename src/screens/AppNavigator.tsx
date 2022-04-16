@@ -61,6 +61,7 @@ import {
 } from "context/bottomSheetModalContext";
 import { useNavigation } from "@react-navigation/native";
 import AddNewAccountScreen from "screens/AddNewAccountScreen";
+import SpaceScreenNew from "screens/SpaceScreenNew";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -319,7 +320,7 @@ export default function () {
       />
       <Stack.Screen
         name={navigationConstants.SPACE_SCREEN}
-        component={SpaceScreen}
+        component={SpaceScreenNew}
         options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen

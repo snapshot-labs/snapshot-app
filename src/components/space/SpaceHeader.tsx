@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import get from "lodash/get";
@@ -17,16 +17,28 @@ import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
 import { addressIsSnapshotWallet } from "helpers/address";
 import SubscribeToSpaceButton from "components/space/SubscribeToSpaceButton";
+import IconButton from "components/IconButton";
 
 const verified: any = require("../../constants/verifiedSpaces.json");
 
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  separator: {
+    width: 6,
+    height: 10,
+  },
+});
+
 interface SpaceHeader {
   space: Space;
-  isWalletConnect: boolean | undefined;
 }
 
-function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
-  const { colors, connectedAddress, snapshotWallets } = useAuthState();
+function SpaceHeader({ space }: SpaceHeader) {
+  const { colors, connectedAddress, snapshotWallets, isWalletConnect } =
+    useAuthState();
   const navigation: any = useNavigation();
   const isSnapshotWallet = addressIsSnapshotWallet(
     connectedAddress ?? "",
@@ -36,75 +48,48 @@ function SpaceHeader({ space, isWalletConnect }: SpaceHeader) {
   const isVerified = verificationStatus === 1;
 
   return (
-    <View
-      style={{
-        paddingHorizontal: 16,
-        marginTop: 24,
-        backgroundColor: colors.bgDefault,
-      }}
-    >
-      <View style={{ flexDirection: "row" }}>
-        <View>
-          <SpaceAvatar space={space} symbolIndex="space" size={60} />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={[
-                { marginTop: 8 },
-                common.headerTitle,
-                { color: colors.textColor },
-              ]}
-            >
-              {get(space, "name")}
-            </Text>
-            {isVerified && (
-              <IconFont
-                name="check-verified"
-                size={22}
-                color={colors.bgGreen}
-                style={{ marginLeft: 6, marginTop: 10 }}
-              />
-            )}
-          </View>
-
-          <Text style={[{ marginTop: 4 }, common.subTitle]}>
-            {get(space, "id")}
-          </Text>
-          <Text style={[{ marginTop: 4 }, common.subTitle]}>
-            {n(get(space, "followers"))} {i18n.t("members")}
-          </Text>
-        </View>
-        {(isWalletConnect || isSnapshotWallet) && (
-          <View style={{ marginLeft: "auto", marginTop: 16 }}>
-            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-              <SubscribeToSpaceButton space={space} />
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate(SPACE_SETTINGS_SCREEN, { space });
-                }}
-              >
-                <View style={{ marginBottom: 8 }}>
-                  <IconFont name="gear" size={30} color={colors.textColor} />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <FollowButton space={space} />
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate(CREATE_PROPOSAL_SCREEN, { space });
-              }}
-            >
-              <View style={{ marginTop: 16, alignSelf: "flex-end" }}>
-                <IconFont name="plus" size={30} color={colors.textColor} />
-              </View>
-            </TouchableOpacity>
-          </View>
+    <View style={[styles.container, { backgroundColor: colors.bgDefault }]}>
+      <SpaceAvatar space={space} symbolIndex="space" size={60} />
+      <View style={[common.row, common.alignItemsCenter]}>
+        <Text
+          style={[
+            { marginTop: 8 },
+            common.headerTitle,
+            { color: colors.textColor },
+          ]}
+        >
+          {get(space, "name")}
+        </Text>
+        {isVerified && (
+          <IconFont
+            name="check-verified"
+            size={22}
+            color={colors.blueButtonBg}
+            style={{ marginLeft: 6, marginTop: 10 }}
+          />
         )}
       </View>
+      <Text style={[{ marginTop: 4 }, common.subTitle]}>
+        {get(space, "id")}
+      </Text>
+      <Text style={[{ marginTop: 4 }, common.subTitle]}>
+        {n(get(space, "followers"))} {i18n.t("members")}
+      </Text>
+      {(isWalletConnect || isSnapshotWallet) && (
+        <View style={[common.row, common.alignItemsCenter, { marginTop: 22 }]}>
+          <FollowButton space={space} />
+          <View style={styles.separator} />
+          <SubscribeToSpaceButton space={space} />
+          <View style={styles.separator} />
+          <IconButton
+            onPress={() => {
+              navigation.navigate(CREATE_PROPOSAL_SCREEN, { space });
+            }}
+            name="plus"
+            iconSize={22}
+          />
+        </View>
+      )}
     </View>
   );
 }

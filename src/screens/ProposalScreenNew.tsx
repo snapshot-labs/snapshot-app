@@ -7,39 +7,49 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Share,
+  Platform,
 } from "react-native";
-import { useAuthState } from "context/authContext";
+import { useAuthDispatch, useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
 import { Proposal } from "types/proposal";
 import isEmpty from "lodash/isEmpty";
 import { useNavigation } from "@react-navigation/core";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { getUsername } from "helpers/profile";
+import { getUsername, getUserProfile } from "helpers/profile";
 import { Space } from "types/explore";
 import apolloClient from "helpers/apolloClient";
 import { PROPOSAL_VOTES_QUERY } from "helpers/queries";
 import get from "lodash/get";
 import common from "styles/common";
 import BackButton from "components/BackButton";
-import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
+import { Tabs } from "react-native-collapsible-tab-view";
 import i18n from "i18n-js";
 import MarkdownBody from "components/proposal/MarkdownBody";
-import BlockResults from "components/proposal/BlockResults";
-import BlockVotes from "components/proposal/BlockVotes";
-import BlockInformation from "components/proposal/BlockInformation";
 import { getResults } from "helpers/snapshot";
-import { SPACE_SCREEN, USER_PROFILE } from "constants/navigation";
+import {
+  CREATE_PROPOSAL_SCREEN,
+  SPACE_SCREEN,
+  USER_PROFILE,
+} from "constants/navigation";
 import SpaceAvatar from "components/SpaceAvatar";
 import BaseTabBar from "components/tabBar/BaseTabBar";
 import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
 import ProposalState from "components/proposal/ProposalState";
 import ProposalResultsBlock from "components/proposal/ProposalResultsBlock";
-import { getVotingPower } from "helpers/proposalUtils";
+import { getProposalUrl, getVotingPower } from "helpers/proposalUtils";
 import UserVotingPower from "components/proposal/UserVotingPower";
 import { n } from "helpers/miscUtils";
 import ProposalVotersBlock from "components/proposal/ProposalVotersBlock";
 import ProposalInfoBlock from "components/proposal/ProposalInfoBlock";
-import { Fade, Placeholder, PlaceholderLine } from "rn-placeholder";
+import IconButton from "components/IconButton";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import { deleteProposal, isAdmin } from "helpers/apiUtils";
+import { useEngineState } from "context/engineContext";
+import { useToastShowConfig } from "constants/toast";
 
 const styles = StyleSheet.create({
   proposalTitle: {
@@ -146,16 +156,23 @@ async function getResultsObj(
 async function getUserVotingPower(
   connectedAddress: string,
   proposal: Proposal,
-  setVotingPower: (votingPower: number) => void
+  setVotingPower: (votingPower: number) => void,
+  setLoadingPower: (loadingPower: boolean) => void
 ) {
+  setLoadingPower(true);
   try {
     const votingPower = await getVotingPower(connectedAddress, proposal);
     setVotingPower(votingPower);
-  } catch (e) {}
+  } catch (e) {
+  } finally {
+    setLoadingPower(false);
+  }
 }
 
 function ProposalScreen({ route }: ProposalScreenProps) {
-  const { colors, connectedAddress } = useAuthState();
+  const { colors, connectedAddress, wcConnector, snapshotWallets } =
+    useAuthState();
+  const { keyRingController, typedMessageManager } = useEngineState();
   const { profiles } = useExploreState();
   const [proposal, setProposal] = useState<Proposal>(
     route.params.proposal ?? {}
@@ -168,6 +185,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const navigation: any = useNavigation();
   const [results, setResults] = useState({});
   const [resultsLoaded, setResultsLoaded] = useState<boolean>(false);
+  const [loadingPower, setLoadingPower] = useState<boolean>(false);
   const [proposalError, setProposalError] = useState<boolean>(false);
   const { spaces } = useExploreState();
   const space: any = useMemo(
@@ -175,12 +193,26 @@ function ProposalScreen({ route }: ProposalScreenProps) {
     [spaces, proposal]
   );
   const [votingPower, setVotingPower] = useState(0);
-  const authorProfile = profiles[proposal.author];
+  const authorProfile = getUserProfile(proposal.author, profiles);
   const authorName = getUsername(
     proposal.author,
     authorProfile,
     connectedAddress ?? ""
   );
+  const authDispatch = useAuthDispatch();
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const menuOptions = useMemo(() => {
+    const setOptions = [i18n.t("duplicateProposal")];
+    if (
+      isAdmin(connectedAddress ?? "", space) ||
+      connectedAddress?.toLowerCase() === proposal?.author?.toLowerCase()
+    ) {
+      setOptions.push(i18n.t("deleteProposal"));
+    }
+    return setOptions;
+  }, [proposal, space]);
+  const toastShowConfig = useToastShowConfig();
+  const bottomSheetModalRef = useBottomSheetModalRef();
 
   useEffect(() => {
     getProposal(
@@ -204,7 +236,12 @@ function ProposalScreen({ route }: ProposalScreenProps) {
         setResults,
         setResultsLoaded
       );
-      getUserVotingPower(connectedAddress, proposal, setVotingPower);
+      getUserVotingPower(
+        connectedAddress,
+        proposal,
+        setVotingPower,
+        setLoadingPower
+      );
     }
   }, [loaded]);
 
@@ -226,13 +263,15 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           ]}
         >
           <BackButton />
-          <View style={common.containerHorizontalPadding}>
-            <UserVotingPower
-              address={connectedAddress}
-              score={votingPower}
-              symbol={proposal?.space?.symbol ?? ""}
-            />
-          </View>
+          {!loadingPower && (
+            <View style={common.containerHorizontalPadding}>
+              <UserVotingPower
+                address={connectedAddress}
+                score={votingPower}
+                symbol={proposal?.space?.symbol ?? ""}
+              />
+            </View>
+          )}
         </View>
         {proposalFullyLoading ? (
           <View
@@ -270,71 +309,166 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                   >
                     {proposal.title}
                   </Text>
-                  <View>
-                    <View style={styles.proposalAuthorSpaceContainer}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          navigation.navigate(SPACE_SCREEN, {
-                            space,
-                            showHeader: true,
-                          });
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
+                  <View style={[common.row, common.alignItemsCenter]}>
+                    <View>
+                      <View style={styles.proposalAuthorSpaceContainer}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            navigation.navigate(SPACE_SCREEN, {
+                              space,
+                              showHeader: true,
+                            });
                           }}
                         >
-                          <SpaceAvatar
-                            symbolIndex="space"
-                            size={18}
-                            space={space}
-                          />
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <SpaceAvatar
+                              symbolIndex="space"
+                              size={18}
+                              space={space}
+                            />
+                            <Text
+                              style={[
+                                styles.authorTitle,
+                                {
+                                  color: colors.textColor,
+                                  marginLeft: 8,
+                                },
+                              ]}
+                            >
+                              {proposal?.space?.name}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                        <Text
+                          style={[
+                            styles.authorTitle,
+                            { color: colors.secondaryGray },
+                          ]}
+                        >
+                          {" "}
+                          {i18n.t("by")}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            navigation.push(USER_PROFILE, {
+                              address: proposal?.author,
+                            });
+                          }}
+                        >
                           <Text
                             style={[
                               styles.authorTitle,
                               {
                                 color: colors.textColor,
-                                marginLeft: 8,
                               },
                             ]}
                           >
-                            {proposal?.space?.name}
+                            {" "}
+                            {authorName}
                           </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <Text
-                        style={[
-                          styles.authorTitle,
-                          { color: colors.secondaryGray },
-                        ]}
-                      >
-                        {" "}
-                        {i18n.t("by")}
-                      </Text>
-                      <TouchableOpacity
+                        </TouchableOpacity>
+                      </View>
+                      <View style={{ alignSelf: "flex-start" }}>
+                        <ProposalState proposal={proposal} />
+                      </View>
+                    </View>
+                    <View
+                      style={[
+                        common.row,
+                        common.marginLeftAuto,
+                        common.containerHorizontalPadding,
+                      ]}
+                    >
+                      <IconButton
+                        onPress={async () => {
+                          try {
+                            await Share.share({
+                              url: getProposalUrl(proposal, space),
+                              message:
+                                proposal.title + Platform.OS === "android"
+                                  ? ` ${getProposalUrl(proposal, space)}`
+                                  : "",
+                            });
+                          } catch (error) {}
+                        }}
+                        name="upload"
+                      />
+                      <View style={{ width: 4, height: 5 }} />
+                      <IconButton
                         onPress={() => {
-                          navigation.push(USER_PROFILE, {
-                            address: proposal?.author,
+                          const snapPoints = [
+                            10,
+                            menuOptions.length > 1 ? 200 : 130,
+                          ];
+                          const destructiveButtonIndex = 1;
+                          bottomSheetModalDispatch({
+                            type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                            payload: {
+                              options: menuOptions,
+                              snapPoints,
+                              show: true,
+                              key: `proposal-menu-${proposal.id}`,
+                              icons: [
+                                { name: "external-link" },
+                                { name: "close" },
+                              ],
+                              initialIndex: 1,
+                              destructiveButtonIndex,
+                              onPressOption: async (index: number) => {
+                                if (index === 0) {
+                                  try {
+                                    await Share.share({
+                                      url: getProposalUrl(proposal, space),
+                                      message:
+                                        proposal.title + Platform.OS ===
+                                        "android"
+                                          ? ` ${getProposalUrl(
+                                              proposal,
+                                              space
+                                            )}`
+                                          : "",
+                                    });
+                                  } catch (error) {
+                                    console.log("SHARE ERROR", error);
+                                  }
+                                } else if (index === 1) {
+                                  navigation.navigate(CREATE_PROPOSAL_SCREEN, {
+                                    proposal,
+                                    space,
+                                  });
+                                } else if (
+                                  (isAdmin(connectedAddress ?? "", space) ||
+                                    connectedAddress?.toLowerCase() ===
+                                      proposal?.author?.toLowerCase()) &&
+                                  index === 2
+                                ) {
+                                  deleteProposal(
+                                    wcConnector,
+                                    connectedAddress ?? "",
+                                    space,
+                                    proposal,
+                                    authDispatch,
+                                    toastShowConfig,
+                                    navigation,
+                                    snapshotWallets,
+                                    keyRingController,
+                                    typedMessageManager,
+                                    bottomSheetModalDispatch,
+                                    bottomSheetModalRef
+                                  );
+                                }
+                                bottomSheetModalRef.current.close();
+                              },
+                            },
                           });
                         }}
-                      >
-                        <Text
-                          style={[
-                            styles.authorTitle,
-                            {
-                              color: colors.textColor,
-                            },
-                          ]}
-                        >
-                          {" "}
-                          {authorName}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={{ alignSelf: "flex-start" }}>
-                      <ProposalState proposal={proposal} />
+                        name={"threedots"}
+                      />
                     </View>
                   </View>
                 </View>
@@ -351,7 +485,10 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             <Tabs.Tab name="about">
               <Tabs.ScrollView>
                 <View
-                  style={[common.containerHorizontalPadding, { marginTop: 28 }]}
+                  style={[
+                    common.containerHorizontalPadding,
+                    { marginTop: 28, paddingBottom: 28 },
+                  ]}
                 >
                   <MarkdownBody body={proposal.body} />
                 </View>
@@ -363,7 +500,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                   <View
                     style={[
                       common.containerHorizontalPadding,
-                      { marginTop: 28 },
+                      { marginTop: 28, paddingBottom: 28 },
                     ]}
                   >
                     <ProposalResultsBlock
@@ -393,7 +530,10 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             <Tabs.Tab name="info">
               <Tabs.ScrollView>
                 <View
-                  style={[common.containerHorizontalPadding, { marginTop: 28 }]}
+                  style={[
+                    common.containerHorizontalPadding,
+                    { marginTop: 28, paddingBottom: 28 },
+                  ]}
                 >
                   <ProposalInfoBlock proposal={proposal} />
                 </View>

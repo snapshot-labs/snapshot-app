@@ -17,14 +17,15 @@ const styles = StyleSheet.create({
 interface IconButtonProps {
   onPress: () => void;
   name: string;
+  iconSize?: number;
 }
 
-function IconButton({ onPress, name }: IconButtonProps) {
+function IconButton({ onPress, name, iconSize = 14 }: IconButtonProps) {
   const { colors } = useAuthState();
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={[styles.iconContainer, { borderColor: colors.borderColor }]}>
-        <IconFont name={name} size={14} color={colors.textColor} />
+        <IconFont name={name} size={iconSize} color={colors.textColor} />
       </View>
     </TouchableWithoutFeedback>
   );

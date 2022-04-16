@@ -13,6 +13,7 @@ import {
 } from "context/bottomSheetModalContext";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
 import { useNavigation } from "@react-navigation/core";
+import SecondaryButton from "components/SecondaryButton";
 
 interface FollowUserButton {
   followAddress: string;
@@ -25,7 +26,7 @@ function FollowUserButton({
   getFollowers,
   walletFollowers,
 }: FollowUserButton) {
-  const { colors, connectedAddress } = useAuthState();
+  const { connectedAddress } = useAuthState();
   const { keyRingController, typedMessageManager } = useEngineState();
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
@@ -38,7 +39,7 @@ function FollowUserButton({
   });
 
   return (
-    <TouchableOpacity
+    <SecondaryButton
       onPress={async () => {
         try {
           if (keyRingController.isUnlocked()) {
@@ -107,35 +108,9 @@ function FollowUserButton({
         }
         setLoading(false);
       }}
-    >
-      <View
-        style={{
-          borderRadius: 30,
-          borderWidth: 1,
-          paddingHorizontal: 30,
-          paddingVertical: 16,
-          borderColor: colors.bgBlue,
-          width: 150,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {loading ? (
-          <ActivityIndicator color={colors.textColor} />
-        ) : (
-          <Text
-            style={{
-              fontFamily: "Calibre-Medium",
-              fontSize: 18,
-              color: colors.textColor,
-              textTransform: "uppercase",
-            }}
-          >
-            {isFollowing !== undefined ? i18n.t("unfollow") : i18n.t("follow")}
-          </Text>
-        )}
-      </View>
-    </TouchableOpacity>
+      title={isFollowing !== undefined ? i18n.t("unfollow") : i18n.t("follow")}
+      loading={loading}
+    />
   );
 }
 
