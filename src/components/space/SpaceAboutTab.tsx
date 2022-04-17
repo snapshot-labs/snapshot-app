@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Linking,
   StyleSheet,
@@ -13,10 +13,10 @@ import i18n from "i18n-js";
 import get from "lodash/get";
 import { Space } from "types/explore";
 import { n } from "helpers/miscUtils";
-import { useExploreState } from "context/exploreContext";
+import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import map from "lodash/map";
 import join from "lodash/join";
-import { getUsername, getUserProfile } from "helpers/profile";
+import { getUsername, getUserProfile, setProfiles } from "helpers/profile";
 import { USER_PROFILE } from "constants/navigation";
 import UserAvatar from "components/UserAvatar";
 import common from "styles/common";
@@ -51,6 +51,18 @@ function SpaceAboutTab({ space }: SpaceAboutTabProps) {
   const spaceDetails = Object.assign(space, get(spaces, space.id ?? "", {}));
   const pluginsArray = Object.keys(spaceDetails.plugins || {});
   const navigation: any = useNavigation();
+  const exploreDispatch = useExploreDispatch();
+
+  useEffect(() => {
+    const addressArray = [
+      ...(spaceDetails.admins ?? []),
+      ...(spaceDetails.members ?? []),
+    ];
+
+    if (addressArray.length > 0) {
+      setProfiles(addressArray, exploreDispatch);
+    }
+  }, [spaceDetails]);
 
   return (
     <View>

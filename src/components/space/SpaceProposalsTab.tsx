@@ -4,7 +4,7 @@ import { Proposal } from "types/proposal";
 import { PROPOSALS_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
-import uniqBy from "lodash/get";
+import uniqBy from "lodash/uniqBy";
 import { Space } from "types/explore";
 import { setProfiles } from "helpers/profile";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
@@ -25,7 +25,7 @@ import {
 import { useAuthState } from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";
-import ProposalPreview from "components/ProposalPreview";
+import ProposalPreview from "components/proposal/ProposalPreviewNew";
 
 const LOAD_BY = 6;
 
@@ -61,7 +61,7 @@ async function getProposals(
 
   setLoadingMore(false);
 
-  if (loadCount > proposals.length && proposalResult.length === 0) {
+  if (loadCount > proposals?.length && proposalResult?.length === 0) {
     setEndReached(true);
   }
 }
@@ -77,7 +77,7 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
   const exploreDispatch = useExploreDispatch();
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadCount, setLoadCount] = useState<number>(0);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(true);
   const [endReached, setEndReached] = useState(false);
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const bottomSheetModalRef = useBottomSheetModalRef();
@@ -146,7 +146,11 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
     <Tabs.FlatList
       data={proposals}
       renderItem={(data: { item: Proposal }) => {
-        return <ProposalPreview proposal={data.item} space={space} />;
+        return (
+          <View style={[common.containerHorizontalPadding, { marginTop: 22 }]}>
+            <ProposalPreview proposal={data.item} />
+          </View>
+        );
       }}
       ListHeaderComponent={
         <View
@@ -218,8 +222,10 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
           onRefresh={onRefresh}
         />
       }
+      onEndReachedThreshold={0.1}
       onEndReached={() => {
         if (!endReached) {
+          console.log("ON END REACHED");
           setLoadingMore(true);
           getProposals(
             spaceId,
@@ -236,7 +242,17 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
       }}
       ListEmptyComponent={
         loadingMore ? (
-          <View />
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              marginTop: 24,
+              padding: 24,
+            }}
+          >
+            <ActivityIndicator color={colors.textColor} size="large" />
+          </View>
         ) : (
           <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
             <Text style={[common.subTitle, { color: colors.textColor }]}>
@@ -246,7 +262,7 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
         )
       }
       ListFooterComponent={
-        loadingMore ? (
+        loadingMore && proposals?.length > 0 ? (
           <View
             style={{
               width: "100%",
@@ -262,7 +278,7 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
           <View
             style={{
               width: "100%",
-              height: 300,
+              height: 100,
               backgroundColor: colors.bgDefault,
             }}
           />

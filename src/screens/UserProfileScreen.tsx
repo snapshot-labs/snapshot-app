@@ -3,11 +3,7 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import common from "styles/common";
 import { useAuthState } from "context/authContext";
-import { ethers } from "ethers";
 import i18n from "i18n-js";
-import { useToastShowConfig } from "constants/toast";
-import Toast from "react-native-toast-message";
-import Clipboard from "@react-native-clipboard/clipboard";
 import BackButton from "components/BackButton";
 import {
   FOLLOWS_QUERY,

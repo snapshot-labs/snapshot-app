@@ -446,4 +446,5 @@ export default {
   seeMore: "See more",
   noStrategies: "No strategies",
   created: "Created",
+  viewOtherResults: "View other results",
 };

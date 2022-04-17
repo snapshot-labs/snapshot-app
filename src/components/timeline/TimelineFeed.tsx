@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ProposalPreview from "components/ProposalPreview";
+import ProposalPreview from "components/proposal/ProposalPreviewNew";
 import common from "styles/common";
 import i18n from "i18n-js";
 import { PROPOSALS_QUERY, USER_VOTES_QUERY } from "helpers/queries";
@@ -414,10 +414,11 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
         data={followedSpaces.length > 0 ? proposals : []}
         renderItem={(data) => {
           return (
-            <ProposalPreview
-              proposal={data.item}
-              space={spaces[data.item?.space?.id]}
-            />
+            <View
+              style={[common.containerHorizontalPadding, { marginTop: 22 }]}
+            >
+              <ProposalPreview proposal={data.item} />
+            </View>
           );
         }}
         keyExtractor={(item) => `timeline-${item.id}`}

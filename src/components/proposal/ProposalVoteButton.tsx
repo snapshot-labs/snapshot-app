@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ViewStyle } from "react-native";
 import i18n from "i18n-js";
 import { useAuthState } from "context/authContext";
 import { useNavigation } from "@react-navigation/native";
@@ -37,12 +37,20 @@ interface ProposalVoteButtonProps {
   proposal: Proposal;
   space: Space;
   getProposal: () => void;
+  title?: string;
+  disabled?: boolean;
+  buttonContainerStyle?: ViewStyle;
+  voteContainerStyle?: ViewStyle;
 }
 
 function ProposalVoteButton({
   proposal,
   space,
   getProposal,
+  title = i18n.t("castVote"),
+  disabled = false,
+  buttonContainerStyle = {},
+  voteContainerStyle,
 }: ProposalVoteButtonProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
@@ -50,7 +58,7 @@ function ProposalVoteButton({
   const bottomSheetModalRef = useBottomSheetModalRef();
 
   return (
-    <View style={styles.voteContainer}>
+    <View style={[styles.voteContainer, voteContainerStyle]}>
       <Button
         onPress={() => {
           const choicesLength = proposal?.choices?.length ?? 0;
@@ -105,12 +113,10 @@ function ProposalVoteButton({
             },
           });
         }}
-        title={i18n.t("castVote")}
-        buttonContainerStyle={{
-          backgroundColor: colors.bgBlue,
-          borderColor: colors.bgBlue,
-        }}
-        buttonTitleStyle={{ color: colors.white }}
+        title={title}
+        primary
+        disabled={disabled}
+        buttonContainerStyle={buttonContainerStyle}
       />
     </View>
   );

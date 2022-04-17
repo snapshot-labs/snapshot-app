@@ -50,6 +50,7 @@ import {
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
 import { useToastShowConfig } from "constants/toast";
+import ProposalVoteButton from "components/proposal/ProposalVoteButton";
 
 const styles = StyleSheet.create({
   proposalTitle: {
@@ -540,6 +541,31 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               </Tabs.ScrollView>
             </Tabs.Tab>
           </Tabs.Container>
+        )}
+        {proposal?.state === "active" && (
+          <ProposalVoteButton
+            proposal={proposal}
+            space={space}
+            getProposal={async () => {
+              const proposalResponse = await getProposal(
+                proposal,
+                setProposal,
+                setLoaded,
+                setVotes,
+                setProposalFullyLoading,
+                setProposalError
+              );
+
+              getResultsObj(
+                space,
+                proposalResponse?.proposal,
+                proposalResponse?.votes,
+                setVotes,
+                setResults,
+                setResultsLoaded
+              );
+            }}
+          />
         )}
       </SafeAreaView>
     </>
