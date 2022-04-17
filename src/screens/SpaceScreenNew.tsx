@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import common from "styles/common";
 import { useAuthState } from "context/authContext";
 import BackButton from "components/BackButton";
-import { View } from "react-native";
+import { BackHandler, View } from "react-native";
 import { Tabs } from "react-native-collapsible-tab-view";
 import SpaceHeader from "components/space/SpaceHeader";
 import { Space } from "types/explore";
@@ -13,6 +13,11 @@ import { useExploreDispatch } from "context/exploreContext";
 import SpaceProposalsTab from "components/space/SpaceProposalsTab";
 import BaseTabBar from "components/tabBar/BaseTabBar";
 import SpaceAboutTab from "components/space/SpaceAboutTab";
+import {
+  useBottomSheetModalRef,
+  useBottomSheetModalShowRef,
+} from "context/bottomSheetModalContext";
+import { useNavigation } from "@react-navigation/core";
 
 interface SpaceScreenProps {
   route: {
@@ -27,10 +32,33 @@ function SpaceScreen({ route }: SpaceScreenProps) {
   const space = route.params.space;
   const exploreDispatch = useExploreDispatch();
   const { colors } = useAuthState();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalShowRef = useBottomSheetModalShowRef();
+  const navigation = useNavigation();
 
   useEffect(() => {
     setSpaceDetails(space.id, exploreDispatch);
   }, [space]);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (bottomSheetModalShowRef.current) {
+        bottomSheetModalRef.current?.close();
+      } else {
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        }
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <>

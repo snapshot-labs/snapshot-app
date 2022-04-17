@@ -89,8 +89,6 @@ function TabNavigator() {
   const { profiles } = useExploreState();
   const { proposalTimes, lastViewedProposal, lastViewedNotification } =
     useNotificationsState();
-  const bottomSheetModalRef = useBottomSheetModalRef();
-  const bottomSheetModalShowRef = useBottomSheetModalShowRef();
   const unreadNotifications = useMemo(() => {
     if (isEmpty(followedSpaces)) {
       return 0;
@@ -121,27 +119,6 @@ function TabNavigator() {
     connectedAddress,
   ]);
   const profile = profiles[connectedAddress ?? ""];
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    const backAction = () => {
-      if (bottomSheetModalShowRef.current) {
-        bottomSheetModalRef.current?.close();
-      } else {
-        if (navigation.canGoBack()) {
-          navigation.goBack();
-        }
-      }
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   return (
     <Tab.Navigator

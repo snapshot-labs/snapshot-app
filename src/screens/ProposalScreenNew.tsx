@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Share,
   Platform,
+  BackHandler,
 } from "react-native";
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
@@ -46,6 +47,7 @@ import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
+  useBottomSheetModalShowRef,
 } from "context/bottomSheetModalContext";
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
@@ -214,6 +216,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   }, [proposal, space]);
   const toastShowConfig = useToastShowConfig();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalShowRef = useBottomSheetModalShowRef();
 
   useEffect(() => {
     getProposal(
@@ -225,6 +228,23 @@ function ProposalScreen({ route }: ProposalScreenProps) {
       setProposalError,
       route.params.proposalId
     );
+    const backAction = () => {
+      if (bottomSheetModalShowRef.current) {
+        bottomSheetModalRef.current?.close();
+      } else {
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        }
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {

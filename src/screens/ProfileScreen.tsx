@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  BackHandler,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import common from "styles/common";
@@ -24,6 +30,10 @@ import { SETTINGS_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 import AccountsButton from "components/profile/AccountsButton";
 import FollowSection from "components/user/FollowSection";
+import {
+  useBottomSheetModalRef,
+  useBottomSheetModalShowRef,
+} from "context/bottomSheetModalContext";
 
 async function getVotedProposals(
   address: string,
@@ -59,6 +69,24 @@ function ProfileScreen() {
   const [loadingVotedProposals, setLoadingVotedProposals] = useState(false);
   const [votedProposals, setVotedProposals] = useState([]);
   const navigation: any = useNavigation();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+  const bottomSheetModalShowRef = useBottomSheetModalShowRef();
+
+  useEffect(() => {
+    const backAction = () => {
+      if (bottomSheetModalShowRef.current) {
+        bottomSheetModalRef.current?.close();
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     const profilesArray = Object.keys(profiles);
