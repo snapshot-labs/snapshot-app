@@ -31,8 +31,8 @@ import {
 } from "context/bottomSheetModalContext";
 import colors from "constants/colors";
 import CastVoteModal from "components/snapshot/CastVoteModal";
-import { VOTE_CONFIRM_SCREEN, VOTE_SCREEN } from "constants/navigation";
 import Device from "helpers/device";
+import { getPower } from "helpers/snapshot";
 
 const stateFilters = getStateFilters();
 const LOAD_BY = 100;
@@ -95,6 +95,26 @@ const styles = StyleSheet.create({
   },
 });
 
+async function loadPower(
+  connectedAddress: string,
+  proposal: Proposal,
+  setVotingPower: (totalScore: number) => void,
+  setLoadingPower: (loadingPower: boolean) => void
+) {
+  setLoadingPower(true);
+  try {
+    if (!connectedAddress || !proposal.author) return;
+    const response = await getPower(proposal.space, connectedAddress, proposal);
+
+    if (typeof response.totalScore === "number") {
+      setVotingPower(response.totalScore);
+    }
+  } catch (e) {
+  } finally {
+    setLoadingPower(false);
+  }
+}
+
 async function getProposals(
   followedSpaces: any,
   setProposals: (proposals: Proposal[]) => void,
@@ -156,6 +176,8 @@ function SnapShotScreen() {
       : new Array(proposals.length).fill(1);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const [votingPower, setVotingPower] = useState(0);
+  const [loadingPower, setLoadingPower] = useState(false);
 
   useEffect(() => {
     if (followedSpaces.length > 0) {
@@ -172,6 +194,17 @@ function SnapShotScreen() {
       setLoading(false);
     }
   }, [followedSpaces, connectedAddress]);
+
+  useEffect(() => {
+    if (currentProposal !== undefined) {
+      loadPower(
+        connectedAddress,
+        currentProposal,
+        setVotingPower,
+        setLoadingPower
+      );
+    }
+  }, [currentProposal]);
 
   return (
     <View
@@ -235,6 +268,7 @@ function SnapShotScreen() {
                 alignItems: "center",
                 width: "100%",
                 paddingHorizontal: 16,
+                height: "100%",
               }}
             >
               <Text
@@ -282,7 +316,11 @@ function SnapShotScreen() {
                       paddingBottom: 150,
                     }}
                   >
-                    <ProposalCard proposal={currentProposal} />
+                    <ProposalCard
+                      proposal={currentProposal}
+                      votingPower={votingPower}
+                      loadingPower={loadingPower}
+                    />
                   </View>
                   {proposalsBackdrop.map((c, i) => (
                     <View
@@ -391,6 +429,7 @@ function SnapShotScreen() {
                           bottomSheetModalRef?.current?.close();
                         }}
                         navigation={navigation}
+                        votingPower={votingPower}
                       />
                     );
                   },
@@ -414,6 +453,7 @@ function SnapShotScreen() {
                 style={{ marginRight: 6.5 }}
               />
             )}
+            disabled={votingPower === 0}
             buttonContainerStyle={{
               width: 98,
               height: 42,

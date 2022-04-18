@@ -120,6 +120,7 @@ function ProfileScreen() {
             common.containerHorizontalPadding,
             common.row,
             common.justifySpaceBetween,
+            common.screenTitleContainer,
             { zIndex: 99, backgroundColor: colors.bgDefault },
           ]}
         >
@@ -220,7 +221,6 @@ function ProfileScreen() {
                       justifyContent: "flex-start",
                       marginTop: 24,
                       padding: 24,
-                      height: 150,
                     }}
                   >
                     <ActivityIndicator color={colors.textColor} size="large" />
@@ -229,7 +229,7 @@ function ProfileScreen() {
                   <View
                     style={{
                       width: "100%",
-                      height: 400,
+                      height: 100,
                       backgroundColor: colors.bgDefault,
                     }}
                   />

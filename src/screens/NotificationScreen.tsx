@@ -116,6 +116,7 @@ function NotificationScreen() {
         <View
           style={[
             common.containerHorizontalPadding,
+            common.screenTitleContainer,
             showBorder
               ? { borderBottomWidth: 1, borderBottomColor: colors.borderColor }
               : {},

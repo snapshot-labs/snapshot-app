@@ -115,7 +115,7 @@ async function getProposal(
     const result = await apolloClient.query({
       query: PROPOSAL_VOTES_QUERY,
       variables: {
-        id: proposal.id ?? proposalId,
+        id: proposal?.id ?? proposalId,
       },
     });
     if (isEmpty(result?.data.proposal)) {
@@ -424,7 +424,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                         onPress={() => {
                           const snapPoints = [
                             10,
-                            menuOptions.length > 1 ? 200 : 130,
+                            menuOptions.length > 1 ? 150 : 130,
                           ];
                           const destructiveButtonIndex = 1;
                           bottomSheetModalDispatch({

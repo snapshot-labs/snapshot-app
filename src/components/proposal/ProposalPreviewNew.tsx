@@ -191,7 +191,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
           </View>
           <TouchableWithoutFeedback
             onPress={() => {
-              const snapPoints = [10, 200];
+              const snapPoints = [10, options.length > 1 ? 150 : 130];
               const destructiveButtonIndex = 1;
               bottomSheetModalDispatch({
                 type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
@@ -327,13 +327,25 @@ function ProposalPreview({ proposal }: ProposalPreview) {
             proposal={proposal}
             space={proposal.space}
             getProposal={() => {}}
-            title={i18n.t("vote")}
+            title={isClosed ? `${n(proposal.votes)}` : i18n.t("vote")}
             buttonContainerStyle={{
               paddingVertical: 9,
               paddingHorizontal: 20,
             }}
             disabled={isClosed}
             voteContainerStyle={{ marginHorizontal: 0, bottom: 0 }}
+            Icon={
+              isClosed
+                ? () => (
+                    <IconFont
+                      name={"signature"}
+                      size={14}
+                      color={colors.white}
+                      style={{ marginRight: 6 }}
+                    />
+                  )
+                : undefined
+            }
           />
           <TouchableWithoutFeedback
             onPress={async () => {

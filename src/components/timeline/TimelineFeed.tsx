@@ -25,7 +25,6 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import moment from "moment-timezone";
 import { sortProposals } from "helpers/proposalUtils";
 import {
   NOTIFICATIONS_ACTIONS,
@@ -42,7 +41,7 @@ import UserAvatar from "components/UserAvatar";
 import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 
-const LOAD_BY = 100;
+const LOAD_BY = 20;
 
 async function getVotedProposals(address: string, setProposals: any) {
   try {
@@ -77,17 +76,12 @@ async function getProposals(
   notificationsDispatch: ContextDispatch,
   setLoadingFilter?: (loadingFilter: boolean) => void
 ) {
-  const sevenDaysAgo = parseInt(
-    (moment().subtract(7, "days").valueOf() / 1e3).toFixed()
-  );
   const query = {
     query: PROPOSALS_QUERY,
     variables: {
       first: LOAD_BY,
       skip: loadCount,
       space_in: followedSpaces.map((follow: any) => follow.space.id),
-      start_gt: sevenDaysAgo,
-      end_gt: sevenDaysAgo,
       state,
     },
   };
@@ -458,7 +452,6 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: 24,
-                height: 150,
               }}
             >
               <ActivityIndicator color={colors.textColor} size="large" />

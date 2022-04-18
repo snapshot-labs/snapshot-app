@@ -133,7 +133,7 @@ function TabNavigator() {
           shadowOpacity: 0,
           height: isOldIphone() ? 60 : Platform.OS === "android" ? 68 : 90,
           borderTopWidth: 1,
-          borderTopColor: colors.borderColor,
+          borderTopColor: "transparent",
           elevation: 0,
           paddingTop: 12,
         },

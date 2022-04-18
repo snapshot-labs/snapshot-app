@@ -34,6 +34,7 @@ interface CastVoteModalProps {
   getProposal: () => void;
   voteButtonStyle?: ViewStyle;
   navigation: any;
+  votingPower?: number;
 }
 
 async function loadPower(
@@ -60,6 +61,7 @@ function CastVoteModal({
     width: "100%",
     paddingHorizontal: 16,
   },
+  votingPower = 0,
 }: CastVoteModalProps) {
   const { colors } = useAuthState();
   const {
@@ -81,7 +83,7 @@ function CastVoteModal({
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const [loading, setLoading] = useState<boolean>(false);
-  const [totalScore, setTotalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState(votingPower);
   const bottomSheetWCErrorConfig = createBottomSheetParamsForWalletConnectError(
     colors,
     bottomSheetModalRef,
@@ -272,7 +274,7 @@ function CastVoteModal({
 
   useEffect(() => {
     loadPower(connectedAddress ?? "", proposal, space, setTotalScore);
-  }, [space]);
+  }, [proposal, space]);
 
   if (VotesComponent) {
     return (

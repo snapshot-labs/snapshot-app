@@ -1,7 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import i18n from "i18n-js";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import get from "lodash/get";
 import { useNavigation } from "@react-navigation/native";
 import SpaceAvatar from "../SpaceAvatar";
@@ -9,10 +8,7 @@ import common from "styles/common";
 import FollowButton from "../FollowButton";
 import { Space } from "types/explore";
 import { n } from "helpers/miscUtils";
-import {
-  CREATE_PROPOSAL_SCREEN,
-  SPACE_SETTINGS_SCREEN,
-} from "constants/navigation";
+import { CREATE_PROPOSAL_SCREEN } from "constants/navigation";
 import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
 import { addressIsSnapshotWallet } from "helpers/address";
@@ -25,6 +21,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    paddingBottom: 2,
   },
   separator: {
     width: 6,

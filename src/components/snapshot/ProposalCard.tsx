@@ -87,36 +87,22 @@ const styles = StyleSheet.create({
   },
 });
 
-async function loadPower(
-  connectedAddress: string,
-  proposal: Proposal,
-  setTotalScore: (totalScore: number) => void,
-  setLoadingPower: (loadingPower: boolean) => void
-) {
-  setLoadingPower(true);
-  try {
-    if (!connectedAddress || !proposal.author) return;
-    const response = await getPower(proposal.space, connectedAddress, proposal);
-
-    if (typeof response.totalScore === "number") {
-      setTotalScore(response.totalScore);
-    }
-  } catch (e) {
-  } finally {
-    setLoadingPower(false);
-  }
-}
-
 interface ProposalCardProps {
-  proposal: Proposal;
+  proposal?: Proposal | undefined;
+  votingPower: number;
+  loadingPower: boolean;
 }
 
-function ProposalCard({ proposal }: ProposalCardProps) {
+function ProposalCard({
+  proposal,
+  votingPower,
+  loadingPower,
+}: ProposalCardProps) {
+  if (proposal === undefined) return <View />;
+
   const { colors, connectedAddress } = useAuthState();
   const { profiles } = useExploreState();
   const authorProfile = getUserProfile(proposal?.author, profiles);
-  const [totalScore, setTotalScore] = useState(0);
-  const [loadingPower, setLoadingPower] = useState(false);
   const authorName = getUsername(
     proposal?.author ?? "",
     authorProfile,
@@ -126,10 +112,6 @@ function ProposalCard({ proposal }: ProposalCardProps) {
   const proposalEnd = i18n.t("endsInTimeAgo", {
     timeAgo: toNow(proposal?.end),
   });
-
-  useEffect(() => {
-    loadPower(connectedAddress, proposal, setTotalScore, setLoadingPower);
-  }, [proposal]);
 
   return (
     <View
@@ -207,7 +189,7 @@ function ProposalCard({ proposal }: ProposalCardProps) {
               <Text
                 style={[styles.votingPowerText, { color: colors.textColor }]}
               >
-                {n(totalScore)} {proposal?.space?.symbol}
+                {n(votingPower)} {proposal?.space?.symbol}
               </Text>
             </View>
           )}

@@ -41,6 +41,7 @@ interface ProposalVoteButtonProps {
   disabled?: boolean;
   buttonContainerStyle?: ViewStyle;
   voteContainerStyle?: ViewStyle;
+  Icon?: React.FC | undefined;
 }
 
 function ProposalVoteButton({
@@ -51,6 +52,7 @@ function ProposalVoteButton({
   disabled = false,
   buttonContainerStyle = {},
   voteContainerStyle,
+  Icon = undefined,
 }: ProposalVoteButtonProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
@@ -117,6 +119,7 @@ function ProposalVoteButton({
         primary
         disabled={disabled}
         buttonContainerStyle={buttonContainerStyle}
+        Icon={Icon}
       />
     </View>
   );

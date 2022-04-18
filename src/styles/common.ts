@@ -126,6 +126,9 @@ const common = StyleSheet.create({
     borderBottomWidth: 1,
     elevation: 0,
   },
+  screenTitleContainer: {
+    marginTop: 12,
+  },
 });
 
 export default common;
