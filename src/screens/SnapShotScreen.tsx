@@ -108,6 +108,8 @@ async function loadPower(
 
     if (typeof response.totalScore === "number") {
       setVotingPower(response.totalScore);
+    } else {
+      setVotingPower(0);
     }
   } catch (e) {
   } finally {
