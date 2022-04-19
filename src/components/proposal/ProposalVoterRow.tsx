@@ -59,7 +59,7 @@ function ProposalVoterRow({ vote, proposal }: ProposalVoterRowProps) {
           {voterName}
         </Text>
         <Text style={[styles.votingPower, { color: colors.secondaryGray }]}>
-          {n(vote.balance)} {proposal.space?.symbol}
+          {n(vote?.vp || vote?.balance)} {proposal.space?.symbol}
         </Text>
       </View>
       <View style={styles.votingChoice}>

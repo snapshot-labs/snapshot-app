@@ -53,6 +53,7 @@ import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
 import { useToastShowConfig } from "constants/toast";
 import ProposalVoteButton from "components/proposal/ProposalVoteButton";
+import ProposalResultsVotersSection from "components/proposal/ProposalResultsVotersSection";
 
 const styles = StyleSheet.create({
   proposalTitle: {
@@ -127,7 +128,6 @@ async function getProposal(
       const updatedProposal = {
         ...proposal,
         ...get(result, "data.proposal", {}),
-        votes: votes,
       };
       setProposal(updatedProposal);
       setVotes(votes);
@@ -138,22 +138,6 @@ async function getProposal(
   } catch (e) {
     setProposalError(true);
   }
-}
-
-async function getResultsObj(
-  space: Space,
-  proposal: Proposal,
-  votes: any[],
-  setVotes: (votes: any[]) => void,
-  setResults: (results: any) => void,
-  setResultsLoaded: (resultsLoaded: boolean) => void
-) {
-  const response = await getResults(space, proposal, votes);
-  if (response.votes) {
-    setVotes(response.votes);
-    setResults(response.results);
-  }
-  setResultsLoaded(true);
 }
 
 async function getUserVotingPower(
@@ -186,9 +170,8 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   );
   const [votes, setVotes] = useState<any[]>([]);
   const navigation: any = useNavigation();
-  const [results, setResults] = useState({});
-  const [resultsLoaded, setResultsLoaded] = useState<boolean>(false);
   const [loadingPower, setLoadingPower] = useState<boolean>(false);
+  const [castedVote, setCastedVote] = useState<number>(0);
   const [proposalError, setProposalError] = useState<boolean>(false);
   const { spaces } = useExploreState();
   const space: any = useMemo(
@@ -249,14 +232,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
 
   useEffect(() => {
     if (loaded) {
-      getResultsObj(
-        space,
-        proposal,
-        votes,
-        setVotes,
-        setResults,
-        setResultsLoaded
-      );
       getUserVotingPower(
         connectedAddress,
         proposal,
@@ -517,35 +492,14 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             </Tabs.Tab>
             <Tabs.Tab name="results">
               <Tabs.ScrollView>
-                {resultsLoaded ? (
-                  <View
-                    style={[
-                      common.containerHorizontalPadding,
-                      { marginTop: 28, paddingBottom: 28 },
-                    ]}
-                  >
-                    <ProposalResultsBlock
-                      proposal={proposal}
-                      results={results}
-                      votes={votes}
-                      votingPower={`${n(votingPower)} ${
-                        proposal.space?.symbol
-                      }`}
-                    />
-                    <View style={{ width: 10, height: 24 }} />
-                    <ProposalVotersBlock proposal={proposal} votes={votes} />
-                  </View>
-                ) : (
-                  <View
-                    style={[
-                      common.justifyCenter,
-                      common.alignItemsCenter,
-                      { width: "100%", marginTop: 28 },
-                    ]}
-                  >
-                    <ActivityIndicator size="large" color={colors.textColor} />
-                  </View>
-                )}
+                <ProposalResultsVotersSection
+                  proposal={proposal}
+                  space={space}
+                  votes={votes}
+                  votingPower={votingPower}
+                  loading={!loaded}
+                  castedVote={castedVote}
+                />
               </Tabs.ScrollView>
             </Tabs.Tab>
             <Tabs.Tab name="info">
@@ -567,7 +521,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             proposal={proposal}
             space={space}
             getProposal={async () => {
-              const proposalResponse = await getProposal(
+              await getProposal(
                 proposal,
                 setProposal,
                 setLoaded,
@@ -575,15 +529,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                 setProposalFullyLoading,
                 setProposalError
               );
-
-              getResultsObj(
-                space,
-                proposalResponse?.proposal,
-                proposalResponse?.votes,
-                setVotes,
-                setResults,
-                setResultsLoaded
-              );
+              setCastedVote(castedVote + 1);
             }}
           />
         )}

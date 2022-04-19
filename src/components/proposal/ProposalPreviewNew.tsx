@@ -36,6 +36,7 @@ import { getProposalUrl } from "helpers/proposalUtils";
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
 import { useToastShowConfig } from "constants/toast";
+import ProposalPreviewWinningChoiceText from "components/proposal/preview/ProposalPreviewWinningChoiceText";
 
 const styles = StyleSheet.create({
   proposalPreviewContainer: {
@@ -252,48 +253,11 @@ function ProposalPreview({ proposal }: ProposalPreview) {
           </Text>
           {isClosed && !isNaN(calculatedScore) && (
             <View>
-              <View style={styles.winningResultTextContainer}>
-                <View style={common.row}>
-                  <TextTicker
-                    style={{
-                      width: Device.getDeviceWidth() - 110,
-                    }}
-                    duration={3000}
-                    loop
-                    repeatSpacer={50}
-                    marqueeOnMount
-                    marqueeDelay={1500}
-                    bounceDelay={300}
-                    scrollSpeed={1000}
-                    animationType="scroll"
-                  >
-                    <Text
-                      style={[
-                        styles.winningResultText,
-                        { color: colors.textColor },
-                      ]}
-                    >
-                      {winningChoiceTitle}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.voteAmountText,
-                        { color: colors.secondaryGray },
-                      ]}
-                    >
-                      {` ${voteAmount}`}
-                    </Text>
-                  </TextTicker>
-                </View>
-                <Text
-                  style={[
-                    styles.winningResultText,
-                    { color: colors.textColor },
-                  ]}
-                >
-                  {formattedCalculatedScore}
-                </Text>
-              </View>
+              <ProposalPreviewWinningChoiceText
+                winningChoiceTitle={winningChoiceTitle}
+                voteAmount={voteAmount}
+                formattedCalculatedScore={formattedCalculatedScore}
+              />
               <Progress.Bar
                 progress={calculatedScore}
                 color={colors.bgBlue}

@@ -81,7 +81,6 @@ function ProposalResultsBlock({
         get(results?.resultsByVoteBalance, a.index, 0)
     );
   const currentUserVote = getCurrentUserVote(votes, connectedAddress);
-
   return (
     <View
       style={[

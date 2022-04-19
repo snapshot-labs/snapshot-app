@@ -8,6 +8,7 @@ import rnTextSize, { TSFontSpecs } from "react-native-text-size";
 import ProposalVoterRow from "components/proposal/ProposalVoterRow";
 import { PROPOSAL_VOTES_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
+import { STATES } from "constants/proposal";
 
 const fontSpecs: TSFontSpecs = {
   fontFamily: "Calibre-Medium",
@@ -125,7 +126,7 @@ function ProposalVotersBlock({
           ]}
         >
           <Text style={[styles.votersCount, { color: colors.textColor }]}>
-            {votes.length}
+            {proposal.state === STATES.closed ? proposal.votes : votes.length}
           </Text>
         </View>
       </View>

@@ -107,6 +107,11 @@ export const PROPOSAL_VOTES_QUERY = gql`
       plugins
       network
       type
+      scores_state
+      scores_total
+      scores
+      votes
+      quorum
       strategies {
         name
         params
@@ -115,6 +120,8 @@ export const PROPOSAL_VOTES_QUERY = gql`
       space {
         id
         name
+        members
+        avatar
         symbol
         network
         strategies {
@@ -124,9 +131,16 @@ export const PROPOSAL_VOTES_QUERY = gql`
         }
       }
     }
-    votes(first: 10000, where: { proposal: $id }) {
+    votes(
+      first: 10000
+      where: { proposal: $id }
+      orderBy: "vp"
+      orderDirection: desc
+    ) {
       id
       voter
+      vp
+      vp_by_strategy
       created
       choice
     }
@@ -301,6 +315,23 @@ export const DELEGATORS = gql`
   query DelegatorFor($delegator: String) {
     delegations(where: { delegator: $delegator }) {
       space
+    }
+  }
+`;
+
+export const PROPOSAL_VOTERS = gql`
+  query Votes($proposal: String) {
+    votes(
+      first: 5
+      skip: 0
+      where: { proposal: $proposal }
+      orderBy: "vp"
+      orderDirection: desc
+    ) {
+      id
+      voter
+      vp
+      vp_by_strategy
     }
   }
 `;
