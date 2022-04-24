@@ -3,7 +3,7 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableHighlight,
+  TouchableWithoutFeedback,
   Dimensions,
 } from "react-native";
 import get from "lodash/get";
@@ -20,17 +20,17 @@ import FollowButton from "components/FollowButton";
 const { width: deviceWidth } = Dimensions.get("screen");
 
 const basePadding = 16;
-const spaceAvatarWidth = 60;
+const spaceAvatarWidth = 39;
 const spacePreviewTitleContainerMargin = 10;
 const buttonWidth = 120;
 const spaceNameWidth =
-  deviceWidth - spaceAvatarWidth - basePadding - buttonWidth - basePadding - 16;
+  deviceWidth - spaceAvatarWidth - basePadding - buttonWidth - basePadding - 40;
 
 const styles = StyleSheet.create({
   spacePreviewContainer: {
     flexDirection: "row",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 18,
+    marginHorizontal: 14,
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: colors.borderColor,
@@ -44,9 +44,10 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Semibold",
   },
   spacePreviewFollowerCount: {
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: "Calibre-Medium",
-    color: colors.darkGray,
+    color: colors.secondaryGray,
+    marginTop: 4,
   },
 });
 
@@ -58,7 +59,6 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
-  const [showUnderlay, setShowUnderlay] = useState(false);
 
   return (
     <View
@@ -66,19 +66,13 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
         styles.spacePreviewContainer,
         {
           borderBottomColor: colors.borderColor,
-          backgroundColor: showUnderlay
-            ? colors.highlightColor
-            : colors.bgDefault,
         },
       ]}
     >
-      <TouchableHighlight
+      <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate(SPACE_SCREEN, { space });
         }}
-        onShowUnderlay={() => setShowUnderlay(true)}
-        onHideUnderlay={() => setShowUnderlay(false)}
-        underlayColor="transparent"
       >
         <View
           style={{
@@ -113,11 +107,10 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
             )}
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableWithoutFeedback>
       <View
         style={{
           marginLeft: "auto",
-          height: 60,
         }}
       >
         <FollowButton space={space} />

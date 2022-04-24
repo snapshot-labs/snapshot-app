@@ -18,10 +18,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginLeft: "auto",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 40,
   },
   filterText: {
     color: colors.textColor,
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: "Calibre-Medium",
     marginRight: 4,
   },
@@ -54,7 +57,13 @@ function ProposalFilters({
         showBottomSheetModal(true);
       }}
     >
-      <View style={[styles.filterContainer, filterContainerStyle]}>
+      <View
+        style={[
+          styles.filterContainer,
+          { backgroundColor: colors.navBarBg },
+          filterContainerStyle,
+        ]}
+      >
         <Text
           style={[
             styles.filterText,
@@ -66,7 +75,7 @@ function ProposalFilters({
         </Text>
         <IconFont
           name="filter-3-fill"
-          size={18}
+          size={14}
           color={setIconColor}
           style={{ marginBottom: Platform.OS === "ios" ? 4 : 0 }}
         />

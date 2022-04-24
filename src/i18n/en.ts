@@ -447,4 +447,5 @@ export default {
   noStrategies: "No strategies",
   created: "Created",
   viewOtherResults: "View other results",
+  votedFor: 'Voted "{{choice}}"',
 };

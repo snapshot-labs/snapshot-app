@@ -327,9 +327,14 @@ function FollowButton({ space }: FollowButtonProps) {
         setButtonLoading(false);
       }}
       title={isFollowingSpace ? i18n.t("joined") : i18n.t("join")}
-      buttonContainerStyle={{ width: 120 }}
+      buttonContainerStyle={{
+        width: 74,
+        paddingVertical: 9,
+        paddingHorizontal: 14,
+      }}
       loading={buttonLoading}
       selected={!!isFollowingSpace}
+      buttonTitleStyle={{ fontSize: 14 }}
     />
   );
 }

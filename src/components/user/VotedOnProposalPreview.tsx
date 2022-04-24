@@ -15,19 +15,25 @@ const styles = StyleSheet.create({
     borderColor: colors.borderColor,
     borderBottomWidth: 1,
     paddingVertical: 24,
-    paddingHorizontal: 16,
+    marginHorizontal: 14,
     flexDirection: "row",
+    alignItems: "center",
   },
   voterContainer: {
     marginLeft: 10,
     marginRight: 16,
     justifyContent: "center",
   },
-  title: {
-    fontFamily: "Calibre-Medium",
-    fontSize: 16,
-    lineHeight: 30,
+  votedFor: {
+    fontFamily: "Calibre-Semibold",
+    fontSize: 14,
   },
+  titleText: {
+    marginTop: 9,
+    fontSize: 18,
+    fontFamily: "Calibre-Medium",
+  },
+
   date: {
     fontFamily: "Calibre-Medium",
     fontSize: 16,
@@ -63,15 +69,17 @@ function VotedOnProposalPreview({
           { borderColor: colors.borderColor },
         ]}
       >
-        <SpaceAvatar symbolIndex="space" size={28} space={space} />
+        <SpaceAvatar symbolIndex="space" size={44} space={space} />
         <View style={styles.voterContainer}>
-          <Text style={[styles.title, { color: colors.textColor }]}>
-            {i18n.t("votedOnProposal", {
+          <Text style={[styles.votedFor, { color: colors.secondaryGray }]}>
+            {i18n.t("votedFor", {
               choice: choiceString,
-              title: proposal?.title,
             })}
           </Text>
-          <Text style={[styles.date, { color: colors.darkGray }]}>
+          <Text style={[styles.titleText, { color: colors.textColor }]}>
+            {proposal.title}
+          </Text>
+          <Text style={[styles.date, { color: colors.secondaryGray }]}>
             {i18n.t("timeAgo", { timeAgo: toNow(voter.created) })}
           </Text>
         </View>

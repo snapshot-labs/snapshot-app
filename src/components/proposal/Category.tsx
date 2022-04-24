@@ -33,8 +33,8 @@ function Category({
         style={[
           buttonStyles.button,
           {
-            borderColor: isSelected ? "transparent" : colors.borderColor,
-            backgroundColor: isSelected ? colors.bgBlue : colors.borderColor,
+            borderColor: isSelected ? "transparent" : colors.navBarBg,
+            backgroundColor: isSelected ? colors.bgBlue : colors.navBarBg,
             paddingBottom: 8,
             paddingHorizontal: 14,
             paddingTop: Platform.OS === "android" ? 8 : 12,
@@ -48,8 +48,8 @@ function Category({
             {
               color: isSelected ? colors.white : colors.textColor,
               textTransform: "capitalize",
-              fontSize: 18,
-              lineHeight: 18,
+              fontSize: 14,
+              lineHeight: 14,
               marginBottom: Device.isIos() ? 4 : 0,
             },
           ]}
@@ -61,8 +61,8 @@ function Category({
             style={{
               fontFamily: "Calibre-Medium",
               color: colors.darkGray,
-              fontSize: 18,
-              lineHeight: 18,
+              fontSize: 14,
+              lineHeight: 14,
               marginLeft: 6,
               marginBottom: Device.isIos() ? 4 : 0,
             }}

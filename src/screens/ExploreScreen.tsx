@@ -67,6 +67,13 @@ function ExploreScreen() {
         setSelectedCategory={setSelectedCategory}
       />
       <FlatList
+        contentContainerStyle={{
+          borderWidth: 1,
+          borderColor: colors.borderColor,
+          marginHorizontal: 14,
+          borderRadius: 9,
+          marginTop: 16,
+        }}
         data={filteredExplore}
         renderItem={(data) => {
           if (currentExplore.key === "spaces") {

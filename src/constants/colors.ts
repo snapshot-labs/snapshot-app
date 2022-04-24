@@ -15,7 +15,7 @@ const defaultColors = {
   blueButtonBg: "#3772FF",
   darkBlueButtonBg: "#0049F5",
   secondaryGray: "#A1A9BA",
-  disabledButtonBg: "rgba(55, 114, 255, 0.5)",
+  disabledButtonBg: "rgba(55, 114, 255, 0.2)",
   baseGreen: "#27AE60",
   baseGreen2: "#219653",
   baseGreenBg: "rgba(33, 150, 83, 0.2)",
