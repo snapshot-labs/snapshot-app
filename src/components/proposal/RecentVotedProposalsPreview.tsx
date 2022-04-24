@@ -1,17 +1,32 @@
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import SpaceAvatar from "components/SpaceAvatar";
-import { useAuthState } from "context/authContext";
+import { useAuthDispatch, useAuthState } from "context/authContext";
 import * as Progress from "react-native-progress";
 import get from "lodash/get";
 import { n } from "helpers/miscUtils";
 import i18n from "i18n-js";
-import { PROPOSAL_SCREEN } from "constants/navigation";
+import { CREATE_PROPOSAL_SCREEN, PROPOSAL_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 import { Space } from "types/explore";
 import { Proposal } from "types/proposal";
 import Device from "helpers/device";
 import IconFont from "components/IconFont";
+import common from "styles/common";
+import {
+  BOTTOM_SHEET_MODAL_ACTIONS,
+  useBottomSheetModalDispatch,
+  useBottomSheetModalRef,
+} from "context/bottomSheetModalContext";
+import { deleteProposal, isAdmin } from "helpers/apiUtils";
+import { getUsername, getUserProfile } from "helpers/profile";
+import { useExploreState } from "context/exploreContext";
+import { getStartText } from "helpers/proposalUtils";
+import { useToastShowConfig } from "constants/toast";
+import { useEngineState } from "context/engineContext";
+import ProposalState from "components/proposal/ProposalState";
+
+const width = Device.getDeviceWidth() - 60;
 
 const styles = StyleSheet.create({
   header: {
@@ -23,12 +38,14 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderRadius: 16,
-    margin: 16,
+    marginLeft: 14,
+    marginTop: 16,
+    marginBottom: 16,
+    width,
   },
   proposalTitle: {
     fontFamily: "Calibre-Semibold",
     fontSize: 18,
-    marginLeft: 8,
     marginRight: 24,
   },
   viewProposalClosedText: {
@@ -40,8 +57,8 @@ const styles = StyleSheet.create({
   proposalTitleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 1,
     paddingBottom: 8,
+    marginTop: 22,
   },
   viewProposalContainer: {
     paddingVertical: 8,
@@ -71,26 +88,49 @@ const styles = StyleSheet.create({
   winningTitleContainer: {
     marginTop: 16,
   },
+  authorContainer: {
+    marginLeft: 9,
+  },
+  spaceText: {
+    fontFamily: "Calibre-Semibold",
+    fontSize: 18,
+  },
+  authorText: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 14,
+  },
+  startedText: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 14,
+  },
 });
 
 interface RecentVotedProposalsPreviewProps {
   space: Space;
   proposal: Proposal;
-  totalVotedProposals: number;
-  index: number;
 }
 
 function RecentVotedProposalPreview({
   space,
   proposal,
-  totalVotedProposals,
-  index,
 }: RecentVotedProposalsPreviewProps) {
-  const { colors } = useAuthState();
+  const { colors, connectedAddress, wcConnector, snapshotWallets } =
+    useAuthState();
   const winningChoiceIndex = useMemo(
     () => proposal?.scores?.indexOf(Math.max(...proposal.scores)),
     [proposal]
   );
+  const options = useMemo(() => {
+    const setOptions = [i18n.t("duplicateProposal")];
+    if (
+      isAdmin(connectedAddress ?? "", proposal.space) ||
+      connectedAddress?.toLowerCase() === proposal?.author?.toLowerCase()
+    ) {
+      setOptions.push(i18n.t("deleteProposal"));
+    }
+    return setOptions;
+  }, [proposal]);
+  const { keyRingController, typedMessageManager } = useEngineState();
   const winningChoiceTitle = get(proposal.choices, winningChoiceIndex, "");
   const scoresTotal = proposal.scores_total;
   const currentScore: any = get(
@@ -98,12 +138,24 @@ function RecentVotedProposalPreview({
     winningChoiceIndex,
     undefined
   );
+  const { profiles } = useExploreState();
+  const authorProfile = getUserProfile(proposal.author, profiles);
   const calculatedScore = (1 / scoresTotal) * currentScore;
   const formattedCalculatedScore = n(calculatedScore, "0.[0]%");
   const navigation: any = useNavigation();
-  const totalVotedProposalsIndicators = new Array(totalVotedProposals).fill(1);
+  const authorName = getUsername(
+    proposal.author,
+    authorProfile,
+    connectedAddress
+  );
+  const authDispatch = useAuthDispatch();
+  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const startText = getStartText(proposal.start);
+  const toastShowConfig = useToastShowConfig();
+  const bottomSheetModalRef = useBottomSheetModalRef();
+
   return (
-    <TouchableOpacity
+    <TouchableWithoutFeedback
       onPress={() => {
         navigation.push(PROPOSAL_SCREEN, { proposal });
       }}
@@ -114,41 +166,93 @@ function RecentVotedProposalPreview({
           { borderColor: colors.borderColor },
         ]}
       >
-        <View style={styles.header}>
-          <Text
-            style={[styles.viewProposalClosedText, { color: colors.textColor }]}
-          >
-            {i18n.t("closedProposalsYouVoted")}
-          </Text>
-          <View
-            style={[
-              styles.viewProposalContainer,
-              { backgroundColor: "#F3F4F7" },
-            ]}
-          >
-            <Text style={[styles.viewProposal, { color: "#444C5F" }]}>
-              {i18n.t("viewProposal")}
-            </Text>
+        <View style={common.row}>
+          <SpaceAvatar size={35} space={proposal.space} symbolIndex="space" />
+          <View style={styles.authorContainer}>
+            <View style={common.row}>
+              <View style={[common.row, common.alignItemsCenter]}>
+                <Text style={[styles.spaceText, { color: colors.textColor }]}>
+                  {proposal?.space?.name}
+                </Text>
+              </View>
+            </View>
+            <View style={common.row}>
+              <Text
+                style={[styles.authorText, { color: colors.secondaryGray }]}
+              >
+                {`${i18n.t("by")} `}
+              </Text>
+              <Text
+                style={[styles.authorText, { color: colors.secondaryGray }]}
+              >
+                {`${authorName} • `}
+              </Text>
+              <Text
+                style={[styles.startedText, { color: colors.secondaryGray }]}
+              >
+                {startText}
+              </Text>
+            </View>
           </View>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              const snapPoints = [10, options.length > 1 ? 150 : 130];
+              const destructiveButtonIndex = 1;
+              bottomSheetModalDispatch({
+                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                payload: {
+                  options: options,
+                  snapPoints: snapPoints,
+                  show: true,
+                  initialIndex: 1,
+                  destructiveButtonIndex,
+                  key: proposal.id,
+                  icons: [{ name: "external-link" }, { name: "close" }],
+                  onPressOption: async (index: number) => {
+                    if (index === 0) {
+                      navigation.navigate(CREATE_PROPOSAL_SCREEN, {
+                        proposal,
+                        space,
+                      });
+                    } else if (
+                      (isAdmin(connectedAddress ?? "", space) ||
+                        connectedAddress?.toLowerCase() ===
+                          proposal?.author?.toLowerCase()) &&
+                      index === 1
+                    ) {
+                      deleteProposal(
+                        wcConnector,
+                        connectedAddress ?? "",
+                        space,
+                        proposal,
+                        authDispatch,
+                        toastShowConfig,
+                        navigation,
+                        snapshotWallets,
+                        keyRingController,
+                        typedMessageManager,
+                        bottomSheetModalDispatch,
+                        bottomSheetModalRef
+                      );
+                    }
+                    bottomSheetModalRef.current.close();
+                  },
+                },
+              });
+            }}
+          >
+            <View style={common.marginLeftAuto}>
+              <IconFont name={"threedots"} size={18} color={colors.textColor} />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-        <View
-          style={[
-            styles.proposalTitleContainer,
-            { borderColor: colors.borderColor },
-          ]}
-        >
-          <SpaceAvatar symbolIndex="space" size={28} space={space} />
+        <View style={styles.proposalTitleContainer}>
           <Text
             style={[styles.proposalTitle, { color: colors.textColor }]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {proposal.title}
-          </Text>
-        </View>
-        <View style={styles.winningTitleContainer}>
-          <Text style={[styles.winningTitle, { color: "#A1A9BA" }]}>
-            {i18n.t("winner")}
           </Text>
         </View>
         <View>
@@ -190,27 +294,12 @@ function RecentVotedProposalPreview({
           style={{
             flexDirection: "row",
             marginTop: 16,
-            justifyContent: "center",
           }}
         >
-          {totalVotedProposalsIndicators.map((d, i) => {
-            return (
-              <View
-                key={i}
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 4,
-                  backgroundColor:
-                    i === index ? colors.textColor : colors.borderColor,
-                  marginRight: 4,
-                }}
-              />
-            );
-          })}
+          <ProposalState proposal={proposal} />
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 }
 

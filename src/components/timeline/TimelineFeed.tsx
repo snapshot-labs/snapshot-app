@@ -1,6 +1,6 @@
 import { useAuthState } from "context/authContext";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Proposal } from "types/proposal";
 import { setProfiles } from "helpers/profile";
 import {
@@ -31,8 +31,6 @@ import {
   useNotificationsDispatch,
 } from "context/notificationsContext";
 import { ContextDispatch } from "types/context";
-import Carousel from "react-native-snap-carousel";
-import Device from "helpers/device";
 import RecentVotedProposalPreview from "components/proposal/RecentVotedProposalsPreview";
 import IconFont from "components/IconFont";
 import isEmpty from "lodash/isEmpty";
@@ -142,7 +140,6 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const notificationsDispatch = useNotificationsDispatch();
-  const carouselRef = useRef();
   const profile = profiles[connectedAddress];
   const ens = get(profile, "ens", undefined);
   const navigation: any = useNavigation();
@@ -372,31 +369,21 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                           {i18n.t("yourRecentActivity")}
                         </Text>
                       </View>
-                      <Carousel
-                        ref={carouselRef}
+                      <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
                         data={votedProposals}
                         renderItem={({ item }) => {
-                          const proposalIndex = votedProposals.findIndex(
-                            (votedProposal: any) => {
-                              return (
-                                votedProposal.proposal.id === item.proposal.id
-                              );
-                            }
-                          );
                           return (
                             <RecentVotedProposalPreview
                               proposal={item.proposal}
                               space={spaces[item?.proposal.space?.id]}
-                              totalVotedProposals={votedProposals.length}
-                              index={proposalIndex}
                             />
                           );
                         }}
-                        itemWidth={Device.getDeviceWidth()}
-                        sliderWidth={Device.getDeviceWidth()}
-                        enableMomentum={true}
-                        loop={true}
-                        decelerationRate={0.9}
+                        ListFooterComponent={() => (
+                          <View style={{ width: 50, height: 100 }} />
+                        )}
                       />
                     </>
                   )}

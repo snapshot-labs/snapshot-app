@@ -13,17 +13,13 @@ import SpaceAvatar from "components/SpaceAvatar";
 import { getUsername, getUserProfile } from "helpers/profile";
 import { useExploreState } from "context/exploreContext";
 import i18n from "i18n-js";
-import { n, toNow } from "helpers/miscUtils";
-import moment from "moment-timezone";
+import { n } from "helpers/miscUtils";
 import IconFont from "components/IconFont";
-import Button from "components/Button";
 import ProposalState from "components/proposal/ProposalState";
 import { STATES } from "constants/proposal";
 import get from "lodash/get";
 import isNaN from "lodash/isNaN";
 import * as Progress from "react-native-progress";
-import TextTicker from "react-native-text-ticker";
-import Device from "helpers/device";
 import { CREATE_PROPOSAL_SCREEN, PROPOSAL_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
 import ProposalVoteButton from "components/proposal/ProposalVoteButton";
@@ -32,7 +28,7 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import { getProposalUrl } from "helpers/proposalUtils";
+import {getProposalUrl, getStartText} from "helpers/proposalUtils";
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
 import { useToastShowConfig } from "constants/toast";
@@ -95,15 +91,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
-
-function getStartText(time: number) {
-  const today = parseInt((moment().valueOf() / 1e3).toFixed());
-  if (time >= today) {
-    return i18n.t("startsInTimeAgo", { timeAgo: toNow(time) });
-  }
-
-  return i18n.t("timeAgo", { timeAgo: toNow(time) });
-}
 
 interface ProposalPreview {
   proposal: Proposal;
@@ -296,6 +283,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
               paddingVertical: 9,
               paddingHorizontal: 20,
             }}
+            buttonTitleStyle={isClosed ? { color: colors.blueButtonBg } : {}}
             disabled={isClosed}
             voteContainerStyle={{ marginHorizontal: 0, bottom: 0 }}
             Icon={
@@ -304,7 +292,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
                     <IconFont
                       name={"signature"}
                       size={14}
-                      color={colors.white}
+                      color={colors.blueButtonBg}
                       style={{ marginRight: 6 }}
                     />
                   )

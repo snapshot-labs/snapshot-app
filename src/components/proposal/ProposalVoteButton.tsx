@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text, ViewStyle } from "react-native";
+import { View, StyleSheet, Text, ViewStyle, TextStyle } from "react-native";
 import i18n from "i18n-js";
 import { useAuthState } from "context/authContext";
 import { useNavigation } from "@react-navigation/native";
@@ -41,6 +41,7 @@ interface ProposalVoteButtonProps {
   disabled?: boolean;
   buttonContainerStyle?: ViewStyle;
   voteContainerStyle?: ViewStyle;
+  buttonTitleStyle?: TextStyle;
   Icon?: React.FC | undefined;
 }
 
@@ -52,6 +53,7 @@ function ProposalVoteButton({
   disabled = false,
   buttonContainerStyle = {},
   voteContainerStyle,
+  buttonTitleStyle = {},
   Icon = undefined,
 }: ProposalVoteButtonProps) {
   const { colors } = useAuthState();
@@ -120,6 +122,7 @@ function ProposalVoteButton({
         disabled={disabled}
         buttonContainerStyle={buttonContainerStyle}
         Icon={Icon}
+        buttonTitleStyle={buttonTitleStyle}
       />
     </View>
   );

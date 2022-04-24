@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
 import i18n from "i18n-js";
 import common from "styles/common";
@@ -14,7 +20,6 @@ import CategoriesScrollView from "components/CategoriesScrollView";
 import { useNavigation } from "@react-navigation/native";
 import UserWalletPreview from "components/explore/UserWalletPreview";
 import Device from "helpers/device";
-import Carousel from "react-native-snap-carousel";
 
 async function getWallets(setWallets: (wallets: []) => void) {
   try {
@@ -191,7 +196,7 @@ function DiscoverScreen() {
                 >
                   {i18n.t("popularWallets")}
                 </Text>
-                <Carousel
+                <FlatList
                   ref={carouselRef}
                   data={wallets}
                   renderItem={({ item }) => {

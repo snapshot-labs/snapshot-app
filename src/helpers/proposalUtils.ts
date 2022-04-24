@@ -7,6 +7,17 @@ import { Space } from "types/explore";
 import toLower from "lodash/toLower";
 import { getPower } from "helpers/snapshot";
 
+
+export function getStartText(time: number) {
+  const today = parseInt((moment().valueOf() / 1e3).toFixed());
+  if (time >= today) {
+    return i18n.t("startsInTimeAgo", { timeAgo: toNow(time) });
+  }
+
+  return i18n.t("timeAgo", { timeAgo: toNow(time) });
+}
+
+
 export function getTimeAgo(proposal: Proposal) {
   const today = parseInt((moment().valueOf() / 1e3).toFixed());
   const startsIn = Math.abs(today - proposal.start);

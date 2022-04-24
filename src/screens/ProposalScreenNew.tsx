@@ -133,7 +133,6 @@ async function getProposal(
       setVotes(votes);
       setLoaded(true);
       setProposalFullyLoading(false);
-      return { proposal: updatedProposal, votes };
     }
   } catch (e) {
     setProposalError(true);

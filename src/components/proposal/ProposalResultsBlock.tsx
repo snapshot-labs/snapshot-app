@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 4,
-    marginHorizontal: 6,
+    marginHorizontal: 6
   },
 });
 

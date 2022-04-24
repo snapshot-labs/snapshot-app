@@ -13,7 +13,7 @@ import {
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
-import ProposalPreview from "components/ProposalPreview";
+import ProposalPreview from "components/proposal/ProposalPreviewNew";
 import { useExploreState } from "context/exploreContext";
 import UserSpacePreview from "components/user/UserSpacePreview";
 import { Tabs } from "react-native-collapsible-tab-view";
@@ -185,10 +185,14 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
               data={authoredProposals}
               renderItem={(data: any) => {
                 return (
-                  <ProposalPreview
-                    proposal={data.item}
-                    space={spaces[data.item?.space?.id]}
-                  />
+                  <View
+                    style={[
+                      common.containerHorizontalPadding,
+                      { marginTop: 16 },
+                    ]}
+                  >
+                    <ProposalPreview proposal={data.item} />
+                  </View>
                 );
               }}
               ListEmptyComponent={

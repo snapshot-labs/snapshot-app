@@ -127,7 +127,7 @@ const common = StyleSheet.create({
     elevation: 0,
   },
   screenTitleContainer: {
-    marginTop: 12,
+    paddingTop: 12,
   },
 });
 

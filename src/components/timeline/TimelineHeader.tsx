@@ -8,7 +8,6 @@ import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
 
 const styles = StyleSheet.create({
   proposalFiltersContainer: {
-    paddingRight: 16,
     paddingTop: 6,
     paddingBottom: 6,
     borderBottomWidth: 1,
@@ -78,10 +77,17 @@ function TimelineHeader({
                 >
                   Timeline
                 </Text>
-                <ProposalFilters
-                  filter={joinedSpacesFilter}
-                  showBottomSheetModal={showBottomSheetModal}
-                />
+                <View
+                  style={[
+                    common.marginLeftAuto,
+                    common.containerHorizontalPadding,
+                  ]}
+                >
+                  <ProposalFilters
+                    filter={joinedSpacesFilter}
+                    showBottomSheetModal={showBottomSheetModal}
+                  />
+                </View>
               </View>
             </View>
           ) : (
