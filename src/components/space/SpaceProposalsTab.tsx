@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Tabs } from "react-native-collapsible-tab-view";
 import { Proposal } from "types/proposal";
 import { PROPOSALS_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
@@ -10,12 +9,15 @@ import { setProfiles } from "helpers/profile";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import proposal from "constants/proposal";
 import {
-  ActivityIndicator,
-  Platform,
+  Animated,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   RefreshControl,
   Text,
   View,
 } from "react-native";
+import { ActivityIndicator } from 'react-native-paper';
 import ProposalFilters from "components/proposal/ProposalFilters";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
@@ -26,6 +28,10 @@ import { useAuthState } from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";
 import ProposalPreview from "components/proposal/ProposalPreviewNew";
+import AnimatedTabViewFlatList from "components/tabBar/AnimatedTabViewFlatList";
+import Device from "helpers/device";
+
+type ScrollEvent = NativeSyntheticEvent<NativeScrollEvent>;
 
 const LOAD_BY = 6;
 
@@ -61,16 +67,34 @@ async function getProposals(
 
   setLoadingMore(false);
 
-  if (loadCount > proposals?.length && proposalResult?.length === 0) {
+  if (loadCount > proposals.length && proposalResult.length === 0) {
     setEndReached(true);
   }
 }
 
 interface SpaceProposalsTabProps {
   space: Space;
+  isActive: boolean;
+  routeKey: string;
+  scrollY: Animated.Value;
+  trackRef: (key: string, ref: FlatList<any>) => void;
+  onMomentumScrollBegin: (e: ScrollEvent) => void;
+  onMomentumScrollEnd: (e: ScrollEvent) => void;
+  onScrollEndDrag: (e: ScrollEvent) => void;
+  headerHeight: number;
 }
 
-function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
+function SpaceProposalsTab({
+  space,
+  isActive,
+  routeKey,
+  scrollY,
+  trackRef,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScrollEndDrag,
+  headerHeight,
+}: SpaceProposalsTabProps) {
   const spaceId: string = get(space, "id", "");
   const { colors } = useAuthState();
   const { profiles } = useExploreState();
@@ -143,11 +167,18 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
   }, [spaceId, proposals]);
 
   return (
-    <Tabs.FlatList
+    <AnimatedTabViewFlatList
       data={proposals}
       renderItem={(data: { item: Proposal }) => {
         return (
-          <View style={[common.containerHorizontalPadding, { marginTop: 22 }]}>
+          <View
+            style={[
+              common.proposalPreviewContainer,
+              {
+                borderBottomColor: colors.borderColor,
+              },
+            ]}
+          >
             <ProposalPreview proposal={data.item} />
           </View>
         );
@@ -155,8 +186,7 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
       ListHeaderComponent={
         <View
           style={{
-            paddingRight: 16,
-            paddingTop: Platform.OS === "ios" ? 24 : 7,
+            paddingRight: 14,
             paddingBottom: 6,
             borderBottomWidth: 1,
             borderBottomColor: colors.borderColor,
@@ -225,7 +255,6 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
       onEndReachedThreshold={0.1}
       onEndReached={() => {
         if (!endReached) {
-          console.log("ON END REACHED");
           setLoadingMore(true);
           getProposals(
             spaceId,
@@ -258,9 +287,20 @@ function SpaceProposalsTab({ space }: SpaceProposalsTabProps) {
             <Text style={[common.subTitle, { color: colors.textColor }]}>
               {i18n.t("cantFindAnyResults")}
             </Text>
+            <View
+              style={{ width: 100, height: Device.getDeviceHeight() * 0.75 }}
+            />
           </View>
         )
       }
+      scrollY={isActive ? scrollY : undefined}
+      onRef={(ref: any) => {
+        trackRef(routeKey, ref);
+      }}
+      onMomentumScrollBegin={onMomentumScrollBegin}
+      onMomentumScrollEnd={onMomentumScrollEnd}
+      onScrollEndDrag={onScrollEndDrag}
+      headerHeight={headerHeight}
       ListFooterComponent={
         loadingMore && proposals?.length > 0 ? (
           <View

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useAuthState } from "context/authContext";
 import i18n from "i18n-js";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";

@@ -5,8 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
+import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Proposal } from "types/proposal";
 import { PROPOSALS_QUERY, USER_VOTES_QUERY } from "helpers/queries";

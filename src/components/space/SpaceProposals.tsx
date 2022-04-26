@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Animated,
   FlatList,
   RefreshControl,
@@ -10,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { Proposal } from "types/proposal";
+import { ActivityIndicator } from 'react-native-paper';
 import { PROPOSALS_QUERY, SPACES_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";

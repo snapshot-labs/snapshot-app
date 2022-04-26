@@ -328,7 +328,7 @@ function FollowButton({ space }: FollowButtonProps) {
       }}
       title={isFollowingSpace ? i18n.t("joined") : i18n.t("join")}
       buttonContainerStyle={{
-        width: 74,
+        minWidth: 74,
         paddingVertical: 9,
         paddingHorizontal: 14,
       }}

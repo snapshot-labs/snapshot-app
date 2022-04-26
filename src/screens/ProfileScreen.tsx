@@ -1,39 +1,38 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  BackHandler,
-} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator } from 'react-native-paper';
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";
-import ActiveAccount from "components/ActiveAccount";
 import { ethers } from "ethers";
 import { setProfiles } from "helpers/profile";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
-import { Tabs } from "react-native-collapsible-tab-view";
 import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
 import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
 import { USER_VOTES_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
-import BaseTabBar from "components/tabBar/BaseTabBar";
 import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
 import LogoutButton from "components/profile/LogoutButton";
 import { getFollows } from "helpers/apiUtils";
-import Button from "components/Button";
-import IconFont from "components/IconFont";
-import { SETTINGS_SCREEN } from "constants/navigation";
-import { useNavigation } from "@react-navigation/core";
 import AccountsButton from "components/profile/AccountsButton";
-import FollowSection from "components/user/FollowSection";
 import {
   useBottomSheetModalRef,
   useBottomSheetModalShowRef,
 } from "context/bottomSheetModalContext";
+import { useScrollManager } from "../hooks/useScrollManager";
+import { TabRoute } from "components/tabBar/TabView";
+import Scene from "components/tabBar/Scene";
+import Device from "helpers/device";
+import AnimatedHeader from "components/tabBar/AnimatedHeader";
+import TabView from "components/tabBar/TabView";
+import AnimatedTabBar from "components/tabBar/AnimatedTabBar";
+import TabBarComponent from "components/tabBar/TabBar";
+import ProfileScreenHeader from "components/profile/ProfileScreenHeader";
+
+const deviceHeight = Device.getDeviceHeight();
+const headerHeight = Device.isIos() ? 400 : 360;
 
 async function getVotedProposals(
   address: string,
@@ -68,9 +67,91 @@ function ProfileScreen() {
   const [loadingFollows, setLoadingFollows] = useState(false);
   const [loadingVotedProposals, setLoadingVotedProposals] = useState(false);
   const [votedProposals, setVotedProposals] = useState([]);
-  const navigation: any = useNavigation();
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalShowRef = useBottomSheetModalShowRef();
+  const tabs = [
+    { key: "about", title: i18n.t("about") },
+    { key: "activity", title: i18n.t("activity") },
+  ];
+  const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
+    useScrollManager(tabs, { header: headerHeight });
+  const renderScene = useCallback(
+    ({ route: tab }: { route: TabRoute }) => {
+      if (tab.key === "about") {
+        return (
+          <Scene
+            isActive={tabs[index].key === tab.key}
+            routeKey={tab.key}
+            scrollY={scrollY}
+            headerHeight={headerHeight}
+            data={[{ key: "joinedSpaces" }]}
+            renderItem={() => {
+              return <JoinedSpacesScrollView useLoader={loadingFollows} />;
+            }}
+            ListFooterComponent={
+              <View style={{ width: 100, height: deviceHeight * 0.9 }} />
+            }
+            {...sceneProps}
+          />
+        );
+      } else if (tab.key === "activity") {
+        return (
+          <Scene
+            isActive={tabs[index].key === tab.key}
+            routeKey={tab.key}
+            scrollY={scrollY}
+            headerHeight={headerHeight}
+            data={votedProposals}
+            renderItem={(data: any) => {
+              return (
+                <VotedOnProposalPreview
+                  proposal={data.item?.proposal}
+                  space={data.item?.proposal?.space}
+                  voter={data.item}
+                />
+              );
+            }}
+            ListEmptyComponent={
+              loadingVotedProposals ? (
+                <View />
+              ) : (
+                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                  <Text style={[common.subTitle, { color: colors.textColor }]}>
+                    {i18n.t("userHasNotVotedOnAnyProposal")}
+                  </Text>
+                </View>
+              )
+            }
+            ListFooterComponent={
+              loadingVotedProposals ? (
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    marginTop: 24,
+                    padding: 24,
+                  }}
+                >
+                  <ActivityIndicator color={colors.textColor} size="large" />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: 100,
+                    backgroundColor: colors.bgDefault,
+                  }}
+                />
+              )
+            }
+            {...sceneProps}
+          />
+        );
+      }
+    },
+    [getRefForKey, index, tabs, scrollY]
+  );
 
   useEffect(() => {
     const backAction = () => {
@@ -133,111 +214,21 @@ function ProfileScreen() {
             <LogoutButton />
           </View>
         </View>
-        <Tabs.Container
-          headerContainerStyle={[
-            common.tabBarContainer,
-            { borderBottomColor: colors.borderColor },
-          ]}
-          renderHeader={() => {
-            return (
-              <View
-                style={[
-                  common.justifyCenter,
-                  common.alignItemsCenter,
-                  { backgroundColor: colors.bgDefault },
-                ]}
-              >
-                <ActiveAccount address={connectedAddress} />
-                <FollowSection
-                  followAddress={connectedAddress}
-                  votesCount={votedProposals.length}
-                />
-                <View style={{ marginTop: 16 }}>
-                  <Button
-                    onPress={() => {
-                      navigation.navigate(SETTINGS_SCREEN);
-                    }}
-                    title={i18n.t("settings")}
-                    buttonTitleStyle={{
-                      textTransform: "uppercase",
-                      fontSize: 14,
-                    }}
-                    Icon={() => (
-                      <IconFont
-                        name={"gear"}
-                        size={22}
-                        color={colors.textColor}
-                      />
-                    )}
-                    buttonContainerStyle={{
-                      width: 173,
-                      paddingVertical: 9,
-                    }}
-                  />
-                </View>
-              </View>
-            );
-          }}
-          renderTabBar={(props) => {
-            return <BaseTabBar {...props} />;
-          }}
-        >
-          <Tabs.Tab name="about">
-            <Tabs.ScrollView>
-              <JoinedSpacesScrollView useLoader={loadingFollows} />
-            </Tabs.ScrollView>
-          </Tabs.Tab>
-          <Tabs.Tab name="activity">
-            <Tabs.FlatList
-              data={votedProposals}
-              renderItem={(data: any) => {
-                return (
-                  <VotedOnProposalPreview
-                    proposal={data.item?.proposal}
-                    space={data.item?.proposal?.space}
-                    voter={data.item}
-                  />
-                );
-              }}
-              ListEmptyComponent={
-                loadingVotedProposals ? (
-                  <View />
-                ) : (
-                  <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                    <Text
-                      style={[common.subTitle, { color: colors.textColor }]}
-                    >
-                      {i18n.t("userHasNotVotedOnAnyProposal")}
-                    </Text>
-                  </View>
-                )
-              }
-              ListFooterComponent={
-                loadingVotedProposals ? (
-                  <View
-                    style={{
-                      width: "100%",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      marginTop: 24,
-                      padding: 24,
-                    }}
-                  >
-                    <ActivityIndicator color={colors.textColor} size="large" />
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      width: "100%",
-                      height: 100,
-                      backgroundColor: colors.bgDefault,
-                    }}
-                  />
-                )
-              }
-            />
-          </Tabs.Tab>
-        </Tabs.Container>
+        <AnimatedHeader scrollY={scrollY} headerHeight={headerHeight}>
+          <ProfileScreenHeader votedProposalsLength={votedProposals.length} />
+        </AnimatedHeader>
+        <TabView
+          index={index}
+          setIndex={setIndex}
+          width={Device.getDeviceWidth()}
+          routes={tabs}
+          renderTabBar={(p) => (
+            <AnimatedTabBar scrollY={scrollY} headerHeight={headerHeight}>
+              <TabBarComponent {...p} />
+            </AnimatedTabBar>
+          )}
+          renderScene={renderScene}
+        />
       </SafeAreaView>
     </>
   );

@@ -4,22 +4,22 @@ import * as Progress from "react-native-progress";
 import common from "styles/common";
 import { n } from "helpers/miscUtils";
 import { useAuthState } from "context/authContext";
+import isNaN from "lodash/isNaN";
 
 const styles = StyleSheet.create({
   resultsTextContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 18,
+    marginBottom: 8,
     marginTop: 18,
   },
   resultsText: {
     fontFamily: "Calibre-Semibold",
     fontSize: 18,
+    marginTop: 8,
   },
   voteAmountText: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
-    marginLeft: 4,
+    marginTop: 8,
   },
 });
 
@@ -35,7 +35,7 @@ function ProposalResultOption({
   voteAmount,
 }: ProposalResultOptionProps) {
   const { colors } = useAuthState();
-  const formattedCalculatedScore = n(score, "0.[0]%");
+  const formattedCalculatedScore = n(isNaN(score) ? 0 : score, "0.[0]%");
   return (
     <View>
       <View style={styles.resultsTextContainer}>
@@ -43,18 +43,20 @@ function ProposalResultOption({
           <Text style={[styles.resultsText, { color: colors.textColor }]}>
             {choice}
           </Text>
+        </View>
+        <View style={[common.row, common.justifySpaceBetween]}>
           <Text
             style={[styles.voteAmountText, { color: colors.secondaryGray }]}
           >
             {voteAmount}
           </Text>
+          <Text style={[styles.resultsText, { color: colors.textColor }]}>
+            {formattedCalculatedScore}
+          </Text>
         </View>
-        <Text style={[styles.resultsText, { color: colors.textColor }]}>
-          {formattedCalculatedScore}
-        </Text>
       </View>
       <Progress.Bar
-        progress={score}
+        progress={isNaN(score) ? 0 : score}
         color={colors.bgBlue}
         unfilledColor={colors.borderColor}
         width={null}

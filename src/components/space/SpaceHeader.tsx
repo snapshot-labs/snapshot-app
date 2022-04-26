@@ -14,6 +14,7 @@ import { useAuthState } from "context/authContext";
 import { addressIsSnapshotWallet } from "helpers/address";
 import SubscribeToSpaceButton from "components/space/SubscribeToSpaceButton";
 import IconButton from "components/IconButton";
+import Device from "helpers/device";
 
 const verified: any = require("../../constants/verifiedSpaces.json");
 
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingBottom: 2,
+    paddingTop: Device.isIos() ? 80 : 30,
   },
   separator: {
     width: 6,

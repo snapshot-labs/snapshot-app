@@ -129,6 +129,13 @@ const common = StyleSheet.create({
   screenTitleContainer: {
     paddingTop: 12,
   },
+  proposalPreviewContainer: {
+    marginTop: 22,
+    paddingHorizontal: 18,
+    paddingBottom: 22,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderColor,
+  },
 });
 
 export default common;

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
 import SpaceAvatar from "components/SpaceAvatar";
+import { ActivityIndicator } from 'react-native-paper';
 import { getUsername, getUserProfile } from "helpers/profile";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
@@ -17,7 +17,6 @@ import { Proposal } from "types/proposal";
 import i18n from "i18n-js";
 import MarkdownBody from "components/proposal/MarkdownBody";
 import { n, toNow } from "helpers/miscUtils";
-import { getPower } from "helpers/snapshot";
 import UserAvatar from "components/UserAvatar";
 import colors from "constants/colors";
 import common from "styles/common";

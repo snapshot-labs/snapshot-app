@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View } from "react-native";
 import { ethers } from "ethers";
 import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 import signClient from "helpers/signClient";
 import { getSubscriptions, parseErrorMessage } from "helpers/apiUtils";
 import i18n from "i18n-js";
-import { ActivityIndicator, View } from "react-native";
 import Toast from "react-native-toast-message";
-import IconFont from "components/IconFont";
+import { ActivityIndicator } from 'react-native-paper';
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import { useEngineState } from "context/engineContext";
 import { addressIsSnapshotWallet } from "helpers/address";

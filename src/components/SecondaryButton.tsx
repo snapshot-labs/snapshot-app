@@ -6,8 +6,8 @@ import {
   Text,
   ViewStyle,
   TextStyle,
-  ActivityIndicator,
 } from "react-native";
+import { ActivityIndicator } from 'react-native-paper';
 import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({

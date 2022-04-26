@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 import { Proposal } from "types/proposal";
 import { setProfiles } from "helpers/profile";
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import ProposalPreview from "components/proposal/ProposalPreviewNew";
 import common from "styles/common";
 import i18n from "i18n-js";
@@ -282,6 +282,8 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
+            colors={["transparent"]}
+            tintColor={colors.textColor}
             onRefresh={() => {
               if (followedSpaces.length > 0) {
                 setLoadCount(0);
@@ -396,7 +398,12 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
         renderItem={(data) => {
           return (
             <View
-              style={[common.containerHorizontalPadding, { marginTop: 22 }]}
+              style={[
+                common.proposalPreviewContainer,
+                {
+                  borderBottomColor: colors.borderColor,
+                },
+              ]}
             >
               <ProposalPreview proposal={data.item} />
             </View>

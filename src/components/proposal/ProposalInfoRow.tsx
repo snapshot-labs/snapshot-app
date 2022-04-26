@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   value: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
-    marginRight: 4,
+    marginRight: 6,
     marginTop: 9,
   },
 });
@@ -80,7 +80,7 @@ function ProposalInfoRow({
                 name="external-link"
                 size={16}
                 color={colors.textColor}
-                style={{ marginTop: Device.isIos() ? 8 : 0 }}
+                style={{ marginTop: Device.isIos() ? 8 : 9 }}
               />
             )}
           </View>

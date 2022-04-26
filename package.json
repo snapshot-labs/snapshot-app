@@ -86,9 +86,6 @@
     "react-native": "~0.63.4",
     "react-native-aes-crypto": "^2.0.0",
     "react-native-calendars": "^1.1267.0",
-    "react-native-card-stack-swiper": "^1.2.5",
-    "react-native-collapsible-header-views": "^1.1.2",
-    "react-native-collapsible-tab-view": "^4.5.2",
     "react-native-confetti": "^0.1.0",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-config": "^1.4.5",
@@ -104,6 +101,7 @@
     "react-native-modal": "^13.0.0",
     "react-native-os": "^1.2.6",
     "react-native-pager-view": "5.0.12",
+    "react-native-paper": "^4.12.1",
     "react-native-progress": "^5.0.0",
     "react-native-pusher-push-notifications": "^2.5.2",
     "react-native-randombytes": "^3.6.1",
@@ -211,5 +209,5 @@
     "tls": false
   },
   "name": "snapshot-app",
-  "version": "1.0.8"
+  "version": "1.1.3"
 }

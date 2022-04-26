@@ -167,7 +167,7 @@ export default {
   startedTimeAgo: "started {{timeAgo}} ago",
   endedTimeAgo: "ended {{timeAgo}} ago",
   endsInTimeAgo: "Ends in {{timeAgo}}",
-  startsInTimeAgo: "starts in {{timeAgo}}",
+  startsInTimeAgo: "Starts in {{timeAgo}}",
   noNewNotifications: "No new notifications",
   createWallet: "Creating wallet...",
   createWalletSubtitle: "This shouldn't take long",
@@ -448,4 +448,5 @@ export default {
   created: "Created",
   viewOtherResults: "View other results",
   votedFor: 'Voted "{{choice}}"',
+  proposalHasNotStartedYet: "Proposal has not started yet.",
 };

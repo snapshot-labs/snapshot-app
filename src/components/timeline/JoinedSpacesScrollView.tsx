@@ -44,6 +44,10 @@ function JoinedSpacesScrollView({
   const { spaces } = useExploreState();
   const navigation: any = useNavigation();
 
+  if (followedSpaces.length === 0 && !useLoader) {
+    return <View />;
+  }
+
   return (
     <View>
       <Text style={[styles.spacesJoinedTitle, { color: colors.textColor }]}>

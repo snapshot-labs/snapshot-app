@@ -78,12 +78,12 @@ interface FollowSection {
   votesCount: number;
 }
 
-function FollowSection({ followAddress, votesCount }: FollowSection) {
+function FollowSection({ followAddress = "", votesCount }: FollowSection) {
   const { colors, connectedAddress } = useAuthState();
   const [walletFollows, setWalletFollows] = useState([]);
   const [walletFollowers, setWalletFollowers] = useState([]);
   const hideFollowButton =
-    connectedAddress?.toLowerCase() !== followAddress.toLowerCase();
+    connectedAddress?.toLowerCase() !== followAddress?.toLowerCase();
   const navigation = useNavigation();
 
   useEffect(() => {

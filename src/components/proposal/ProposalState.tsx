@@ -41,6 +41,18 @@ function getTextColor(state: string, colors: any) {
   }
 }
 
+function getStateText(proposal: Proposal) {
+  if (proposal.state === STATES.closed) {
+    return i18n.t("closed");
+  } else if (proposal.state === STATES.active) {
+    return i18n.t("endsInTimeAgo", {
+      timeAgo: toNow(proposal?.end),
+    });
+  } else {
+    return i18n.t("pending");
+  }
+}
+
 interface ProposalStateProps {
   proposal: Proposal;
 }
@@ -49,12 +61,7 @@ function ProposalState({ proposal }: ProposalStateProps) {
   const { colors } = useAuthState();
   const backgroundColor = getBackgroundColor(proposal?.state, colors);
   const textColor = getTextColor(proposal?.state, colors);
-  const stateText =
-    proposal?.state === STATES.closed
-      ? i18n.t("closed")
-      : i18n.t("endsInTimeAgo", {
-          timeAgo: toNow(proposal?.end),
-        });
+  const stateText = getStateText(proposal);
 
   return (
     <View style={[styles.proposalStateContainer, { backgroundColor }]}>

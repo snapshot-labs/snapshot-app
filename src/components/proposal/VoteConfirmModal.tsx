@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Linking,
   Dimensions,
-  ActivityIndicator,
   TouchableNativeFeedback,
 } from "react-native";
+import { ActivityIndicator } from 'react-native-paper';
 import i18n from "i18n-js";
 import common from "styles/common";
 import Toast from "react-native-toast-message";

@@ -6,8 +6,8 @@ import {
   ViewStyle,
   TextStyle,
   TouchableWithoutFeedback,
-  ActivityIndicator,
 } from "react-native";
+import { ActivityIndicator } from 'react-native-paper';
 import colors from "../constants/colors";
 import { useAuthState } from "context/authContext";
 

@@ -9,12 +9,12 @@ function IPhoneTopSafeAreaViewBackground() {
     <View
       style={{
         width: "100%",
-        height: 47, // For all devices, even X, XS Max
+        height: 50, // For all devices, even X, XS Max
         position: "absolute",
         top: 0,
         left: 0,
         backgroundColor: colors.bgDefault,
-        zIndex: 80,
+        zIndex: 999,
       }}
     />
   ) : (

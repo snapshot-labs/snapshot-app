@@ -28,18 +28,13 @@ import {
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import {getProposalUrl, getStartText} from "helpers/proposalUtils";
+import { getProposalUrl, getStartText } from "helpers/proposalUtils";
 import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
 import { useToastShowConfig } from "constants/toast";
 import ProposalPreviewWinningChoiceText from "components/proposal/preview/ProposalPreviewWinningChoiceText";
 
 const styles = StyleSheet.create({
-  proposalPreviewContainer: {
-    borderRadius: 14,
-    borderWidth: 1,
-    padding: 14,
-  },
   authorContainer: {
     marginLeft: 9,
   },
@@ -58,10 +53,7 @@ const styles = StyleSheet.create({
   proposalTitleContainer: {
     marginTop: 22,
     paddingBottom: 22,
-    borderBottomWidth: 1,
-    marginBottom: 14,
   },
-  actionsContainer: {},
   winningResultText: {
     fontFamily: "Calibre-Semibold",
     fontSize: 18,
@@ -149,12 +141,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
         navigation.push(PROPOSAL_SCREEN, { proposal });
       }}
     >
-      <View
-        style={[
-          styles.proposalPreviewContainer,
-          { borderColor: colors.borderColor },
-        ]}
-      >
+      <View>
         <View style={common.row}>
           <SpaceAvatar size={35} space={proposal.space} symbolIndex="space" />
           <View style={styles.authorContainer}>
@@ -229,12 +216,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
             </View>
           </TouchableWithoutFeedback>
         </View>
-        <View
-          style={[
-            styles.proposalTitleContainer,
-            { borderBottomColor: colors.borderColor },
-          ]}
-        >
+        <View style={styles.proposalTitleContainer}>
           <Text style={[styles.proposalTitle, { color: colors.textColor }]}>
             {proposal?.title}
           </Text>
@@ -271,9 +253,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
             </View>
           )}
         </View>
-        <View
-          style={[common.row, common.alignItemsCenter, styles.actionsContainer]}
-        >
+        <View style={[common.row, common.alignItemsCenter]}>
           <ProposalVoteButton
             proposal={proposal}
             space={proposal.space}
@@ -281,9 +261,14 @@ function ProposalPreview({ proposal }: ProposalPreview) {
             title={isClosed ? `${n(proposal.votes)}` : i18n.t("vote")}
             buttonContainerStyle={{
               paddingVertical: 9,
-              paddingHorizontal: 20,
+              paddingHorizontal: 14,
+              minWidth: 64,
             }}
-            buttonTitleStyle={isClosed ? { color: colors.blueButtonBg } : {}}
+            buttonTitleStyle={
+              isClosed
+                ? { color: colors.blueButtonBg, fontSize: 14 }
+                : { fontSize: 14 }
+            }
             disabled={isClosed}
             voteContainerStyle={{ marginHorizontal: 0, bottom: 0 }}
             Icon={

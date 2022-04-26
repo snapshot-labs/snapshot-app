@@ -92,7 +92,7 @@ export const PROPOSALS_QUERY = gql`
 `;
 
 export const PROPOSAL_VOTES_QUERY = gql`
-  query ($id: String!) {
+  query ($id: String! $voteLimit: Int) {
     proposal(id: $id) {
       id
       title
@@ -132,7 +132,7 @@ export const PROPOSAL_VOTES_QUERY = gql`
       }
     }
     votes(
-      first: 10000
+      first: $voteLimit
       where: { proposal: $id }
       orderBy: "vp"
       orderDirection: desc

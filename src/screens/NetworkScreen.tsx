@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import common from "../styles/common";
-import { View, Text } from "react-native";
-import { CollapsibleHeaderFlatList } from "react-native-collapsible-header-views";
+import { View, FlatList } from "react-native";
 import SpacePreview from "../components/SpacePreview";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Space } from "../types/explore";
@@ -44,7 +43,7 @@ function NetworkScreen({ route }: NetworkScreenProps) {
       style={[common.screen, { backgroundColor: colors.bgDefault }]}
     >
       <View style={[common.screen, { backgroundColor: colors.bgDefault }]}>
-        <CollapsibleHeaderFlatList
+        <FlatList
           data={filteredSpaces}
           headerHeight={100}
           CollapsibleHeaderComponent={

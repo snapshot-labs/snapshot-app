@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import {
+  Animated,
+  FlatList,
   Linking,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,6 +25,9 @@ import { USER_PROFILE } from "constants/navigation";
 import UserAvatar from "components/UserAvatar";
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/native";
+import AnimatedTabViewFlatList from "components/tabBar/AnimatedTabViewFlatList";
+
+type ScrollEvent = NativeSyntheticEvent<NativeScrollEvent>;
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -41,9 +48,27 @@ const styles = StyleSheet.create({
 
 interface SpaceAboutTabProps {
   space: Space;
+  isActive: boolean;
+  routeKey: string;
+  scrollY: Animated.Value;
+  trackRef: (key: string, ref: FlatList<any>) => void;
+  onMomentumScrollBegin: (e: ScrollEvent) => void;
+  onMomentumScrollEnd: (e: ScrollEvent) => void;
+  onScrollEndDrag: (e: ScrollEvent) => void;
+  headerHeight: number;
 }
 
-function SpaceAboutTab({ space }: SpaceAboutTabProps) {
+function SpaceAboutTab({
+  space,
+  isActive,
+  routeKey,
+  scrollY,
+  trackRef,
+  onMomentumScrollBegin,
+  onMomentumScrollEnd,
+  onScrollEndDrag,
+  headerHeight,
+}: SpaceAboutTabProps) {
   const { colors, connectedAddress } = useAuthState();
   const { spaces, profiles } = useExploreState();
   const network = get(networksJson, space.network, {});
@@ -52,6 +77,7 @@ function SpaceAboutTab({ space }: SpaceAboutTabProps) {
   const pluginsArray = Object.keys(spaceDetails.plugins || {});
   const navigation: any = useNavigation();
   const exploreDispatch = useExploreDispatch();
+  const spaceAboutData = [{ key: "details" }, { key: "members" }];
 
   useEffect(() => {
     const addressArray = [
@@ -64,99 +90,109 @@ function SpaceAboutTab({ space }: SpaceAboutTabProps) {
     }
   }, [spaceDetails]);
 
-  return (
-    <View>
-      <View
-        style={[styles.contentContainer, { borderColor: colors.borderColor }]}
-      >
-        <SpaceInfoRow
-          title={i18n.t("network")}
-          value={networkName}
-          icon={"feed"}
-        />
+  function SpaceDetails() {
+    return (
+      <View style={[common.containerHorizontalPadding, { marginTop: 22 }]}>
         <View
-          style={[styles.separator, { backgroundColor: colors.borderColor }]}
-        />
-        <SpaceInfoRow
-          title={i18n.t("proposalValidation")}
-          value={spaceDetails.validation?.name || "basic"}
-          icon={"receipt-outlined"}
-        />
-        <View
-          style={[styles.separator, { backgroundColor: colors.borderColor }]}
-        />
-        <SpaceInfoRow
-          title={i18n.t("proposalThreshold")}
-          value={`${n(spaceDetails.filters?.minScore ?? 0)} ${
-            spaceDetails?.symbol
-          }`}
-          icon={"check"}
-        />
-        {spaceDetails.terms ? (
-          <>
-            <View
-              style={[
-                styles.separator,
-                { backgroundColor: colors.borderColor },
-              ]}
-            />
-            <SpaceInfoRow
-              title={i18n.t("terms")}
-              value={spaceDetails.terms}
-              onPress={() => {
-                if (spaceDetails.terms) {
-                  Linking.openURL(spaceDetails.terms);
-                }
-              }}
-              icon={"check"}
-            />
-          </>
-        ) : (
-          <View />
-        )}
-        {spaceDetails.strategies ? (
-          <>
-            <View
-              style={[
-                styles.separator,
-                { backgroundColor: colors.borderColor },
-              ]}
-            />
-            <SpaceInfoRow
-              title={i18n.t("strategies")}
-              value={join(
-                map(spaceDetails.strategies, (strategy) => strategy.name),
-                ", "
-              )}
-              icon={"check"}
-            />
-          </>
-        ) : (
-          <View />
-        )}
-        {pluginsArray.length > 0 ? (
-          <>
-            <View
-              style={[
-                styles.separator,
-                { backgroundColor: colors.borderColor },
-              ]}
-            />
-            <SpaceInfoRow
-              title={i18n.t("plugins")}
-              value={pluginsArray.join(", ")}
-              icon={"upload"}
-            />
-          </>
-        ) : (
-          <View />
-        )}
+          style={[styles.contentContainer, { borderColor: colors.borderColor }]}
+        >
+          <SpaceInfoRow
+            title={i18n.t("network")}
+            value={networkName}
+            icon={"feed"}
+          />
+          <View
+            style={[styles.separator, { backgroundColor: colors.borderColor }]}
+          />
+          <SpaceInfoRow
+            title={i18n.t("proposalValidation")}
+            value={spaceDetails.validation?.name || "basic"}
+            icon={"receipt-outlined"}
+          />
+          <View
+            style={[styles.separator, { backgroundColor: colors.borderColor }]}
+          />
+          <SpaceInfoRow
+            title={i18n.t("proposalThreshold")}
+            value={`${n(spaceDetails.filters?.minScore ?? 0)} ${
+              spaceDetails?.symbol
+            }`}
+            icon={"check"}
+          />
+          {spaceDetails.terms ? (
+            <>
+              <View
+                style={[
+                  styles.separator,
+                  { backgroundColor: colors.borderColor },
+                ]}
+              />
+              <SpaceInfoRow
+                title={i18n.t("terms")}
+                value={spaceDetails.terms}
+                onPress={() => {
+                  if (spaceDetails.terms) {
+                    Linking.openURL(spaceDetails.terms);
+                  }
+                }}
+                icon={"check"}
+              />
+            </>
+          ) : (
+            <View />
+          )}
+          {spaceDetails.strategies ? (
+            <>
+              <View
+                style={[
+                  styles.separator,
+                  { backgroundColor: colors.borderColor },
+                ]}
+              />
+              <SpaceInfoRow
+                title={i18n.t("strategies")}
+                value={join(
+                  map(spaceDetails.strategies, (strategy) => strategy.name),
+                  ", "
+                )}
+                icon={"check"}
+              />
+            </>
+          ) : (
+            <View />
+          )}
+          {pluginsArray.length > 0 ? (
+            <>
+              <View
+                style={[
+                  styles.separator,
+                  { backgroundColor: colors.borderColor },
+                ]}
+              />
+              <SpaceInfoRow
+                title={i18n.t("plugins")}
+                value={pluginsArray.join(", ")}
+                icon={"upload"}
+              />
+            </>
+          ) : (
+            <View />
+          )}
+        </View>
       </View>
+    );
+  }
 
+  function SpaceMembers() {
+    return (
       <View
         style={[
           styles.contentContainer,
-          { borderColor: colors.borderColor, marginTop: 22 },
+          {
+            borderColor: colors.borderColor,
+            marginTop: 22,
+            marginHorizontal: 14,
+          },
         ]}
       >
         <SpaceInfoRow
@@ -262,7 +298,30 @@ function SpaceAboutTab({ space }: SpaceAboutTabProps) {
           }}
         />
       </View>
-    </View>
+    );
+  }
+
+  return (
+    <AnimatedTabViewFlatList
+      data={spaceAboutData}
+      renderItem={(data: { item: { key: string } }) => {
+        if (data.item.key === "details") {
+          return <SpaceDetails />;
+        } else if (data.item.key === "members") {
+          return <SpaceMembers />;
+        } else {
+          return <View />;
+        }
+      }}
+      scrollY={isActive ? scrollY : undefined}
+      onRef={(ref: any) => {
+        trackRef(routeKey, ref);
+      }}
+      onMomentumScrollBegin={onMomentumScrollBegin}
+      onMomentumScrollEnd={onMomentumScrollEnd}
+      onScrollEndDrag={onScrollEndDrag}
+      headerHeight={headerHeight}
+    />
   );
 }
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   SafeAreaView,
   Text,
   View,
 } from "react-native";
+import { ActivityIndicator } from 'react-native-paper';
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
 import i18n from "i18n-js";
 import common from "styles/common";
