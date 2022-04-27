@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   value: {
     fontFamily: "Calibre-Medium",
     fontSize: 18,
-    marginRight: 6,
+    marginRight: 16,
     marginTop: 9,
   },
 });

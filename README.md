@@ -6,6 +6,8 @@
 yarn
 ```
 
+- Also copy .env-example and rename to .env with your own environment variables
+
 ### Extra step to install for iOS
 
 ```

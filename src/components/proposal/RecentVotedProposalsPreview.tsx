@@ -5,6 +5,7 @@ import { useAuthDispatch, useAuthState } from "context/authContext";
 import * as Progress from "react-native-progress";
 import get from "lodash/get";
 import { n } from "helpers/miscUtils";
+import isEmpty from "lodash/isEmpty";
 import i18n from "i18n-js";
 import { CREATE_PROPOSAL_SCREEN, PROPOSAL_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/core";
@@ -103,16 +104,22 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     fontSize: 14,
   },
+  votedForText: {
+    fontFamily: "Calibre-Semibold",
+    fontSize: 14,
+  },
 });
 
 interface RecentVotedProposalsPreviewProps {
   space: Space;
   proposal: Proposal;
+  choice: number;
 }
 
 function RecentVotedProposalPreview({
   space,
   proposal,
+  choice,
 }: RecentVotedProposalsPreviewProps) {
   const { colors, connectedAddress, wcConnector, snapshotWallets } =
     useAuthState();
@@ -153,6 +160,7 @@ function RecentVotedProposalPreview({
   const startText = getStartText(proposal.start);
   const toastShowConfig = useToastShowConfig();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const userChoice = get(proposal.choices, choice, undefined);
 
   return (
     <TouchableWithoutFeedback
@@ -296,7 +304,32 @@ function RecentVotedProposalPreview({
             marginTop: 16,
           }}
         >
-          <ProposalState proposal={proposal} />
+          {!isEmpty(userChoice) && (
+            <View
+              style={[common.row, common.alignItemsCenter, { marginRight: 16 }]}
+            >
+              <Text
+                style={[styles.votedForText, { color: colors.blueButtonBg }]}
+              >
+                {i18n.t("you")}
+              </Text>
+              <Text
+                style={[
+                  styles.votedForText,
+                  common.textLowercase,
+                  { color: colors.secondaryGray },
+                ]}
+              >
+                {` ${i18n.t("voted")} `}
+              </Text>
+              <Text style={[styles.votedForText, { color: colors.textColor }]}>
+                "{userChoice}"
+              </Text>
+            </View>
+          )}
+          <View style={common.marginLeftAuto}>
+            <ProposalState proposal={proposal} />
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>

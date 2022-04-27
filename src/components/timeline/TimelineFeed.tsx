@@ -380,6 +380,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                             <RecentVotedProposalPreview
                               proposal={item.proposal}
                               space={spaces[item?.proposal.space?.id]}
+                              choice={item.choice}
                             />
                           );
                         }}

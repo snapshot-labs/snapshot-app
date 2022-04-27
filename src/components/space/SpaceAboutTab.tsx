@@ -26,6 +26,7 @@ import UserAvatar from "components/UserAvatar";
 import common from "styles/common";
 import { useNavigation } from "@react-navigation/native";
 import AnimatedTabViewFlatList from "components/tabBar/AnimatedTabViewFlatList";
+import Device from "helpers/device";
 
 type ScrollEvent = NativeSyntheticEvent<NativeScrollEvent>;
 
@@ -321,6 +322,9 @@ function SpaceAboutTab({
       onMomentumScrollEnd={onMomentumScrollEnd}
       onScrollEndDrag={onScrollEndDrag}
       headerHeight={headerHeight}
+      ListFooterComponent={
+        <View style={{ width: 100, height: Device.getDeviceHeight() * 0.6 }} />
+      }
     />
   );
 }

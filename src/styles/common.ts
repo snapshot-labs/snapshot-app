@@ -136,6 +136,9 @@ const common = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.borderColor,
   },
+  textLowercase: {
+    textTransform: "lowercase",
+  },
 });
 
 export default common;
