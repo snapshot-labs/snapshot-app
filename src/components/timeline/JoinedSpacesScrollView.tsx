@@ -14,6 +14,10 @@ import { Fade, Placeholder, PlaceholderMedia } from "rn-placeholder";
 import { useExploreState } from "context/exploreContext";
 import isEmpty from "lodash/isEmpty";
 import i18n from "i18n-js";
+import common from "styles/common";
+import IconFont from "components/IconFont";
+
+const verified: any = require("constants/verifiedSpaces.json");
 
 const styles = StyleSheet.create({
   spaceName: {
@@ -21,7 +25,6 @@ const styles = StyleSheet.create({
     fontFamily: "Calibre-Medium",
     textAlign: "center",
     marginTop: 2,
-    width: 66,
   },
   spacesJoinedTitle: {
     fontSize: 14,
@@ -80,16 +83,22 @@ function JoinedSpacesScrollView({
               })
             : followedSpaces.map((space, i) => {
                 const spaceDetails = spaces[space?.space?.id];
+                const verificationStatus = verified[space?.space?.id] || 0;
+                const isVerified = verificationStatus === 1;
+
                 if (isEmpty(spaceDetails)) {
                   return;
                 }
                 return (
                   <View
                     key={i}
-                    style={{
-                      marginLeft: 8,
-                      marginRight: i === followedSpaces.length - 1 ? 16 : 0,
-                    }}
+                    style={[
+                      common.justifyCenter,
+                      {
+                        marginLeft: i === 0 ? 16 : 20,
+                        marginRight: i === followedSpaces.length - 1 ? 16 : 0,
+                      },
+                    ]}
                   >
                     <SpaceAvatarButton
                       onPress={() => {
@@ -107,7 +116,14 @@ function JoinedSpacesScrollView({
                         });
                       }}
                     >
-                      <View>
+                      <View
+                        style={[
+                          common.row,
+                          common.alignItemsCenter,
+                          common.justifyCenter,
+                          { width: 66 },
+                        ]}
+                      >
                         <Text
                           ellipsizeMode="tail"
                           style={[
@@ -118,6 +134,14 @@ function JoinedSpacesScrollView({
                         >
                           {spaceDetails.name}
                         </Text>
+                        {isVerified && (
+                          <IconFont
+                            name="check-verified"
+                            size={13}
+                            color={colors.blueButtonBg}
+                            style={{ marginTop: 2, marginLeft: 2 }}
+                          />
+                        )}
                       </View>
                     </TouchableOpacity>
                   </View>
