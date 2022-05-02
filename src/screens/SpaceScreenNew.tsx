@@ -142,7 +142,7 @@ function SpaceScreen({ route }: SpaceScreenProps) {
           routes={tabs}
           renderTabBar={(p) => (
             <AnimatedTabBar scrollY={scrollY} headerHeight={headerHeight}>
-              <TabBarComponent {...p} />
+              <TabBarComponent {...p} tabsLength={tabs.length} />
             </AnimatedTabBar>
           )}
           renderScene={renderScene}

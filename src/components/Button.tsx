@@ -7,7 +7,7 @@ import {
   TextStyle,
   TouchableWithoutFeedback,
 } from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from "react-native-paper";
 import colors from "../constants/colors";
 import { useAuthState } from "context/authContext";
 
@@ -53,7 +53,7 @@ interface ButtonProps {
   onPress: () => void;
   title: string;
   primary?: boolean;
-  buttonContainerStyle?: ViewStyle;
+  buttonContainerStyle?: ViewStyle | ViewStyle[];
   nativeFeedbackContainerStyle?: ViewStyle;
   buttonTitleStyle?: TextStyle;
   disabled?: boolean;

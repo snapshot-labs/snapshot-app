@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import common from "styles/common";
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from "react-native-paper";
 import i18n from "i18n-js";
 import ProposalResultsBlock from "components/proposal/ProposalResultsBlock";
 import { n } from "helpers/miscUtils";
@@ -64,7 +64,7 @@ function ProposalResultsVotersSection({
           { width: "100%", marginTop: 28 },
         ]}
       >
-        <ActivityIndicator size="large" color={colors.textColor} />
+        <ActivityIndicator size="small" color={colors.textColor} />
       </View>
     );
   }
@@ -88,7 +88,7 @@ function ProposalResultsVotersSection({
     <View
       style={[
         common.containerHorizontalPadding,
-        { marginTop: 28, paddingBottom: 28 },
+        { marginTop: 28, paddingBottom: 100 },
       ]}
     >
       <ProposalResultsBlock

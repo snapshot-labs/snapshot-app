@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  BackHandler,
-} from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import { SafeAreaView, Text, View, BackHandler } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
 import { Proposal } from "types/proposal";
@@ -42,6 +37,7 @@ import ProposalScreenHeader from "components/proposal/ProposalScreenHeader";
 
 const baseHeaderHeight = Device.isIos() ? 280 : 240;
 const deviceHeight = Device.getDeviceHeight();
+const deviceWidth = Device.getDeviceWidth();
 
 interface ProposalScreenProps {
   route: {
@@ -49,6 +45,7 @@ interface ProposalScreenProps {
       proposal: Proposal;
       spaceId?: string;
       proposalId?: string;
+      tabIndex?: number;
     };
   };
 }
@@ -153,7 +150,11 @@ function ProposalScreen({ route }: ProposalScreenProps) {
   const proposalTitleLength = proposal?.title?.length > 60 ? 30 : 0;
   const headerHeight = baseHeaderHeight + proposalTitleLength;
   const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
-    useScrollManager(tabs, { header: headerHeight });
+    useScrollManager(
+      tabs,
+      { header: headerHeight },
+      route.params.tabIndex === undefined ? 0 : route.params.tabIndex
+    );
   const renderScene = useCallback(
     ({ route: tab }: { route: TabRoute }) => {
       if (tab.key === "about") {
@@ -167,15 +168,15 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             renderItem={() => {
               return (
                 <View
-                  style={[common.containerHorizontalPadding, { marginTop: 22 }]}
+                  style={[
+                    common.containerHorizontalPadding,
+                    { marginTop: 22, paddingBottom: 100 },
+                  ]}
                 >
                   <MarkdownBody body={proposal.body} />
                 </View>
               );
             }}
-            ListFooterComponent={
-              <View style={{ width: 100, height: deviceHeight * 0.9 }} />
-            }
             {...sceneProps}
           />
         );
@@ -199,9 +200,6 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                 />
               );
             }}
-            ListFooterComponent={
-              <View style={{ width: 100, height: deviceHeight * 0.9 }} />
-            }
             {...sceneProps}
           />
         );
@@ -218,16 +216,13 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                 <View
                   style={[
                     common.containerHorizontalPadding,
-                    { marginTop: 28, paddingBottom: 28 },
+                    { marginTop: 28, paddingBottom: 100 },
                   ]}
                 >
                   <ProposalInfoBlock proposal={proposal} />
                 </View>
               );
             }}
-            ListFooterComponent={
-              <View style={{ width: 100, height: deviceHeight * 0.9 }} />
-            }
             {...sceneProps}
           />
         );
@@ -337,7 +332,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               routes={tabs}
               renderTabBar={(p) => (
                 <AnimatedTabBar scrollY={scrollY} headerHeight={headerHeight}>
-                  <TabBarComponent {...p} />
+                  <TabBarComponent {...p} tabsLength={tabs.length} />
                 </AnimatedTabBar>
               )}
               renderScene={renderScene}
@@ -359,6 +354,10 @@ function ProposalScreen({ route }: ProposalScreenProps) {
                 setProposalError
               );
               setCastedVote(castedVote + 1);
+            }}
+            voteContainerStyle={{
+              position: "absolute",
+              width: deviceWidth - 32,
             }}
           />
         )}

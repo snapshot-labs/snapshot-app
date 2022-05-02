@@ -1,7 +1,10 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { TabBar } from "react-native-tab-view";
 import { useAuthState } from "context/authContext";
+import TabBarItem from "components/tabBar/TabBarItem";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   indicatorStyle: {
@@ -16,6 +19,20 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
 });
+
+const deviceWidth = Device.getDeviceWidth();
+
+function TabCustomTouchableNativeFeedback({ children, ...props }: any) {
+  return (
+    <TouchableNativeFeedback
+      {...props}
+      background={TouchableNativeFeedback.Ripple("transparent", false)}
+      style={[{ width: deviceWidth / props.tabsLength }].concat(props.style)}
+    >
+      {children}
+    </TouchableNativeFeedback>
+  );
+}
 
 function TabBarComponent(props: any) {
   const { colors } = useAuthState();
@@ -42,6 +59,26 @@ function TabBarComponent(props: any) {
       }}
       inactiveColor={colors.secondaryGray}
       tabStyle={{ alignItems: "center", justifyContent: "flex-start" }}
+      renderTabBarItem={(item) => {
+        return (
+          <TabBarItem
+            {...item}
+            //@ts-ignore
+            PressableComponent={
+              Device.isIos()
+                ? undefined
+                : (pressableProps: any) => {
+                    return (
+                      <TabCustomTouchableNativeFeedback
+                        {...pressableProps}
+                        tabsLength={props.tabsLength ?? 2}
+                      />
+                    );
+                  }
+            }
+          />
+        );
+      }}
     />
   );
 }

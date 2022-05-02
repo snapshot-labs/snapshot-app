@@ -146,6 +146,7 @@ function NotificationScreen() {
         </View>
       </View>
       <FlatList
+        showsVerticalScrollIndicator={false}
         key={`${connectedAddress}${lastViewedProposal}`}
         data={followedSpaces.length > 0 ? proposalTimes : []}
         renderItem={(data) => {

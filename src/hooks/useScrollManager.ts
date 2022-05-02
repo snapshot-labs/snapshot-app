@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, FlatList } from "react-native";
+import { tabBarOffset as animatedTabBarOffset } from "components/tabBar/AnimatedTabBar";
 import Device from "helpers/device";
 
 export const useScrollManager = (
   routes: { key: string; title: string }[],
-  sizing: { header: number }
+  sizing: { header: number },
+  startingIndex: number = 0
 ) => {
   const scrollY = useRef(new Animated.Value(-sizing.header)).current;
   const tabViewOffset = Device.isIos() ? -sizing.header : 0;
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(startingIndex);
   const isListGliding = useRef(false);
   const tabkeyToScrollPosition = useRef<{ [key: string]: number }>({}).current;
   const tabkeyToScrollableChildRef = useRef<{ [key: string]: FlatList }>(
@@ -36,6 +38,10 @@ export const useScrollManager = (
           return;
         }
 
+        const AndroidOffset = Device.isAndroid()
+          ? -animatedTabBarOffset
+          : tabViewOffset;
+
         if (/* header visible */ key !== curRouteKey) {
           if (scrollValue <= tabViewOffset + sizing.header) {
             scrollRef.scrollToOffset({
@@ -48,14 +54,14 @@ export const useScrollManager = (
             tabkeyToScrollPosition[key] = scrollValue;
           } else if (
             /* header hidden */
-            tabkeyToScrollPosition[key] < tabViewOffset + sizing.header ||
+            tabkeyToScrollPosition[key] < AndroidOffset + sizing.header ||
             tabkeyToScrollPosition[key] == null
           ) {
             scrollRef.scrollToOffset({
-              offset: tabViewOffset + sizing.header,
+              offset: AndroidOffset + sizing.header,
               animated: false,
             });
-            tabkeyToScrollPosition[key] = tabViewOffset + sizing.header;
+            tabkeyToScrollPosition[key] = AndroidOffset + sizing.header;
           }
         }
       });

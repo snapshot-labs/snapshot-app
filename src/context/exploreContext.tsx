@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
-import { ContextAction, ContextDispatch } from "../types/context";
-import { Space, Strategy } from "../types/explore";
+import { ContextAction, ContextDispatch } from "types/context";
+import { Space, Strategy, User } from "types/explore";
 
 type ExploreState = {
   networks: { [id: string]: number };
@@ -11,6 +11,7 @@ type ExploreState = {
   spaces: { [id: string]: Space };
   profiles: { [id: string]: any };
   categories: { [id: string]: number };
+  snapshotUsers: { [id: string]: User };
 };
 
 const ExploreContext = createContext<ExploreState | undefined>(undefined);
@@ -23,6 +24,7 @@ const EXPLORE_ACTIONS = {
   SET_FULL_STRATEGIES: "@explore/SET_FULL_STRATEGIES",
   UPDATE_SPACES: "@explore/UPDATE_SPACES",
   SET_PROFILES: "@explore/SET_PROFILES",
+  SET_SNAPSHOT_USERS: "@explore/SET_SNAPSHOT_USERS",
 };
 
 const initialState = {
@@ -34,6 +36,7 @@ const initialState = {
   fullStrategies: {},
   profiles: {},
   categories: {},
+  snapshotUsers: {},
 };
 
 function exploreReducer(state: ExploreState, action: ContextAction) {
@@ -79,6 +82,11 @@ function exploreReducer(state: ExploreState, action: ContextAction) {
       return { ...state, fullStrategies: action.payload };
     case EXPLORE_ACTIONS.SET_PROFILES:
       return { ...state, profiles: { ...state.profiles, ...action.payload } };
+    case EXPLORE_ACTIONS.SET_SNAPSHOT_USERS:
+      return {
+        ...state,
+        snapshotUsers: { ...state.snapshotUsers, ...action.payload },
+      };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }

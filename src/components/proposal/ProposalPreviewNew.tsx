@@ -263,14 +263,29 @@ function ProposalPreview({ proposal }: ProposalPreview) {
               paddingVertical: 9,
               paddingHorizontal: 14,
               minWidth: 64,
+              backgroundColor: isClosed
+                ? colors.disabledButtonBg
+                : colors.blueButtonBg,
+              borderColor: isClosed
+                ? colors.disabledButtonBg
+                : colors.blueButtonBg,
             }}
             buttonTitleStyle={
               isClosed
                 ? { color: colors.blueButtonBg, fontSize: 14 }
                 : { fontSize: 14 }
             }
-            disabled={isClosed}
             voteContainerStyle={{ marginHorizontal: 0, bottom: 0 }}
+            onPress={
+              isClosed
+                ? () => {
+                    navigation.navigate(PROPOSAL_SCREEN, {
+                      tabIndex: 1,
+                      proposal,
+                    });
+                  }
+                : undefined
+            }
             Icon={
               isClosed
                 ? () => (

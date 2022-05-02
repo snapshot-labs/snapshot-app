@@ -19,6 +19,7 @@ import { EngineProvider } from "context/engineContext";
 import SecureKeychain from "helpers/secureKeychain";
 import Config from "react-native-config";
 import { ExploreProvider } from "context/exploreContext";
+import { CreateProposalProvider } from "context/createProposalContext";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -49,17 +50,19 @@ export default function App() {
   if (fontsLoaded && fontLoaded) {
     return (
       <SafeAreaProvider>
-        <EngineProvider>
-          <AuthProvider>
-            <ExploreProvider>
-              <NotificationsProvider>
-                <BottomSheetModalProvider>
-                  <AppWrapper />
-                </BottomSheetModalProvider>
-              </NotificationsProvider>
-            </ExploreProvider>
-          </AuthProvider>
-        </EngineProvider>
+        <CreateProposalProvider>
+          <EngineProvider>
+            <AuthProvider>
+              <ExploreProvider>
+                <NotificationsProvider>
+                  <BottomSheetModalProvider>
+                    <AppWrapper />
+                  </BottomSheetModalProvider>
+                </NotificationsProvider>
+              </ExploreProvider>
+            </AuthProvider>
+          </EngineProvider>
+        </CreateProposalProvider>
         <Toast config={toastLayoutConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaProvider>
     );

@@ -18,7 +18,6 @@ import {
 } from "context/notificationsContext";
 import { ENGINE_ACTIONS, useEngineDispatch } from "context/engineContext";
 import initializeEngine from "helpers/engineService";
-import Device from "helpers/device";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,

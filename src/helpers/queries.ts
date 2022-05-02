@@ -92,7 +92,7 @@ export const PROPOSALS_QUERY = gql`
 `;
 
 export const PROPOSAL_VOTES_QUERY = gql`
-  query ($id: String! $voteLimit: Int) {
+  query ($id: String!, $voteLimit: Int) {
     proposal(id: $id) {
       id
       title
@@ -332,6 +332,16 @@ export const PROPOSAL_VOTERS = gql`
       voter
       vp
       vp_by_strategy
+    }
+  }
+`;
+
+export const USER_PROFILE = gql`
+  query Users($id: String) {
+    users(where: { id: $id }) {
+      id
+      name
+      about
     }
   }
 `;

@@ -449,4 +449,10 @@ export default {
   viewOtherResults: "View other results",
   votedFor: 'Voted "{{choice}}"',
   proposalHasNotStartedYet: "Proposal has not started yet.",
+  title: "Title",
+  body: "Body",
+  next: "Next",
+  selectTypeOfVoting: "Select type of voting",
+  addUpTo10Choices: "Add up to 10 choices",
+  bio: "Bio",
 };

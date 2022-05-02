@@ -11,13 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuthState } from "context/authContext";
 import Device from "helpers/device";
 
-interface ProfileScreenHeaderProps {
-  votedProposalsLength: number;
-}
-
-function ProfileScreenHeader({
-  votedProposalsLength,
-}: ProfileScreenHeaderProps) {
+function ProfileScreenHeader() {
   const { colors, connectedAddress } = useAuthState();
   const navigation: any = useNavigation();
   return (
@@ -32,11 +26,7 @@ function ProfileScreenHeader({
       ]}
     >
       <ActiveAccount address={connectedAddress} />
-      <FollowSection
-        followAddress={connectedAddress}
-        votesCount={votedProposalsLength}
-      />
-      <View>
+      <View style={{ marginTop: 9 }}>
         <Button
           onPress={() => {
             navigation.navigate(SETTINGS_SCREEN);

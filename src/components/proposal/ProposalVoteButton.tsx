@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   voteContainer: {
     marginHorizontal: 16,
     bottom: 30,
+    backgroundColor: "transparent",
   },
   castVoteTitle: {
     marginTop: 16,
@@ -43,6 +44,7 @@ interface ProposalVoteButtonProps {
   voteContainerStyle?: ViewStyle;
   buttonTitleStyle?: TextStyle;
   Icon?: React.FC | undefined;
+  onPress?: () => void;
 }
 
 function ProposalVoteButton({
@@ -55,6 +57,7 @@ function ProposalVoteButton({
   voteContainerStyle,
   buttonTitleStyle = {},
   Icon = undefined,
+  onPress = undefined,
 }: ProposalVoteButtonProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
@@ -64,59 +67,65 @@ function ProposalVoteButton({
   return (
     <View style={[styles.voteContainer, voteContainerStyle]}>
       <Button
-        onPress={() => {
-          const choicesLength = proposal?.choices?.length ?? 0;
-          const maxSnapPoint = choicesLength > 3 ? 50 + choicesLength * 5 : 50;
-          const snapPoint = maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
-          bottomSheetModalDispatch({
-            type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-            payload: {
-              TitleComponent: () => {
-                return (
-                  <View>
-                    <Text
-                      style={[
-                        styles.castVoteTitle,
-                        { color: colors.textColor },
-                      ]}
-                    >
-                      {i18n.t("castYourVote")}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.castVoteSubtitle,
-                        { color: colors.secondaryGray },
-                      ]}
-                    >
-                      {i18n.t("selectOptionAndConfirmVote")}
-                    </Text>
-                  </View>
-                );
-              },
-              ModalContent: () => {
-                return (
-                  <CastVoteModal
-                    proposal={proposal}
-                    space={space}
-                    getProposal={() => {
-                      getProposal();
-                      bottomSheetModalRef?.current?.close();
-                    }}
-                    navigation={navigation}
-                  />
-                );
-              },
-              options: [],
-              snapPoints: [10, snapPoint, "95%"],
-              show: true,
-              scroll: true,
-              icons: [],
-              initialIndex: 1,
-              destructiveButtonIndex: -1,
-              key: `snapshot-screen-vote-proposal-${proposal.id}`,
-            },
-          });
-        }}
+        onPress={
+          onPress
+            ? onPress
+            : () => {
+                const choicesLength = proposal?.choices?.length ?? 0;
+                const maxSnapPoint =
+                  choicesLength > 3 ? 50 + choicesLength * 5 : 50;
+                const snapPoint =
+                  maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
+                bottomSheetModalDispatch({
+                  type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
+                  payload: {
+                    TitleComponent: () => {
+                      return (
+                        <View>
+                          <Text
+                            style={[
+                              styles.castVoteTitle,
+                              { color: colors.textColor },
+                            ]}
+                          >
+                            {i18n.t("castYourVote")}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.castVoteSubtitle,
+                              { color: colors.secondaryGray },
+                            ]}
+                          >
+                            {i18n.t("selectOptionAndConfirmVote")}
+                          </Text>
+                        </View>
+                      );
+                    },
+                    ModalContent: () => {
+                      return (
+                        <CastVoteModal
+                          proposal={proposal}
+                          space={space}
+                          getProposal={() => {
+                            getProposal();
+                            bottomSheetModalRef?.current?.close();
+                          }}
+                          navigation={navigation}
+                        />
+                      );
+                    },
+                    options: [],
+                    snapPoints: [10, snapPoint, "95%"],
+                    show: true,
+                    scroll: true,
+                    icons: [],
+                    initialIndex: 1,
+                    destructiveButtonIndex: -1,
+                    key: `snapshot-screen-vote-proposal-${proposal.id}`,
+                  },
+                });
+              }
+        }
         title={title}
         primary
         disabled={disabled}

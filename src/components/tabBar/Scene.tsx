@@ -42,6 +42,7 @@ interface SceneProps<T>
   headerHeight: number;
   renderItem: any;
   refreshControl?: ReactElement;
+  listOffset?: number;
   data: any[];
 }
 
@@ -59,6 +60,7 @@ const Scene: FunctionComponent<SceneProps> = ({
   data,
   ListFooterComponent,
   ListEmptyComponent,
+  listOffset = 110,
 }) => (
   <View style={styles.container}>
     <AnimatedTabViewFlatList
@@ -77,6 +79,7 @@ const Scene: FunctionComponent<SceneProps> = ({
       headerHeight={headerHeight}
       ListFooterComponent={ListFooterComponent}
       ListEmptyComponent={ListEmptyComponent}
+      listOffset={listOffset}
     />
   </View>
 );

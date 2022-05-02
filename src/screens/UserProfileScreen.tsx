@@ -14,11 +14,8 @@ import {
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";
 import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
-import ProposalPreview from "components/proposal/ProposalPreviewNew";
-import UserSpacePreview from "components/user/UserSpacePreview";
 import { Proposal } from "types/proposal";
 import uniqBy from "lodash/uniqBy";
-import FollowSection from "components/user/FollowSection";
 import UserAddressHeader from "components/user/UserAddressHeader";
 import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
 import { useScrollManager } from "../hooks/useScrollManager";
@@ -31,12 +28,17 @@ import TabBarComponent from "components/tabBar/TabBar";
 import AnimatedNavBar from "components/tabBar/AnimatedNavBar";
 import { shorten } from "helpers/miscUtils";
 import { getUserProfile } from "helpers/profile";
-import { useExploreState } from "context/exploreContext";
+import {
+  EXPLORE_ACTIONS,
+  useExploreDispatch,
+  useExploreState,
+} from "context/exploreContext";
 import isEmpty from "lodash/isEmpty";
+import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
+import UserAbout from "components/user/UserAbout";
+import { getSnapshotProfileAbout, getSnapshotUser } from "helpers/address";
 
-const LOAD_BY = 10;
-const headerHeight = Device.isIos() ? 380 : 360;
-const deviceHeight = Device.getDeviceHeight();
+const headerHeight = Device.isIos() ? 300 : 260;
 
 async function getVotedProposals(address: string, setProposals: any) {
   const query = {
@@ -52,49 +54,13 @@ async function getVotedProposals(address: string, setProposals: any) {
   setProposals(proposalVotes);
 }
 
-async function getAuthoredProposals(
-  address: string,
-  setAuthoredProposals: any,
-  loadCount: number,
-  proposals: Proposal[],
-  setLoadCount?: (loadCount: number) => void
-) {
-  try {
-    const query = {
-      query: PROPOSALS_QUERY,
-      variables: {
-        first: LOAD_BY,
-        skip: loadCount,
-        author_in: [address],
-        space_in: [],
-        state: "all",
-      },
-    };
-
-    const result = await apolloClient.query(query);
-    const nextProposals = get(result, "data.proposals", []);
-
-    if (loadCount === 0) {
-      setAuthoredProposals(nextProposals);
-    } else {
-      const newProposals = uniqBy([...proposals, ...nextProposals], "id");
-      setAuthoredProposals(newProposals);
-      if (setLoadCount) {
-        setLoadCount(loadCount + LOAD_BY);
-      }
-    }
-  } catch (e) {}
-}
-
 async function getProposals(
   address: string,
   setProposals: any,
-  setAuthoredProposals: any,
   setLoading: (loading: boolean) => void
 ) {
   setLoading(true);
   await getVotedProposals(address, setProposals);
-  await getAuthoredProposals(address, setAuthoredProposals, 0, []);
   setLoading(false);
 }
 
@@ -124,62 +90,60 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
   const { address } = route.params;
   const { colors } = useAuthState();
   const [proposals, setProposals] = useState([]);
-  const [authoredProposals, setAuthoredProposals] = useState([]);
-  const [authoredProposalsLoadCount, setAuthoredProposalsLoadCount] =
-    useState<number>(LOAD_BY);
-  const [loadingAuthoredProposals, setLoadingMoreAuthoredProposals] =
-    useState<boolean>(false);
-  const { profiles } = useExploreState();
+  const { profiles, snapshotUsers } = useExploreState();
   const [loading, setLoading] = useState(false);
   const [joinedSpaces, setJoinedSpaces] = useState([]);
   const tabs = [
-    { key: "proposals", title: i18n.t("proposals") },
-    { key: "voted", title: i18n.t("voted") },
-    { key: "joinedSpaces", title: i18n.t("joinedSpaces") },
+    { key: "about", title: i18n.t("about") },
+    { key: "activity", title: i18n.t("activity") },
   ];
+  const exploreDispatch = useExploreDispatch();
   const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
     useScrollManager(tabs, { header: headerHeight });
   const profile = getUserProfile(address, profiles);
   const ens = get(profile, "ens", undefined);
+  const about = getSnapshotProfileAbout(address, snapshotUsers);
+
+  useEffect(() => {
+    getSnapshotUser(address).then((user) => {
+      if (user) {
+        exploreDispatch({
+          type: EXPLORE_ACTIONS.SET_SNAPSHOT_USERS,
+          payload: {
+            [address.toLowerCase()]: user,
+          },
+        });
+      }
+    });
+  }, [address]);
+
+  useEffect(() => {
+    getProposals(address, setProposals, setLoading);
+    getFollows(address, setJoinedSpaces);
+  }, []);
 
   const renderScene = useCallback(
     ({ route: tab }: { route: TabRoute }) => {
-      if (tab.key === "proposals") {
+      if (tab.key === "about") {
         return (
           <Scene
             isActive={tabs[index].key === tab.key}
             routeKey={tab.key}
             scrollY={scrollY}
             headerHeight={headerHeight}
-            data={authoredProposals}
-            renderItem={(data: any) => {
+            data={
+              joinedSpaces.length > 0 || about ? [{ key: "joinedSpaces" }] : []
+            }
+            renderItem={() => {
               return (
-                <View
-                  style={[
-                    common.proposalPreviewContainer,
-                    {
-                      borderBottomColor: colors.borderColor,
-                    },
-                  ]}
-                >
-                  <ProposalPreview proposal={data.item} />
+                <View>
+                  <JoinedSpacesScrollView followedSpaces={joinedSpaces} />
+                  <UserAbout about={about} />
                 </View>
               );
             }}
-            ListEmptyComponent={
-              loading ? (
-                <View />
-              ) : (
-                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                  <Text style={[common.subTitle, { color: colors.textColor }]}>
-                    {i18n.t("noProposalsCreated")}
-                  </Text>
-                  <View style={{ width: 100, height: deviceHeight * 0.9 }} />
-                </View>
-              )
-            }
             ListFooterComponent={
-              loading || loadingAuthoredProposals ? (
+              loading ? (
                 <View
                   style={{
                     width: "100%",
@@ -190,28 +154,31 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                     height: 150,
                   }}
                 >
-                  <ActivityIndicator color={colors.textColor} size="large" />
+                  <ActivityIndicator color={colors.textColor} size="small" />
                 </View>
               ) : (
-                <View style={{ width: 100, height: deviceHeight * 0.9 }} />
+                <View style={{ width: 100, height: 100 }} />
               )
             }
-            onEndReachedThreshold={0.6}
-            onEndReached={async () => {
-              setLoadingMoreAuthoredProposals(true);
-              await getAuthoredProposals(
-                address,
-                setAuthoredProposals,
-                authoredProposalsLoadCount,
-                authoredProposals,
-                setAuthoredProposalsLoadCount
-              );
-              setLoadingMoreAuthoredProposals(false);
-            }}
+            ListEmptyComponent={
+              loading ? (
+                <View />
+              ) : (
+                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+                  {joinedSpaces.length === 0 && (
+                    <Text
+                      style={[common.subTitle, { color: colors.textColor }]}
+                    >
+                      {i18n.t("noSpacesJoined")}
+                    </Text>
+                  )}
+                </View>
+              )
+            }
             {...sceneProps}
           />
         );
-      } else if (tab.key === "voted") {
+      } else if (tab.key === "activity") {
         return (
           <Scene
             isActive={tabs[index].key === tab.key}
@@ -236,7 +203,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                   <Text style={[common.subTitle, { color: colors.textColor }]}>
                     {i18n.t("userHasNotVotedOnAnyProposal")}
                   </Text>
-                  <View style={{ width: 100, height: deviceHeight * 0.9 }} />
                 </View>
               )
             }
@@ -252,55 +218,19 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
                     height: 150,
                   }}
                 >
-                  <ActivityIndicator color={colors.textColor} size="large" />
+                  <ActivityIndicator color={colors.textColor} size="small" />
                 </View>
               ) : (
-                <View style={{ width: 100, height: deviceHeight * 0.9 }} />
+                <View style={{ width: 100, height: 100 }} />
               )
-            }
-            {...sceneProps}
-          />
-        );
-      } else if (tab.key === "joinedSpaces") {
-        return (
-          <Scene
-            isActive={tabs[index].key === tab.key}
-            routeKey={tab.key}
-            scrollY={scrollY}
-            data={joinedSpaces}
-            headerHeight={headerHeight}
-            renderItem={(data: any) => {
-              return (
-                <UserSpacePreview space={data.item?.space} address={address} />
-              );
-            }}
-            ListEmptyComponent={
-              loading ? (
-                <View />
-              ) : (
-                <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
-                  <Text style={[common.subTitle, { color: colors.textColor }]}>
-                    {i18n.t("noSpacesJoined")}
-                  </Text>
-                  <View style={{ width: 100, height: deviceHeight * 0.9 }} />
-                </View>
-              )
-            }
-            ListFooterComponent={
-              <View style={{ width: 100, height: deviceHeight * 0.9 }} />
             }
             {...sceneProps}
           />
         );
       }
     },
-    [getRefForKey, index, tabs, scrollY]
+    [getRefForKey, index, tabs, scrollY, joinedSpaces]
   );
-
-  useEffect(() => {
-    getProposals(address, setProposals, setAuthoredProposals, setLoading);
-    getFollows(address, setJoinedSpaces);
-  }, []);
 
   return (
     <>
@@ -351,10 +281,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
               ]}
             >
               <UserAddressHeader address={address} />
-              <FollowSection
-                followAddress={address}
-                votesCount={proposals.length}
-              />
             </View>
           </View>
         </AnimatedHeader>
@@ -365,7 +291,7 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
           routes={tabs}
           renderTabBar={(p) => (
             <AnimatedTabBar scrollY={scrollY} headerHeight={headerHeight}>
-              <TabBarComponent {...p} />
+              <TabBarComponent {...p} tabsLength={tabs.length} />
             </AnimatedTabBar>
           )}
           renderScene={renderScene}

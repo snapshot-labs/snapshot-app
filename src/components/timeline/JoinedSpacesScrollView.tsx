@@ -38,12 +38,15 @@ const styles = StyleSheet.create({
 
 interface JoinedSpacesScrollViewProps {
   useLoader?: boolean;
+  followedSpaces?: any[];
+  showEmptySpacesText?: boolean;
 }
 
 function JoinedSpacesScrollView({
   useLoader = false,
+  followedSpaces = [],
 }: JoinedSpacesScrollViewProps) {
-  const { colors, followedSpaces } = useAuthState();
+  const { colors } = useAuthState();
   const { spaces } = useExploreState();
   const navigation: any = useNavigation();
 

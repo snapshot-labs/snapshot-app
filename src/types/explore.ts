@@ -59,3 +59,9 @@ export type Strategy = {
   examples: StrategyExample[];
   spaces: number;
 };
+
+export type User = {
+  about: string;
+  name: string;
+  id: string;
+};

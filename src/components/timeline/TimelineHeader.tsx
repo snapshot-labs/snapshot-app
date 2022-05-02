@@ -41,7 +41,10 @@ function TimelineHeader({
     >
       {isInitial ? (
         <>
-          <JoinedSpacesScrollView useLoader={true} />
+          <JoinedSpacesScrollView
+            useLoader={true}
+            followedSpaces={followedSpaces}
+          />
           <View
             style={[
               styles.proposalFiltersContainer,
@@ -59,7 +62,9 @@ function TimelineHeader({
         </>
       ) : (
         <>
-          {followedSpaces.length > 0 && <JoinedSpacesScrollView />}
+          {followedSpaces.length > 0 && (
+            <JoinedSpacesScrollView followedSpaces={followedSpaces} />
+          )}
           {followedSpaces.length > 0 ? (
             <View
               style={[
@@ -75,7 +80,7 @@ function TimelineHeader({
                 <Text
                   style={[styles.timelineTitle, { color: colors.textColor }]}
                 >
-                  Timeline
+                  {i18n.t("timeline")}
                 </Text>
                 <View
                   style={[

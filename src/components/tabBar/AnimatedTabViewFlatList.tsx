@@ -1,4 +1,4 @@
-import React, { memo, ReactElement } from "react";
+import React, { memo, ReactElement, useEffect } from "react";
 import {
   Animated,
   FlatListProps,
@@ -7,6 +7,7 @@ import {
   ViewProps,
 } from "react-native";
 import { tabBarOffset } from "components/tabBar/AnimatedTabBar";
+import Device from "helpers/device";
 
 export interface AnimatedTabViewProps<T>
   extends ViewProps,
@@ -33,6 +34,7 @@ export interface AnimatedTabViewProps<T>
   scrollY?: Animated.AnimatedValue;
   refreshControl?: ReactElement;
   headerHeight: number;
+  listOffset?: number;
 }
 const AnimatedTabViewFlatListWithoutMemo = <T extends any>({
   data,
@@ -53,6 +55,7 @@ const AnimatedTabViewFlatListWithoutMemo = <T extends any>({
   onEndReached,
   onEndReachedThreshold,
   ListFooterComponent = <View />,
+  listOffset = 110,
 }: AnimatedTabViewProps<T>) => {
   const handleScroll =
     scrollY &&
@@ -80,7 +83,7 @@ const AnimatedTabViewFlatListWithoutMemo = <T extends any>({
       onEndReachedThreshold={onEndReachedThreshold}
       onScrollEndDrag={onScrollEndDrag}
       ListFooterComponent={ListFooterComponent}
-      // ios has over scrolling and other things which make this look and feel nicer
+      showsVerticalScrollIndicator={false}
       contentInset={Platform.select({
         ios: { top: headerHeight - tabBarOffset },
       })}
@@ -97,6 +100,8 @@ const AnimatedTabViewFlatListWithoutMemo = <T extends any>({
         android: {
           flexGrow: 1,
           paddingTop: headerHeight - tabBarOffset,
+          minHeight:
+            Device.getDeviceHeight() + headerHeight - tabBarOffset - listOffset,
         },
       })}
     />

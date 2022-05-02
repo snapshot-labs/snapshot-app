@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from "react-native-paper";
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";
 import { ethers } from "ethers";
 import { setProfiles } from "helpers/profile";
-import { useExploreDispatch, useExploreState } from "context/exploreContext";
+import {
+  EXPLORE_ACTIONS,
+  useExploreDispatch,
+  useExploreState,
+} from "context/exploreContext";
 import JoinedSpacesScrollView from "components/timeline/JoinedSpacesScrollView";
 import VotedOnProposalPreview from "components/user/VotedOnProposalPreview";
 import { USER_VOTES_QUERY } from "helpers/queries";
@@ -30,9 +34,10 @@ import TabView from "components/tabBar/TabView";
 import AnimatedTabBar from "components/tabBar/AnimatedTabBar";
 import TabBarComponent from "components/tabBar/TabBar";
 import ProfileScreenHeader from "components/profile/ProfileScreenHeader";
+import { getSnapshotProfileAbout, getSnapshotUser } from "helpers/address";
+import UserAbout from "components/user/UserAbout";
 
-const deviceHeight = Device.getDeviceHeight();
-const headerHeight = Device.isIos() ? 400 : 360;
+const headerHeight = Device.isIos() ? 390 : 300;
 
 async function getVotedProposals(
   address: string,
@@ -60,8 +65,9 @@ async function getVotedProposals(
 }
 
 function ProfileScreen() {
-  const { colors, connectedAddress, savedWallets } = useAuthState();
-  const { profiles } = useExploreState();
+  const { colors, connectedAddress, savedWallets, followedSpaces } =
+    useAuthState();
+  const { profiles, snapshotUsers } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const authDispatch = useAuthDispatch();
   const [loadingFollows, setLoadingFollows] = useState(false);
@@ -75,6 +81,21 @@ function ProfileScreen() {
   ];
   const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
     useScrollManager(tabs, { header: headerHeight });
+  const about = getSnapshotProfileAbout(connectedAddress, snapshotUsers);
+
+  useEffect(() => {
+    getSnapshotUser(connectedAddress).then((user) => {
+      if (user) {
+        exploreDispatch({
+          type: EXPLORE_ACTIONS.SET_SNAPSHOT_USERS,
+          payload: {
+            [connectedAddress.toLowerCase()]: user,
+          },
+        });
+      }
+    });
+  }, [connectedAddress]);
+
   const renderScene = useCallback(
     ({ route: tab }: { route: TabRoute }) => {
       if (tab.key === "about") {
@@ -84,12 +105,31 @@ function ProfileScreen() {
             routeKey={tab.key}
             scrollY={scrollY}
             headerHeight={headerHeight}
-            data={[{ key: "joinedSpaces" }]}
+            data={
+              followedSpaces.length > 0 || about
+                ? [{ key: "joinedSpaces" }]
+                : []
+            }
+            listOffset={followedSpaces.length > 0 ? 190 : undefined}
             renderItem={() => {
-              return <JoinedSpacesScrollView useLoader={loadingFollows} />;
+              return (
+                <View>
+                  <JoinedSpacesScrollView
+                    useLoader={loadingFollows}
+                    followedSpaces={followedSpaces}
+                  />
+                  <UserAbout about={about} />
+                </View>
+              );
             }}
-            ListFooterComponent={
-              <View style={{ width: 100, height: deviceHeight * 0.9 }} />
+            ListEmptyComponent={
+              <View style={{ marginTop: 16, paddingHorizontal: 14 }}>
+                {followedSpaces.length === 0 && (
+                  <Text style={[common.subTitle, { color: colors.textColor }]}>
+                    {i18n.t("noSpacesJoined")}
+                  </Text>
+                )}
+              </View>
             }
             {...sceneProps}
           />
@@ -133,7 +173,7 @@ function ProfileScreen() {
                     padding: 24,
                   }}
                 >
-                  <ActivityIndicator color={colors.textColor} size="large" />
+                  <ActivityIndicator color={colors.textColor} size="small" />
                 </View>
               ) : (
                 <View
@@ -150,7 +190,7 @@ function ProfileScreen() {
         );
       }
     },
-    [getRefForKey, index, tabs, scrollY]
+    [getRefForKey, index, tabs, scrollY, followedSpaces]
   );
 
   useEffect(() => {
@@ -215,7 +255,7 @@ function ProfileScreen() {
           </View>
         </View>
         <AnimatedHeader scrollY={scrollY} headerHeight={headerHeight}>
-          <ProfileScreenHeader votedProposalsLength={votedProposals.length} />
+          <ProfileScreenHeader />
         </AnimatedHeader>
         <TabView
           index={index}

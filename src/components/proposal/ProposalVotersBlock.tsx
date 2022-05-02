@@ -103,6 +103,8 @@ function ProposalVotersBlock({
     }[]
   >([]);
   const votesPreview = votes.slice(0, 5);
+  const votesCount =
+    proposal.state === STATES.closed ? proposal.votes : votes.length;
 
   useEffect(() => {
     getChoicesTextWidth(proposal, setChoicesTextWidth);
@@ -126,26 +128,28 @@ function ProposalVotersBlock({
           ]}
         >
           <Text style={[styles.votersCount, { color: colors.textColor }]}>
-            {proposal.state === STATES.closed ? proposal.votes : votes.length}
+            {votesCount}
           </Text>
         </View>
       </View>
-      <View style={styles.votersContainer}>
-        {votesPreview.map((vote, i) => (
-          <View key={i}>
-            <ProposalVoterRow vote={vote} proposal={proposal} />
-            {i !== votesPreview.length - 1 && (
-              <View
-                style={[
-                  styles.separator,
-                  { backgroundColor: colors.borderColor },
-                ]}
-              />
-            )}
-          </View>
-        ))}
-      </View>
-      {votes.length > 5 && (
+      {votesPreview?.length > 0 && (
+        <View style={styles.votersContainer}>
+          {votesPreview.map((vote, i) => (
+            <View key={i}>
+              <ProposalVoterRow vote={vote} proposal={proposal} />
+              {i !== votesPreview.length - 1 && (
+                <View
+                  style={[
+                    styles.separator,
+                    { backgroundColor: colors.borderColor },
+                  ]}
+                />
+              )}
+            </View>
+          ))}
+        </View>
+      )}
+      {votesCount > 5 && (
         <View>
           <TouchableWithoutFeedback
             onPress={() => {

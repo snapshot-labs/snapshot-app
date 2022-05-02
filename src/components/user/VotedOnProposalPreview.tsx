@@ -79,9 +79,6 @@ function VotedOnProposalPreview({
           <Text style={[styles.titleText, { color: colors.textColor }]}>
             {proposal.title}
           </Text>
-          <Text style={[styles.date, { color: colors.secondaryGray }]}>
-            {i18n.t("timeAgo", { timeAgo: toNow(voter.created) })}
-          </Text>
         </View>
       </View>
     </TouchableHighlight>

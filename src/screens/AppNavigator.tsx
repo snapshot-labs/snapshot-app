@@ -14,7 +14,6 @@ import * as navigationConstants from "constants/navigation";
 import MoreScreen from "./MoreScreen";
 import WalletConnectScreen from "./WalletConnectScreen";
 import QRCodeScannerScreen from "./QRCodeScannerScreen";
-import SpaceScreen from "./SpaceScreen";
 import ProposalScreen from "./ProposalScreenNew";
 import CustomWalletScreen from "./CustomWalletScreen";
 import NetworkScreen from "./NetworkScreen";
@@ -55,13 +54,10 @@ import WelcomeScreen from "screens/WelcomeScreen";
 import ExploreScreen from "screens/ExploreScreen";
 import AllFeedScreen from "screens/AllFeedScreen";
 import ProfileScreen from "screens/ProfileScreen";
-import {
-  useBottomSheetModalRef,
-  useBottomSheetModalShowRef,
-} from "context/bottomSheetModalContext";
-import { useNavigation } from "@react-navigation/native";
 import AddNewAccountScreen from "screens/AddNewAccountScreen";
 import SpaceScreenNew from "screens/SpaceScreenNew";
+import CreateProposalStepOne from "screens/createProposal/CreateProposalStepOne";
+import CreateProposalStepTwo from "screens/createProposal/CreateProposalStepTwo";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -340,7 +336,12 @@ export default function () {
       />
       <Stack.Screen
         name={navigationConstants.CREATE_PROPOSAL_SCREEN}
-        component={CreateProposalScreen}
+        component={CreateProposalStepOne}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CREATE_PROPOSAL_SCREEN_STEP_TWO}
+        component={CreateProposalStepTwo}
         options={{ headerShown: false, ...screenSettings }}
       />
       <Stack.Screen

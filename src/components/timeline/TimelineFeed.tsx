@@ -410,6 +410,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
             </View>
           );
         }}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => `timeline-${item.id}`}
         onEndReachedThreshold={0.6}
         onEndReached={() => {
@@ -449,7 +450,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                 padding: 24,
               }}
             >
-              <ActivityIndicator color={colors.textColor} size="large" />
+              <ActivityIndicator color={colors.textColor} size="small" />
             </View>
           ) : (
             <View
@@ -472,7 +473,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
             width: "100%",
           }}
         >
-          <ActivityIndicator color={colors.textColor} size="large" />
+          <ActivityIndicator color={colors.textColor} size="small" />
         </View>
       )}
     </View>

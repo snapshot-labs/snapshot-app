@@ -67,6 +67,7 @@ function ExploreScreen() {
         setSelectedCategory={setSelectedCategory}
       />
       <FlatList
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           borderWidth: 1,
           borderColor: colors.borderColor,

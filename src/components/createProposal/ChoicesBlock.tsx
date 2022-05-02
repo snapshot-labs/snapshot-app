@@ -1,26 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { View } from "react-native";
 import i18n from "i18n-js";
 import Block from "../Block";
 import common from "../../styles/common";
 import Button from "../Button";
-import VotingTypeModal from "./VotingTypeModal";
 import ChoiceInput from "./ChoiceInput";
 
 interface ChoicesBlockProps {
   choices: string[];
   setChoices: (choices: string[]) => void;
-  votingType: { key: string; text: string };
-  setVotingType: (votingType: { key: string; text: string }) => void;
 }
 
-function ChoicesBlock({
-  choices,
-  setChoices,
-  votingType,
-  setVotingType,
-}: ChoicesBlockProps) {
-  const [showVotingTypeModal, setShowVotingTypeModal] = useState(false);
+function ChoicesBlock({ choices, setChoices }: ChoicesBlockProps) {
   return (
     <>
       <Block
@@ -32,13 +23,6 @@ function ChoicesBlock({
               common.containerVerticalPadding,
             ]}
           >
-            <Button
-              title={votingType.text}
-              onPress={() => {
-                setShowVotingTypeModal(true);
-              }}
-              buttonContainerStyle={{ marginBottom: 20 }}
-            />
             {choices.map((choice: string, i: number) => {
               return (
                 <ChoiceInput
@@ -58,13 +42,6 @@ function ChoicesBlock({
             />
           </View>
         }
-      />
-      <VotingTypeModal
-        isVisible={showVotingTypeModal}
-        setVotingType={setVotingType}
-        onClose={() => {
-          setShowVotingTypeModal(false);
-        }}
       />
     </>
   );
