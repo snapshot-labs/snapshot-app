@@ -25,7 +25,7 @@ import CreateProposalPreviewInfoBlock from "components/createProposal/CreateProp
 import CreateProposalFooter from "components/createProposal/CreateProposalFooter";
 import { useNavigation } from "@react-navigation/native";
 import { sendEIP712 } from "helpers/EIP712";
-import { PROPOSAL_SCREEN } from "constants/navigation";
+import { PROPOSAL_SCREEN, SPACE_SCREEN } from "constants/navigation";
 import { parseErrorMessage } from "helpers/apiUtils";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
@@ -214,9 +214,23 @@ function CreateProposalPreviewScreen({
           });
 
           if (sign) {
-            navigation.replace(PROPOSAL_SCREEN, {
-              proposalId: sign.id,
-              spaceId: space.id,
+            navigation.reset({
+              index: 1,
+              routes: [
+                {
+                  name: SPACE_SCREEN,
+                  params: {
+                    space,
+                  },
+                },
+                {
+                  name: PROPOSAL_SCREEN,
+                  params: {
+                    proposalId: sign.id,
+                    spaceId: space.id,
+                  },
+                },
+              ],
             });
             Toast.show({
               type: "customSuccess",
@@ -376,8 +390,6 @@ function CreateProposalPreviewScreen({
           }
 
           setCreateProposalLoading(false);
-
-          return true;
         }}
       />
     </SafeAreaView>

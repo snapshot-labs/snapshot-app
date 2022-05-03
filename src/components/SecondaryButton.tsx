@@ -7,7 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from "react-native-paper";
 import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
@@ -58,10 +58,11 @@ function SecondaryButton({
               }
             : {},
           buttonContainerStyle,
+          loading ? { paddingVertical: 4 } : {},
         ]}
       >
         {loading ? (
-          <ActivityIndicator color={colors.textColor} />
+          <ActivityIndicator color={colors.textColor} size="small" />
         ) : (
           <Text
             style={[

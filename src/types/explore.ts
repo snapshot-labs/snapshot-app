@@ -27,9 +27,14 @@ export type Space = {
   admins?: any;
   members?: any;
   categories: string[];
+  about?: string;
+  github?: string;
+  twitter?: string;
   voting: {
     delay: number;
     period: number;
+    type: string;
+    quorum?: number;
   };
 };
 

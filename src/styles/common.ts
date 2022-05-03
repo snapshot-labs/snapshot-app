@@ -139,6 +139,12 @@ const common = StyleSheet.create({
   textLowercase: {
     textTransform: "lowercase",
   },
+  contentContainer: {
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingBottom: 18,
+  },
 });
 
 export default common;

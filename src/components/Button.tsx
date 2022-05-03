@@ -63,6 +63,7 @@ interface ButtonProps {
   onlyOneLine?: boolean;
   selected?: boolean;
   label?: string;
+  loadingColor?: string;
 }
 
 function Button({
@@ -79,9 +80,16 @@ function Button({
   selected = false,
   label = undefined,
   primary = false,
+  loadingColor = undefined,
 }: ButtonProps) {
   const { colors } = useAuthState();
   const ButtonContainerComponent = TouchableWithoutFeedback;
+  const activityLoadingColor =
+    loadingColor === undefined
+      ? primary
+        ? colors.white
+        : colors.textColor
+      : loadingColor;
 
   return (
     <View
@@ -112,10 +120,7 @@ function Button({
         >
           {label !== undefined && <Text style={styles.label}>{label}</Text>}
           {loading ? (
-            <ActivityIndicator
-              size="small"
-              color={primary ? colors.white : colors.textColor}
-            />
+            <ActivityIndicator size="small" color={activityLoadingColor} />
           ) : (
             <>
               {Icon !== undefined && <Icon />}

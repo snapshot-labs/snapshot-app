@@ -16,13 +16,6 @@ function ExploreScreen() {
   const { spaces } = useExploreState();
   const [filteredExplore, setFilteredExplore] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState("");
-  const [currentExplore, setCurrentExplore] = useState<{
-    key: string;
-    text: string;
-  }>({
-    key: "spaces",
-    text: i18n.t("spaces"),
-  });
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const orderedSpaces = useMemo(() => {
     const list = Object.keys(spaces)
@@ -39,12 +32,10 @@ function ExploreScreen() {
   }, [spaces]);
 
   useEffect(() => {
-    if (currentExplore.key === "spaces") {
-      setFilteredExplore(
-        getFilteredSpaces(orderedSpaces, searchValue, selectedCategory)
-      );
-    }
-  }, [spaces, currentExplore, searchValue, selectedCategory]);
+    setFilteredExplore(
+      getFilteredSpaces(orderedSpaces, searchValue, selectedCategory)
+    );
+  }, [spaces, searchValue, selectedCategory]);
 
   return (
     <View

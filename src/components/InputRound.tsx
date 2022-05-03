@@ -19,19 +19,14 @@ import { useAuthState } from "context/authContext";
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    borderRadius: 60,
-    flexDirection: "row",
-    borderWidth: 1,
-    borderColor: colors.borderColor,
-    alignItems: "center",
-    height: 55,
+    padding: 9,
+    borderRadius: 9,
+    height: 59,
   },
   title: {
     fontFamily: "Calibre-Medium",
-    color: colors.darkGray,
-    fontSize: 18,
-    zIndex: 100,
+    color: colors.secondaryGray,
+    fontSize: 14,
   },
   inputStyle: {
     borderLeftWidth: 0,
@@ -40,21 +35,22 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingLeft: 0,
     marginBottom: 0,
-    marginTop: 0,
-    marginLeft: 6,
     fontSize: 18,
     maxWidth: "89%",
     minWidth: 100,
+    marginLeft: 0,
+    paddingBottom: 0,
+    paddingTop: 0,
+    lineHeight: 18,
+    height: 20,
+    marginTop: 6,
   },
-  rightValue: {
-    fontFamily: "Calibre-Medium",
+  display: {
+    fontFamily: "Calibre-Semibold",
     fontSize: 18,
-    color: colors.darkGray,
-  },
-  rightValueContainer: {
-    marginLeft: "auto",
-    flexDirection: "row",
-    alignItems: "center",
+    marginTop: 4,
+    maxWidth: "100%",
+    marginRight: 14,
   },
 });
 
@@ -62,11 +58,10 @@ interface InputRoundProps {
   title: string;
   icon?: string;
   value: string;
-  onChangeText: (text: string) => void;
-  rightValue?: string;
-  onChangeRightValue?: (text: string) => void;
-  rightValueOptions?: string[];
+  onChangeText?: (text: string) => void;
   keyboardType?: KeyboardType;
+  editable?: boolean;
+  displayMode?: boolean;
 }
 
 function InputRound({
@@ -74,16 +69,12 @@ function InputRound({
   icon = undefined,
   value,
   onChangeText,
-  rightValue,
   keyboardType = "default",
-  rightValueOptions = [],
-  onChangeRightValue = () => {},
+  editable = false,
+  displayMode = true,
 }: InputRoundProps) {
   const { colors } = useAuthState();
-  const [isFocused, setIsFocused] = useState(false);
   const textInputRef = useRef<any>(null);
-  const bottomSheetModalDispatch = useBottomSheetModalDispatch();
-  const bottomSheetModalRef = useBottomSheetModalRef();
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -93,62 +84,35 @@ function InputRound({
       <View
         style={[
           styles.container,
-          { borderColor: colors.borderColor },
-          isFocused ? { borderColor: colors.textColor } : {},
+          { backgroundColor: colors.votingPowerBgColor },
         ]}
       >
         {icon === undefined ? (
-          <Text style={[styles.title, { color: colors.darkGray }]}>
+          <Text
+            style={[styles.title, { color: colors.secondaryGray }]}
+            ellipsizeMode="tail"
+          >
             {title}
           </Text>
         ) : (
           <IconFont name={icon} size={16} color={colors.darkGray} />
         )}
-        <Input
-          setRef={textInputRef}
-          style={[
-            styles.inputStyle,
-            rightValue !== undefined ? { minWidth: 200, maxWidth: 200 } : {},
-          ]}
-          onFocus={() => {
-            setIsFocused(true);
-          }}
-          onBlur={() => {
-            setIsFocused(false);
-          }}
-          value={value}
-          onChangeText={onChangeText}
-          keyboardType={keyboardType}
-        />
-        {rightValue !== undefined && (
-          <TouchableWithoutFeedback
-            onPress={() => {
-              bottomSheetModalDispatch({
-                type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
-                payload: {
-                  options: rightValueOptions,
-                  snapPoints: [10, 150],
-                  show: true,
-                  initialIndex: 1,
-                  onPressOption: (index: number) => {
-                    const value = rightValueOptions[index];
-                    onChangeRightValue(value);
-                    bottomSheetModalRef?.current?.close();
-                  },
-                },
-              });
-            }}
+        {displayMode ? (
+          <Text
+            style={[styles.display, { color: colors.textColor }]}
+            numberOfLines={1}
           >
-            <View style={styles.rightValueContainer}>
-              <Text style={styles.rightValue}>{rightValue}</Text>
-              <IconFont
-                name="arrow-up"
-                size={18}
-                color={colors.darkGray}
-                style={{ marginTop: Platform.OS === "android" ? 4 : -4 }}
-              />
-            </View>
-          </TouchableWithoutFeedback>
+            {value}
+          </Text>
+        ) : (
+          <Input
+            setRef={textInputRef}
+            style={styles.inputStyle}
+            value={value}
+            onChangeText={onChangeText}
+            keyboardType={keyboardType}
+            editable={editable}
+          />
         )}
       </View>
     </TouchableWithoutFeedback>
