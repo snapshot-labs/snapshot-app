@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, ScrollView, Text, View } from "react-native";
 import { useExploreState } from "context/exploreContext";
 import orderBy from "lodash/orderBy";
 import common from "styles/common";
@@ -53,39 +53,53 @@ function ExploreScreen() {
         { backgroundColor: colors.bgDefault, paddingTop: insets.top },
       ]}
     >
-      <ExploreHeader
-        searchValue={searchValue}
-        onChangeText={(text: string) => {
-          setSearchValue(text);
-        }}
-        currentExplore={currentExplore}
-        setCurrentExplore={setCurrentExplore}
-        filteredExplore={
-          selectedCategory === "" ? orderedSpaces : filteredExplore
-        }
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          borderWidth: 1,
-          borderColor: colors.borderColor,
-          marginHorizontal: 14,
-          borderRadius: 9,
-          marginTop: 16,
-        }}
-        data={filteredExplore}
-        renderItem={(data) => {
-          if (currentExplore.key === "spaces") {
-            return <SpacePreview space={data.item} />;
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ExploreHeader
+          searchValue={searchValue}
+          onChangeText={(text: string) => {
+            setSearchValue(text);
+          }}
+          filteredExplore={
+            selectedCategory === "" ? orderedSpaces : filteredExplore
           }
-          return <View />;
-        }}
-        keyExtractor={(item, i) => `${item.id}${i}`}
-        onEndReachedThreshold={0.45}
-        onEndReached={() => {}}
-      />
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            borderWidth: 1,
+            borderColor: colors.borderColor,
+            marginHorizontal: 14,
+            borderRadius: 9,
+            marginTop: 16,
+          }}
+          data={filteredExplore}
+          renderItem={(data) => {
+            return (
+              <SpacePreview
+                space={data.item}
+                lastItem={data.index === filteredExplore.length - 1}
+              />
+            );
+          }}
+          keyExtractor={(item, i) => `${item.id}${i}`}
+          initialNumToRender={15}
+          ListEmptyComponent={
+            <View
+              style={{
+                marginTop: 16,
+                paddingHorizontal: 16,
+                paddingBottom: 16,
+              }}
+            >
+              <Text style={[common.subTitle, { color: colors.textColor }]}>
+                {i18n.t("cantFindAnyResults")}
+              </Text>
+            </View>
+          }
+        />
+      </ScrollView>
     </View>
   );
 }

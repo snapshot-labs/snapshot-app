@@ -27,6 +27,7 @@ interface CreateProposalFooterProps {
   disabledAction?: boolean;
   onPressAction: () => void;
   onPressBack?: () => void;
+  actionButtonLoading?: boolean;
 }
 
 function CreateProposalFooter({
@@ -35,33 +36,37 @@ function CreateProposalFooter({
   actionButtonTitle,
   onPressAction,
   disabledAction = false,
+  actionButtonLoading = false,
 }: CreateProposalFooterProps) {
   const { colors } = useAuthState();
   return (
-    <View
-      style={[
-        common.row,
-        styles.footerContainer,
-        { backgroundColor: colors.navBarBg },
-      ]}
-    >
-      {backButtonTitle !== undefined && (
+    <>
+      <View
+        style={[
+          common.row,
+          styles.footerContainer,
+          { backgroundColor: colors.navBarBg },
+        ]}
+      >
+        {backButtonTitle !== undefined && (
+          <Button
+            title={backButtonTitle}
+            onPress={onPressBack}
+            buttonContainerStyle={[styles.ButtonStyle, { marginRight: 12 }]}
+            buttonTitleStyle={styles.ButtonTitleStyle}
+          />
+        )}
         <Button
-          title={backButtonTitle}
-          onPress={onPressBack}
-          buttonContainerStyle={[styles.ButtonStyle, { marginRight: 12 }]}
+          onPress={onPressAction}
+          title={actionButtonTitle}
+          disabled={disabledAction}
+          buttonContainerStyle={styles.ButtonStyle}
           buttonTitleStyle={styles.ButtonTitleStyle}
+          loading={actionButtonLoading}
+          primary
         />
-      )}
-      <Button
-        onPress={onPressAction}
-        title={actionButtonTitle}
-        disabled={disabledAction}
-        buttonContainerStyle={styles.ButtonStyle}
-        buttonTitleStyle={styles.ButtonTitleStyle}
-        primary
-      />
-    </View>
+      </View>
+    </>
   );
 }
 

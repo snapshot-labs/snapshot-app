@@ -58,6 +58,8 @@ import AddNewAccountScreen from "screens/AddNewAccountScreen";
 import SpaceScreenNew from "screens/SpaceScreenNew";
 import CreateProposalStepOne from "screens/createProposal/CreateProposalStepOne";
 import CreateProposalStepTwo from "screens/createProposal/CreateProposalStepTwo";
+import CreateProposalStepThree from "screens/createProposal/CreateProposalStepThree";
+import CreateProposalPreviewScreen from "screens/createProposal/CreateProposalPreviewScreen";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -344,6 +346,17 @@ export default function () {
         component={CreateProposalStepTwo}
         options={{ headerShown: false, ...screenSettings }}
       />
+      <Stack.Screen
+        name={navigationConstants.CREATE_PROPOSAL_SCREEN_STEP_THREE}
+        component={CreateProposalStepThree}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+      <Stack.Screen
+        name={navigationConstants.CREATE_PROPOSAL_PREVIEW_SCREEN}
+        component={CreateProposalPreviewScreen}
+        options={{ headerShown: false, ...screenSettings }}
+      />
+
       <Stack.Screen
         name={navigationConstants.ABOUT_SCREEN}
         component={AboutScreen}

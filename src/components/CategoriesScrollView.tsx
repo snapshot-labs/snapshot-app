@@ -5,6 +5,7 @@ import IconFont from "components/IconFont";
 import { useAuthState } from "context/authContext";
 
 const allCategories = [
+  "all",
   "protocol",
   "social",
   "investment",
@@ -24,24 +25,27 @@ function CategoriesScrollView({
   selectedCategory,
   setSelectedCategory,
 }: CategoriesScrollViewProps) {
-  const { colors } = useAuthState();
-
   return (
     <View
       style={{
-        marginTop: 10,
-        borderBottomWidth: 1,
-        paddingBottom: 10,
-        borderBottomColor: colors.borderColor,
+        paddingTop: 9,
       }}
     >
-      {selectedCategory === "" ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {allCategories.map((category, i) => (
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {allCategories.map((category, i) => {
+          let isSelected = selectedCategory === category;
+
+          if (category === "all") {
+            isSelected = selectedCategory === "";
+          }
+
+          return (
             <Category
               key={i}
               onPress={(category) => {
-                if (selectedCategory === category) {
+                if (category === "all") {
+                  setSelectedCategory("");
+                } else if (selectedCategory === category) {
                   setSelectedCategory("");
                 } else {
                   setSelectedCategory(category);
@@ -52,41 +56,11 @@ function CategoriesScrollView({
                 marginRight: i === allCategories.length - 1 ? 16 : 8,
               }}
               category={category}
-              isSelected={selectedCategory === category}
+              isSelected={isSelected}
             />
-          ))}
-        </ScrollView>
-      ) : (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedCategory("");
-            }}
-          >
-            <IconFont
-              name="close"
-              size={21}
-              color={colors.textColor}
-              style={{
-                paddingLeft: 16,
-                marginBottom: Platform.OS === "ios" ? 4 : 0,
-                marginRight: 6,
-              }}
-            />
-          </TouchableOpacity>
-          <Category
-            onPress={(category) => {
-              if (selectedCategory === category) {
-                setSelectedCategory("");
-              } else {
-                setSelectedCategory(category);
-              }
-            }}
-            category={selectedCategory}
-            isSelected
-          />
-        </View>
-      )}
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }

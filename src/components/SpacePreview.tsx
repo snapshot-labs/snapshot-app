@@ -53,9 +53,10 @@ const styles = StyleSheet.create({
 
 interface SpacePreviewProps {
   space: Space | any;
+  lastItem?: boolean;
 }
 
-function SpacePreview({ space = {} }: SpacePreviewProps) {
+function SpacePreview({ space = {}, lastItem = false }: SpacePreviewProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
@@ -65,7 +66,7 @@ function SpacePreview({ space = {} }: SpacePreviewProps) {
       style={[
         styles.spacePreviewContainer,
         {
-          borderBottomColor: colors.borderColor,
+          borderBottomColor: lastItem ? "transparent" : colors.borderColor,
         },
       ]}
     >

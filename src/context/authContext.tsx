@@ -12,7 +12,7 @@ import { CUSTOM_WALLET_NAME, SNAPSHOT_WALLET } from "constants/wallets";
 
 type AuthState = {
   followedSpaces: { space: { id: string } }[];
-  connectedAddress: string;
+  connectedAddress: string | null;
   isWalletConnect: undefined | boolean;
   aliases: { [id: string]: string };
   androidAppUrl: string | null;
@@ -120,7 +120,7 @@ function authReducer(state: AuthState, action: ContextAction) {
       }
       return { ...state, savedWallets };
     case AUTH_ACTIONS.SET_WC_CONNECTOR:
-      let wcConnector;
+      let wcConnector: any;
       if (action.payload.newConnector) {
         wcConnector = action.payload.newConnector;
         setWalletConnectListeners(

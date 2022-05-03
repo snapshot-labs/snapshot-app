@@ -19,9 +19,16 @@ interface ChoiceInputProps {
   choice: string;
   index: number;
   setChoices: (choices: string[]) => void;
+  scrollRef: any;
 }
 
-function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
+function ChoiceInput({
+  choices,
+  choice,
+  index,
+  setChoices,
+  scrollRef,
+}: ChoiceInputProps) {
   const { colors } = useAuthState();
   const [isFocused, setIsFocused] = useState(false);
   const textInputRef = useRef<any>(null);
@@ -35,13 +42,14 @@ function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
         style={[
           common.buttonContainer,
           {
-            marginBottom: 20,
+            marginBottom: 9,
             justifyContent: "space-between",
             backgroundColor: colors.bgDefault,
+            borderRadius: 9,
           },
           common.containerHorizontalPadding,
           isFocused
-            ? { borderColor: colors.textColor }
+            ? { borderColor: colors.blueButtonBg }
             : { borderColor: colors.borderColor },
         ]}
         key={index}
@@ -68,6 +76,9 @@ function ChoiceInput({ choices, choice, index, setChoices }: ChoiceInputProps) {
           }}
           onFocus={() => {
             setIsFocused(true);
+            if (scrollRef.current?.scrollTo) {
+              scrollRef.current?.scrollTo({ y: index * 350 });
+            }
           }}
           onBlur={() => {
             setIsFocused(false);

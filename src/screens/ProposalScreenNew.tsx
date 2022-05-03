@@ -36,7 +36,6 @@ import AnimatedHeader from "components/tabBar/AnimatedHeader";
 import ProposalScreenHeader from "components/proposal/ProposalScreenHeader";
 
 const baseHeaderHeight = Device.isIos() ? 280 : 240;
-const deviceHeight = Device.getDeviceHeight();
 const deviceWidth = Device.getDeviceWidth();
 
 interface ProposalScreenProps {

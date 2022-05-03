@@ -1,0 +1,259 @@
+import React, { useMemo } from "react";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { useAuthState } from "context/authContext";
+import ProposalInfoRow from "components/proposal/ProposalInfoRow";
+import i18n from "i18n-js";
+import { Proposal } from "types/proposal";
+import UserAvatar from "components/UserAvatar";
+import { getUsername, getUserProfile } from "helpers/profile";
+import { useExploreState } from "context/exploreContext";
+import { getUrl } from "@snapshot-labs/snapshot.js/src/utils";
+import map from "lodash/map";
+import { USER_PROFILE } from "constants/navigation";
+import { useNavigation } from "@react-navigation/native";
+import common from "styles/common";
+import IconFont from "components/IconFont";
+import { dateFormat, explorerUrl, n } from "helpers/miscUtils";
+import { useCreateProposalState } from "context/createProposalContext";
+import { Space } from "types/explore";
+
+const styles = StyleSheet.create({
+  proposalInfoBlockContainer: {
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 14,
+    paddingBottom: 18,
+  },
+  separator: {
+    width: "100%",
+    height: 1,
+  },
+  value: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 18,
+    marginRight: 4,
+    marginTop: 9,
+  },
+  statusTitle: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 14,
+  },
+  statusValue: {
+    fontFamily: "Calibre-Medium",
+    fontSize: 14,
+    marginTop: 9,
+  },
+  statusContainer: {
+    marginLeft: 17,
+  },
+});
+
+function getVotingType(type: string) {
+  switch (type) {
+    case "basic":
+    case "single-choice":
+      return "singleChoiceVoting";
+    case "approval":
+      return "approvalVoting";
+    case "quadratic":
+      return "quadraticVoting";
+    case "ranked-choice":
+      return "rankedChoiceVoting";
+    case "weighted":
+      return "weightedVoting";
+  }
+  return "";
+}
+
+interface CreateProposalPreviewInfoBlockProps {
+  space: Space;
+}
+
+function CreateProposalPreviewInfoBlock({
+  space,
+}: CreateProposalPreviewInfoBlockProps) {
+  const { colors, connectedAddress } = useAuthState();
+  const { votingType, snapshot, start, end } = useCreateProposalState();
+  const { profiles } = useExploreState();
+  const authorProfile = getUserProfile(connectedAddress, profiles);
+  const authorName = getUsername(
+    connectedAddress,
+    authorProfile,
+    connectedAddress ?? ""
+  );
+  const displayedVotingType = useMemo(
+    () => getVotingType(votingType),
+    [votingType]
+  );
+  const strategiesNames = map(
+    space?.strategies,
+    (strategy: any) => strategy.name
+  );
+  const strategies =
+    strategiesNames.length > 0
+      ? strategiesNames.join(", ")
+      : i18n.t("noStrategies");
+  const created = parseInt((Date.now() / 1e3).toFixed());
+
+  return (
+    <View
+      style={[
+        styles.proposalInfoBlockContainer,
+        { borderColor: colors.borderColor },
+      ]}
+    >
+      <ProposalInfoRow
+        icon="feed"
+        title={i18n.t("strategies")}
+        value={strategies}
+      />
+      <View
+        style={[styles.separator, { backgroundColor: colors.borderColor }]}
+      />
+      <ProposalInfoRow
+        title={i18n.t("author")}
+        value={authorName}
+        IconComponent={() => {
+          return (
+            <UserAvatar
+              size={14}
+              address={connectedAddress}
+              key={`${connectedAddress}`}
+            />
+          );
+        }}
+      />
+      <View
+        style={[styles.separator, { backgroundColor: colors.borderColor }]}
+      />
+      <ProposalInfoRow
+        title={i18n.t("votingSystem")}
+        value={displayedVotingType === "" ? "" : i18n.t(displayedVotingType)}
+        icon="play"
+      />
+      <View
+        style={[styles.separator, { backgroundColor: colors.borderColor }]}
+      />
+      <ProposalInfoRow
+        title={i18n.t("status")}
+        ValueComponent={() => {
+          return (
+            <View style={{ marginTop: 9 }}>
+              <View style={common.row}>
+                <View style={common.alignItemsCenter}>
+                  <View
+                    style={{
+                      width: 17,
+                      height: 17,
+                      borderRadius: 8.5,
+                      backgroundColor: colors.blueButtonBg,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IconFont name={"play"} size={9} color={colors.white} />
+                  </View>
+                  <View
+                    style={{
+                      width: 1,
+                      height: 30,
+                      backgroundColor: colors.borderColor,
+                    }}
+                  />
+                </View>
+                <View style={styles.statusContainer}>
+                  <Text
+                    style={[styles.statusTitle, { color: colors.textColor }]}
+                  >
+                    {i18n.t("created")}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.statusValue,
+                      { color: colors.secondaryGray },
+                    ]}
+                  >
+                    {dateFormat(created)}
+                  </Text>
+                </View>
+              </View>
+              <View style={common.row}>
+                <View style={common.alignItemsCenter}>
+                  <IconFont
+                    name={"check"}
+                    size={17}
+                    color={colors.secondaryGray}
+                  />
+                  <View
+                    style={{
+                      width: 1,
+                      height: 30,
+                      backgroundColor: colors.borderColor,
+                    }}
+                  />
+                </View>
+                <View style={styles.statusContainer}>
+                  <Text
+                    style={[styles.statusTitle, { color: colors.textColor }]}
+                  >
+                    {i18n.t("start")}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.statusValue,
+                      { color: colors.secondaryGray },
+                    ]}
+                  >
+                    {dateFormat(start)}
+                  </Text>
+                </View>
+              </View>
+              <View style={common.row}>
+                <View style={common.alignItemsCenter}>
+                  <IconFont
+                    name={"check"}
+                    size={17}
+                    color={colors.secondaryGray}
+                  />
+                </View>
+                <View style={styles.statusContainer}>
+                  <Text
+                    style={[styles.statusTitle, { color: colors.textColor }]}
+                  >
+                    {i18n.t("end")}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.statusValue,
+                      { color: colors.secondaryGray },
+                    ]}
+                  >
+                    {dateFormat(end)}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          );
+        }}
+        icon="calendar"
+      />
+      <View
+        style={[styles.separator, { backgroundColor: colors.borderColor }]}
+      />
+      <ProposalInfoRow
+        title={i18n.t("snapshot")}
+        value={n(snapshot, "0,0")}
+        icon="snapshot"
+      />
+    </View>
+  );
+}
+
+export default CreateProposalPreviewInfoBlock;

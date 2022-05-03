@@ -17,14 +17,18 @@ import {
   Text,
   View,
 } from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from "react-native-paper";
 import ProposalFilters from "components/proposal/ProposalFilters";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
   useBottomSheetModalDispatch,
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
-import { useAuthState } from "context/authContext";
+import {
+  AUTH_ACTIONS,
+  useAuthDispatch,
+  useAuthState,
+} from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";
 import ProposalPreview from "components/proposal/ProposalPreviewNew";
@@ -96,7 +100,7 @@ function SpaceProposalsTab({
   headerHeight,
 }: SpaceProposalsTabProps) {
   const spaceId: string = get(space, "id", "");
-  const { colors } = useAuthState();
+  const { colors, refreshFeed } = useAuthState();
   const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -106,6 +110,7 @@ function SpaceProposalsTab({
   const [filter, setFilter] = useState(proposal.getStateFilters()[0]);
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
+  const authDispatch = useAuthDispatch();
 
   function onChangeFilter(newFilter: string) {
     setLoadCount(0);
@@ -152,6 +157,16 @@ function SpaceProposalsTab({
       setEndReached
     );
   }, [spaceId]);
+
+  useEffect(() => {
+    if (refreshFeed?.spaceId === spaceId) {
+      onRefresh();
+      authDispatch({
+        type: AUTH_ACTIONS.SET_REFRESH_FEED,
+        payload: null,
+      });
+    }
+  }, [refreshFeed]);
 
   useEffect(() => {
     try {
@@ -280,7 +295,7 @@ function SpaceProposalsTab({
               padding: 24,
             }}
           >
-            <ActivityIndicator color={colors.textColor} size="large" />
+            <ActivityIndicator color={colors.textColor} size="small" />
           </View>
         ) : (
           <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
@@ -312,7 +327,7 @@ function SpaceProposalsTab({
               padding: 24,
             }}
           >
-            <ActivityIndicator color={colors.textColor} size="large" />
+            <ActivityIndicator color={colors.textColor} size="small" />
           </View>
         ) : (
           <View

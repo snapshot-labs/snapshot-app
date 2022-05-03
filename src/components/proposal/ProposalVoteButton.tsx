@@ -13,6 +13,7 @@ import {
   useBottomSheetModalRef,
 } from "context/bottomSheetModalContext";
 import CastVoteModal from "components/snapshot/CastVoteModal";
+import Device from "helpers/device";
 
 const styles = StyleSheet.create({
   voteContainer: {
@@ -72,10 +73,11 @@ function ProposalVoteButton({
             ? onPress
             : () => {
                 const choicesLength = proposal?.choices?.length ?? 0;
-                const maxSnapPoint =
-                  choicesLength > 3 ? 50 + choicesLength * 5 : 50;
+                const maxSnapPoint = choicesLength * 59 + 260;
                 const snapPoint =
-                  maxSnapPoint > 90 ? "90%" : `${maxSnapPoint}%`;
+                  maxSnapPoint > Device.getDeviceHeight()
+                    ? "100%"
+                    : maxSnapPoint;
                 bottomSheetModalDispatch({
                   type: BOTTOM_SHEET_MODAL_ACTIONS.SET_BOTTOM_SHEET_MODAL,
                   payload: {

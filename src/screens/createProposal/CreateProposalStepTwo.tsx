@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Text,
+  View,
 } from "react-native";
 import i18n from "i18n-js";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,18 +21,13 @@ import Device from "helpers/device";
 import { useNavigation } from "@react-navigation/native";
 import VotingTypeScrollViewPicker from "components/createProposal/VotingTypeScrollViewPicker";
 import { Space } from "types/explore";
-import { Proposal } from "types/proposal";
 import proposal from "constants/proposal";
 import ChoicesBlock from "components/createProposal/ChoicesBlock";
+import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
+import IphoneBottomSafeAreaViewBackground from "components/IphoneBottomSafeAreaViewBackground";
+import { CREATE_PROPOSAL_SCREEN_STEP_THREE } from "constants/navigation";
 
 const styles = StyleSheet.create({
-  titleInput: {
-    fontSize: 28,
-    fontFamily: "Calibre-Semibold",
-    height: 40,
-    lineHeight: 26,
-    marginTop: 6,
-  },
   selectionTitle: {
     fontSize: 18,
     fontFamily: "Calibre-Semibold",
@@ -44,7 +40,6 @@ const styles = StyleSheet.create({
 interface CreateProposalStepTwo {
   route: {
     params: {
-      proposal?: Proposal;
       space: Space;
     };
   };
@@ -52,36 +47,44 @@ interface CreateProposalStepTwo {
 
 function CreateProposalStepTwo({ route }: CreateProposalStepTwo) {
   const { colors } = useAuthState();
-  const duplicateProposal = route.params?.proposal;
-  const { title: proposalTitle, body: proposalBody } = useCreateProposalState();
+  const { choices: proposalChoices, votingType: proposalVotingType } =
+    useCreateProposalState();
   const allVotingTypes = proposal.getVotingTypes();
   const createProposalDispatch = useCreateProposalDispatch();
   const navigation = useNavigation();
   const [votingType, setVotingType] = useState<{ key: string; text: string }>(
-    duplicateProposal
-      ? allVotingTypes.find(
-          (votingType) => votingType.key === duplicateProposal.type
-        ) ?? allVotingTypes[0]
-      : allVotingTypes[0]
+    allVotingTypes.find(
+      (votingType) => votingType.key === proposalVotingType
+    ) ?? allVotingTypes[0]
   );
-  const [choices, setChoices] = useState(
-    duplicateProposal && duplicateProposal?.choices
-      ? duplicateProposal.choices
-      : [""]
-  );
+  const [choices, setChoices] = useState(proposalChoices || [""]);
+  const scrollRef = useRef(null);
+  const isValidChoices =
+    choices?.length >= 2 && !choices?.some((a) => a === "");
 
   return (
     <>
+      <IPhoneTopSafeAreaViewBackground />
       <SafeAreaView
-        style={[common.screen, { backgroundColor: colors.bgDefault }]}
+        style={[
+          common.screen,
+          { backgroundColor: colors.bgDefault, paddingBottom: 0 },
+        ]}
       >
         <CreateProposalHeader
           currentStep={2}
           onClose={() => {
+            createProposalDispatch({
+              type: CREATE_PROPOSAL_ACTIONS.UPDATE_CHOICES_AND_VOTING_TYPE,
+              payload: {
+                votingType: votingType.key,
+                choices,
+              },
+            });
             navigation.goBack();
           }}
         />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
           <Text style={[styles.selectionTitle, { color: colors.textColor }]}>
             {i18n.t("selectTypeOfVoting")}
           </Text>
@@ -92,19 +95,49 @@ function CreateProposalStepTwo({ route }: CreateProposalStepTwo) {
           <Text style={[styles.selectionTitle, { color: colors.textColor }]}>
             {i18n.t("addUpTo10Choices")}
           </Text>
-          <ChoicesBlock choices={choices} setChoices={setChoices} />
+          <ChoicesBlock
+            choices={choices}
+            setChoices={setChoices}
+            scrollRef={scrollRef}
+          />
+          <View
+            style={{
+              width: 100,
+              height: choices?.length > 0 ? choices?.length * 85 : 100,
+            }}
+          />
         </ScrollView>
+        <KeyboardAvoidingView behavior={Device.isIos() ? "padding" : "height"}>
+          <CreateProposalFooter
+            backButtonTitle={i18n.t("back")}
+            onPressBack={() => {
+              createProposalDispatch({
+                type: CREATE_PROPOSAL_ACTIONS.UPDATE_CHOICES_AND_VOTING_TYPE,
+                payload: {
+                  votingType: votingType.key,
+                  choices,
+                },
+              });
+              navigation.goBack();
+            }}
+            actionButtonTitle={i18n.t("next")}
+            onPressAction={() => {
+              createProposalDispatch({
+                type: CREATE_PROPOSAL_ACTIONS.UPDATE_CHOICES_AND_VOTING_TYPE,
+                payload: {
+                  votingType: votingType.key,
+                  choices,
+                },
+              });
+              navigation.navigate(CREATE_PROPOSAL_SCREEN_STEP_THREE, {
+                space: route.params.space,
+              });
+            }}
+            disabledAction={!isValidChoices}
+          />
+        </KeyboardAvoidingView>
       </SafeAreaView>
-      <KeyboardAvoidingView behavior={Device.isIos() ? "padding" : "height"}>
-        <CreateProposalFooter
-          backButtonTitle={i18n.t("back")}
-          onPressBack={() => {
-            navigation.goBack();
-          }}
-          actionButtonTitle={i18n.t("next")}
-          onPressAction={() => {}}
-        />
-      </KeyboardAvoidingView>
+      <IphoneBottomSafeAreaViewBackground />
     </>
   );
 }

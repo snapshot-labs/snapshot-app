@@ -1,14 +1,13 @@
 import {
   Platform,
   Text,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   ViewStyle,
 } from "react-native";
 import { styles as buttonStyles } from "components/Button";
 import React from "react";
 import { useAuthState } from "context/authContext";
-import { useExploreState } from "context/exploreContext";
 import Device from "helpers/device";
 
 interface CategoryProps {
@@ -25,10 +24,9 @@ function Category({
   buttonContainerStyle,
 }: CategoryProps) {
   const { colors } = useAuthState();
-  const { categories } = useExploreState();
 
   return (
-    <TouchableOpacity onPress={() => onPress(category)}>
+    <TouchableWithoutFeedback onPress={() => onPress(category)}>
       <View
         style={[
           buttonStyles.button,
@@ -51,27 +49,14 @@ function Category({
               fontSize: 14,
               lineHeight: 14,
               marginBottom: Device.isIos() ? 4 : 0,
+              fontWeight: "500",
             },
           ]}
         >
           {category}
         </Text>
-        {!isSelected && (
-          <Text
-            style={{
-              fontFamily: "Calibre-Medium",
-              color: colors.darkGray,
-              fontSize: 14,
-              lineHeight: 14,
-              marginLeft: 6,
-              marginBottom: Device.isIos() ? 4 : 0,
-            }}
-          >
-            {categories[category]}
-          </Text>
-        )}
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 }
 

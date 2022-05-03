@@ -123,10 +123,10 @@ export async function setProfiles(
 export function getUsername(
   address: string,
   userProfile: any,
-  connectedAddress?: string,
+  connectedAddress?: string | null,
   short: boolean = true
 ) {
-  if (toLower(address) === toLower(connectedAddress)) {
+  if (toLower(address) === toLower(connectedAddress ?? "")) {
     return i18n.t("you");
   }
 

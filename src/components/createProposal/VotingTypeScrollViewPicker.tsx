@@ -48,6 +48,7 @@ function VotingTypeScrollViewPicker({
             onPress={() => {
               setVotingType(votingTypeSelection);
             }}
+            key={votingTypeSelection.key}
           >
             <View
               style={[

@@ -33,6 +33,10 @@ import { deleteProposal, isAdmin } from "helpers/apiUtils";
 import { useEngineState } from "context/engineContext";
 import { useToastShowConfig } from "constants/toast";
 import ProposalPreviewWinningChoiceText from "components/proposal/preview/ProposalPreviewWinningChoiceText";
+import {
+  CREATE_PROPOSAL_ACTIONS,
+  useCreateProposalDispatch,
+} from "context/createProposalContext";
 
 const styles = StyleSheet.create({
   authorContainer: {
@@ -134,6 +138,7 @@ function ProposalPreview({ proposal }: ProposalPreview) {
   }, [proposal]);
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const bottomSheetModalRef = useBottomSheetModalRef();
+  const createProposalDispatch = useCreateProposalDispatch();
 
   return (
     <TouchableWithoutFeedback
@@ -180,8 +185,18 @@ function ProposalPreview({ proposal }: ProposalPreview) {
                   icons: [{ name: "external-link" }, { name: "close" }],
                   onPressOption: async (index: number) => {
                     if (index === 0) {
+                      createProposalDispatch({
+                        type: CREATE_PROPOSAL_ACTIONS.DUPLICATE_PROPOSAL,
+                        payload: {
+                          title: proposal.title,
+                          body: proposal.body,
+                          votingType: proposal.type,
+                          choices: proposal.choices,
+                          start: proposal.start,
+                          end: proposal.end,
+                        },
+                      });
                       navigation.navigate(CREATE_PROPOSAL_SCREEN, {
-                        proposal,
                         space: spaceDetails,
                       });
                     } else if (

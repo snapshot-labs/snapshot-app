@@ -10,9 +10,9 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 1,
     paddingRight: 16,
-    borderBottomColor: colors.borderColor,
+    paddingLeft: 16,
+    borderRadius: 40,
   },
   searchInput: {
     flex: 1,
@@ -24,12 +24,12 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     paddingBottom: 0,
     paddingTop: 0,
-    marginLeft: 16,
+    marginLeft: 10,
     marginTop: 0,
-    fontSize: 21,
+    fontSize: 18,
     fontFamily: "Calibre-Medium",
-    height: 49,
-    lineHeight: 21,
+    height: 40,
+    lineHeight: 18,
     color: colors.textColor,
     textAlignVertical: "center",
   },
@@ -38,36 +38,38 @@ const styles = StyleSheet.create({
 interface SearchInputProps {
   onChangeText: (text: string) => void;
   value: string;
-  RightComponent?: React.FC | undefined;
+  LeftComponent?: React.FC | undefined;
   searchRef: any;
+  placeholder: string;
 }
 
 function SearchInput({
-  RightComponent = undefined,
+  LeftComponent = undefined,
   onChangeText,
   value,
   searchRef,
+  placeholder = "",
 }: SearchInputProps) {
   const { colors } = useAuthState();
   return (
     <View
       style={[
         styles.searchInputContainer,
-        { borderBottomColor: colors.borderColor },
+        { backgroundColor: colors.navBarBg },
       ]}
     >
+      {LeftComponent !== undefined && <LeftComponent />}
       <Input
         selectionColor={colors.darkGray}
         style={[styles.searchInput, { color: colors.textColor }]}
         value={value}
         onChangeText={onChangeText}
-        placeholder={i18n.t("search")}
-        placeholderTextColor={colors.borderColor}
+        placeholder={placeholder}
+        placeholderTextColor={colors.secondaryGray}
         setRef={searchRef}
         textAlign="left"
         textAlignVertical="center"
       />
-      {RightComponent !== undefined && <RightComponent />}
     </View>
   );
 }

@@ -33,7 +33,7 @@ interface AvatarProps {
   space?: Space | { id?: string; avatar: string };
 }
 
-function SpaceAvatar({ symbolIndex, space, size }: AvatarProps) {
+function SpaceAvatar({ symbolIndex = "space", space, size }: AvatarProps) {
   if (isEmpty(space)) return <View />;
 
   const url = createUrl(symbolIndex, space);
