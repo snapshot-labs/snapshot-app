@@ -21,6 +21,8 @@ import { useNavigation } from "@react-navigation/native";
 import common from "styles/common";
 import IconFont from "components/IconFont";
 import { dateFormat, explorerUrl, n } from "helpers/miscUtils";
+import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({
   proposalInfoBlockContainer: {
@@ -88,7 +90,7 @@ function ProposalInfoBlock({ proposal }: ProposalInfoBlockProps) {
     proposal?.strategies,
     (strategy: any) => strategy.name
   );
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
   const strategies =
     strategiesNames.length > 0
       ? strategiesNames.join(", ")

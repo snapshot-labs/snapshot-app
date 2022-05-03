@@ -18,6 +18,8 @@ import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import appConstants from "constants/app";
 import { getUserProfile } from "helpers/profile";
+import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -47,7 +49,7 @@ function ActiveAccount({ address = "" }: ActiveAccountProps) {
   const profile = getUserProfile(address, profiles);
   const ens = get(profile, "ens", undefined);
   const toastShowConfig = useToastShowConfig();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
   const [checksumAddress, setChecksumAddress] = useState(shorten(address));
 
   useEffect(() => {

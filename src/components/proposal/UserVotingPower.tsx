@@ -21,13 +21,20 @@ const styles = StyleSheet.create({
 });
 
 interface UserVotingPowerProps {
-  address: string;
+  address: string | null;
   score: number;
   symbol: string;
 }
 
-function UserVotingPower({ address, symbol, score }: UserVotingPowerProps) {
+function UserVotingPower({
+  address = null,
+  symbol,
+  score,
+}: UserVotingPowerProps) {
   const { colors } = useAuthState();
+  if (address === null) {
+    return <View />;
+  }
   return (
     <View
       style={[

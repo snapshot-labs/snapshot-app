@@ -1,11 +1,13 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
-import { WALLET_CONNECT_SCREEN } from "../constants/navigation";
+import { WALLET_CONNECT_SCREEN } from "constants/navigation";
 import Button from "./Button";
+import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { RootStackParamsList } from "types/navigationTypes";
 
 function LoginButton() {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
   return (
     <Button
       onPress={() => {

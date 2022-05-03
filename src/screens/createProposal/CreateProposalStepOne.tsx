@@ -82,7 +82,7 @@ function CreateProposalStepOne({ route }: CreateProposalStepOneProps) {
   const { colors, connectedAddress } = useAuthState();
   const { title: proposalTitle, body: proposalBody } = useCreateProposalState();
   const createProposalDispatch = useCreateProposalDispatch();
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
   const [title, setTitle] = useState<string>(proposalTitle);
   const [body, setBody] = useState<string>(proposalBody);
   const [loadingValidation, setLoadingValidation] = useState(true);
@@ -93,7 +93,7 @@ function CreateProposalStepOne({ route }: CreateProposalStepOneProps) {
 
   useEffect(() => {
     validateUser(
-      connectedAddress,
+      connectedAddress ?? "",
       space,
       setPassValidation,
       setLoadingValidation
@@ -108,6 +108,9 @@ function CreateProposalStepOne({ route }: CreateProposalStepOneProps) {
         <CreateProposalHeader
           currentStep={1}
           onClose={() => {
+            createProposalDispatch({
+              type: CREATE_PROPOSAL_ACTIONS.RESET_CREATE_PROPOSAL,
+            });
             navigation.goBack();
           }}
         />

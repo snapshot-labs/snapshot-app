@@ -2,7 +2,7 @@ import { useAuthState } from "context/authContext";
 import { useExploreDispatch, useExploreState } from "context/exploreContext";
 import React, { useEffect, useState } from "react";
 import { Proposal } from "types/proposal";
-import { setProfiles } from "helpers/profile";
+import { getUserProfile, setProfiles } from "helpers/profile";
 import {
   FlatList,
   RefreshControl,
@@ -140,7 +140,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
   const bottomSheetModalRef = useBottomSheetModalRef();
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const notificationsDispatch = useNotificationsDispatch();
-  const profile = profiles[connectedAddress];
+  const profile = getUserProfile(connectedAddress, profiles);
   const ens = get(profile, "ens", undefined);
   const navigation: any = useNavigation();
 
@@ -375,7 +375,7 @@ function TimelineFeed({ feedScreenIsInitial }: TimelineFeedProps) {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         data={votedProposals}
-                        renderItem={({ item }) => {
+                        renderItem={({ item }: any) => {
                           return (
                             <RecentVotedProposalPreview
                               proposal={item.proposal}

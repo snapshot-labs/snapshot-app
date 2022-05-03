@@ -58,8 +58,8 @@ function getSpace(
     const spaceId = proposal?.space?.id ?? routeSpaceId;
     const space = spaces[spaceId] ?? {};
     return {
-      id: spaceId,
       ...space,
+      id: spaceId,
     };
   }
 
@@ -104,14 +104,14 @@ async function getProposal(
 }
 
 async function getUserVotingPower(
-  connectedAddress: string,
+  connectedAddress: string | null,
   proposal: Proposal,
   setVotingPower: (votingPower: number) => void,
   setLoadingPower: (loadingPower: boolean) => void
 ) {
   setLoadingPower(true);
   try {
-    const votingPower = await getVotingPower(connectedAddress, proposal);
+    const votingPower = await getVotingPower(connectedAddress ?? "", proposal);
     setVotingPower(votingPower);
   } catch (e) {
   } finally {

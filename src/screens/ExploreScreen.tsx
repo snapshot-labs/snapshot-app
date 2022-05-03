@@ -21,8 +21,8 @@ function ExploreScreen() {
     const list = Object.keys(spaces)
       .map((key) => {
         return {
-          id: key,
           ...spaces[key],
+          id: key,
           followers: spaces[key].followers ?? 0,
           private: spaces[key].private ?? false,
         };

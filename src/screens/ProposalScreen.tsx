@@ -54,8 +54,8 @@ function getSpace(
     const spaceId = proposal?.space?.id ?? routeSpaceId;
     const space = spaces[spaceId] ?? {};
     return {
-      id: spaceId,
       ...space,
+      id: spaceId,
     };
   }
 

@@ -69,7 +69,7 @@ function CreateProposalPreviewHeader({
   const authorName = getUsername(
     connectedAddress,
     authorProfile,
-    connectedAddress ?? ""
+    connectedAddress
   );
   return (
     <View

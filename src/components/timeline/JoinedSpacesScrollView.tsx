@@ -16,6 +16,8 @@ import isEmpty from "lodash/isEmpty";
 import i18n from "i18n-js";
 import common from "styles/common";
 import IconFont from "components/IconFont";
+import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { RootStackParamsList } from "types/navigationTypes";
 
 const verified: any = require("constants/verifiedSpaces.json");
 
@@ -48,7 +50,7 @@ function JoinedSpacesScrollView({
 }: JoinedSpacesScrollViewProps) {
   const { colors } = useAuthState();
   const { spaces } = useExploreState();
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
 
   if (followedSpaces.length === 0 && !useLoader) {
     return <View />;
@@ -106,7 +108,10 @@ function JoinedSpacesScrollView({
                     <SpaceAvatarButton
                       onPress={() => {
                         navigation.navigate(SPACE_SCREEN, {
-                          space: { id: space?.space?.id, ...spaceDetails },
+                          space: {
+                            ...spaceDetails,
+                            id: spaceDetails.id ?? space?.space?.id,
+                          },
                         });
                       }}
                       size={64}
@@ -115,7 +120,10 @@ function JoinedSpacesScrollView({
                     <TouchableOpacity
                       onPress={() => {
                         navigation.navigate(SPACE_SCREEN, {
-                          space: { id: space?.space?.id, ...spaceDetails },
+                          space: {
+                            ...spaceDetails,
+                            id: spaceDetails.id ?? space?.space?.id,
+                          },
                         });
                       }}
                     >

@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Space } from "types/explore";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import common from "styles/common";
 import SpaceInfoRow from "components/space/SpaceInfoRow";
 import i18n from "i18n-js";
 import { useAuthState } from "context/authContext";
 import InputRound from "components/InputRound";
-import Button from "components/Button";
 
 const styles = StyleSheet.create({
   subtitle: {

@@ -210,6 +210,7 @@ function VotesScreen({ route }: VotesScreenProps) {
           let viewProps = {};
           let ScrollViewComponent = View;
           if (totalTabWidth >= deviceWidth) {
+            //@ts-ignore
             ScrollViewComponent = ScrollView;
             viewProps = {
               horizontal: true,

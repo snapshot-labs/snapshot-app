@@ -5,7 +5,7 @@ import isEmpty from "lodash/isEmpty";
 import makeBlockie from "ethereum-blockies-base64";
 
 interface UserAvatarProps {
-  address: string;
+  address: string | null;
   imgSrc?: string;
   size: number;
 }
@@ -16,7 +16,7 @@ function UserAvatar({ address, imgSrc, size }: UserAvatarProps) {
   }
 
   const blockie = useMemo(
-    () => (isEmpty(imgSrc) ? makeBlockie(address) : null),
+    () => (isEmpty(imgSrc) ? makeBlockie(address ?? "abcd") : null),
     [imgSrc, address]
   );
   const [useBlockie, setUseBlockie] = useState<boolean>(false);

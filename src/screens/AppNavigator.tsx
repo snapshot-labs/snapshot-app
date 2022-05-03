@@ -60,6 +60,7 @@ import CreateProposalStepOne from "screens/createProposal/CreateProposalStepOne"
 import CreateProposalStepTwo from "screens/createProposal/CreateProposalStepTwo";
 import CreateProposalStepThree from "screens/createProposal/CreateProposalStepThree";
 import CreateProposalPreviewScreen from "screens/createProposal/CreateProposalPreviewScreen";
+import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({
   notificationsCircle: {
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamsList>();
 
 const Tab = createBottomTabNavigator();
 const ICON_SIZE = 28;
