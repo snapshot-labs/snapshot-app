@@ -84,7 +84,7 @@ function CreateProposalStepOne({ route }: CreateProposalStepOneProps) {
   const createProposalDispatch = useCreateProposalDispatch();
   const navigation: any = useNavigation();
   const [title, setTitle] = useState<string>(proposalTitle);
-  const [body, setBody] = useState<string>(proposalBody);
+  const [body, setBody] = useState<string>(proposalBody ?? "");
   const [loadingValidation, setLoadingValidation] = useState(true);
   const [passValidation, setPassValidation] = useState<[boolean, string]>([
     false,
@@ -157,9 +157,7 @@ function CreateProposalStepOne({ route }: CreateProposalStepOneProps) {
               });
               navigation.navigate(CREATE_PROPOSAL_SCREEN_STEP_TWO, { space });
             }}
-            disabledAction={
-              title.length === 0 || body.length === 0 || !passValidation[0]
-            }
+            disabledAction={title.length === 0 || !passValidation[0]}
           />
         </KeyboardAvoidingView>
       </SafeAreaView>

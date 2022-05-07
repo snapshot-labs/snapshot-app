@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -21,7 +21,7 @@ import Device from "helpers/device";
 import { useNavigation } from "@react-navigation/native";
 import VotingTypeScrollViewPicker from "components/createProposal/VotingTypeScrollViewPicker";
 import { Space } from "types/explore";
-import proposal from "constants/proposal";
+import proposal, { VOTING_TYPES } from "constants/proposal";
 import ChoicesBlock from "components/createProposal/ChoicesBlock";
 import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
 import IphoneBottomSafeAreaViewBackground from "components/IphoneBottomSafeAreaViewBackground";
@@ -62,6 +62,12 @@ function CreateProposalStepTwo({ route }: CreateProposalStepTwo) {
   const isValidChoices =
     choices?.length >= 2 && !choices?.some((a) => a === "");
 
+  useEffect(() => {
+    if (votingType.key === VOTING_TYPES.basic) {
+      setChoices(["For", "Against", "Abstain"]);
+    }
+  }, [votingType]);
+
   return (
     <>
       <IPhoneTopSafeAreaViewBackground />
@@ -99,11 +105,12 @@ function CreateProposalStepTwo({ route }: CreateProposalStepTwo) {
             choices={choices}
             setChoices={setChoices}
             scrollRef={scrollRef}
+            votingType={votingType?.key}
           />
           <View
             style={{
               width: 100,
-              height: choices?.length > 0 ? choices?.length * 85 : 100,
+              height: 300,
             }}
           />
         </ScrollView>

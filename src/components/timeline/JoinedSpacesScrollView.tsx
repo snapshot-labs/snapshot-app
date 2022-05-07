@@ -96,7 +96,7 @@ function JoinedSpacesScrollView({
                 }
                 return (
                   <View
-                    key={i}
+                    key={space?.space?.id}
                     style={[
                       common.justifyCenter,
                       {

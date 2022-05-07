@@ -20,6 +20,7 @@ interface ChoiceInputProps {
   index: number;
   setChoices: (choices: string[]) => void;
   scrollRef: any;
+  showRemove: boolean;
 }
 
 function ChoiceInput({
@@ -28,6 +29,7 @@ function ChoiceInput({
   index,
   setChoices,
   scrollRef,
+  showRemove = true,
 }: ChoiceInputProps) {
   const { colors } = useAuthState();
   const [isFocused, setIsFocused] = useState(false);
@@ -84,17 +86,20 @@ function ChoiceInput({
             setIsFocused(false);
           }}
         />
+
         <TouchableOpacity
           onPress={() => {
-            const newChoices = [...choices];
-            newChoices.splice(index, 1);
-            setChoices(newChoices);
+            if (showRemove) {
+              const newChoices = [...choices];
+              newChoices.splice(index, 1);
+              setChoices(newChoices);
+            }
           }}
         >
           <IconFont
             name="close"
             size={18}
-            color={colors.textColor}
+            color={showRemove ? colors.textColor : "transparent"}
             style={{
               marginBottom: Platform.OS === "ios" ? 4 : 0,
             }}

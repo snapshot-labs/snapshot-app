@@ -17,8 +17,12 @@ import isEmpty from "lodash/isEmpty";
 
 const styles = StyleSheet.create({
   unreadNotificationsContainer: {
-    flexDirection: "row",
-    marginTop: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 28,
+    paddingHorizontal: 6,
+    height: 28,
+    borderRadius: 14,
   },
   unreadNotificationsSubText: {
     fontFamily: "Calibre-Semibold",
@@ -28,10 +32,13 @@ const styles = StyleSheet.create({
   unreadNotificationsMainText: {
     fontFamily: "Calibre-Semibold",
     fontSize: 18,
-    color: colors.blueButtonBg,
   },
   screenHeader: {
     paddingBottom: 22,
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 
@@ -117,32 +124,30 @@ function NotificationScreen() {
           style={[
             common.containerHorizontalPadding,
             common.screenTitleContainer,
-            showBorder
-              ? { borderBottomWidth: 1, borderBottomColor: colors.borderColor }
-              : {},
+            { borderBottomColor: colors.borderColor },
             styles.screenHeader,
           ]}
         >
           <Text style={[common.h1, { color: colors.textColor }]}>
             {i18n.t("notifications")}
           </Text>
-          <View style={styles.unreadNotificationsContainer}>
-            {unreadNotifications > 0 && (
-              <>
-                <Text style={styles.unreadNotificationsSubText}>
-                  {i18n.t("youHave")}
-                </Text>
-                <Text style={styles.unreadNotificationsMainText}>
-                  {` ${i18n.t("countNotifications", {
-                    count: unreadNotifications,
-                  })} `}
-                </Text>
-                <Text style={styles.unreadNotificationsSubText}>
-                  {i18n.t("today")}
-                </Text>
-              </>
-            )}
-          </View>
+          {unreadNotifications > 0 && (
+            <View
+              style={[
+                styles.unreadNotificationsContainer,
+                { backgroundColor: colors.baseRed },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.unreadNotificationsMainText,
+                  { color: colors.secondaryWhite },
+                ]}
+              >
+                {unreadNotifications}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
       <FlatList

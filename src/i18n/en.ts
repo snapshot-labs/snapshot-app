@@ -38,6 +38,7 @@ export default {
   quadraticVoting: "Quadratic",
   rankedChoiceVoting: "Ranked choice",
   weightedVoting: "Weighted",
+  basicVoting: "Basic",
   enterWalletAddress: "Enter wallet address",
   votes: "Votes",
   seeAll: "See all",
@@ -109,6 +110,8 @@ export default {
   question: "Question",
   addChoice: "Add choice",
   selectVotingSystem: "Select voting system",
+  basicVotingDescription:
+    "Single choice voting with three choices: For, Against, Abstain",
   singleChoiceVotingDescription: "Each voter may select only one choice.",
   approvalVotingDescription: "Each voter may select any number of choices.",
   quadraticVotingDescription:

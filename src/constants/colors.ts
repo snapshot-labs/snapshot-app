@@ -9,6 +9,7 @@ const defaultColors = {
   bgLightGray: "#f6f8fa",
   highlightColor: "rgba(208,215,222, .20)",
   red: "#d20000",
+  secondaryWhite: "#FCFCFC",
   categoriesBgColor: "#eef2f5",
   yellow: "rgba(243,176,78, 1)",
   blockQuotesBorder: "#dfe2e5",
@@ -25,6 +26,7 @@ const defaultColors = {
   basePurple2: "#9B51E0",
   basePurpleBg: "rgba(155, 81, 224, 0.2)",
   baseBlue: "#0049F5",
+  baseRed: "#FF5850",
 };
 const light = {
   borderColor: "#C1C6D7",

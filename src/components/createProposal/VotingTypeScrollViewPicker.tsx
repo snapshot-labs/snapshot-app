@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -38,15 +38,26 @@ function VotingTypeScrollViewPicker({
 }: VotingTypeScrollViewPickerProps) {
   const { colors } = useAuthState();
   const votingTypes = proposal.getVotingTypes();
+  const scrollRef = useRef<ScrollView>(null);
+  const [displayedVotingTypes, setDisplayedVotingTypes] = useState(votingTypes);
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      {votingTypes.map((votingTypeSelection) => {
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      ref={scrollRef}
+    >
+      {displayedVotingTypes.map((votingTypeSelection, index: number) => {
         const selected = votingType.key == votingTypeSelection.key;
         return (
           <TouchableWithoutFeedback
             onPress={() => {
               setVotingType(votingTypeSelection);
+              const newDisplayedVotingTypes = [...displayedVotingTypes];
+              newDisplayedVotingTypes.splice(index, 1);
+              newDisplayedVotingTypes.unshift(votingTypeSelection);
+              setDisplayedVotingTypes(newDisplayedVotingTypes);
+              scrollRef?.current?.scrollTo({ x: 0, animated: true });
             }}
             key={votingTypeSelection.key}
           >

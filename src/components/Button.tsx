@@ -92,57 +92,51 @@ function Button({
       : loadingColor;
 
   return (
-    <View
-      style={[styles.nativeFeedbackContainer, nativeFeedbackContainerStyle]}
+    <ButtonContainerComponent
+      onPress={disabled || loading ? () => {} : onPress}
     >
-      <ButtonContainerComponent
-        onPress={disabled || loading ? () => {} : onPress}
+      <View
+        style={[
+          styles.button,
+          light ? styles.lightButton : {},
+          disabled ? styles.disabled : {},
+          primary
+            ? {
+                backgroundColor: disabled
+                  ? colors.disabledButtonBg
+                  : colors.blueButtonBg,
+                borderColor: disabled ? colors.disabledButtonBg : "transparent",
+              }
+            : { borderColor: colors.borderColor },
+          selected ? { borderColor: colors.blueButtonBg } : {},
+          label !== undefined ? { justifyContent: "flex-start" } : {},
+          buttonContainerStyle,
+        ]}
       >
-        <View
-          style={[
-            styles.button,
-            light ? styles.lightButton : {},
-            disabled ? styles.disabled : {},
-            primary
-              ? {
-                  backgroundColor: disabled
-                    ? colors.disabledButtonBg
-                    : colors.blueButtonBg,
-                  borderColor: disabled
-                    ? colors.disabledButtonBg
-                    : colors.blueButtonBg,
-                }
-              : { borderColor: colors.borderColor },
-            selected ? { borderColor: colors.blueButtonBg } : {},
-            label !== undefined ? { justifyContent: "flex-start" } : {},
-            buttonContainerStyle,
-          ]}
-        >
-          {label !== undefined && <Text style={styles.label}>{label}</Text>}
-          {loading ? (
-            <ActivityIndicator size="small" color={activityLoadingColor} />
-          ) : (
-            <>
-              {Icon !== undefined && <Icon />}
-              <Text
-                {...(onlyOneLine
-                  ? { numberOfLines: 1, ellipsizeMode: "tail" }
-                  : {})}
-                style={[
-                  styles.buttonTitle,
-                  { color: colors.textColor },
-                  light ? styles.lightButtonTitle : {},
-                  primary ? { color: colors.white } : {},
-                  buttonTitleStyle,
-                ]}
-              >
-                {title}
-              </Text>
-            </>
-          )}
-        </View>
-      </ButtonContainerComponent>
-    </View>
+        {label !== undefined && <Text style={styles.label}>{label}</Text>}
+        {loading ? (
+          <ActivityIndicator size="small" color={activityLoadingColor} />
+        ) : (
+          <>
+            {Icon !== undefined && <Icon />}
+            <Text
+              {...(onlyOneLine
+                ? { numberOfLines: 1, ellipsizeMode: "tail" }
+                : {})}
+              style={[
+                styles.buttonTitle,
+                { color: colors.textColor },
+                light ? styles.lightButtonTitle : {},
+                primary ? { color: colors.white } : {},
+                buttonTitleStyle,
+              ]}
+            >
+              {title}
+            </Text>
+          </>
+        )}
+      </View>
+    </ButtonContainerComponent>
   );
 }
 

@@ -63,7 +63,7 @@ export async function setAlias(
           }
         );
       } catch (e) {
-        throw new Error(e);
+        throw e;
       }
 
       if (signClientAliasResponse && authDispatch) {

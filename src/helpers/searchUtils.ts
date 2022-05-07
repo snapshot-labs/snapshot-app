@@ -1,5 +1,7 @@
 import { Space, Strategy } from "types/explore";
 import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
+import categories from "../../snapshot-spaces/spaces/categories.json";
 
 export function getFilteredSpaces(
   orderedSpaces: Space[],
@@ -14,7 +16,11 @@ export function getFilteredSpaces(
       return matchesString;
     }
 
-    const matchesCategory = space.categories?.includes(category.toLowerCase());
+    const extraCategories = get(categories, space.id, []);
+
+    const matchesCategory =
+      space.categories?.includes(category.toLowerCase()) ||
+      extraCategories.includes(category.toLowerCase());
     return matchesString && matchesCategory;
   });
 }

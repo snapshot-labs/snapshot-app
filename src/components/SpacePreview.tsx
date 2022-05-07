@@ -53,68 +53,88 @@ const styles = StyleSheet.create({
 
 interface SpacePreviewProps {
   space: Space | any;
-  lastItem?: boolean;
+  lastItem: boolean;
+  firstItem: boolean;
 }
 
-function SpacePreview({ space = {}, lastItem = false }: SpacePreviewProps) {
+function SpacePreview({ space = {}, lastItem, firstItem }: SpacePreviewProps) {
   const { colors } = useAuthState();
   const navigation: any = useNavigation();
   const hasMembers = get(space, "followers") !== undefined;
 
   return (
     <View
-      style={[
-        styles.spacePreviewContainer,
-        {
-          borderBottomColor: lastItem ? "transparent" : colors.borderColor,
-        },
-      ]}
+      style={{
+        borderTopWidth: firstItem ? 1 : 0,
+        borderTopColor: firstItem ? colors.borderColor : "transparent",
+        borderTopLeftRadius: firstItem ? 9 : 0,
+        borderTopRightRadius: firstItem ? 9 : 0,
+        borderBottomRightRadius: lastItem ? 9 : 0,
+        borderBottomLeftRadius: lastItem ? 9 : 0,
+        borderRightWidth: 1,
+        borderLeftWidth: 1,
+        borderLeftColor: colors.borderColor,
+        borderRightColor: colors.borderColor,
+        marginTop: firstItem ? 16 : 0,
+        marginHorizontal: 14,
+        borderBottomWidth: lastItem ? 1 : 0,
+        borderBottomColor: lastItem ? colors.borderColor : "transparent",
+      }}
     >
-      <TouchableWithoutFeedback
-        onPress={() => {
-          navigation.navigate(SPACE_SCREEN, { space });
-        }}
+      <View
+        style={[
+          styles.spacePreviewContainer,
+          {
+            borderBottomColor: lastItem ? "transparent" : colors.borderColor,
+          },
+        ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            flex: 1,
-            borderBottomColor: colors.borderColor,
+        <TouchableWithoutFeedback
+          onPress={() => {
+            navigation.navigate(SPACE_SCREEN, { space });
           }}
         >
-          <SpaceAvatar
-            space={space}
-            symbolIndex="space"
-            size={spaceAvatarWidth}
-          />
-          <View style={styles.spacePreviewTitleContainer}>
-            <Text
-              style={[
-                styles.spacePreviewTitle,
-                { color: colors.textColor, width: spaceNameWidth },
-              ]}
-              ellipsizeMode="tail"
-              numberOfLines={1}
-            >
-              {get(space, "name")}
-            </Text>
-            {hasMembers ? (
-              <Text style={styles.spacePreviewFollowerCount}>
-                {n(get(space, "followers", 0))} {i18n.t("members")}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
+              borderBottomColor: colors.borderColor,
+            }}
+          >
+            <SpaceAvatar
+              space={space}
+              symbolIndex="space"
+              size={spaceAvatarWidth}
+            />
+            <View style={styles.spacePreviewTitleContainer}>
+              <Text
+                style={[
+                  styles.spacePreviewTitle,
+                  { color: colors.textColor, width: spaceNameWidth },
+                ]}
+                ellipsizeMode="tail"
+                numberOfLines={1}
+              >
+                {get(space, "name")}
               </Text>
-            ) : (
-              <Text />
-            )}
+              {hasMembers ? (
+                <Text style={styles.spacePreviewFollowerCount}>
+                  {n(get(space, "followers", 0))} {i18n.t("members")}
+                </Text>
+              ) : (
+                <Text />
+              )}
+            </View>
           </View>
+        </TouchableWithoutFeedback>
+        <View
+          style={{
+            marginLeft: "auto",
+          }}
+        >
+          <FollowButton space={space} />
         </View>
-      </TouchableWithoutFeedback>
-      <View
-        style={{
-          marginLeft: "auto",
-        }}
-      >
-        <FollowButton space={space} />
       </View>
     </View>
   );

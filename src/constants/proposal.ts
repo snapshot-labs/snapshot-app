@@ -19,6 +19,7 @@ export const VOTING_TYPES = {
   quadratic: "quadratic",
   rankedChoice: "ranked-choice",
   weighted: "weighted",
+  basic: "basic",
 };
 
 export const getVotingTypes = () => [
@@ -46,6 +47,11 @@ export const getVotingTypes = () => [
     key: VOTING_TYPES.weighted,
     text: i18n.t("weightedVoting"),
     description: i18n.t("weightedVotingDescription"),
+  },
+  {
+    key: VOTING_TYPES.basic,
+    text: i18n.t("basicVoting"),
+    description: i18n.t("basicVotingDescription"),
   },
 ];
 

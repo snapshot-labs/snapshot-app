@@ -32,6 +32,7 @@ import {
   walletFollowTypes,
   WalletUnfollow,
 } from "helpers/voting/walletTypes";
+import { ethers } from "ethers";
 
 const hubs = [
   "https://hub.snapshot.org",
@@ -61,7 +62,8 @@ class Client {
     types: any,
     primaryType: string
   ) {
-    if (!message.from) message.from = address;
+    const checksumAddress = ethers.utils.getAddress(address ?? "");
+    if (!message.from) message.from = checksumAddress;
     if (!message.timestamp) message.timestamp = ~~(Date.now() / 1e3);
     const updatedTypes = {
       ...types,
@@ -83,12 +85,16 @@ class Client {
         snapshotData.types,
         message
       );
-      return await this.send({ address, sig, data: snapshotData });
+      return await this.send({
+        address: checksumAddress,
+        sig,
+        data: snapshotData,
+      });
     } else {
       let sig;
       try {
         sig = await wcConnector.signTypedData([
-          address,
+          checksumAddress,
           JSON.stringify(wcData),
         ]);
       } catch (e) {
@@ -96,8 +102,16 @@ class Client {
         throw new Error(e.message);
       }
       if (sig) {
-        console.log("Sign", { address, sig, data: snapshotData });
-        return await this.send({ address, sig, data: snapshotData });
+        console.log("Sign", {
+          address: checksumAddress,
+          sig,
+          data: snapshotData,
+        });
+        return await this.send({
+          address: checksumAddress,
+          sig,
+          data: snapshotData,
+        });
       }
     }
   }
@@ -124,12 +138,14 @@ class Client {
           if (e.json) {
             e.json()
               .then((json) => {
+                console.log("ERROR SIGN", { json });
                 reject(json);
               })
               .catch((e) => {
                 reject(e);
               });
           } else {
+            console.log("ERROR SIGN REJECT");
             reject(e);
           }
         });

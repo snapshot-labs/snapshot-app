@@ -15,6 +15,7 @@ import { getSnapshotDataForSign } from "helpers/snapshotWalletUtils";
 import signClient from "helpers/signClient";
 import { BOTTOM_SHEET_MODAL_ACTIONS } from "context/bottomSheetModalContext";
 import SubmitPasswordModal from "components/wallet/SubmitPasswordModal";
+import isEmpty from "lodash/isEmpty";
 import reduce from "lodash/reduce";
 
 export const defaultHeaders = {
@@ -90,7 +91,7 @@ export async function getSubscriptions(
 
 export function parseErrorMessage(e: any, defaultErrorMessage: string) {
   let errorMessage = defaultErrorMessage;
-  if (e.error && e.error_description) {
+  if (!isEmpty(e.error) && !isEmpty(e.error_description)) {
     errorMessage = `${e.error}: ${e.error_description}`;
   }
 

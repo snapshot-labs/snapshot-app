@@ -18,6 +18,7 @@ import {
 } from "context/notificationsContext";
 import { ENGINE_ACTIONS, useEngineDispatch } from "context/engineContext";
 import initializeEngine from "helpers/engineService";
+import toLower from "lodash/toLower";
 
 async function loadFromStorage(
   authDispatch: ContextDispatch,
@@ -40,11 +41,10 @@ async function loadFromStorage(
             payload: parsedSavedWallets,
           });
         } catch (e) {}
-        const session = parsedSavedWallets[connectedAddress]?.session;
-        const androidAppUrl =
-          parsedSavedWallets[connectedAddress]?.androidAppUrl;
-        const walletService =
-          parsedSavedWallets[connectedAddress]?.walletService;
+        const androidDetails = parsedSavedWallets[toLower(connectedAddress)];
+        const session = androidDetails?.session;
+        const androidAppUrl = androidDetails?.androidAppUrl;
+        const walletService = androidDetails?.walletService;
         authDispatch({
           type: AUTH_ACTIONS.SET_WC_CONNECTOR,
           payload: {
@@ -60,7 +60,8 @@ async function loadFromStorage(
           connectedAddress,
           addToStorage: false,
           isWalletConnect:
-            parsedSavedWallets[connectedAddress]?.name !== CUSTOM_WALLET_NAME,
+            parsedSavedWallets[toLower(connectedAddress)]?.name !==
+            CUSTOM_WALLET_NAME,
         },
       });
 

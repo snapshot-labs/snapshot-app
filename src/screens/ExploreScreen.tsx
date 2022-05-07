@@ -10,6 +10,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getFilteredSpaces } from "helpers/searchUtils";
 import { useAuthState } from "context/authContext";
 
+const LOAD_COUNT = 10;
+
 function ExploreScreen() {
   const { colors } = useAuthState();
   const insets = useSafeAreaInsets();
@@ -30,11 +32,19 @@ function ExploreScreen() {
       .filter((space) => !space.private);
     return orderBy(list, ["following", "followers"], ["desc", "desc"]);
   }, [spaces]);
+  const [displayedSpaces, setDisplayedSpaces] = useState<any[]>([]);
+  const [displayIndex, setDisplayIndex] = useState(LOAD_COUNT);
 
   useEffect(() => {
-    setFilteredExplore(
-      getFilteredSpaces(orderedSpaces, searchValue, selectedCategory)
+    const filteredSpaces = getFilteredSpaces(
+      orderedSpaces,
+      searchValue,
+      selectedCategory
     );
+    setFilteredExplore(filteredSpaces);
+    const newDisplayedSpaces = filteredSpaces?.slice(0, LOAD_COUNT);
+    setDisplayedSpaces(newDisplayedSpaces);
+    setDisplayIndex(LOAD_COUNT * 2);
   }, [spaces, searchValue, selectedCategory]);
 
   return (
@@ -44,39 +54,43 @@ function ExploreScreen() {
         { backgroundColor: colors.bgDefault, paddingTop: insets.top },
       ]}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <ExploreHeader
-          searchValue={searchValue}
-          onChangeText={(text: string) => {
-            setSearchValue(text);
-          }}
-          filteredExplore={
-            selectedCategory === "" ? orderedSpaces : filteredExplore
-          }
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            borderWidth: 1,
-            borderColor: colors.borderColor,
-            marginHorizontal: 14,
-            borderRadius: 9,
-            marginTop: 16,
-          }}
-          data={filteredExplore}
-          renderItem={(data) => {
-            return (
-              <SpacePreview
-                space={data.item}
-                lastItem={data.index === filteredExplore.length - 1}
-              />
-            );
-          }}
-          keyExtractor={(item, i) => `${item.id}${i}`}
-          initialNumToRender={15}
-          ListEmptyComponent={
+      <FlatList
+        ListHeaderComponent={
+          <ExploreHeader
+            searchValue={searchValue}
+            onChangeText={(text: string) => {
+              setSearchValue(text);
+            }}
+            filteredExplore={
+              selectedCategory === "" ? orderedSpaces : filteredExplore
+            }
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        data={displayedSpaces}
+        renderItem={(data) => {
+          return (
+            <SpacePreview
+              space={data.item}
+              lastItem={data.index === displayedSpaces.length - 1}
+              firstItem={data.index === 0}
+            />
+          );
+        }}
+        keyExtractor={(item) => `${item.id}${item.name}`}
+        ListEmptyComponent={
+          <View
+            style={{
+              flex: 1,
+              borderWidth: 1,
+              borderColor: colors.borderColor,
+              marginHorizontal: 14,
+              borderRadius: 9,
+              marginTop: 16,
+            }}
+          >
             <View
               style={{
                 marginTop: 16,
@@ -88,9 +102,19 @@ function ExploreScreen() {
                 {i18n.t("cantFindAnyResults")}
               </Text>
             </View>
+          </View>
+        }
+        onEndReached={() => {
+          if (filteredExplore.length > displayedSpaces.length) {
+            const newDisplayedSpaces = displayedSpaces.concat(
+              filteredExplore?.slice(displayedSpaces.length, displayIndex)
+            );
+            setDisplayIndex(displayIndex + LOAD_COUNT);
+            setDisplayedSpaces(newDisplayedSpaces);
           }
-        />
-      </ScrollView>
+        }}
+        onEndReachedThreshold={0.7}
+      />
     </View>
   );
 }

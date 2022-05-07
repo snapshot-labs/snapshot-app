@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
 import colors from "constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import { PROPOSAL_SCREEN } from "constants/navigation";
@@ -13,7 +13,7 @@ import SpaceAvatar from "components/SpaceAvatar";
 const deviceWidth = Device.getDeviceWidth();
 const leftMargin = 14;
 const rightMargin = 4;
-const viewCircleDimensions = 9;
+const viewCircleDimensions = 12;
 const spaceAvatarSize = 44;
 const proposalAuthorTitleContainerMargin = 18;
 
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
       leftMargin -
       rightMargin -
       spaceAvatarSize -
-      viewCircleDimensions -
       proposalAuthorTitleContainerMargin -
       30,
   },
@@ -67,6 +66,9 @@ const styles = StyleSheet.create({
     borderRadius: viewCircleDimensions / 2,
     marginRight: 18,
     alignSelf: "center",
+    position: "absolute",
+    bottom: -2,
+    right: -16,
   },
   spaceAvatarContainer: {
     alignSelf: "center",
@@ -90,7 +92,7 @@ function ProposalNotification({
   const { colors } = useAuthState();
 
   return (
-    <TouchableOpacity
+    <TouchableWithoutFeedback
       onPress={() => {
         navigation.push(PROPOSAL_SCREEN, {
           proposal,
@@ -115,6 +117,14 @@ function ProposalNotification({
               size={spaceAvatarSize}
               space={proposal?.space}
             />
+            <View
+              style={[
+                styles.viewCircle,
+                {
+                  backgroundColor: didView ? "transparent" : colors.baseRed,
+                },
+              ]}
+            />
           </View>
           <View style={styles.proposalAuthorTitleContainer}>
             <Text
@@ -133,7 +143,7 @@ function ProposalNotification({
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 }
 
