@@ -170,18 +170,7 @@ function TabNavigator() {
           title: "",
           tabBarStyle: { display: "none" },
           tabBarIcon: ({ color }) => (
-            <View
-              style={{
-                height: 40,
-                width: 40,
-                backgroundColor: colors.yellow,
-                borderRadius: 20,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <IconFont name="snapshot" size={28} color={colors.white} />
-            </View>
+            <IconFont name="snapshot" color={color} size={ICON_SIZE} />
           ),
         }}
       />

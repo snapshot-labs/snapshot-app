@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   proposalHeader: {
     paddingHorizontal: 14,
-    paddingTop: Device.isIos() ? 70 : 30,
+    paddingTop: Device.isIos() ? 70 : 20,
   },
   authorTitle: {
     fontFamily: "Calibre-Semibold",

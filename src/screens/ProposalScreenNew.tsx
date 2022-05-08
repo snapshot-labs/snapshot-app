@@ -146,8 +146,10 @@ function ProposalScreen({ route }: ProposalScreenProps) {
     { key: "results", title: i18n.t("results") },
     { key: "info", title: i18n.t("info") },
   ];
-  const proposalTitleLength = proposal?.title?.length > 60 ? 30 : 0;
+  const proposalTitleLength = proposal?.title?.length > 60 ? 40 : 0;
   const headerHeight = baseHeaderHeight + proposalTitleLength;
+  const [proposalScreenHeaderHeight, setProposalScreenHeaderHeight] =
+    useState(headerHeight);
   const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
     useScrollManager(
       tabs,
@@ -162,7 +164,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             isActive={tabs[index].key === tab.key}
             routeKey={tab.key}
             scrollY={scrollY}
-            headerHeight={headerHeight}
+            headerHeight={proposalScreenHeaderHeight}
             data={[{ key: "body" }]}
             renderItem={() => {
               return (
@@ -185,7 +187,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             isActive={tabs[index].key === tab.key}
             routeKey={tab.key}
             scrollY={scrollY}
-            headerHeight={headerHeight}
+            headerHeight={proposalScreenHeaderHeight}
             data={[{ key: "results" }]}
             renderItem={() => {
               return (
@@ -208,7 +210,7 @@ function ProposalScreen({ route }: ProposalScreenProps) {
             isActive={tabs[index].key === tab.key}
             routeKey={tab.key}
             scrollY={scrollY}
-            headerHeight={headerHeight}
+            headerHeight={proposalScreenHeaderHeight}
             data={[{ key: "info" }]}
             renderItem={() => {
               return (
@@ -321,7 +323,10 @@ function ProposalScreen({ route }: ProposalScreenProps) {
           </View>
         ) : (
           <>
-            <AnimatedHeader scrollY={scrollY} headerHeight={headerHeight}>
+            <AnimatedHeader
+              scrollY={scrollY}
+              headerHeight={proposalScreenHeaderHeight}
+            >
               <ProposalScreenHeader space={space} proposal={proposal} />
             </AnimatedHeader>
             <TabView
@@ -330,7 +335,10 @@ function ProposalScreen({ route }: ProposalScreenProps) {
               width={Device.getDeviceWidth()}
               routes={tabs}
               renderTabBar={(p) => (
-                <AnimatedTabBar scrollY={scrollY} headerHeight={headerHeight}>
+                <AnimatedTabBar
+                  scrollY={scrollY}
+                  headerHeight={proposalScreenHeaderHeight}
+                >
                   <TabBarComponent {...p} tabsLength={tabs.length} />
                 </AnimatedTabBar>
               )}

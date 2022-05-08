@@ -119,32 +119,35 @@ function FeedScreen() {
 
   const notificationsInit = (): void => {
     if (
-      savedWallets[connectedAddress]?.name !== CUSTOM_WALLET_NAME &&
+      savedWallets[connectedAddress?.toLowerCase() ?? ""]?.name !==
+        CUSTOM_WALLET_NAME &&
       !isEmpty(connectedAddress)
     ) {
-      const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
+      try {
+        const checksumAddress = ethers.utils.getAddress(connectedAddress ?? "");
 
-      RNPusherPushNotifications.setInstanceId(Config.PUSHER_APP_ID);
-      RNPusherPushNotifications.on("notification", handleNotification);
+        RNPusherPushNotifications.setInstanceId(Config.PUSHER_APP_ID);
+        RNPusherPushNotifications.on("notification", handleNotification);
 
-      if (Device.isIos()) {
-        RNPusherPushNotifications.setSubscriptions(
-          [connectedAddress],
-          (statusCode, response) => {
-            console.log(statusCode, response);
-            Toast.show({
-              type: "customSuccess",
-              text1: "SET SUB - " + JSON.stringify(response),
-              ...toastShowConfig,
-            });
-          },
-          () => {
-            console.log("Success");
-          }
-        );
-      }
+        if (Device.isIos()) {
+          RNPusherPushNotifications.setSubscriptions(
+            [connectedAddress],
+            (statusCode, response) => {
+              console.log(statusCode, response);
+              Toast.show({
+                type: "customSuccess",
+                text1: "SET SUB - " + JSON.stringify(response),
+                ...toastShowConfig,
+              });
+            },
+            () => {
+              console.log("Success");
+            }
+          );
+        }
 
-      subscribe(checksumAddress);
+        subscribe(checksumAddress);
+      } catch (e) {}
     }
   };
 

@@ -36,8 +36,8 @@ const AnimatedTabBar: FunctionComponent<AnimatedTabBarProps> = ({
 const styles = StyleSheet.create({
   tabBar: {
     width: "100%",
-    zIndex: 10,
-    height: 45,
+    zIndex: 999,
+    height: 47,
     marginTop: 0,
     paddingTop: 0,
   },

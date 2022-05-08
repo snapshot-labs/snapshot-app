@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   indicatorStyle: {
     fontFamily: "Calibre-Medium",
     height: 3,
-    top: 42,
+    top: 44,
   },
   labelStyle: {
     fontFamily: "Calibre-Medium",
@@ -50,12 +50,13 @@ function TabBarComponent(props: any) {
         borderTopWidth: 0,
         shadowOpacity: 0,
         backgroundColor: colors.bgDefault,
-        height: 45,
+        height: 47,
         elevation: 0,
         borderBottomColor: colors.borderColor,
         borderBottomWidth: 1,
         marginTop: 0,
         paddingTop: 0,
+        zIndex: 999,
       }}
       inactiveColor={colors.secondaryGray}
       tabStyle={{ alignItems: "center", justifyContent: "flex-start" }}

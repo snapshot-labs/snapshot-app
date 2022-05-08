@@ -76,7 +76,9 @@ function CreateProposalHeader({
             unfilledColor={colors.borderColor}
             width={null}
             borderColor="transparent"
-            height={2}
+            height={3}
+            borderWidth={0}
+            borderRadius={6}
           />
         </View>
         <View>

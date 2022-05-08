@@ -59,6 +59,7 @@ function SecondaryButton({
               }
             : {},
           buttonContainerStyle,
+          Device.isIos() && loading ? { paddingVertical: 4 } : {},
         ]}
       >
         {loading ? (

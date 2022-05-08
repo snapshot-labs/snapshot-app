@@ -249,6 +249,8 @@ function ProposalPreview({ proposal }: ProposalPreview) {
                 width={null}
                 borderColor="transparent"
                 height={4}
+                borderWidth={0}
+                borderRadius={6}
               />
               <View
                 style={[
