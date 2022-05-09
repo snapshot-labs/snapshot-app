@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ActivityIndicator } from "react-native-paper";
+import ActivityIndicator from "components/ActivityIndicator";
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import common from "styles/common";
 import i18n from "i18n-js";

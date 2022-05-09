@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  RefreshControl,
-  Text,
-  View,
-  FlatList,
-} from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import { RefreshControl, Text, View, FlatList } from "react-native";
+import ActivityIndicator from "components/ActivityIndicator";
 import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
 import apolloClient from "helpers/apolloClient";

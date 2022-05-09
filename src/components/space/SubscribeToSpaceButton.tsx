@@ -6,7 +6,7 @@ import signClient from "helpers/signClient";
 import { getSubscriptions, parseErrorMessage } from "helpers/apiUtils";
 import i18n from "i18n-js";
 import Toast from "react-native-toast-message";
-import { ActivityIndicator } from 'react-native-paper';
+import ActivityIndicator from "components/ActivityIndicator";
 import { useAuthDispatch, useAuthState } from "context/authContext";
 import { useEngineState } from "context/engineContext";
 import { addressIsSnapshotWallet } from "helpers/address";

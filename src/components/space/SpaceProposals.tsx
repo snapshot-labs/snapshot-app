@@ -9,7 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { Proposal } from "types/proposal";
-import { ActivityIndicator } from 'react-native-paper';
+import ActivityIndicator from "components/ActivityIndicator";
 import { PROPOSALS_QUERY, SPACES_QUERY } from "helpers/queries";
 import apolloClient from "helpers/apolloClient";
 import get from "lodash/get";

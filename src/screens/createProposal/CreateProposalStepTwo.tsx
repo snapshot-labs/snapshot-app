@@ -107,12 +107,6 @@ function CreateProposalStepTwo({ route }: CreateProposalStepTwo) {
             scrollRef={scrollRef}
             votingType={votingType?.key}
           />
-          <View
-            style={{
-              width: 100,
-              height: 300,
-            }}
-          />
         </ScrollView>
         <KeyboardAvoidingView behavior={Device.isIos() ? "padding" : "height"}>
           <CreateProposalFooter

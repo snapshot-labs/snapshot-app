@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import SpaceAvatar from "components/SpaceAvatar";
-import { ActivityIndicator } from 'react-native-paper';
+import ActivityIndicator from "components/ActivityIndicator";
 import { getUsername, getUserProfile } from "helpers/profile";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";

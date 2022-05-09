@@ -83,9 +83,7 @@ function SpaceAboutTab({
       onMomentumScrollEnd={onMomentumScrollEnd}
       onScrollEndDrag={onScrollEndDrag}
       headerHeight={headerHeight}
-      ListFooterComponent={
-        <View style={{ width: 100, height: Device.getDeviceHeight() * 0.6 }} />
-      }
+      ListFooterComponent={<View style={{ width: 100, height: 150 }} />}
     />
   );
 }

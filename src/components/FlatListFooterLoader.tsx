@@ -1,6 +1,6 @@
 import React from "react";
 import { Dimensions, View } from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import ActivityIndicator from "components/ActivityIndicator";
 import { useAuthState } from "context/authContext";
 
 const { height } = Dimensions.get("screen");

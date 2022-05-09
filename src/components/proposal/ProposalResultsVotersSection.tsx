@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import common from "styles/common";
-import { ActivityIndicator } from "react-native-paper";
+import ActivityIndicator from "components/ActivityIndicator";
 import i18n from "i18n-js";
 import ProposalResultsBlock from "components/proposal/ProposalResultsBlock";
 import { n } from "helpers/miscUtils";

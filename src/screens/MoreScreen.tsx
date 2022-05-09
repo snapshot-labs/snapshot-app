@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { ActivityIndicator } from 'react-native-paper';
+import ActivityIndicator from "components/ActivityIndicator";
 import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
 import { SafeAreaView } from "react-native-safe-area-context";

@@ -14,9 +14,10 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontFamily: "Calibre-Medium",
-    textTransform: "none",
+    textTransform: "uppercase",
     fontSize: 18,
     marginTop: 0,
+    zIndex: 999,
   },
 });
 
@@ -55,15 +56,18 @@ function TabBarComponent(props: any) {
         borderBottomColor: colors.borderColor,
         borderBottomWidth: 1,
         marginTop: 0,
-        paddingTop: 0,
-        zIndex: 999,
+        paddingTop: 6,
       }}
       inactiveColor={colors.secondaryGray}
-      tabStyle={{ alignItems: "center", justifyContent: "flex-start" }}
+      tabStyle={{
+        alignItems: "center",
+        justifyContent: "flex-start",
+      }}
       renderTabBarItem={(item) => {
         return (
           <TabBarItem
             {...item}
+            labelStyle={styles.labelStyle}
             //@ts-ignore
             PressableComponent={
               Device.isIos()

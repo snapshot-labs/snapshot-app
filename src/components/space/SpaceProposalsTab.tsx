@@ -17,7 +17,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import ActivityIndicator from "components/ActivityIndicator";
 import ProposalFilters from "components/proposal/ProposalFilters";
 import {
   BOTTOM_SHEET_MODAL_ACTIONS,
@@ -295,7 +295,10 @@ function SpaceProposalsTab({
               padding: 24,
             }}
           >
-            <ActivityIndicator color={colors.textColor} size="small" />
+            <ActivityIndicator
+              color={colors.textColor}
+              size={Device.isIos() ? "small" : 30}
+            />
           </View>
         ) : (
           <View style={{ marginTop: 30, paddingHorizontal: 16 }}>

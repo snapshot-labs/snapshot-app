@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import ActivityIndicator from "components/ActivityIndicator";
 import ProposalPreview from "components/proposal/ProposalPreviewNew";
 import common from "styles/common";
 import i18n from "i18n-js";

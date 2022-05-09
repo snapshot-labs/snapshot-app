@@ -130,6 +130,7 @@ function CreateProposalStepOne({ route }: CreateProposalStepOneProps) {
             onChangeText={(text: string) => {
               setTitle(text);
             }}
+            maxLength={256}
           />
           <Input
             placeholder={i18n.t("body")}

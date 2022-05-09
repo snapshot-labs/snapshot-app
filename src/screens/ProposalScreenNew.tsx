@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SafeAreaView, Text, View, BackHandler } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import ActivityIndicator from "components/ActivityIndicator";
 import { useAuthState } from "context/authContext";
 import { useExploreState } from "context/exploreContext";
 import { Proposal } from "types/proposal";
