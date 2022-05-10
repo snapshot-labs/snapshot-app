@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: Platform.OS === "ios" ? 4 : 0,
   },
+  separator: {
+    width: "100%",
+    height: 1,
+  },
 });
 
 export const ICON_SIZE = 28;

@@ -35,7 +35,7 @@ function AccountsButton() {
   const bottomSheetModalDispatch = useBottomSheetModalDispatch();
   const savedWalletKeys = Object.keys(savedWallets).filter(
     (address: string) =>
-      address.toLowerCase() !== connectedAddress.toLowerCase()
+      address.toLowerCase() !== connectedAddress?.toLowerCase()
   );
   const navigation = useNavigation();
   const bottomSheetModalRef = useBottomSheetModalRef();
@@ -69,7 +69,7 @@ function AccountsButton() {
                     {i18n.t("connected")}
                   </Text>
                   <ConnectedWalletOption
-                    address={connectedAddress}
+                    address={connectedAddress ?? ""}
                     isConnected
                   />
                   <View

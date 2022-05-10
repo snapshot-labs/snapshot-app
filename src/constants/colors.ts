@@ -28,7 +28,7 @@ const defaultColors = {
   baseBlue: "#0049F5",
   baseRed: "#FF5850",
 };
-const light = {
+export const light = {
   borderColor: "#C1C6D7",
   headingColor: "#111111",
   textColor: "#111111",
@@ -41,7 +41,7 @@ const light = {
   navBarBg: "#F3F4F7",
 };
 
-const dark = {
+export const dark = {
   borderColor: "#333948",
   headingColor: defaultColors.white,
   textColor: defaultColors.white,

@@ -36,6 +36,7 @@ import TabBarComponent from "components/tabBar/TabBar";
 import ProfileScreenHeader from "components/profile/ProfileScreenHeader";
 import { getSnapshotProfileAbout, getSnapshotUser } from "helpers/address";
 import UserAbout from "components/user/UserAbout";
+import SettingsButton from "components/settings/SettingsButton";
 
 const headerHeight = Device.isIos() ? 390 : 300;
 
@@ -81,15 +82,15 @@ function ProfileScreen() {
   ];
   const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
     useScrollManager(tabs, { header: headerHeight });
-  const about = getSnapshotProfileAbout(connectedAddress, snapshotUsers);
+  const about = getSnapshotProfileAbout(connectedAddress ?? "", snapshotUsers);
 
   useEffect(() => {
-    getSnapshotUser(connectedAddress).then((user) => {
+    getSnapshotUser(connectedAddress ?? "").then((user) => {
       if (user) {
         exploreDispatch({
           type: EXPLORE_ACTIONS.SET_SNAPSHOT_USERS,
           payload: {
-            [connectedAddress.toLowerCase()]: user,
+            [(connectedAddress ?? "").toLowerCase()]: user,
           },
         });
       }
@@ -223,7 +224,7 @@ function ProfileScreen() {
       setProfiles(filteredArray, exploreDispatch);
     }
     getVotedProposals(
-      connectedAddress,
+      connectedAddress ?? "",
       setVotedProposals,
       setLoadingVotedProposals
     );
@@ -249,6 +250,8 @@ function ProfileScreen() {
             {i18n.t("profile")}
           </Text>
           <View style={common.row}>
+            <SettingsButton />
+            <View style={{ width: 6, height: 1 }} />
             <AccountsButton />
             <View style={{ width: 6, height: 1 }} />
             <LogoutButton />
