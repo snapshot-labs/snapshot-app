@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { useExploreState } from "context/exploreContext";
 import orderBy from "lodash/orderBy";
 import common from "styles/common";
@@ -9,6 +9,8 @@ import ExploreHeader from "components/explore/ExploreHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getFilteredSpaces } from "helpers/searchUtils";
 import { useAuthState } from "context/authContext";
+import Device from "helpers/device";
+import ActivityIndicator from "components/ActivityIndicator";
 
 const LOAD_COUNT = 10;
 
@@ -34,6 +36,7 @@ function ExploreScreen() {
   }, [spaces]);
   const [displayedSpaces, setDisplayedSpaces] = useState<any[]>([]);
   const [displayIndex, setDisplayIndex] = useState(LOAD_COUNT);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const filteredSpaces = getFilteredSpaces(
@@ -46,6 +49,10 @@ function ExploreScreen() {
     setDisplayedSpaces(newDisplayedSpaces);
     setDisplayIndex(LOAD_COUNT * 2);
   }, [spaces, searchValue, selectedCategory]);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [displayedSpaces]);
 
   return (
     <View
@@ -105,6 +112,7 @@ function ExploreScreen() {
           </View>
         }
         onEndReached={() => {
+          setLoading(true);
           if (filteredExplore.length > displayedSpaces.length) {
             const newDisplayedSpaces = displayedSpaces.concat(
               filteredExplore?.slice(displayedSpaces.length, displayIndex)
@@ -113,7 +121,30 @@ function ExploreScreen() {
             setDisplayedSpaces(newDisplayedSpaces);
           }
         }}
-        onEndReachedThreshold={0.7}
+        onEndReachedThreshold={Device.isAndroid() ? 0.9 : 0.7}
+        ListFooterComponent={
+          loading && filteredExplore?.length > 0 ? (
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                marginTop: 24,
+                padding: 24,
+              }}
+            >
+              <ActivityIndicator color={colors.textColor} size="small" />
+            </View>
+          ) : (
+            <View
+              style={{
+                width: "100%",
+                height: 100,
+                backgroundColor: colors.bgDefault,
+              }}
+            />
+          )
+        }
       />
     </View>
   );

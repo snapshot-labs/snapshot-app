@@ -26,6 +26,8 @@ import ChoicesBlock from "components/createProposal/ChoicesBlock";
 import IPhoneTopSafeAreaViewBackground from "components/IPhoneTopSafeAreaViewBackground";
 import IphoneBottomSafeAreaViewBackground from "components/IphoneBottomSafeAreaViewBackground";
 import { CREATE_PROPOSAL_SCREEN_STEP_THREE } from "constants/navigation";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({
   selectionTitle: {
@@ -51,7 +53,7 @@ function CreateProposalStepTwo({ route }: CreateProposalStepTwo) {
     useCreateProposalState();
   const allVotingTypes = proposal.getVotingTypes();
   const createProposalDispatch = useCreateProposalDispatch();
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
   const [votingType, setVotingType] = useState<{ key: string; text: string }>(
     allVotingTypes.find(
       (votingType) => votingType.key === proposalVotingType

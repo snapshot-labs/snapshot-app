@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import i18n from "i18n-js";
 import { WALLET_CONNECT_SCREEN } from "constants/navigation";
 import Button from "./Button";
-import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamsList } from "types/navigationTypes";
 
 function LoginButton() {

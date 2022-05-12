@@ -35,10 +35,9 @@ import AnimatedTabBar from "components/tabBar/AnimatedTabBar";
 import TabBarComponent from "components/tabBar/TabBar";
 import ProfileScreenHeader from "components/profile/ProfileScreenHeader";
 import { getSnapshotProfileAbout, getSnapshotUser } from "helpers/address";
-import UserAbout from "components/user/UserAbout";
 import SettingsButton from "components/settings/SettingsButton";
 
-const headerHeight = Device.isIos() ? 390 : 300;
+const headerHeight = Device.isIos() ? 390 : 330;
 
 async function getVotedProposals(
   address: string,
@@ -68,7 +67,7 @@ async function getVotedProposals(
 function ProfileScreen() {
   const { colors, connectedAddress, savedWallets, followedSpaces } =
     useAuthState();
-  const { profiles, snapshotUsers } = useExploreState();
+  const { profiles } = useExploreState();
   const exploreDispatch = useExploreDispatch();
   const authDispatch = useAuthDispatch();
   const [loadingFollows, setLoadingFollows] = useState(false);
@@ -82,7 +81,6 @@ function ProfileScreen() {
   ];
   const { scrollY, index, setIndex, getRefForKey, ...sceneProps } =
     useScrollManager(tabs, { header: headerHeight });
-  const about = getSnapshotProfileAbout(connectedAddress ?? "", snapshotUsers);
 
   useEffect(() => {
     getSnapshotUser(connectedAddress ?? "").then((user) => {
@@ -106,11 +104,7 @@ function ProfileScreen() {
             routeKey={tab.key}
             scrollY={scrollY}
             headerHeight={headerHeight}
-            data={
-              followedSpaces.length > 0 || about
-                ? [{ key: "joinedSpaces" }]
-                : []
-            }
+            data={followedSpaces.length > 0 ? [{ key: "joinedSpaces" }] : []}
             listOffset={followedSpaces.length > 0 ? 190 : undefined}
             renderItem={() => {
               return (
@@ -119,7 +113,6 @@ function ProfileScreen() {
                     useLoader={loadingFollows}
                     followedSpaces={followedSpaces}
                   />
-                  <UserAbout about={about} />
                 </View>
               );
             }}

@@ -21,7 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import common from "styles/common";
 import IconFont from "components/IconFont";
 import { dateFormat, explorerUrl, n } from "helpers/miscUtils";
-import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({

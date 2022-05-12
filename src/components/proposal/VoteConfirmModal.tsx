@@ -163,7 +163,7 @@ function VoteConfirmModal({
       choice: formattedSelectedChoices,
     };
     const formattedAddress = connectedAddress?.toLowerCase();
-    const checksumAddress = ethers.utils.getAddress(formattedAddress);
+    const checksumAddress = ethers.utils.getAddress(formattedAddress ?? "");
     const { snapshotData, signData } = getSnapshotDataForSign(
       checksumAddress,
       "vote",

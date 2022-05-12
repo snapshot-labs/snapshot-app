@@ -465,4 +465,6 @@ export default {
   create: "Create",
   searchForSpaces: "Search for spaces",
   filterByCategories: "Filter by categories",
+  editProfile: "Edit profile",
+  description: "Description",
 };

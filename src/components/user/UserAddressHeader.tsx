@@ -15,6 +15,7 @@ import common from "styles/common";
 import WalletType from "components/wallet/WalletType";
 import { ethers } from "ethers";
 import { getUserProfile } from "helpers/profile";
+import { getSnapshotProfileAbout } from "helpers/address";
 
 const styles = StyleSheet.create({
   connectedEns: {
@@ -40,11 +41,12 @@ interface UserAddressHeaderProps {
 
 function UserAddressHeader({ address = "" }: UserAddressHeaderProps) {
   const { colors } = useAuthState();
-  const { profiles } = useExploreState();
+  const { profiles, snapshotUsers } = useExploreState();
   const profile = getUserProfile(address, profiles);
   const ens = get(profile, "ens", undefined);
   const toastShowConfig = useToastShowConfig();
   const [checksumAddress, setChecksumAddress] = useState(shorten(address));
+  const about = getSnapshotProfileAbout(address, snapshotUsers);
 
   useEffect(() => {
     try {
@@ -110,6 +112,22 @@ function UserAddressHeader({ address = "" }: UserAddressHeaderProps) {
           </View>
         </TouchableWithoutFeedback>
       </View>
+      {!isEmpty(about) && (
+        <Text
+          style={{
+            fontFamily: "Calibre-Medium",
+            fontSize: 14,
+            marginHorizontal: 28,
+            marginTop: 18,
+            textAlign: "center",
+            color: colors.textColor,
+          }}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
+          {about}
+        </Text>
+      )}
     </View>
   );
 }

@@ -486,7 +486,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                 </Text>
                 <TextInput
                   value={password}
-                  onChangeText={(text) => {
+                  onChangeText={(text: string) => {
                     const passInfo = zxcvbn(text);
                     setPassword(text);
                     setPasswordStrength(passInfo.score);
@@ -612,7 +612,7 @@ function ChoosePasswordScreen({ route }: ChoosePasswordScreenProps) {
                         trackColor={
                           Device.isIos()
                             ? { true: colors.bgGreen, false: colors.darkGray }
-                            : null
+                            : {}
                         }
                         ios_backgroundColor={colors.darkGray}
                       />

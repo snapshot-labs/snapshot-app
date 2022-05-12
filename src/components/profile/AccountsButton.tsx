@@ -14,6 +14,8 @@ import Device from "helpers/device";
 import Button from "components/Button";
 import { ADD_NEW_ACCOUNT_SCREEN } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({
   connectedSubtitle: {
@@ -37,7 +39,7 @@ function AccountsButton() {
     (address: string) =>
       address.toLowerCase() !== connectedAddress?.toLowerCase()
   );
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamsList>>();
   const bottomSheetModalRef = useBottomSheetModalRef();
 
   return (

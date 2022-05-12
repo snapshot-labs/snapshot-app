@@ -18,7 +18,7 @@ import { USER_PROFILE } from "constants/navigation";
 import { useNavigation } from "@react-navigation/native";
 import appConstants from "constants/app";
 import { getUserProfile } from "helpers/profile";
-import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({

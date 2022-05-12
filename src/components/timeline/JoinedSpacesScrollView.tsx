@@ -16,7 +16,7 @@ import isEmpty from "lodash/isEmpty";
 import i18n from "i18n-js";
 import common from "styles/common";
 import IconFont from "components/IconFont";
-import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamsList } from "types/navigationTypes";
 
 const verified: any = require("constants/verifiedSpaces.json");

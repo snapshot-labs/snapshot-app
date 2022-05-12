@@ -138,7 +138,6 @@ function UserProfileScreen({ route }: UserProfileScreenProps) {
               return (
                 <View>
                   <JoinedSpacesScrollView followedSpaces={joinedSpaces} />
-                  <UserAbout about={about} />
                 </View>
               );
             }}

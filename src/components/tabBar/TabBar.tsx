@@ -13,9 +13,9 @@ const styles = StyleSheet.create({
     top: 44,
   },
   labelStyle: {
-    fontFamily: "Calibre-Medium",
+    fontFamily: "Calibre-Semibold",
     textTransform: "uppercase",
-    fontSize: 18,
+    fontSize: 14,
     marginTop: 0,
     zIndex: 999,
   },
@@ -54,7 +54,7 @@ function TabBarComponent(props: any) {
         height: 47,
         elevation: 0,
         borderBottomColor: colors.borderColor,
-        borderBottomWidth: 1,
+        borderBottomWidth: 3,
         marginTop: 0,
         paddingTop: 6,
       }}

@@ -13,7 +13,7 @@ import IconFont from "./IconFont";
 import { useNavigation } from "@react-navigation/native";
 import { useAuthState } from "context/authContext";
 import { HOME_SCREEN } from "constants/navigation";
-import { StackNavigationProp } from "@react-navigation/stack/lib/typescript/src/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamsList } from "types/navigationTypes";
 
 const styles = StyleSheet.create({
